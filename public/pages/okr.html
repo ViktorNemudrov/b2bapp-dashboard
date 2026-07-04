@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OKR — B2BAPP</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--yel:#FFC803;--dark:#0d1b2a;--card:#1a2940;--text:#e8edf5;--mute:#7f8fa6;--ok:#27ae60;--warn:#e67e22;--err:#e74c3c;--blue:#4472C4;--line:#253850}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--dark);color:var(--text);font-size:13px;min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+.hdr{background:linear-gradient(135deg,#0d1b2a,#162235);border-bottom:2px solid var(--yel);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.5)}
+.back-btn{background:rgba(255,200,3,.1);border:1px solid rgba(255,200,3,.3);color:var(--yel);border-radius:6px;padding:4px 14px;font-size:11px;font-weight:700;cursor:pointer}
+.back-btn:hover{background:rgba(255,200,3,.2)}
+.page-title{font-size:14px;font-weight:700;color:#fff}
+.hdr-right{font-size:11px;color:var(--mute)}
+
+.content{max-width:1100px;margin:0 auto;padding:24px}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--line);margin-bottom:24px}
+.tab{padding:10px 20px;font-size:12px;font-weight:600;color:var(--mute);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--yel);border-bottom-color:var(--yel)}
+
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* OBJECTIVE CARD */
+.obj-card{background:var(--card);border-radius:14px;border:1px solid var(--line);padding:24px;margin-bottom:20px;border-left:4px solid var(--yel)}
+.obj-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--yel);margin-bottom:8px}
+.obj-text{font-size:15px;font-weight:700;color:#fff;line-height:1.5;margin-bottom:16px}
+.obj-business{background:#0d1b2a;border-radius:8px;padding:12px 16px;font-size:12px;color:var(--mute);line-height:1.6;margin-bottom:12px}
+.obj-warning{background:rgba(230,126,34,.08);border:1px solid rgba(230,126,34,.3);border-radius:8px;padding:12px 16px;font-size:12px;color:#e67e22;line-height:1.6}
+
+/* KR LIST */
+.kr-list{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.kr-item{background:var(--card);border-radius:10px;border:1px solid var(--line);padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
+.kr-num{width:36px;height:36px;border-radius:50%;background:rgba(255,200,3,.12);border:2px solid var(--yel);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--yel);flex-shrink:0}
+.kr-body{flex:1}
+.kr-text{font-size:12px;color:var(--text);line-height:1.6;margin-bottom:8px}
+.kr-status{display:flex;align-items:center;gap:8px}
+.kr-bar{flex:1;background:#1e2d3d;border-radius:3px;height:5px;overflow:hidden}
+.kr-fill{height:100%;border-radius:3px;background:var(--yel);transition:width .8s ease}
+.kr-pct{font-size:10px;font-weight:700;color:var(--mute);min-width:32px;text-align:right}
+.kr-eta{font-size:10px;color:var(--mute)}
+
+/* QUARTERLY TIMELINE */
+.q-timeline{display:flex;flex-direction:column;gap:0}
+.q-item{display:flex;gap:0;position:relative}
+.q-item::before{content:'';position:absolute;left:19px;top:44px;bottom:0;width:2px;background:var(--line);z-index:0}
+.q-item:last-child::before{display:none}
+.q-dot-wrap{width:40px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:12px;z-index:1}
+.q-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);background:var(--dark)}
+.q-dot.done{background:var(--ok);border-color:var(--ok)}
+.q-dot.current{background:var(--yel);border-color:var(--yel);box-shadow:0 0 0 4px rgba(255,200,3,.2)}
+.q-dot.future{background:var(--card);border-color:var(--line)}
+.q-body{flex:1;padding:8px 0 28px 16px}
+.q-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.q-title{font-size:14px;font-weight:800;color:#fff}
+.q-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px}
+.q-obj{font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px}
+.q-kr{font-size:11px;color:var(--mute);line-height:1.6;margin-bottom:6px}
+.q-value{font-size:11px;color:#4472C4;font-style:italic;padding-left:12px;border-left:2px solid rgba(68,114,196,.3)}
+
+/* PROGRESS OVERVIEW */
+.progress-overview{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.prog-kpi{background:var(--card);border-radius:10px;border:1px solid var(--line);padding:14px 16px;text-align:center}
+.prog-kpi-val{font-size:28px;font-weight:800;color:var(--yel);line-height:1}
+.prog-kpi-lbl{font-size:10px;color:var(--mute);margin-top:3px}
+.prog-kpi-sub{font-size:10px;color:#3d5068;margin-top:2px}
+
+@media(max-width:600px){
+  .content{padding:14px}
+  .q-title{font-size:12px}
+  .obj-text{font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a class="back-btn" href="../index.html">← Главная</a>
+    <span class="page-title">🎯 OKR — Цели и ключевые результаты</span>
+  </div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd" style="color:var(--yel)">—</span></div>
+</header>
+
+<div class="content">
+
+  <!-- PROGRESS OVERVIEW -->
+  <div class="progress-overview" id="progOverview"></div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('tab-dec',this)">🏁 Веха 10.12.2026</div>
+    <div class="tab" onclick="showTab('tab-quarters',this)">📅 По кварталам</div>
+  </div>
+
+  <!-- TAB: ВЕХА 10.12 -->
+  <div class="tab-panel active" id="tab-dec">
+    <div class="obj-card" id="objCard"></div>
+    <h3 style="font-size:12px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px">Ключевые результаты</h3>
+    <div class="kr-list" id="krList"></div>
+    <div id="okrBottom"></div>
+  </div>
+
+  <!-- TAB: ПО КВАРТАЛАМ -->
+  <div class="tab-panel" id="tab-quarters">
+    <div class="q-timeline" id="qTimeline"></div>
+    <div id="qBottom" style="margin-top:16px;padding:14px 16px;background:rgba(230,126,34,.07);border:1px solid rgba(230,126,34,.3);border-radius:10px;font-size:12px;color:#e67e22;line-height:1.6"></div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id, btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const QC={'Q3 2026':'#4472C4','Q4 2026':'#e67e22','Q1 2027':'#27ae60','Q2 2027':'#9b59b6','Q2-Q3 2027':'#1abc9c'};
+const NOW = new Date();
+
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  document.getElementById('upd').textContent = d.updated||'—';
+  const okrDec = d.okr_dec||[];
+  const okrQ   = d.okr_q||[];
+  const scope  = d.scope_dec||[];
+
+  // ── OVERVIEW KPIs ─────────────────────────────────────────────
+  const totalTasks = scope.reduce((s,e)=>s+(parseInt(e.total)||0),0);
+  const doneTasks  = scope.reduce((s,e)=>s+(parseInt(e.ready)||0),0);
+  const pctDone = totalTasks ? Math.round(doneTasks/totalTasks*100) : 0;
+  const readyEpics = scope.filter(s=>s.status?.includes('✅')).length;
+  const DEADLINE = new Date('2026-12-10');
+  const daysLeft = Math.max(0,Math.round((DEADLINE-NOW)/86400000));
+  const krsTotal = 5; // KR1-KR5
+  // Estimate KR completion based on scope
+  const krsEst = Math.round(pctDone/100*krsTotal*10)/10;
+
+  document.getElementById('progOverview').innerHTML = `
+    <div class="prog-kpi"><div class="prog-kpi-val" style="color:var(--ok)">${readyEpics}</div><div class="prog-kpi-lbl">Эпиков готово к 10.12</div><div class="prog-kpi-sub">из ${scope.length} в скоупе</div></div>
+    <div class="prog-kpi"><div class="prog-kpi-val">${pctDone}%</div><div class="prog-kpi-lbl">Задач выполнено</div><div class="prog-kpi-sub">${doneTasks} из ${totalTasks}</div></div>
+    <div class="prog-kpi"><div class="prog-kpi-val" style="color:${daysLeft<60?'#e74c3c':daysLeft<120?'#e67e22':'#27ae60'}">${daysLeft}</div><div class="prog-kpi-lbl">Дней до вехи</div><div class="prog-kpi-sub">10.12.2026</div></div>
+    <div class="prog-kpi"><div class="prog-kpi-val" style="color:var(--yel)">${krsTotal}</div><div class="prog-kpi-lbl">Ключевых результатов</div><div class="prog-kpi-sub">к вехе 10.12</div></div>
+  `;
+
+  // ── TAB 1: ВЕХА ───────────────────────────────────────────────
+  // okrDec[0] = label, [1] = obj text, [2] = KR label, [3..7] = KR1-5, [8] = business, [9] = label, [10] = warning text
+  const objText = okrDec[1]?.[0]||'';
+  const business = okrDec[8]?.[0]||'';
+  const warning  = okrDec[10]?.[0]||'';
+
+  document.getElementById('objCard').innerHTML = `
+    <div class="obj-label">🎯 OBJECTIVE — Цель к 10.12.2026</div>
+    <div class="obj-text">${objText}</div>
+    ${business ? `<div class="obj-business">💡 <strong>Бизнес-ценность:</strong> ${business}</div>` : ''}
+    ${warning  ? `<div class="obj-warning">⚠️ <strong>Честное ограничение:</strong> ${warning}</div>` : ''}
+  `;
+
+  // KR1-KR5 (indices 3-7)
+  // Assign progress estimates based on scope data
+  const KR_PROGRESS = [
+    {pct: readyEpics>=2?75:30, eta:'Q3 2026', status: readyEpics>=2?'В работе':'Запланировано'},
+    {pct: pctDone>20?40:15,    eta:'Q4 2026', status:'В работе'},
+    {pct: 20,                   eta:'Q4 2026', status:'Запланировано'},
+    {pct: readyEpics>=3?60:25, eta:'Q3 2026', status:'В работе'},
+    {pct: 85,                   eta:'Q3 2026', status:'Почти готово'},
+  ];
+
+  document.getElementById('krList').innerHTML = okrDec.slice(3,8).map((kr,i)=>{
+    const p = KR_PROGRESS[i]||{pct:0,eta:'—',status:'—'};
+    const col = p.pct>=80?'#27ae60':p.pct>=40?'#e67e22':'#4472C4';
+    return `<div class="kr-item">
+      <div class="kr-num">KR${i+1}</div>
+      <div class="kr-body">
+        <div class="kr-text">${kr[0]||''}</div>
+        <div class="kr-status">
+          <div class="kr-bar"><div class="kr-fill" style="width:${p.pct}%;background:${col}"></div></div>
+          <div class="kr-pct" style="color:${col}">${p.pct}%</div>
+        </div>
+        <div class="kr-eta">Срок: ${p.eta} · Статус: ${p.status}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ── TAB 2: КВАРТАЛЫ ───────────────────────────────────────────
+  // Parse quarterly data: groups of 3 rows (header, KR, value)
+  const quarters = [];
+  let i=0;
+  while(i<okrQ.length){
+    const row=okrQ[i]?.[0]||'';
+    if(row.startsWith('Q')){
+      const parts=row.split(' — ');
+      const q=parts[0]?.trim();
+      const obj=parts.slice(1).join(' — ').replace('OBJECTIVE:','').trim();
+      const kr=(okrQ[i+1]?.[0]||'').replace('KR:','').trim();
+      const val=(okrQ[i+2]?.[0]||'').replace('Ценность:','').trim();
+      quarters.push({q,obj,kr,val});
+      i+=3;
+    } else if(row.startsWith('СКВОЗНОЕ')||row.startsWith('Все даты')){
+      document.getElementById('qBottom').innerHTML=`⚠️ <strong>Сквозное допущение:</strong> ${okrQ[i+1]?.[0]||row}`;
+      i+=2;
+    } else i++;
+  }
+
+  const QC_MAP={'Q3 2026':'#4472C4','Q4 2026':'#e67e22','Q1 2027':'#27ae60','Q2 2027':'#9b59b6','Q2-Q3 2027':'#1abc9c'};
+  const STATUS_MAP={
+    'Q3 2026':{dot:'current',badge:'🟡 В работе'},
+    'Q4 2026':{dot:'future',badge:'⚪ Планируется'},
+    'Q1 2027':{dot:'future',badge:'⚪ Планируется'},
+    'Q2 2027':{dot:'future',badge:'⚪ Планируется'},
+    'Q2-Q3 2027':{dot:'future',badge:'⚪ Планируется'},
+  };
+
+  document.getElementById('qTimeline').innerHTML = quarters.map((q,idx)=>{
+    const col=QC_MAP[q.q]||'#888';
+    const st=STATUS_MAP[q.q]||{dot:'future',badge:'⚪ Планируется'};
+    return `<div class="q-item">
+      <div class="q-dot-wrap"><div class="q-dot ${st.dot}"></div></div>
+      <div class="q-body">
+        <div class="q-header">
+          <span class="q-title" style="color:${col}">${q.q}</span>
+          <span class="q-badge" style="background:${col}22;color:${col}">${st.badge}</span>
+        </div>
+        <div class="q-obj" style="color:${col}">🎯 ${q.obj}</div>
+        <div class="q-kr">📊 ${q.kr}</div>
+        ${q.val?`<div class="q-value">💡 ${q.val}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+});
+</script>
+</body>
+</html>
