@@ -1,2 +1,64 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<_title>
+<title>Стейкхолдеры — B2BAPP</title><link rel="stylesheet" href="../shared.css">
+<style>
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1b2a;color:#e8edf5;font-size:13px;min-height:100vh}
+.hdr{background:linear-gradient(135deg,#0d1b2a,#162235);border-bottom:2px solid #FFC803;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100}
+.back-btn{background:rgba(255,200,3,.1);border:1px solid rgba(255,200,3,.3);color:#FFC803;border-radius:6px;padding:4px 14px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none}
+.content{padding:20px 24px}
+.raci-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;background:#1a2940;border-radius:10px;padding:14px 18px;border:1px solid #253850}
+.raci-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.raci-badge{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.raci-desc{color:#7f8fa6}
+.tbl{border-collapse:collapse;width:100%;font-size:12px}
+.tbl th{background:#1e2d3d;color:#aaa;padding:8px 10px;text-align:left;font-size:11px;font-weight:600;position:sticky;top:52px;border-bottom:2px solid #253850}
+.tbl td{padding:8px 10px;border-bottom:1px solid #253850;vertical-align:top}
+.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;white-space:nowrap}
+.r-R{background:rgba(231,76,60,.2);color:#e74c3c}
+.r-A{background:rgba(230,126,34,.2);color:#e67e22}
+.r-C{background:rgba(68,114,196,.2);color:#6a9ee8}
+.r-I{background:rgba(127,143,166,.15);color:#7f8fa6}
+</style>
+</head><body>
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a class="back-btn" href="../index.html">← Главная</a>
+    <span style="font-size:14px;font-weight:700;color:#fff">🤝 Стейкхолдеры + RACI</span>
+  </div>
+  <div style="font-size:11px;color:#7f8fa6">B2BAPP | Данные на <span id="upd" style="color:#FFC803">—</span></div>
+</header>
+<div class="content">
+  <div class="raci-legend">
+    <strong style="font-size:11px;color:#7f8fa6;align-self:center;margin-right:4px">Расшифровка RACI:</strong>
+    <div class="raci-item"><div class="raci-badge r-R">R</div><div><strong style="color:#e74c3c">Responsible</strong><div class="raci-desc">Исполнитель — делает работу</div></div></div>
+    <div class="raci-item"><div class="raci-badge r-A">A</div><div><strong style="color:#e67e22">Accountable</strong><div class="raci-desc">Ответственный — принимает решение</div></div></div>
+    <div class="raci-item"><div class="raci-badge r-C">C</div><div><strong style="color:#6a9ee8">Consulted</strong><div class="raci-desc">Консультант — даёт экспертизу</div></div></div>
+    <div class="raci-item"><div class="raci-badge r-I">I</div><div><strong style="color:#7f8fa6">Informed</strong><div class="raci-desc">Информируемый — получает статус</div></div></div>
+  </div>
+  <div style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap">
+    <input id="srch" style="background:#1e2d3d;border:1px solid #253850;color:#e8edf5;border-radius:6px;padding:6px 12px;font-size:12px;width:240px;outline:none" placeholder="🔍 Поиск..." oninput="filter()">
+    <span id="cnt" style="font-size:11px;color:#7f8fa6;align-self:center"></span>
+  </div>
+  <table class="tbl"><thead><tr><th>Имя</th><th>Роль в проекте</th><th>Команда / Отдел</th><th>RACI</th><th>Контакт / Роль</th></tr></thead>
+  <tbody id="tbody"></tbody></table>
+</div>
+<script>
+let DATA=[];
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  DATA=d.stakeholders||[];
+  document.getElementById('upd').textContent=d.updated||'—';
+  render(DATA);
+});
+function raciBadge(r){return r.split('').map(c=>`<span class="badge r-${c}" style="margin-right:3px">${c}</span>`).join('');}
+function render(rows){
+  document.getElementById('tbody').innerHTML=rows.map(s=>`<tr>
+    <td style="font-weight:600;color:#fff;white-space:nowrap">${s.name}</td>
+    <td>${s.role}</td>
+    <td style="font-size:11px;color:#7f8fa6">${s.team}</td>
+    <td>${raciBadge(s.raci||'')}</td>
+    <td style="font-size:11px;color:#7f8fa6">${s.contact||'—'}</td>
+  </tr>`).join('');
+  document.getElementById('cnt').textContent=rows.length+' участников';
+}
+function filter(){const q=document.getElementById('srch').value.toLowerCase();render(DATA.filter(r=>JSON.stringify(r).toLowerCase().includes(q)));}
+</script></body></html>
