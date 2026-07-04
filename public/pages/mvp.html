@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MVP по кварталам — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🏆 MVP по кварталам</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+</header>
+<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<script>
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  document.getElementById('upd').textContent=d.updated||'—';
+  
+const mvp = d.mvp || [];
+const byQ = {};
+mvp.forEach(m=>{if(!byQ[m.quarter])byQ[m.quarter]=[];byQ[m.quarter].push(m);});
+const QC={'Q3 2026':'#4472C4','Q4 2026':'#e67e22','Q1 2027':'#2ecc71','Q1-Q2 2027':'#9b59b6','Q2 2027':'#e74c3c','Q2-Q3 2027':'#1abc9c'};
+const html=Object.entries(byQ).map(([q,items])=>`
+  <div style="margin-bottom:24px">
+    <div style="font-size:14px;font-weight:800;color:${QC[q]||'var(--yel)'};margin-bottom:12px;border-left:4px solid ${QC[q]||'var(--yel)'};padding-left:12px">${q}</div>
+    <div class="cards-grid">${items.map(m=>`<div class="info-card">
+      <h3>${m.epic}</h3>
+      <p style="font-size:11px;color:var(--mute);margin-bottom:8px">${m.content}</p>
+      <p style="font-size:11px;color:#ccc;border-top:1px solid var(--line);padding-top:8px;margin-top:8px">💡 ${m.value}</p>
+    </div>`).join('')}</div>
+  </div>`).join('');
+document.getElementById('root').innerHTML=html;
+
+});
+</script></body></html>

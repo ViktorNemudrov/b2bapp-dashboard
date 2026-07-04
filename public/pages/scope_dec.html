@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Скоуп до 10.12.2026 — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📅 Скоуп до 10.12.2026</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+</header>
+<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<script>
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  document.getElementById('upd').textContent=d.updated||'—';
+  
+const sc = d.scope_dec || [];
+const STATUS={'✅ Готово':'ok','🟡 Частично':'warn','⬜ После 10.12':'gray'};
+const html=`<table class="tbl">
+  <thead><tr><th>Эпик</th><th>Содержание</th><th>Задач всего</th><th>Готово к 10.12</th><th>%</th><th>Статус</th></tr></thead>
+  <tbody>${sc.map(s=>{
+    const pct=s.total?Math.round((parseInt(s.ready)||0)/(parseInt(s.total)||1)*100):0;
+    const cls=Object.entries(STATUS).find(([k])=>s.status&&s.status.includes(k.substring(0,2)))?.[1]||'blue';
+    return `<tr>
+      <td style="font-weight:600;color:#fff;min-width:200px">${s.epic}</td>
+      <td style="font-size:11px;color:var(--mute)">${s.content}</td>
+      <td style="text-align:center">${s.total}</td>
+      <td style="text-align:center;color:var(--yel);font-weight:700">${s.ready}</td>
+      <td style="text-align:center"><div class="prog-bar" style="min-width:60px"><div class="prog-fill" style="width:${pct}%;background:${pct>=100?'#2ecc71':pct>=50?'#e67e22':'#e74c3c'}"></div></div><span style="font-size:10px;color:var(--mute)">${pct}%</span></td>
+      <td><span class="badge badge-${cls}">${s.status}</span></td>
+    </tr>`;}).join('')}</tbody></table>`;
+document.getElementById('root').innerHTML=html;
+
+});
+</script></body></html>

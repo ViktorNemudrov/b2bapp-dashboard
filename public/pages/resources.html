@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ресурсный план — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">👥 Ресурсный план</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+</header>
+<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<script>
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  document.getElementById('upd').textContent=d.updated||'—';
+  
+const res = d.resources || [];
+const months = res.length ? Object.keys(res[0].months||{}) : [];
+function heatClass(v){
+  if(!v||v==='·'||v===''||v==='None') return 'heat-0';
+  const n=parseInt(v);
+  if(isNaN(n)) return 'heat-0';
+  if(n>=100) return 'heat-high';
+  if(n>=70) return 'heat-mid';
+  return 'heat-low';
+}
+const html = `<table class="tbl heatmap-table">
+  <thead><tr><th>Роль</th><th>FTE</th><th>Всего дн.</th><th>Задач</th>${months.map(m=>`<th>${m}</th>`).join('')}</tr></thead>
+  <tbody>${res.map(r=>`<tr>
+    <td style="font-weight:600;color:#fff">${r.role}</td>
+    <td style="color:var(--mute)">${r.fte}</td>
+    <td style="color:var(--yel)">${r.total_days}</td>
+    <td>${r.task_count}</td>
+    ${months.map(m=>{const v=r.months[m]||'·';return `<td class="${heatClass(v)}">${v}</td>`;}).join('')}
+  </tr>`).join('')}</tbody></table>
+<div style="margin-top:16px;display:flex;gap:12px;font-size:11px">
+  <span style="color:#2ecc71">■ &lt;70% — норма</span>
+  <span style="color:#e67e22">■ 70-99% — напряжённо</span>
+  <span style="color:#e74c3c">■ ≥100% — перегруз</span>
+  <span style="color:var(--mute)">■ · — не в проекте</span>
+</div>`;
+document.getElementById('root').innerHTML=html;
+
+});
+</script></body></html>

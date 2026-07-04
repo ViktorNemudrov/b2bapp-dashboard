@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>User Story Map — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🗺️ User Story Map</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+</header>
+<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<script>
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  document.getElementById('upd').textContent=d.updated||'—';
+  
+document.getElementById('root').innerHTML=`<iframe src="https://b2bapp-usm.vercel.app/" style="width:100%;height:calc(100vh - 52px);border:none;margin:-24px"></iframe>`;
+
+});
+</script></body></html>

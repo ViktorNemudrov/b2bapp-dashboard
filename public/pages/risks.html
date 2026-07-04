@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Реестр рисков — B2BAPP</title><link rel="stylesheet" href="../shared.css">
+<style>
+.risk-row td:nth-child(3),.risk-row td:nth-child(4){text-align:center;font-weight:700;font-size:14px}
+.score-cell{font-size:12px;text-align:center}
+</style></head><body>
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">⚠️ Реестр рисков</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+</header>
+<div class="content">
+  <div class="search-row">
+    <input class="search-input" id="srch" placeholder="Поиск по рискам..." oninput="filter()">
+    <span class="count-badge" id="cnt"></span>
+  </div>
+  <table class="tbl" id="tbl">
+    <thead><tr><th>ID</th><th>Описание</th><th>Вер.</th><th>Влияние</th><th>Скор</th><th>Митигация</th><th>Ответств.</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+<script>
+let DATA=[];
+const COLORS={1:'#2ecc71',2:'#27ae60',3:'#e67e22',4:'#e74c3c',5:'#c0392b'};
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  DATA=d.risks||[];
+  document.getElementById('upd').textContent=d.updated||'—';
+  render(DATA);
+});
+function render(rows){
+  const tb=document.getElementById('tbody');
+  tb.innerHTML=rows.map(r=>{
+    const score=parseInt(r.prob||1)*parseInt(r.impact||1);
+    const sc=score>=16?'err':score>=9?'warn':score>=4?'blue':'ok';
+    return `<tr class="risk-row">
+      <td><span class="badge badge-yel">${r.id}</span></td>
+      <td>${r.desc}</td>
+      <td style="color:${COLORS[r.prob]||'#fff'}">${r.prob}</td>
+      <td style="color:${COLORS[r.impact]||'#fff'}">${r.impact}</td>
+      <td class="score-cell"><span class="badge badge-${sc}">${score}</span></td>
+      <td style="font-size:11px;color:#ccc">${r.mitigation}</td>
+      <td style="font-size:11px;color:var(--mute)">${r.owner}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('cnt').textContent=rows.length+' рисков';
+}
+function filter(){
+  const q=document.getElementById('srch').value.toLowerCase();
+  render(DATA.filter(r=>JSON.stringify(r).toLowerCase().includes(q)));
+}
+</script></body></html>

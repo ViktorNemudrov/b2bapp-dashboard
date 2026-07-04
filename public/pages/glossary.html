@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Глоссарий — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📖 Глоссарий</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+</header>
+<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<script>
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  document.getElementById('upd').textContent=d.updated||'—';
+  
+const items = d.glossary || [];
+document.getElementById('root').innerHTML=`
+<div style="margin-bottom:12px"><input id="gs" style="background:#1e2d3d;border:1px solid var(--line);color:var(--text);border-radius:6px;padding:6px 12px;font-size:12px;width:280px;outline:none" placeholder="Поиск..." oninput="gf()"></div>
+<div id="glist" class="cards-grid">${items.map(g=>`<div class="info-card">
+  <h3 style="color:var(--yel)">${g.term}</h3>
+  <p style="font-size:11px;color:#ccc;margin-top:4px">${g.definition}</p>
+</div>`).join('')}</div>`;
+window.gf=function(){
+  const q=document.getElementById('gs').value.toLowerCase();
+  document.querySelectorAll('#glist .info-card').forEach(c=>{
+    c.style.display=c.textContent.toLowerCase().includes(q)?'':'none';
+  });
+};
+
+});
+</script></body></html>

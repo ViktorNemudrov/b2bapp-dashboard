@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Таблица груминга — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📋 Таблица груминга</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+</header>
+<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<script>
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  document.getElementById('upd').textContent=d.updated||'—';
+  
+document.getElementById('root').innerHTML=`<div class="empty" style="text-align:center;padding:48px">
+  <div style="font-size:48px;margin-bottom:16px">📋</div>
+  <div style="font-size:16px;font-weight:700;margin-bottom:8px">Таблица груминга</div>
+  <div style="color:var(--mute);max-width:400px;margin:0 auto">Данные груминга загружаются из Jira в реальном времени.<br>Нажмите кнопку обновления на главной странице.</div>
+  <a href="../index.html" style="display:inline-block;margin-top:20px;background:var(--yel);color:#111;padding:8px 20px;border-radius:6px;font-weight:700">← На главную</a>
+</div>`;
+
+});
+</script></body></html>

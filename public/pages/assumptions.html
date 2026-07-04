@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Реестр допущений — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📌 Реестр допущений</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+</header>
+<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<script>
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  document.getElementById('upd').textContent=d.updated||'—';
+  
+const items = d.assumptions || [];
+document.getElementById('root').innerHTML=`<table class="tbl">
+  <thead><tr><th>ID</th><th>Допущение</th><th>Последствие нарушения</th><th>Ответственный</th></tr></thead>
+  <tbody>${items.map(a=>`<tr>
+    <td><span class="badge badge-blue">${a.id}</span></td>
+    <td>${a.desc}</td>
+    <td style="font-size:11px;color:#e67e22">${a.impact}</td>
+    <td style="font-size:11px;color:var(--mute)">${a.owner}</td>
+  </tr>`).join('')}</tbody></table>`;
+
+});
+</script></body></html>

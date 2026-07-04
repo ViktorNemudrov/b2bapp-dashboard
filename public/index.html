@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B2BAPP Dashboard — Билайн Бизнес</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--yel:#FFC803;--dark:#0d1b2a;--card:#1a2940;--text:#e8edf5;--mute:#7f8fa6;--ok:#2ecc71;--warn:#e67e22;--err:#e74c3c;--blue:#4472C4}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--dark);color:var(--text);min-height:100vh}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#0d1b2a 0%,#1a2940 100%);border-bottom:2px solid var(--yel);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.5)}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-sphere{width:36px;height:36px;flex-shrink:0}
+.logo-text{font-size:18px;font-weight:700;color:#fff}.logo-sub{font-size:11px;color:var(--mute)}
+.header-right{display:flex;align-items:center;gap:16px}
+.updated{font-size:11px;color:var(--mute)}
+.updated span{color:var(--yel)}
+.refresh-btn{background:var(--yel);color:#111;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:.2s}
+.refresh-btn:hover{background:#e6b200}
+
+/* HERO */
+.hero{padding:40px 32px 24px;background:linear-gradient(180deg,#1a2940 0%,transparent 100%)}
+.hero h1{font-size:28px;font-weight:800;margin-bottom:6px}
+.hero h1 span{color:var(--yel)}
+.hero p{color:var(--mute);font-size:14px}
+
+/* KPI ROW */
+.kpi-row{display:flex;gap:16px;padding:0 32px 32px;flex-wrap:wrap}
+.kpi{background:var(--card);border-radius:12px;padding:18px 24px;flex:1;min-width:160px;border:1px solid #253850;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--yel)}
+.kpi.ok::before{background:var(--ok)}
+.kpi.warn::before{background:var(--warn)}
+.kpi.err::before{background:var(--err)}
+.kpi-val{font-size:32px;font-weight:800;color:var(--yel);line-height:1}
+.kpi.ok .kpi-val{color:var(--ok)}
+.kpi.warn .kpi-val{color:var(--warn)}
+.kpi-label{font-size:11px;color:var(--mute);margin-top:4px}
+.kpi-sub{font-size:10px;color:#556;margin-top:2px}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;padding:0 32px 40px}
+
+/* CARDS */
+.page-card{background:var(--card);border-radius:14px;border:1px solid #253850;padding:24px;cursor:pointer;transition:.2s;text-decoration:none;display:block;position:relative;overflow:hidden}
+.page-card::after{content:'→';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--yel);opacity:0;transition:.2s}
+.page-card:hover{border-color:var(--yel);transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,200,3,.15)}
+.page-card:hover::after{opacity:1;right:16px}
+.card-icon{font-size:28px;margin-bottom:12px}
+.card-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:6px}
+.card-desc{font-size:12px;color:var(--mute);line-height:1.5}
+.card-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:8px;background:rgba(255,200,3,.15);color:var(--yel)}
+.card-badge.live{background:rgba(46,204,113,.15);color:var(--ok)}
+
+/* SECTION TITLE */
+.section-title{padding:0 32px 16px;font-size:13px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.8px}
+
+/* PROGRESS BARS */
+.progress-section{padding:0 32px 32px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.progress-card{background:var(--card);border-radius:12px;padding:20px;border:1px solid #253850}
+.progress-card h3{font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text)}
+.p-item{margin-bottom:10px}
+.p-label{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);margin-bottom:4px}
+.p-label span{color:var(--text);font-weight:600}
+.p-bar{background:#253850;border-radius:4px;height:6px;overflow:hidden}
+.p-fill{height:100%;border-radius:4px;transition:width .6s ease}
+
+/* FOOTER */
+.footer{text-align:center;padding:20px;font-size:11px;color:var(--mute);border-top:1px solid #253850}
+
+/* LOADER */
+.loader{text-align:center;padding:40px;color:var(--mute)}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <svg class="logo-sphere" viewBox="0 0 36 36">
+      <defs><clipPath id="sc"><circle cx="18" cy="18" r="16"/></clipPath></defs>
+      <circle cx="18" cy="18" r="16" fill="#111"/>
+      <g clip-path="url(#sc)">
+        <rect x="2" y="6"  width="32" height="3" fill="#FFC803"/>
+        <rect x="2" y="13" width="32" height="3" fill="#FFC803"/>
+        <rect x="2" y="20" width="32" height="3" fill="#FFC803"/>
+        <rect x="2" y="27" width="32" height="3" fill="#FFC803"/>
+      </g>
+    </svg>
+    <div>
+      <div class="logo-text">beeline B2BAPP</div>
+      <div class="logo-sub">Дашборд проекта</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="updated">Обновлено: <span id="updatedTime">—</span></div>
+    <button class="refresh-btn" onclick="refreshData()">↻ Обновить данные</button>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>B2BAPP — <span>Мобильное приложение</span> для микробизнеса</h1>
+  <p>Билайн Бизнес | React/Capacitor (iOS + Android) | AI-ассистент как главный интерфейс | Веха 10.12.2026</p>
+</div>
+
+<div class="kpi-row" id="kpiRow"><div class="loader">Загрузка данных...</div></div>
+
+<div class="section-title">Прогресс по эпикам (к вехе 10.12.2026)</div>
+<div class="progress-section" id="progressSection"></div>
+
+<div class="section-title">Разделы дашборда</div>
+<div class="grid">
+
+  <a class="page-card" href="pages/gantt.html">
+    <div class="card-icon">📊</div>
+    <div class="card-title">Диаграмма Ганта v6</div>
+    <div class="card-desc">Трёхуровневая диаграмма: Эпик → Стори → Задача. Фильтры по ролям, масштаб Q/M/W, критический путь, ресурсы.</div>
+    <div class="card-badge live">Live из Jira</div>
+  </a>
+
+  <a class="page-card" href="pages/usm.html">
+    <div class="card-icon">🗺️</div>
+    <div class="card-title">User Story Map (USM)</div>
+    <div class="card-desc">Карта 201 пользовательской истории из 18 эпиков. 100% покрытие. Реестр белых пятен и дальнейших шагов.</div>
+    <div class="card-badge">201 история</div>
+  </a>
+
+  <a class="page-card" href="pages/resources.html">
+    <div class="card-icon">👥</div>
+    <div class="card-title">Ресурсный план</div>
+    <div class="card-desc">Тепловая карта загрузки по месяцам для всех 14 ролей. Красный — перегруз ≥100%, зелёный — есть резерв.</div>
+    <div class="card-badge live">Из плана проекта</div>
+  </a>
+
+  <a class="page-card" href="pages/mvp.html">
+    <div class="card-icon">🏆</div>
+    <div class="card-title">MVP по кварталам</div>
+    <div class="card-desc">Дорожная карта (roadmap) по кварталам: Q3'26 — Q3'27. Продуктовая ценность каждого этапа.</div>
+    <div class="card-badge">9 этапов</div>
+  </a>
+
+  <a class="page-card" href="pages/scope_dec.html">
+    <div class="card-icon">📅</div>
+    <div class="card-title">Скоуп до 10.12.2026</div>
+    <div class="card-desc">Что реально готово к вехе при 1 бэкенд-разработчике. Статус по каждому эпику: ✅ / 🟡 / ⬜.</div>
+    <div class="card-badge warn">Веха: 10.12.2026</div>
+  </a>
+
+  <a class="page-card" href="pages/risks.html">
+    <div class="card-icon">⚠️</div>
+    <div class="card-title">Реестр рисков</div>
+    <div class="card-desc">12 рисков с вероятностью и влиянием. Матрица рисков, стратегии митигации, ответственные.</div>
+    <div class="card-badge err">12 рисков</div>
+  </a>
+
+  <a class="page-card" href="pages/assumptions.html">
+    <div class="card-icon">📌</div>
+    <div class="card-title">Реестр допущений</div>
+    <div class="card-desc">14 допущений, на которых строится план. Последствия нарушения каждого допущения.</div>
+    <div class="card-badge">14 допущений</div>
+  </a>
+
+  <a class="page-card" href="pages/questions.html">
+    <div class="card-icon">❓</div>
+    <div class="card-title">Открытые вопросы</div>
+    <div class="card-desc">Список нерешённых вопросов с дедлайнами и ответственными. Статус каждого вопроса.</div>
+    <div class="card-badge warn">Открытые вопросы</div>
+  </a>
+
+  <a class="page-card" href="pages/stakeholders.html">
+    <div class="card-icon">🤝</div>
+    <div class="card-title">Стейкхолдеры + RACI</div>
+    <div class="card-desc">Матрица ответственности RACI. Контакты всех участников и смежных команд.</div>
+    <div class="card-badge">13 участников</div>
+  </a>
+
+  <a class="page-card" href="pages/dependencies.html">
+    <div class="card-icon">🔗</div>
+    <div class="card-title">Внешние зависимости</div>
+    <div class="card-desc">17 зависимостей от смежных команд (ЕЛК, ДОКК, ОАТС, ОФД и др.). Статус и риски каждой.</div>
+    <div class="card-badge">17 зависимостей</div>
+  </a>
+
+  <a class="page-card" href="pages/sprints.html">
+    <div class="card-icon">🏃</div>
+    <div class="card-title">Бэклог по спринтам</div>
+    <div class="card-desc">Распределение задач по спринтам. Планируемые даты и исполнители.</div>
+    <div class="card-badge">31 запись</div>
+  </a>
+
+  <a class="page-card" href="pages/acceptance.html">
+    <div class="card-icon">✅</div>
+    <div class="card-title">Критерии приёмки MVP</div>
+    <div class="card-desc">19 критериев готовности MVP: функциональные, нефункциональные, ИБ, производительность.</div>
+    <div class="card-badge">19 критериев</div>
+  </a>
+
+  <a class="page-card" href="pages/grooming.html">
+    <div class="card-icon">📋</div>
+    <div class="card-title">Таблица груминга</div>
+    <div class="card-desc">Оценки задач из Jira с подтверждением команды. Эпик → Стори → Задача с часами.</div>
+    <div class="card-badge live">Live из Jira</div>
+  </a>
+
+  <a class="page-card" href="pages/glossary.html">
+    <div class="card-icon">📖</div>
+    <div class="card-title">Глоссарий</div>
+    <div class="card-desc">34 термина и аббревиатуры проекта с расшифровками. Единый словарь команды.</div>
+    <div class="card-badge">34 термина</div>
+  </a>
+
+</div>
+
+<footer class="footer">
+  B2BAPP Dashboard | Билайн Бизнес | Данные из Jira btask.beeline.ru + план проекта
+</footer>
+
+<script>
+const DATA_URL = './data/data.json';
+
+async function loadData() {
+  try {
+    const r = await fetch(DATA_URL + '?t=' + Date.now());
+    return await r.json();
+  } catch(e) {
+    console.error('Failed to load data:', e);
+    return null;
+  }
+}
+
+function renderKPI(data) {
+  const tasks = data.gantt || [];
+  const total = tasks.length;
+  const done = tasks.filter(t => t.critical === '★').length; // critical path tasks
+  const risks = data.risks || [];
+  const highRisks = risks.filter(r => parseInt(r.prob) >= 4 && parseInt(r.impact) >= 4).length;
+  const questions = data.questions || [];
+  const openQ = questions.filter(q => q.status && !q.status.includes('Закрыт') && !q.status.includes('Решён')).length;
+  const scope = data.scope_dec || [];
+  const readyEpics = scope.filter(s => s.status && s.status.includes('✅')).length;
+
+  document.getElementById('kpiRow').innerHTML = `
+    <div class="kpi"><div class="kpi-val">${total}</div><div class="kpi-label">Задач в плане</div><div class="kpi-sub">По всем эпикам</div></div>
+    <div class="kpi ok"><div class="kpi-val">${readyEpics}</div><div class="kpi-label">Эпиков к 10.12</div><div class="kpi-sub">Из ${scope.length} в скоупе</div></div>
+    <div class="kpi warn"><div class="kpi-val">${highRisks}</div><div class="kpi-label">Критичных рисков</div><div class="kpi-sub">Вероятность + влияние ≥4</div></div>
+    <div class="kpi"><div class="kpi-val">${openQ}</div><div class="kpi-label">Открытых вопросов</div><div class="kpi-sub">Требуют решения</div></div>
+    <div class="kpi"><div class="kpi-val">${done}</div><div class="kpi-label">На критич. пути</div><div class="kpi-sub">★ задачи</div></div>
+  `;
+}
+
+function renderProgress(data) {
+  const scope = data.scope_dec || [];
+  const COLOR = {'✅ Готово':'#2ecc71','🟡 Частично':'#e67e22','⬜ После 10.12':'#556'};
+
+  const bars = scope.map(s => {
+    const pct = s.total ? Math.round((parseInt(s.ready)||0)/(parseInt(s.total)||1)*100) : 0;
+    const col = Object.entries(COLOR).find(([k])=>s.status&&s.status.includes(k.substring(0,2)))?.[1] || '#4472C4';
+    return `<div class="p-item">
+      <div class="p-label"><span>${s.epic.replace(/^\d+\.\s*/,'')}</span><span>${s.ready||0}/${s.total||0}</span></div>
+      <div class="p-bar"><div class="p-fill" style="width:${pct}%;background:${col}"></div></div>
+    </div>`;
+  }).join('');
+
+  const mvq = (data.mvp||[]).reduce((acc,m)=>{
+    if(!acc[m.quarter]) acc[m.quarter]=[];
+    acc[m.quarter].push(m.epic);
+    return acc;
+  },{});
+
+  const qbars = Object.entries(mvq).map(([q,epics])=>`
+    <div class="p-item">
+      <div class="p-label"><span>${q}</span><span>${epics.length} блок${epics.length>1?'а':''}</span></div>
+      <div class="p-bar"><div class="p-fill" style="width:100%;background:#4472C4;opacity:.6"></div></div>
+    </div>
+  `).join('');
+
+  document.getElementById('progressSection').innerHTML = `
+    <div class="progress-card"><h3>Готовность эпиков к 10.12.2026</h3>${bars}</div>
+    <div class="progress-card"><h3>Дорожная карта (roadmap) по кварталам</h3>${qbars}</div>
+  `;
+}
+
+async function refreshData() {
+  const btn = document.querySelector('.refresh-btn');
+  btn.textContent = '↻ Обновление...';
+  btn.disabled = true;
+  const data = await loadData();
+  if (data) {
+    renderKPI(data);
+    renderProgress(data);
+    document.getElementById('updatedTime').textContent = data.updated || 'только что';
+  }
+  btn.textContent = '↻ Обновить данные';
+  btn.disabled = false;
+}
+
+// Init
+loadData().then(data => {
+  if (!data) return;
+  renderKPI(data);
+  renderProgress(data);
+  document.getElementById('updatedTime').textContent = data.updated || '—';
+});
+</script>
+</body>
+</html>
