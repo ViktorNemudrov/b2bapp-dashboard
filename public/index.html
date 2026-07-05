@@ -46,7 +46,7 @@ body.light-theme .hm-table td:first-child{color:#1a2940}
 .health-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
 /* ── MAIN AREA ── */
-.main{flex:1;overflow-x:hidden}
+.main{flex:1;overflow-x:hidden;min-width:0;display:flex;flex-direction:column}
 
 /* ── HEADER ── */
 .hdr{background:linear-gradient(135deg,#0d1b2a,#162235);border-bottom:1px solid var(--line);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.5)}
@@ -79,19 +79,19 @@ body.light-theme .hm-table td:first-child{color:#1a2940}
 .f-btn.on{background:rgba(255,200,3,.15);border-color:var(--yel);color:var(--yel);font-weight:700}
 
 /* ── SECTIONS ── */
-.section{padding:24px 24px 8px;scroll-margin-top:52px}
+.section{padding:24px 24px 8px;scroll-margin-top:52px;width:100%;box-sizing:border-box}
 .sec-title{font-size:11px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
 .sec-title::after{content:'';flex:1;height:1px;background:var(--line)}
 
 /* ── HERO ── */
-.hero{padding:24px 24px 16px;background:linear-gradient(180deg,#162235 0%,transparent 100%);display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
-.hero-left{flex:1;min-width:240px}
+.hero{padding:24px 24px 16px;background:linear-gradient(180deg,#162235 0%,transparent 100%);display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;width:100%}
+.hero-left{flex:1;min-width:200px;max-width:100%}
 .hero-left h1{font-size:24px;font-weight:800;line-height:1.2;margin-bottom:6px}
 .hero-left h1 em{color:var(--yel);font-style:normal}
 .hero-sub{color:var(--mute);font-size:12px;line-height:1.6}
 
 /* ── HEALTH RAG (п.1) ── */
-.health-panel{background:var(--card);border-radius:12px;border:1px solid var(--line);padding:16px 20px;min-width:200px;display:flex;flex-direction:column;gap:8px}
+.health-panel{background:var(--card);border-radius:12px;border:1px solid var(--line);padding:16px 20px;min-width:180px;max-width:280px;flex:1;display:flex;flex-direction:column;gap:8px}
 .health-panel-title{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.7px}
 .rag-row{display:flex;gap:8px;flex-wrap:wrap}
 .rag-item{flex:1;min-width:80px;background:#0d1b2a;border-radius:8px;padding:8px 10px;text-align:center;border:1px solid var(--line)}
@@ -100,7 +100,7 @@ body.light-theme .hm-table td:first-child{color:#1a2940}
 .rag-val{font-size:10px;font-weight:700;margin-top:2px}
 
 /* ── COUNTDOWN ── */
-.countdown{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:220px;text-align:center}
+.countdown{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:180px;max-width:260px;flex:1;text-align:center}
 .cd-label{font-size:9px;color:var(--mute);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
 .cd-units{display:flex;gap:10px;justify-content:center;align-items:flex-end}
 .cd-unit{text-align:center}
@@ -139,7 +139,7 @@ body.light-theme .hm-table td:first-child{color:#1a2940}
 .bd-leg-dot{width:20px;height:2px;border-radius:1px}
 
 /* ── KPI ── */
-.kpi-row{display:flex;gap:10px;flex-wrap:wrap}
+.kpi-row{display:flex;gap:10px;flex-wrap:wrap;padding:0 24px 16px}
 .kpi{background:var(--card);border-radius:10px;padding:12px 16px;flex:1;min-width:130px;border:1px solid var(--line);position:relative;overflow:hidden;transition:.15s;cursor:default}
 .kpi:hover{border-color:rgba(255,200,3,.4);transform:translateY(-1px)}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--yel)}
