@@ -17,19 +17,130 @@ a{text-decoration:none;color:inherit}
 
 /* ── LIGHT THEME ── */
 body.light-theme{--dark:#f0f2f5;--card:#ffffff;--text:#1a2940;--mute:#6b7a99;--line:#d0d8e8;--ok:#1a7a45;--warn:#b35e00;--err:#c0392b;--blue:#2c5fad}
+/* Sidebar */
 body.light-theme .sidebar{background:#e8ecf5;border-right-color:#d0d8e8}
 body.light-theme .sidebar-logo{background:#1a2940}
 body.light-theme .sidebar-logo-text{color:#fff}
-body.light-theme .hdr{background:linear-gradient(135deg,#1a2940,#253850)}
-body.light-theme .aud-bar{background:#e0e6f0}
-body.light-theme .search-bar{background:#e8ecf5}
-body.light-theme .legend-bar{background:#fff}
-body.light-theme .kpi{background:#fff}
-body.light-theme .pcard{background:#fff}
-body.light-theme .exec-card{background:#fff}
-body.light-theme .burndown-wrap,.light-theme .velocity-wrap,.light-theme .heatmap-wrap,.light-theme .dep-graph,.light-theme .creep-wrap,.light-theme .risk-matrix-wrap{background:#fff}
-body.light-theme .prog-card,.light-theme .budget-card,.light-theme .win-item,.light-theme .blocker-item,.light-theme .fc-card,.light-theme .scope-col{background:#fff}
+body.light-theme .sidebar-logo-sub{color:#aaa}
+body.light-theme .nav-section{color:#8899bb}
+body.light-theme .nav-link{color:#556080}
+body.light-theme .nav-link:hover{background:rgba(0,0,0,.05);color:#1a2940}
+body.light-theme .nav-link.active{color:#1a2940;background:rgba(255,200,3,.12)}
+body.light-theme .sidebar-health{border-top-color:#d0d8e8}
+/* Header */
+body.light-theme .hdr{background:linear-gradient(135deg,#1a2940,#253850);border-bottom-color:#FFC803}
+body.light-theme .aud-bar{background:#e0e6f0;border-bottom-color:#d0d8e8}
+body.light-theme .aud-btn{background:rgba(0,0,0,.06);border-color:#c0cce0;color:#556080}
+body.light-theme .aud-btn.active{background:rgba(255,200,3,.15);border-color:#FFC803;color:#8a6500}
+body.light-theme .search-bar{background:#e8ecf5;border-bottom-color:#d0d8e8}
+body.light-theme .srch-input{background:#fff;border-color:#c0cce0;color:#1a2940}
+body.light-theme .f-btn{background:rgba(0,0,0,.06);border-color:#c0cce0;color:#556080}
+body.light-theme .f-btn.on{background:rgba(255,200,3,.15);border-color:#FFC803;color:#8a6500}
+/* Legend */
+body.light-theme .legend-bar{background:#fff;border-color:#d0d8e8}
+body.light-theme .leg-item{color:#556080}
+/* Hero */
+body.light-theme .hero{background:linear-gradient(180deg,#e0e6f0 0%,transparent 100%)}
+body.light-theme .hero-left h1{color:#1a2940}
+body.light-theme .hero-sub{color:#6b7a99}
+body.light-theme .health-panel{background:#fff;border-color:#d0d8e8}
+body.light-theme .health-panel-title{color:#6b7a99}
+body.light-theme .rag-item{background:#f0f2f5;border-color:#d0d8e8}
+body.light-theme .rag-label{color:#6b7a99}
+body.light-theme .countdown{background:#fff;border-color:#d0d8e8}
+body.light-theme .cd-label{color:#6b7a99}
+body.light-theme .cd-sep{color:#d0d8e8}
+body.light-theme .cd-date{color:#6b7a99}
+/* KPI */
+body.light-theme .kpi{background:#fff;border-color:#d0d8e8}
+body.light-theme .kpi-lbl{color:#6b7a99}
+body.light-theme .kpi-sub{color:#99aabb}
+/* Section titles */
+body.light-theme .sec-title{color:#6b7a99}
+body.light-theme .sec-title::after{background:#d0d8e8}
+/* Cards */
+body.light-theme .pcard{background:#fff;border-color:#d0d8e8}
+body.light-theme .pcard:hover{border-color:#FFC803}
+body.light-theme .pcard-title{color:#1a2940}
+body.light-theme .pcard-desc{color:#6b7a99}
+/* Exec card */
+body.light-theme .exec-card{background:#fff;border-color:#d0d8e8;border-left-color:#FFC803}
+body.light-theme .exec-item{color:#556080;border-bottom-color:#e8ecf5}
+/* Forecast */
+body.light-theme .fc-card{background:#fff;border-color:#d0d8e8}
+body.light-theme .fc-note{color:#6b7a99}
+/* Blockers */
+body.light-theme .blocker-item{background:#fff;border-color:#d0d8e8}
+body.light-theme .blocker-title{color:#1a2940}
+body.light-theme .blocker-meta{color:#6b7a99}
+/* Burndown */
+body.light-theme .burndown-wrap{background:#fff;border-color:#d0d8e8}
+body.light-theme .bd-legend{color:#6b7a99}
+/* Progress */
+body.light-theme .prog-card{background:#fff;border-color:#d0d8e8}
+body.light-theme .prog-card h3{color:#6b7a99}
+body.light-theme .p-name{color:#1a2940}
+body.light-theme .p-nums{color:#6b7a99}
+body.light-theme .p-bar{background:#e0e6f0}
+/* Scope */
+body.light-theme .scope-col{background:#fff;border-color:#d0d8e8}
+body.light-theme .scope-item{color:#556080;border-bottom-color:#e8ecf5}
+/* Heatmap */
+body.light-theme .heatmap-wrap{background:#fff;border-color:#d0d8e8}
+body.light-theme .hm-table th{background:#e8ecf5;color:#556080}
+body.light-theme .hm-table td{border-bottom-color:#e8ecf5}
 body.light-theme .hm-table td:first-child{color:#1a2940}
+body.light-theme .hm-legend{color:#6b7a99}
+body.light-theme .h-0{background:transparent;color:#99aabb}
+/* Risk matrix */
+body.light-theme .risk-matrix-wrap{background:#fff;border-color:#d0d8e8}
+/* Dependencies */
+body.light-theme .dep-graph{background:#fff;border-color:#d0d8e8}
+body.light-theme .dep-node{background:#e8ecf5;border-color:#c0cce0;color:#1a2940}
+/* Wins */
+body.light-theme .win-item{background:#fff;border-color:#d0d8e8;border-left-color:var(--ok)}
+body.light-theme .win-title{color:#1a2940}
+body.light-theme .win-meta{color:#6b7a99}
+/* Decision log */
+body.light-theme .dec-table th{background:#e8ecf5;color:#556080}
+body.light-theme .dec-table td{border-bottom-color:#e8ecf5;color:#1a2940}
+body.light-theme .dec-table tr:hover td{background:rgba(0,0,0,.02)}
+/* Checklist */
+body.light-theme .check-item{background:#fff;border-color:#d0d8e8}
+body.light-theme .check-title{color:#1a2940}
+body.light-theme .check-measure{color:#6b7a99}
+body.light-theme .checklist-prog-bar{background:#e0e6f0}
+/* Questions */
+body.light-theme .q-table th{background:#e8ecf5;color:#556080}
+body.light-theme .q-table td{border-bottom-color:#e8ecf5;color:#1a2940}
+/* Scope creep */
+body.light-theme .creep-wrap{background:#fff;border-color:#d0d8e8}
+body.light-theme .creep-legend{color:#6b7a99}
+/* Velocity */
+body.light-theme .velocity-wrap{background:#fff;border-color:#d0d8e8}
+body.light-theme .vel-avg{color:#6b7a99}
+/* Budget */
+body.light-theme .budget-card{background:#fff;border-color:#d0d8e8}
+body.light-theme .budget-card h4{color:#6b7a99}
+body.light-theme .budget-role-name{color:#1a2940}
+body.light-theme .budget-mini-bar{background:#e0e6f0}
+body.light-theme .budget-total span{color:#6b7a99}
+/* Changelog */
+body.light-theme .cl-dot.prev{background:#fff;border-color:#d0d8e8}
+body.light-theme .cl-ver{color:#1a2940}
+body.light-theme .cl-date{color:#6b7a99}
+body.light-theme .cl-change{color:#556080}
+body.light-theme .cl-entry::before{background:#d0d8e8}
+/* Accordion */
+body.light-theme .acc-chevron{color:#6b7a99}
+/* Badges */
+body.light-theme .b-gray{background:rgba(0,0,0,.08);color:#556080}
+/* Footer */
+body.light-theme .footer{border-top-color:#d0d8e8;color:#8899bb}
+/* Scrollbar in light */
+body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
+/* Manual note */
+body.light-theme .manual-note{background:rgba(255,200,3,.08);border-color:rgba(255,200,3,.3);color:#8a6500}
 
 /* ── STICKY SIDEBAR (п.3) ── */
 .layout{display:flex;min-height:100vh}
@@ -420,27 +531,27 @@ body.light-theme .hm-table td:first-child{color:#1a2940}
   </div>
   <div class="sidebar-nav">
     <div class="nav-section">Обзор</div>
-    <div class="nav-link active" onclick="scrollTo('s-hero')"><span class="nav-icon">🏠</span>Главная</div>
-    <div class="nav-link" onclick="scrollTo('s-exec')"><span class="nav-icon">📋</span>Executive Summary</div>
-    <div class="nav-link" onclick="scrollTo('s-forecast')"><span class="nav-icon">🔮</span>Прогноз</div>
-    <div class="nav-link" onclick="scrollTo('s-kpi')"><span class="nav-icon">📊</span>KPI</div>
-    <div class="nav-link" onclick="scrollTo('s-blockers')"><span class="nav-icon">🚧</span>Блокеры</div>
+    <div class="nav-link active" onclick="navScrollTo('s-hero')"><span class="nav-icon">🏠</span>Главная</div>
+    <div class="nav-link" onclick="navScrollTo('s-exec')"><span class="nav-icon">📋</span>Executive Summary</div>
+    <div class="nav-link" onclick="navScrollTo('s-forecast')"><span class="nav-icon">🔮</span>Прогноз</div>
+    <div class="nav-link" onclick="navScrollTo('s-kpi')"><span class="nav-icon">📊</span>KPI</div>
+    <div class="nav-link" onclick="navScrollTo('s-blockers')"><span class="nav-icon">🚧</span>Блокеры</div>
     <div class="nav-section">Планирование</div>
-    <div class="nav-link" onclick="scrollTo('s-burndown')"><span class="nav-icon">📉</span>Burndown</div>
-    <div class="nav-link" onclick="scrollTo('s-scope')"><span class="nav-icon">📅</span>Скоуп вехи</div>
-    <div class="nav-link" onclick="scrollTo('s-progress')"><span class="nav-icon">✅</span>Готовность</div>
+    <div class="nav-link" onclick="navScrollTo('s-burndown')"><span class="nav-icon">📉</span>Burndown</div>
+    <div class="nav-link" onclick="navScrollTo('s-scope')"><span class="nav-icon">📅</span>Скоуп вехи</div>
+    <div class="nav-link" onclick="navScrollTo('s-progress')"><span class="nav-icon">✅</span>Готовность</div>
     <div class="nav-section">Команда и риски</div>
-    <div class="nav-link" onclick="scrollTo('s-capacity')"><span class="nav-icon">👥</span>Загрузка команды</div>
-    <div class="nav-link" onclick="scrollTo('s-risks')"><span class="nav-icon">⚠️</span>Матрица рисков</div>
-    <div class="nav-link" onclick="scrollTo('s-deps')"><span class="nav-icon">🔗</span>Зависимости</div>
+    <div class="nav-link" onclick="navScrollTo('s-capacity')"><span class="nav-icon">👥</span>Загрузка команды</div>
+    <div class="nav-link" onclick="navScrollTo('s-risks')"><span class="nav-icon">⚠️</span>Матрица рисков</div>
+    <div class="nav-link" onclick="navScrollTo('s-deps')"><span class="nav-icon">🔗</span>Зависимости</div>
     <div class="nav-section">Контент</div>
-    <div class="nav-link" onclick="scrollTo('s-wins')"><span class="nav-icon">🏅</span>Победы недели</div>
-    <div class="nav-link" onclick="scrollTo('s-decisions')"><span class="nav-icon">📝</span>Decision Log</div>
-    <div class="nav-link" onclick="scrollTo('s-acceptance')"><span class="nav-icon">✅</span>Критерии приёмки</div>
-    <div class="nav-link" onclick="scrollTo('s-qsla')"><span class="nav-icon">❓</span>Вопросы + SLA</div>
+    <div class="nav-link" onclick="navScrollTo('s-wins')"><span class="nav-icon">🏅</span>Победы недели</div>
+    <div class="nav-link" onclick="navScrollTo('s-decisions')"><span class="nav-icon">📝</span>Decision Log</div>
+    <div class="nav-link" onclick="navScrollTo('s-acceptance')"><span class="nav-icon">✅</span>Критерии приёмки</div>
+    <div class="nav-link" onclick="navScrollTo('s-qsla')"><span class="nav-icon">❓</span>Вопросы + SLA</div>
     <div class="nav-section">Служебное</div>
-    <div class="nav-link" onclick="scrollTo('s-cards')"><span class="nav-icon">🗂️</span>Все разделы</div>
-    <div class="nav-link" onclick="scrollTo('s-changelog')"><span class="nav-icon">📜</span>Changelog</div>
+    <div class="nav-link" onclick="navScrollTo('s-cards')"><span class="nav-icon">🗂️</span>Все разделы</div>
+    <div class="nav-link" onclick="navScrollTo('s-changelog')"><span class="nav-icon">📜</span>Changelog</div>
   </div>
   <div class="sidebar-health">
     <div class="health-label">Статус проекта</div>
@@ -947,7 +1058,7 @@ function updateCountdown(){
 updateCountdown(); setInterval(updateCountdown,30000);
 
 // ── SCROLLING NAV (п.3) ──────────────────────────────────────
-function scrollTo(id){
+function navScrollTo(id){
   document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
   document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
   event.currentTarget.classList.add('active');
@@ -1606,7 +1717,16 @@ function validateData(data){
   if(!data.gantt||!data.gantt.length)errs.push('gantt пуст');
   if(!data.risks||!data.risks.length)errs.push('risks пуст');
   if(!data.scope_dec||!data.scope_dec.length)errs.push('scope_dec пуст');
-  if(data.updated&&new Date()-new Date(data.updated.split('.').reverse().join('-'))>7*86400000)errs.push('данные старше 7 дней');
+  // Fix date parse: "05.07.2026 04:41" -> new Date(2026,6,5,4,41)
+  if(data.updated){
+    try{
+      const parts=data.updated.split(' ');
+      const dp=parts[0].split('.');
+      const tp=(parts[1]||'00:00').split(':');
+      const dt=new Date(parseInt(dp[2]),parseInt(dp[1])-1,parseInt(dp[0]),parseInt(tp[0]),parseInt(tp[1]));
+      if(Date.now()-dt>7*86400000)errs.push('данные старше 7 дней');
+    }catch{}
+  }
   if(errs.length){
     const warn=document.createElement('div');
     warn.style.cssText='background:rgba(231,76,60,.15);border:1px solid rgba(231,76,60,.4);color:#e74c3c;padding:8px 16px;font-size:11px;text-align:center';
