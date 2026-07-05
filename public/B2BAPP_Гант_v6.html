@@ -123,8 +123,11 @@ a{color:#4472C4;text-decoration:none;} a:hover{text-decoration:underline;}
 .cal-overlay{position:sticky;top:28px;z-index:8;background:transparent;pointer-events:none;display:flex;height:22px;}
 .cal-spacer{background:#1e2d3d;flex-shrink:0;pointer-events:none;}
 .cal-bar{background:#1e2d3d;flex:none;position:relative;height:22px;overflow:hidden;pointer-events:auto;}
-.cal-cell{position:absolute;top:0;height:22px;line-height:18px;padding:2px 4px;border-right:1px solid #253850;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ccc;font-size:10px;font-weight:600;cursor:default;}
-.cal-cell.today-col{background:rgba(255,0,0,.2);color:#ff8080;}
+.cal-cell{position:absolute;top:0;height:36px;line-height:36px;padding:0 4px;border-right:1px solid #1a2940;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ccc;font-size:10px;font-weight:600;cursor:default;display:flex;align-items:center;}
+.cal-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.2;}
+.cal-cell.today-col{background:rgba(231,76,60,.15);color:#ff8080;}
+.cal-cell.deadline-col{background:rgba(255,200,3,.1);}
+.cal-cell:nth-child(even){background:rgba(255,255,255,.03);}
 
 /* ── TOOLTIP ── */
 .gtip{position:fixed;background:#1a2940;color:#fff;border:1px solid var(--yel);border-radius:6px;padding:7px 11px;font-size:11px;line-height:1.5;max-width:340px;z-index:9999;pointer-events:none;display:none;box-shadow:0 4px 16px #0005;}
@@ -235,10 +238,6 @@ a{color:#4472C4;text-decoration:none;} a:hover{text-decoration:underline;}
 <!-- ===== GANTT PAGE ===== -->
 <div id="page-gantt" class="page active" style="width:100%;overflow-x:auto;">
   <div class="gw">
-    <div id="cal-overlay" class="cal-overlay">
-      <div id="cal-spacer" class="cal-spacer"></div>
-      <div id="thCal" class="cal-bar"></div>
-    </div>
     <table class="gt" id="gtbl">
       <thead>
         <tr id="col-headers">
@@ -248,7 +247,10 @@ a{color:#4472C4;text-decoration:none;} a:hover{text-decoration:underline;}
           <th data-col="status" style="width:72px">Статус<div class="col-resizer" onmousedown="startResize(event,'status')"></div></th>
           <th data-col="start" style="width:78px">Старт<div class="col-resizer" onmousedown="startResize(event,'start')"></div></th>
           <th data-col="end" style="width:78px">Конец<div class="col-resizer" onmousedown="startResize(event,'end')"></div></th>
-          <th id="thTimeline" data-col="bar" style="min-width:500px">Диаграмма<div class="col-resizer" onmousedown="startResize(event,'bar')"></div></th>
+          <th id="thTimeline" data-col="bar" style="min-width:500px;padding:0;position:relative;overflow:hidden;">
+            <div id="cal-inner" style="position:relative;height:36px;width:100%;overflow:hidden;"></div>
+            <div class="col-resizer" onmousedown="startResize(event,'bar')"></div>
+          </th>
           <th data-col="who" style="width:88px">Исполн.<div class="col-resizer" onmousedown="startResize(event,'who')"></div></th>
           <th data-col="grm" style="width:34px" title="Оценка подтверждена командой на груминге">✅</th>
         </tr>
@@ -265,8 +267,10 @@ a{color:#4472C4;text-decoration:none;} a:hover{text-decoration:underline;}
     <span class="li"><span class="ld" style="background:var(--c-ds)"></span>DS</span>
     <span class="li"><span class="ld" style="background:var(--c-fe)"></span>FE</span>
     <span class="li"><span class="ld" style="background:var(--c-arc)"></span>ARC</span>
-    <span class="li">✅ — оценка подтверждена командой на груминге</span>
-    <span class="li" style="color:red;font-weight:700">| сегодня 02.07</span>
+    <span class="li">✅ — оценка подтверждена на груминге</span>
+    <span class="li" style="color:#e74c3c;font-weight:700">| — сегодня</span>
+    <span class="li" style="color:#27ae60;font-weight:700">| — старт разработки 01.08.2026</span>
+    <span class="li" style="color:#FFC803;font-weight:700">| — веха 10.12.2026</span>
   </div>
 </div>
 
@@ -906,31 +910,27 @@ function setScale(){
 // CALENDAR HEADER
 // ─────────────────────────────────────────────
 function renderCalendarHeader(){
-  const thBar=document.getElementById('thTimeline');
-  const calBar=document.getElementById('thCal');
-  const calSpacer=document.getElementById('cal-spacer');
-  if(!thBar||!calBar)return;
+  const calInner = document.getElementById('cal-inner');
+  if(!calInner) return;
 
-  // Position: spacer = offsetLeft of bar column, bar = offsetWidth of bar column
-  const barLeft=thBar.offsetLeft;
-  const barW=thBar.offsetWidth;
-  if(calSpacer) calSpacer.style.width=barLeft+'px';
-  calBar.style.width=barW+'px';
-  calBar.style.flexShrink='0';
-  calBar.style.flex='none';
-
-  // Also fix sticky top of overlay: header row height
-  const hdr=document.getElementById('col-headers');
-  const hdrH=hdr?hdr.offsetHeight:28;
-  const overlay=document.getElementById('cal-overlay');
-  if(overlay) overlay.style.top=hdrH+'px';
-
-  const todayP=pct(TODAY);
-  const totalMs=GE-GS;
+  const totalMs = GE - GS;
   const MONTHS_RU=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
   const MONTHS_SHORT=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
   const QS=['Q1','Q2','Q3','Q4'];
-  let html='';
+
+  // Today position
+  const todayD = new Date(TODAY+'T00:00:00');
+  const todayPct = Math.max(0,Math.min(100,(todayD-GS)/totalMs*100));
+
+  // Start dev: 01.08.2026
+  const devStart = new Date('2026-08-01T00:00:00');
+  const devStartPct = Math.max(0,Math.min(100,(devStart-GS)/totalMs*100));
+
+  // Deadline: 10.12.2026
+  const deadline = new Date('2026-12-10T00:00:00');
+  const deadlinePct = Math.max(0,Math.min(100,(deadline-GS)/totalMs*100));
+
+  let html = '';
 
   if(SCALE==='Q'){
     let d=new Date(GS);
@@ -940,9 +940,12 @@ function renderCalendarHeader(){
       const left=Math.max(0,(qStart-GS)/totalMs*100);
       const width=(Math.min(qEnd,GE)-Math.max(qStart,GS))/totalMs*100;
       if(width<0.1){d=qEnd;continue;}
-      const isT=todayP>=left&&todayP<left+width;
+      const isT=todayPct>=left&&todayPct<left+width;
+      const isD=deadlinePct>=left&&deadlinePct<left+width;
       const full=`${QS[q]} ${y}: ${qStart.toLocaleDateString('ru',{day:'numeric',month:'long'})} — ${new Date(qEnd-1).toLocaleDateString('ru',{day:'numeric',month:'long'})}`;
-      html+=`<div class="cal-cell${isT?' today-col':''}" style="left:${left}%;width:${width}%;" data-tip="${full}">${QS[q]} ${y}</div>`;
+      html+=`<div class="cal-cell${isT?' today-col':''}${isD?' deadline-col':''}" style="left:${left}%;width:${width}%;" data-tip="${full}">
+        <span class="cal-label">${QS[q]} ${y}</span>
+      </div>`;
       d=qEnd;
     }
   } else if(SCALE==='M'){
@@ -952,13 +955,18 @@ function renderCalendarHeader(){
       const left=Math.max(0,(mStart-GS)/totalMs*100);
       const width=(Math.min(mEnd,GE)-Math.max(mStart,GS))/totalMs*100;
       if(width<0.1){d=mEnd;continue;}
-      const isT=todayP>=left&&todayP<left+width;
-      const lbl=`${MONTHS_SHORT[d.getMonth()]} ${d.getFullYear().toString().slice(2)}`;
-      const full=`${MONTHS_RU[d.getMonth()]} ${d.getFullYear()}: ${mStart.toLocaleDateString('ru',{day:'numeric',month:'long'})} — ${new Date(mEnd-1).toLocaleDateString('ru',{day:'numeric',month:'long'})}`;
-      html+=`<div class="cal-cell${isT?' today-col':''}" style="left:${left}%;width:${width}%;" data-tip="${full}">${lbl}</div>`;
+      const isT=todayPct>=left&&todayPct<left+width;
+      const full=`${MONTHS_RU[d.getMonth()]} ${d.getFullYear()}`;
+      // Show year on January
+      const lbl = d.getMonth()===0
+        ? `<b>${d.getFullYear()}</b>`
+        : MONTHS_SHORT[d.getMonth()];
+      html+=`<div class="cal-cell${isT?' today-col':''}" style="left:${left}%;width:${width}%;" data-tip="${full}">
+        <span class="cal-label">${lbl}</span>
+      </div>`;
       d=mEnd;
     }
-  } else {
+  } else { // W = weeks
     let d=new Date(GS);
     while(d.getDay()!==1) d.setDate(d.getDate()+1);
     while(d<GE){
@@ -966,25 +974,49 @@ function renderCalendarHeader(){
       const left=Math.max(0,(wStart-GS)/totalMs*100);
       const width=(Math.min(wEnd,GE)-Math.max(wStart,GS))/totalMs*100;
       if(width<0.1){d=wEnd;continue;}
-      const isT=todayP>=left&&todayP<left+width;
+      const isT=todayPct>=left&&todayPct<left+width;
       const tmp=new Date(wStart); tmp.setHours(0,0,0,0);
       tmp.setDate(tmp.getDate()+4-(tmp.getDay()||7));
       const y=tmp.getFullYear(), jan1=new Date(y,0,1);
       const wn=Math.ceil((((tmp-jan1)/86400000)+1)/7);
       const wEnd6=new Date(wEnd); wEnd6.setDate(wEnd6.getDate()-1);
-      const full=`Неделя ${wn}, ${y}: ${wStart.toLocaleDateString('ru',{day:'numeric',month:'short'})} — ${wEnd6.toLocaleDateString('ru',{day:'numeric',month:'short'})}`;
-      html+=`<div class="cal-cell${isT?' today-col':''}" style="left:${left}%;width:${width}%;" data-tip="${full}">Нд${wn}</div>`;
+      const full=`Неделя ${wn}: ${wStart.toLocaleDateString('ru',{day:'numeric',month:'short'})} — ${wEnd6.toLocaleDateString('ru',{day:'numeric',month:'short'})}`;
+      // Show month name at first week of month
+      const isFirstWeekOfMonth = wStart.getDate() <= 7;
+      const lbl = isFirstWeekOfMonth
+        ? `${MONTHS_SHORT[wStart.getMonth()]}<br><small>Нд${wn}</small>`
+        : `<small>Нд${wn}</small>`;
+      html+=`<div class="cal-cell${isT?' today-col':''}" style="left:${left}%;width:${width}%;" data-tip="${full}">
+        <span class="cal-label">${lbl}</span>
+      </div>`;
       d=wEnd;
     }
   }
-  // Today line
-  html+=`<div style="position:absolute;left:${todayP}%;top:0;bottom:0;width:2px;background:red;opacity:.7;pointer-events:none;z-index:2;"></div>`;
-  calBar.innerHTML=html;
 
-  // Attach tooltips to cells
-  calBar.querySelectorAll('.cal-cell[data-tip]').forEach(cell=>{
-    const t=cell.dataset.tip;
-    cell.addEventListener('mouseenter',e=>showTip(e,'📅',t));
+  // Today marker
+  html+=`<div style="position:absolute;left:${todayPct}%;top:0;bottom:0;width:2px;background:#e74c3c;opacity:.9;pointer-events:none;z-index:5;">
+    <div style="position:absolute;top:0;left:3px;font-size:9px;font-weight:700;color:#e74c3c;white-space:nowrap;background:rgba(0,0,0,.7);padding:1px 3px;border-radius:2px">сегодня</div>
+  </div>`;
+
+  // Dev start marker (01.08.2026)
+  if(devStartPct>0&&devStartPct<100){
+    html+=`<div style="position:absolute;left:${devStartPct}%;top:0;bottom:0;width:2px;background:#27ae60;opacity:.8;pointer-events:none;z-index:4;">
+      <div style="position:absolute;top:14px;left:3px;font-size:9px;font-weight:700;color:#27ae60;white-space:nowrap;background:rgba(0,0,0,.7);padding:1px 3px;border-radius:2px">▶ Старт разр.</div>
+    </div>`;
+  }
+
+  // Deadline marker (10.12.2026)
+  if(deadlinePct>0&&deadlinePct<100){
+    html+=`<div style="position:absolute;left:${deadlinePct}%;top:0;bottom:0;width:2px;background:#FFC803;opacity:.9;pointer-events:none;z-index:4;">
+      <div style="position:absolute;top:0;right:3px;font-size:9px;font-weight:700;color:#FFC803;white-space:nowrap;background:rgba(0,0,0,.7);padding:1px 3px;border-radius:2px">🏁 10.12.2026</div>
+    </div>`;
+  }
+
+  calInner.innerHTML = html;
+
+  // Tooltips
+  calInner.querySelectorAll('.cal-cell[data-tip]').forEach(cell=>{
+    cell.addEventListener('mouseenter',e=>showTip(e,'📅',cell.dataset.tip));
     cell.addEventListener('mouseleave',hideTip);
   });
 }
