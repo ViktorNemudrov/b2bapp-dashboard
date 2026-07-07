@@ -1,15 +1,134 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>User Story Map — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
+<title>User Story Map — B2BAPP</title><link rel="stylesheet" href="../shared.css">
+<style>
+.leg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.lc{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:12px;padding:3px 10px;background:var(--card);font-size:11px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
+.blk{border:1px solid var(--line);border-radius:9px;margin-bottom:12px;background:var(--card);overflow:hidden}
+.blkh{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;background:#1e2d3d;user-select:none}
+.blkh:hover{background:#243346}
+.arr{font-size:11px;color:var(--mute);transition:transform .15s}
+.arr.closed{transform:rotate(-90deg)}
+.bt{font-weight:700;font-size:13px}
+.bs{color:var(--mute);font-size:11px;flex:1}
+.bm{font-size:11px;color:var(--mute);white-space:nowrap}
+.blkb{padding:10px 14px}
+.blkb.collapsed{display:none}
+.bep{font-size:11px;color:var(--mute);margin-bottom:8px}
+.sc{border:1px solid var(--line);border-radius:7px;margin:8px 0;overflow:hidden}
+.sch{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#182838;cursor:pointer;user-select:none}
+.sch:hover{background:#1e3348}
+.scn{font-weight:600;font-size:12.5px}
+.scc{color:var(--mute);font-style:italic;font-size:11px;flex:1}
+.val{font-size:11px;color:#7ecb92;background:rgba(46,204,113,.08);padding:5px 12px;border-top:1px solid var(--line)}
+.deps{padding:6px 12px;border-top:1px solid var(--line);background:#152232}
+.dep-tbl{border-collapse:collapse;width:100%}
+.dep-tbl td{padding:2px 6px;font-size:11px;vertical-align:top}
+.dt{white-space:nowrap;font-weight:600;border-radius:9px;padding:1px 7px!important}
+.scb{padding:8px 12px}
+.scb.collapsed{display:none}
+.sw{overflow-x:auto}
+.st{border-collapse:collapse;min-width:100%}
+.st th{background:#1e2d3d;border:1px solid var(--line);padding:5px 7px;text-align:left;font-size:11px;font-weight:600;min-width:190px;vertical-align:top}
+.sn{color:var(--mute);font-weight:700;font-size:10px;display:block}
+.st td{border:1px solid var(--line);padding:4px 5px;vertical-align:top;min-width:190px}
+.story{border-radius:5px;padding:4px 7px;margin:3px 0;font-size:11px;line-height:1.4}
+.s-todo{border:1px solid var(--line);background:#1e2d3d}
+.s-wip{border:1px solid var(--warn);background:rgba(230,126,34,.12)}
+.s-done{border:1px solid var(--ok);background:rgba(46,204,113,.1)}
+.s-exist{border:1px solid var(--ok);background:rgba(46,204,113,.1)}
+.s-new{border:1px solid var(--blue);background:rgba(68,114,196,.12)}
+.s-gap{border:1px dashed var(--err);background:rgba(231,76,60,.08)}
+.story .pr{color:var(--mute);font-size:10px;font-weight:700;margin-right:3px}
+.story .jl{font-family:monospace;font-size:9.5px;color:var(--blue);display:block;margin-top:2px}
+.sec-h{font-size:15px;font-weight:700;margin:22px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--line)}
+.gc-cell{text-align:center;font-size:13px}
+.vh-item{font-size:11px;color:var(--mute);padding:5px 0;border-bottom:1px solid var(--line)}
+.vh-item b{color:var(--yel)}
+</style></head><body>
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🗺️ User Story Map</span></div>
   <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
+const STATUS_LEGEND=[
+  {c:'s-todo',t:'Стори заведена (задачи в бэклоге)'},
+  {c:'s-wip',t:'Стори в работе'},
+  {c:'s-done',t:'Стори закрыта'},
+  {c:'s-new',t:'⊕ создать в Jira'},
+  {c:'s-gap',t:'Белое пятно / не проработано'},
+];
+
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
-  
-document.getElementById('root').innerHTML=`<iframe src="https://b2bapp-usm.vercel.app/" style="width:100%;height:calc(100vh - 52px);border:none;margin:-24px"></iframe>`;
+  const u=d.usm;
+  const root=document.getElementById('root');
+  if(!u){root.innerHTML='<div class="empty">Данные USM ещё не загружены</div>';return;}
 
+  const statsHtml=Object.values(u.stats||{}).map(s=>`<div class="info-card"><h3 style="color:var(--yel);font-size:20px">${s.value}</h3><div style="font-size:11px;color:var(--mute)">${s.label}</div></div>`).join('');
+
+  const legHtml=STATUS_LEGEND.map(l=>`<span class="lc"><span class="story ${l.c}" style="padding:1px 7px;margin:0">Стори</span>${l.t}</span>`).join('');
+
+  const blocksHtml=(u.blocks||[]).map(b=>{
+    const scHtml=(b.scenarios||[]).map(sc=>{
+      const depsHtml=sc.deps&&sc.deps.length?`<div class="deps"><table class="dep-tbl"><tbody>${sc.deps.map(dp=>`<tr><td class="dt" style="background:rgba(68,114,196,.15);color:var(--blue)">${dp.type}</td><td>${dp.text}</td></tr>`).join('')}</tbody></table></div>`:'';
+      const stepsHtml=sc.steps&&sc.steps.length?`<div class="scb" id="scb-${sc.id}"><div class="sw"><table class="st"><thead><tr>${sc.steps.map(st=>`<th><span class="sn">${st.n}</span>${st.title}</th>`).join('')}</tr></thead><tbody><tr>${sc.steps.map(st=>`<td>${st.stories.map(s=>`<div class="story s-${s.status}" title="${s.fullTitle}"><span class="pr">${s.num}</span>${s.fullTitle}${s.jiraKey?`<span class="jl">${s.jiraKey}</span>`:''}</div>`).join('')}</td>`).join('')}</tr></tbody></table></div></div>`:'';
+      return `<div class="sc">
+        <div class="sch" onclick="const b=document.getElementById('scb-${sc.id}');if(b)b.classList.toggle('collapsed')">
+          <span class="scn">${sc.name}</span><span class="scc">${sc.comment}</span>
+          ${sc.jiraKey?`<a class="badge badge-blue" href="${sc.jiraHref}" target="_blank" onclick="event.stopPropagation()">${sc.jiraKey}</a>`:''}
+        </div>
+        ${sc.value?`<div class="val">💡 ${sc.value}</div>`:''}
+        ${depsHtml}
+        ${stepsHtml}
+      </div>`;
+    }).join('');
+    return `<div class="blk">
+      <div class="blkh" onclick="const b=document.getElementById('blkb-${b.id}');const a=document.getElementById('barr-${b.id}');b.classList.toggle('collapsed');a.classList.toggle('closed')">
+        <span class="arr" id="barr-${b.id}">▾</span>
+        <span class="bt">${b.title}</span>
+        <span class="bs">${b.subtitle}</span>
+        <span class="bm">${b.meta}</span>
+      </div>
+      <div class="blkb" id="blkb-${b.id}">
+        <div class="bep">${b.epics}</div>
+        ${scHtml}
+      </div>
+    </div>`;
+  }).join('');
+
+  const nsHtml=(u.nextSteps||[]).map(n=>`<tr>
+    <td><b>${n.id}</b></td><td>${n.status}</td><td>${n.action}</td><td>${n.deadline}</td><td>${n.owner}</td><td>${n.jira}</td><td>${n.result}</td>
+  </tr>`).join('');
+
+  const gapsHtml=(u.gaps||[]).map(g=>`<tr>
+    <td><b>${g.id}</b><br>${g.spot}</td><td class="gc-cell">${g.severity}</td><td>${g.unknown}</td><td>${g.owner}</td><td>${g.action}</td>
+  </tr>`).join('');
+
+  const vhHtml=(u.versionHistory||[]).map(v=>`<div class="vh-item"><b>${v.v}</b> · ${v.date} · ${v.desc}</div>`).join('');
+
+  root.innerHTML=`
+    <p style="font-size:11px;color:var(--mute);margin-bottom:14px">${u.sources||''}</p>
+    <div class="cards-grid" style="margin-bottom:16px">${statsHtml}</div>
+    <div class="leg">${legHtml}</div>
+
+    ${blocksHtml}
+
+    <div class="sec-h">🚀 Дальнейшие шаги (вытекают из белых пятен)</div>
+    <table class="tbl">
+      <thead><tr><th>#</th><th>Статус</th><th>Действие</th><th>Срок</th><th>Ответственный</th><th>Jira</th><th>Результат</th></tr></thead>
+      <tbody>${nsHtml}</tbody>
+    </table>
+
+    <div class="sec-h">⚠️ Реестр белых пятен и зависимостей</div>
+    <table class="tbl">
+      <thead><tr><th>Пятно</th><th>Тип</th><th>Что неизвестно</th><th>К кому</th><th>Что сделать</th></tr></thead>
+      <tbody>${gapsHtml}</tbody>
+    </table>
+
+    <div class="sec-h">📋 История версий</div>
+    ${vhHtml}
+  `;
 });
 </script></body></html>

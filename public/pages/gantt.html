@@ -1,4 +1,112 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0;url=../../B2BAPP_Гант_v6.html">
-<title>Гант — B2BAPP</title></head><body>
-<p style="font-family:sans-serif;padding:20px;color:#fff;background:#0d1b2a">Перенаправление на диаграмму Ганта...</p>
-</body></html>
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>План и диаграмма Ганта — B2BAPP</title><link rel="stylesheet" href="../shared.css">
+<style>
+.note-banner{background:rgba(255,200,3,.08);border:1px solid rgba(255,200,3,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mute);margin-bottom:16px}
+.note-banner strong{color:var(--yel)}
+.mstones{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.mstone{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:170px;flex:1}
+.mstone .md{font-size:11px;color:var(--yel);font-weight:700}
+.mstone .ml{font-size:12px;margin-top:2px}
+.epic-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.epic-row:last-child{border-bottom:none}
+.epic-name{flex:0 0 260px;font-size:12px}
+.epic-bar-wrap{flex:1;background:#1e2d3d;border-radius:4px;height:18px;position:relative;overflow:hidden}
+.epic-bar-fill{height:100%;border-radius:4px;background:var(--ok)}
+.epic-pct{position:absolute;right:6px;top:0;line-height:18px;font-size:10px;color:#fff}
+.epic-meta{flex:0 0 150px;font-size:11px;color:var(--mute);text-align:right}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:20px}
+.team-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+.team-card .tn{font-weight:700;font-size:12px}
+.team-card .tr{font-size:11px;color:var(--yel);margin-top:2px}
+.team-card .tf{font-size:11px;color:var(--mute);margin-top:4px}
+.sec-h{font-size:14px;font-weight:700;margin:22px 0 10px}
+.crit-star{color:var(--err);font-weight:700}
+</style></head><body>
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📊 План и диаграмма Ганта</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+</header>
+<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<script>
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  document.getElementById('upd').textContent=d.updated||'—';
+  const root=document.getElementById('root');
+  const kpi=d.kpi||{};
+  const epics=d.epics||[];
+  const milestones=d.milestones||[];
+  const team=d.team||[];
+  const plan=(d.gantt||[]).filter(x=>x.epic && x.epic!=='Эпик' && x.epic!=='—');
+
+  const kpiCards=[
+    {v:kpi.totalStories ?? '—', l:'Историй'},
+    {v:kpi.totalTasks ?? '—', l:'Задач'},
+    {v:kpi.totalEstimateH ? kpi.totalEstimateH+' ч' : '—', l:'Оценка'},
+    {v:kpi.completedH ? kpi.completedH+' ч' : '—', l:'Выполнено'},
+    {v:(kpi.completionPct!=null? kpi.completionPct+'%':'—'), l:'Прогресс'},
+    {v:kpi.daysToDeadline ?? '—', l:'Дней до дедлайна'},
+    {v:kpi.blockers ?? '—', l:'Блокеров'},
+  ];
+
+  const msHtml=milestones.map(m=>`<div class="mstone"><div class="md">📅 ${m.date}</div><div class="ml">${m.label}</div></div>`).join('');
+
+  const epicRows=epics.map(e=>{
+    const pct=e.totalH?Math.round(e.doneH/e.totalH*100):0;
+    return `<div class="epic-row">
+      <div class="epic-name">${e.name}</div>
+      <div class="epic-bar-wrap"><div class="epic-bar-fill" style="width:${pct}%"></div><span class="epic-pct">${pct}%</span></div>
+      <div class="epic-meta">${e.stories} стори · ${e.tasks} задач · ${e.totalH} ч</div>
+    </div>`;
+  }).join('');
+
+  const teamHtml=team.map(m=>`<div class="team-card">
+    <div class="tn">${m.name}</div>
+    <div class="tr">${m.role}</div>
+    <div class="tf">${(m.fte*100).toFixed(0)}% FTE · ${m.status==='active'?'✅ на проекте':'⏳ '+m.status}</div>
+  </div>`).join('');
+
+  // Group plan rows by epic → story
+  const byEpic={};
+  plan.forEach(t=>{
+    (byEpic[t.epic]=byEpic[t.epic]||[]).push(t);
+  });
+
+  const planHtml=Object.entries(byEpic).map(([epicName,rows])=>{
+    const byStory={};
+    rows.forEach(t=>{(byStory[t.story]=byStory[t.story]||[]).push(t);});
+    const storiesHtml=Object.entries(byStory).map(([storyName,tasks])=>`
+      <tr style="background:rgba(255,255,255,.03)"><td colspan="6" style="font-weight:600;color:var(--blue)">${storyName}</td></tr>
+      ${tasks.map(t=>`<tr>
+        <td style="padding-left:24px">${t.task}${t.critical?' <span class="crit-star" title="Критический путь">★</span>':''}</td>
+        <td>${t.role}</td>
+        <td>${t.days}</td>
+        <td>${t.start} → ${t.end}</td>
+        <td>${t.priority||'—'}</td>
+        <td style="font-size:11px;color:var(--mute)">${t.deps&&t.deps!=='—'?t.deps:''}</td>
+      </tr>`).join('')}`).join('');
+    return `<tr class="erow"><td colspan="6" style="background:var(--card);font-weight:700;padding:8px 10px">${epicName}</td></tr>${storiesHtml}`;
+  }).join('');
+
+  root.innerHTML=`
+    <div class="note-banner">⚠️ <strong>Таймлайн по датам ниже — из Excel-плана</strong>, ещё не сверен с текущим статусом задач в Jira (актуальные эпики/риски/команда выше уже из свежей выгрузки на ${d.updated}). Детальные сроки по каждой задаче из Jira будут подставлены в следующем обновлении.</div>
+
+    <div class="cards-grid" style="margin-bottom:20px">
+      ${kpiCards.map(c=>`<div class="info-card"><h3 style="color:var(--yel);font-size:20px">${c.v}</h3><div style="font-size:11px;color:var(--mute)">${c.l}</div></div>`).join('')}
+    </div>
+
+    <div class="sec-h">📅 Ключевые вехи</div>
+    <div class="mstones">${msHtml}</div>
+
+    <div class="sec-h">📦 Прогресс по эпикам (актуально на ${d.updated})</div>
+    <div class="info-card">${epicRows}</div>
+
+    <div class="sec-h">🏃 Команда</div>
+    <div class="team-grid">${teamHtml}</div>
+
+    <div class="sec-h">🗓 План по задачам (Excel, требует сверки с Jira)</div>
+    <table class="tbl">
+      <thead><tr><th>Задача</th><th>Роль</th><th>Дни</th><th>Срок</th><th>Приоритет</th><th>Зависимости</th></tr></thead>
+      <tbody>${planHtml}</tbody>
+    </table>
+  `;
+});
+</script></body></html>

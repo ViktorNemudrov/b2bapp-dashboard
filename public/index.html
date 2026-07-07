@@ -1376,8 +1376,8 @@ function renderDeps(data){
 
 // ── CARDS (п.6 mobile + динамические бейджи) ─────────────────
 const CARDS=[
-  {icon:'📊',title:'Диаграмма Ганта',desc:'Трёхуровневая диаграмма: Эпик → Стори → Задача. Фильтры по ролям, масштаб Q/M/W, критический путь.',href:'B2BAPP_Гант_v6.html',badges:[{t:'v6',c:'b-yel'}]},
-  {icon:'🗺️',title:'User Story Map',desc:'201 история из 18 эпиков, 100% покрытие. Реестр белых пятен.',href:'pages/usm.html',badges:[{t:'201 история',c:'b-blue'}]},
+  {icon:'📊',title:'Диаграмма Ганта',desc:'Прогресс по эпикам, вехи, команда и план по задачам.',href:'pages/gantt.html',badges:[{t:'17 эпиков',c:'b-gray'}]},
+  {icon:'🗺️',title:'User Story Map',desc:'210 историй из Jira + 29 к созданию, 7 блоков. Реестр белых пятен.',href:'pages/usm.html',badges:[{t:'210 историй',c:'b-blue'}]},
   {icon:'👥',title:'Ресурсный план',desc:'Тепловая карта загрузки 14 ролей по месяцам. Красный ≥100%.',href:'pages/resources.html',badges:[{t:'14 ролей',c:'b-gray'}]},
   {icon:'🏆',title:'MVP по кварталам',desc:'Дорожная карта Q3\'26–Q3\'27. Продуктовая ценность каждого этапа.',href:'pages/mvp.html',badges:[{t:'9 этапов',c:'b-blue'}]},
   {icon:'📅',title:'Скоуп до 10.12',desc:'Что готово к вехе при 1 BE. Статус по эпикам.',href:'pages/scope_dec.html',badges:[],badgeKey:'scope'},
@@ -1805,6 +1805,7 @@ async function checkAuth(){
   // sessionStorage.setItem('b2bapp_auth','1');
   return true;
 }
+
 // ── SCROLL POSITION RESTORE ───────────────────────────────────
 window.addEventListener('pageshow',()=>{
   const key='b2bapp_scroll_'+location.pathname;
