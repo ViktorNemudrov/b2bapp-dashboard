@@ -4,7 +4,8 @@
 .note-banner{background:rgba(255,200,3,.08);border:1px solid rgba(255,200,3,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mute);margin-bottom:16px}
 .note-banner strong{color:var(--yel)}
 .mstones{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
-.mstone{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:170px;flex:1}
+.mstone{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:160px;flex:1}
+.mstone.done{border-color:var(--ok)}
 .mstone .md{font-size:11px;color:var(--yel);font-weight:700}
 .mstone .ml{font-size:12px;margin-top:2px}
 .epic-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
@@ -20,7 +21,26 @@
 .team-card .tr{font-size:11px;color:var(--yel);margin-top:2px}
 .team-card .tf{font-size:11px;color:var(--mute);margin-top:4px}
 .sec-h{font-size:14px;font-weight:700;margin:22px 0 10px}
-.crit-star{color:var(--err);font-weight:700}
+.crit-badge{background:rgba(231,76,60,.15);color:var(--err);border-radius:8px;padding:1px 7px;font-size:10px;font-weight:700}
+.assum-box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12px;line-height:1.6}
+.assum-box b{color:var(--yel)}
+.assum-list{margin:6px 0 0 18px}
+.gantt-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+.gtl{border-collapse:collapse;min-width:1000px;width:100%}
+.gtl th{background:#1e2d3d;color:#ccc;font-size:10.5px;font-weight:600;padding:5px 8px;text-align:left;position:sticky;top:0}
+.gtl td{padding:2px 6px;vertical-align:middle;border-bottom:1px solid var(--line)}
+.gtl .erow-h td{background:#1e2d3d;font-weight:700;font-size:12px;padding:6px 8px}
+.gtl .role-lbl{font-size:11px;color:var(--mute);white-space:nowrap;width:150px}
+.gbar-cell{position:relative;height:22px;min-width:600px}
+.gbar-track{position:absolute;inset:2px 0;background:#152232;border-radius:3px}
+.gbar{position:absolute;top:2px;height:18px;border-radius:3px;display:flex;align-items:center;padding:0 5px;font-size:9px;color:#fff;white-space:nowrap;overflow:hidden}
+.gbar.done{background:var(--ok)}
+.gbar.inprogress{background:var(--warn)}
+.gbar.planned{background:var(--blue)}
+.gbar.crit{outline:2px solid var(--err)}
+.today-line{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--err);z-index:5}
+.gantt-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--mute)}
+.gantt-legend .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
 </style></head><body>
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📊 План и диаграмма Ганта</span></div>
@@ -28,6 +48,8 @@
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
+const CAT_CLASS={done:'done',in_progress:'inprogress',inprogress:'inprogress',planned:'planned'};
+
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
   const root=document.getElementById('root');
@@ -35,7 +57,9 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   const epics=d.epics||[];
   const milestones=d.milestones||[];
   const team=d.team||[];
-  const plan=(d.gantt||[]).filter(x=>x.epic && x.epic!=='Эпик' && x.epic!=='—');
+  const gantt=d.gantt||[];
+  const cp=d.criticalPath;
+  const assum=d.ganttAssumptions||{};
 
   const kpiCards=[
     {v:kpi.totalStories ?? '—', l:'Историй'},
@@ -47,7 +71,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     {v:kpi.blockers ?? '—', l:'Блокеров'},
   ];
 
-  const msHtml=milestones.map(m=>`<div class="mstone"><div class="md">📅 ${m.date}</div><div class="ml">${m.label}</div></div>`).join('');
+  const msHtml=milestones.map(m=>`<div class="mstone ${m.status==='done'?'done':''}"><div class="md">${m.status==='done'?'✅':'📅'} ${m.date}</div><div class="ml">${m.label}</div></div>`).join('');
 
   const epicRows=epics.map(e=>{
     const pct=e.totalH?Math.round(e.doneH/e.totalH*100):0;
@@ -64,30 +88,58 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     <div class="tf">${(m.fte*100).toFixed(0)}% FTE · ${m.status==='active'?'✅ на проекте':'⏳ '+m.status}</div>
   </div>`).join('');
 
-  // Group plan rows by epic → story
-  const byEpic={};
-  plan.forEach(t=>{
-    (byEpic[t.epic]=byEpic[t.epic]||[]).push(t);
-  });
+  // ── Timeline Gantt from Jira-derived aggregate rows ──
+  let ganttHtml='<div class="empty">Нет данных таймлайна</div>';
+  if(gantt.length){
+    const dates=gantt.flatMap(t=>[new Date(t.start), new Date(t.end)]);
+    const GS=new Date(Math.min(...dates)), GE=new Date(Math.max(...dates));
+    const today=new Date(d.updated.split('.').reverse().join('-'));
+    const totalMs=GE-GS;
+    const pct=ds=>Math.max(0,Math.min(100,(new Date(ds)-GS)/totalMs*100));
+    const wpct=(s,e)=>Math.max(0.5,(new Date(e)-new Date(s))/totalMs*100);
+    const todayP=pct(today);
 
-  const planHtml=Object.entries(byEpic).map(([epicName,rows])=>{
-    const byStory={};
-    rows.forEach(t=>{(byStory[t.story]=byStory[t.story]||[]).push(t);});
-    const storiesHtml=Object.entries(byStory).map(([storyName,tasks])=>`
-      <tr style="background:rgba(255,255,255,.03)"><td colspan="6" style="font-weight:600;color:var(--blue)">${storyName}</td></tr>
-      ${tasks.map(t=>`<tr>
-        <td style="padding-left:24px">${t.task}${t.critical?' <span class="crit-star" title="Критический путь">★</span>':''}</td>
-        <td>${t.role}</td>
-        <td>${t.days}</td>
-        <td>${t.start} → ${t.end}</td>
-        <td>${t.priority||'—'}</td>
-        <td style="font-size:11px;color:var(--mute)">${t.deps&&t.deps!=='—'?t.deps:''}</td>
-      </tr>`).join('')}`).join('');
-    return `<tr class="erow"><td colspan="6" style="background:var(--card);font-weight:700;padding:8px 10px">${epicName}</td></tr>${storiesHtml}`;
-  }).join('');
+    const byEpic={};
+    gantt.forEach(t=>{(byEpic[t.epic]=byEpic[t.epic]||[]).push(t);});
+    const epicNameByKey={}; epics.forEach(e=>epicNameByKey[e.key]=e.name);
+
+    const rowsHtml=Object.entries(byEpic).map(([epicKey,rows])=>{
+      const eName=epicNameByKey[epicKey]||epicKey;
+      const roleRows=rows.map(t=>{
+        const cls=CAT_CLASS[t.category]||'planned';
+        const isCrit=cp&&t.role===cp.role;
+        const left=pct(t.start), width=wpct(t.start,t.end);
+        return `<tr>
+          <td class="role-lbl">${t.roleName||t.role}${isCrit?' <span class="crit-badge">крит.путь</span>':''}</td>
+          <td class="gbar-cell">
+            <div class="gbar-track"></div>
+            <div class="gbar ${cls}${isCrit?' crit':''}" style="left:${left}%;width:${width}%" title="${t.summary} · ${t.start} → ${t.end} · ${t.h} ч">${t.summary}</div>
+            <div class="today-line" style="left:${todayP}%"></div>
+          </td>
+        </tr>`;
+      }).join('');
+      return `<tr class="erow-h"><td colspan="2">${eName}</td></tr>${roleRows}`;
+    }).join('');
+
+    ganttHtml=`<div class="gantt-wrap"><table class="gtl">
+      <thead><tr><th style="width:150px">Роль</th><th>Таймлайн (${GS.toISOString().slice(0,10)} → ${GE.toISOString().slice(0,10)})</th></tr></thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+    <div class="gantt-legend">
+      <span><span class="sw" style="background:var(--ok)"></span>Готово</span>
+      <span><span class="sw" style="background:var(--warn)"></span>В работе</span>
+      <span><span class="sw" style="background:var(--blue)"></span>Планируется</span>
+      <span><span class="sw" style="background:var(--err);border-radius:50%"></span>Красная линия — сегодня (${d.updated})</span>
+      <span><span class="crit-badge">крит.путь</span> — самая поздняя роль, определяет срок всего проекта</span>
+    </div></div>`;
+  }
+
+  const latestByRoleHtml=Object.entries(d.latestByRole||{}).map(([role,date])=>
+    `<div class="epic-row"><div class="epic-name">${role}${cp&&cp.role===role?' <span class="crit-badge">крит.путь</span>':''}</div><div class="epic-meta" style="flex:1;text-align:left">${date}</div></div>`
+  ).join('');
 
   root.innerHTML=`
-    <div class="note-banner">⚠️ <strong>Таймлайн по датам ниже — из Excel-плана</strong>, ещё не сверен с текущим статусом задач в Jira (актуальные эпики/риски/команда выше уже из свежей выгрузки на ${d.updated}). Детальные сроки по каждой задаче из Jira будут подставлены в следующем обновлении.</div>
+    <div class="note-banner">✅ <strong>Таймлайн ниже — расчётный Гант из Jira</strong> (${assum.dataSource||''}). У задач в Jira нет плановых дат, поэтому даты вычислены методом: ${assum.method||''}</div>
 
     <div class="cards-grid" style="margin-bottom:20px">
       ${kpiCards.map(c=>`<div class="info-card"><h3 style="color:var(--yel);font-size:20px">${c.v}</h3><div style="font-size:11px;color:var(--mute)">${c.l}</div></div>`).join('')}
@@ -96,17 +148,25 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     <div class="sec-h">📅 Ключевые вехи</div>
     <div class="mstones">${msHtml}</div>
 
-    <div class="sec-h">📦 Прогресс по эпикам (актуально на ${d.updated})</div>
+    <div class="sec-h">📊 Таймлайн по эпикам и ролям (Jira, расчётный)</div>
+    ${ganttHtml}
+
+    <div class="assum-box">
+      <div>🔴 <b>Критический путь:</b> ${cp?`${cp.roleName} — завершение ${cp.end}`:'—'}</div>
+      <div style="margin-top:8px">${assum.criticalPathConclusion||''}</div>
+      <div style="margin-top:10px"><b>Допущения по ролям:</b></div>
+      <ul class="assum-list">${Object.entries(assum.roleAssumptions||{}).map(([r,a])=>`<li><b>${r}</b>: ${a}</li>`).join('')}</ul>
+      <div style="margin-top:8px;color:var(--mute);font-size:11px">Источник команды: ${assum.teamSource||'—'} · ${assum.holidays||''}</div>
+    </div>
+
+    <div class="sec-h">🏁 Последняя задача по роли</div>
+    <div class="info-card">${latestByRoleHtml}</div>
+
+    <div class="sec-h">📦 Прогресс по эпикам</div>
     <div class="info-card">${epicRows}</div>
 
     <div class="sec-h">🏃 Команда</div>
     <div class="team-grid">${teamHtml}</div>
-
-    <div class="sec-h">🗓 План по задачам (Excel, требует сверки с Jira)</div>
-    <table class="tbl">
-      <thead><tr><th>Задача</th><th>Роль</th><th>Дни</th><th>Срок</th><th>Приоритет</th><th>Зависимости</th></tr></thead>
-      <tbody>${planHtml}</tbody>
-    </table>
   `;
 });
 </script></body></html>
