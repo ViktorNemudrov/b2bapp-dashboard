@@ -106,6 +106,11 @@ body.light-theme .theme-dark-only{display:none}
 th.sorted-asc::after{content:' ▲';font-size:9px}
 th.sorted-desc::after{content:' ▼';font-size:9px}
 
+/* ── SHARED TOOLTIP (риски / гант) ───────────────────────────── */
+.gls-tip{position:fixed;background:#1a2940;border:1px solid var(--yel);border-radius:7px;padding:8px 12px;font-size:11px;color:var(--text);max-width:280px;z-index:9999;pointer-events:none;display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);line-height:1.5}
+.gls-tip strong{color:var(--yel);display:block;margin-bottom:3px}
+body.light-theme .gls-tip{background:#fff;border-color:#FFC803;color:#1a2940}
+
 /* ── LIGHT THEME (подстраницы) ───────────────────────────────── */
 body.light-theme{--dark:#f0f2f5;--card:#ffffff;--text:#1a2940;--mute:#6b7a99;--line:#d0d8e8;--ok:#1a7a45;--warn:#b35e00;--err:#c0392b;--blue:#2c5fad}
 body.light-theme .sidebar{background:#e8ecf5;border-right-color:#d0d8e8}
