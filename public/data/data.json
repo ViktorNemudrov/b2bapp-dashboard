@@ -1,1746 +1,572 @@
 {
-  "gantt": [
+  "updated": "09.07.2026",
+  "refreshedAt": "2026-07-09T21:30:00+03:00",
+  "project": "B2BAPP",
+  "totalIssues": 815,
+  "summary": {
+    "stories": 251,
+    "tasks": 545,
+    "epics": 19,
+    "doneStories": 0,
+    "doneTasks": 22,
+    "totalEstimateH": 14984,
+    "completedH": 1994,
+    "completionPct": 13.3
+  },
+  "storyStatuses": {
+    "Бэклог": 245,
+    "Анализ": 3,
+    "Разработка": 2,
+    "Другое": 1
+  },
+  "taskStatuses": {
+    "Завершена": 22,
+    "Бэклог": 505,
+    "В работе": 12,
+    "Разработка": 3,
+    "Review": 2,
+    "Анализ": 1
+  },
+  "roleEstimates": {
+    "BA": {
+      "count": 161,
+      "estH": 3553,
+      "spentH": 357,
+      "done": 7
+    },
+    "BE": {
+      "count": 111,
+      "estH": 3577,
+      "spentH": 34,
+      "done": 0
+    },
+    "FE": {
+      "count": 106,
+      "estH": 2833,
+      "spentH": 11,
+      "done": 1
+    },
+    "DS": {
+      "count": 36,
+      "estH": 1381,
+      "spentH": 494,
+      "done": 7
+    },
+    "ORG": {
+      "count": 37,
+      "estH": 1340,
+      "spentH": 880,
+      "done": 2
+    },
+    "DVO": {
+      "count": 41,
+      "estH": 927,
+      "spentH": 0,
+      "done": 2
+    },
+    "ARC": {
+      "count": 42,
+      "estH": 780,
+      "spentH": 103,
+      "done": 1
+    },
+    "QA": {
+      "count": 2,
+      "estH": 52,
+      "spentH": 0,
+      "done": 0
+    },
+    "OTHER": {
+      "count": 9,
+      "estH": 541,
+      "spentH": 115,
+      "done": 2
+    }
+  },
+  "kpi": {
+    "totalStories": 251,
+    "totalTasks": 545,
+    "totalEpics": 19,
+    "totalEstimateH": 14984,
+    "completedH": 1994,
+    "completionPct": 13.3,
+    "daysToDeadline": 154,
+    "blockers": 3,
+    "criticalEnd": "2033-05-27",
+    "mvpReachable": false
+  },
+  "epics": [
     {
-      "key": "B2BAPP-3",
-      "summary": "[ORG] Уточнение архитектурной развилки",
-      "epic": "B2BAPP-1",
-      "role": "ORG",
-      "roleName": "РП / Менеджмент",
-      "h": 21,
-      "wd": 3,
-      "fte": 1,
-      "start": "2026-01-12",
-      "end": "2026-01-15",
-      "status": "Завершена",
-      "category": "done"
+      "key": "B2BAPP-1",
+      "name": "1. Управление развитием систем",
+      "status": "В работе",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
     },
     {
-      "key": "B2BAPP-5",
-      "summary": "[ORG] Формирование запроса в продуктовый офис",
-      "epic": "B2BAPP-1",
-      "role": "ORG",
-      "roleName": "РП / Менеджмент",
-      "h": 80,
-      "wd": 10,
-      "fte": 1,
-      "start": "2026-01-15",
-      "end": "2026-01-29",
-      "status": "Завершена",
-      "category": "done"
+      "key": "B2BAPP-21",
+      "name": "2. Авторизация и профиль",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
     },
     {
-      "key": "B2BAPP-6",
-      "summary": "[BA] Анализ конкурентов",
-      "epic": "B2BAPP-1",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 73,
-      "wd": 10,
-      "fte": 1,
-      "start": "2026-04-22",
-      "end": "2026-05-08",
-      "status": "Завершена",
-      "category": "done"
+      "key": "B2BAPP-22",
+      "name": "3. Главная страница",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
     },
     {
-      "key": "B2BAPP-9",
-      "summary": "[BA] Исследование мобильного приложения",
-      "epic": "B2BAPP-1",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 73,
-      "wd": 10,
-      "fte": 1,
-      "start": "2026-05-08",
-      "end": "2026-05-25",
-      "status": "Завершена",
-      "category": "done"
+      "key": "B2BAPP-23",
+      "name": "4. Договоры",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
     },
     {
-      "key": "B2BAPP-13",
-      "summary": "[DS] Подготовка технических прототипов",
-      "epic": "B2BAPP-1",
-      "role": "DS",
-      "roleName": "Дизайнер (Балашов)",
-      "h": 40,
-      "wd": 5,
+      "key": "B2BAPP-24",
+      "name": "5. Финансы",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-25",
+      "name": "6. Поддержка",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-26",
+      "name": "7. Коммуникации (ОАТС)",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-27",
+      "name": "8. AI-ассистент",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-134",
+      "name": "9. Инфраструктура",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-135",
+      "name": "10. Админ-панель",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-136",
+      "name": "11. Услуги и тарифы",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-137",
+      "name": "12. Маркетинг",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-138",
+      "name": "13. Витрина",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-140",
+      "name": "14. КСС / Сотовая связь",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-141",
+      "name": "15. Управление подпиской (PrePay)",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-415",
+      "name": "16. Соответствие мобильным платформам",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-484",
+      "name": "17. AI-отчёты и аналитика",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-491",
+      "name": "18. Онбординг и активация",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    },
+    {
+      "key": "B2BAPP-492",
+      "name": "19. Go-to-market",
+      "status": "Бэклог",
+      "stories": 0,
+      "tasks": 0,
+      "totalH": 0,
+      "doneH": 0
+    }
+  ],
+  "team": [
+    {
+      "name": "Пальчиков Леонид",
+      "role": "PO",
+      "fte": 1,
+      "start": "2026-01-01",
+      "status": "active"
+    },
+    {
+      "name": "Немудров Виктор",
+      "role": "PM/РП",
+      "fte": 1,
+      "start": "2026-02-02",
+      "status": "active"
+    },
+    {
+      "name": "Макаренко Дмитрий",
+      "role": "BE/Архитектор",
+      "fte": 0.5,
+      "start": "2026-03-27",
+      "status": "active"
+    },
+    {
+      "name": "Бачинский Александр",
+      "role": "Солюшн-арх.",
+      "fte": 0.5,
+      "start": "2026-03-27",
+      "status": "active"
+    },
+    {
+      "name": "Балашов Влад",
+      "role": "Дизайнер",
       "fte": 1,
       "start": "2026-03-23",
-      "end": "2026-03-30",
-      "status": "Завершена",
-      "category": "done"
+      "status": "active"
     },
     {
-      "key": "B2BAPP-14",
-      "summary": "[BA] Кастдев / интервью с пользователями",
-      "epic": "B2BAPP-1",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 32,
-      "wd": 4,
+      "name": "Смирнов Александр",
+      "role": "Аналитик",
       "fte": 1,
-      "start": "2026-05-25",
-      "end": "2026-05-29",
-      "status": "Завершена",
-      "category": "done"
+      "start": "2026-04-22",
+      "status": "active"
     },
     {
-      "key": "B2BAPP-15",
-      "summary": "[ORG] Организационные задачи Q1",
-      "epic": "B2BAPP-1",
-      "role": "ORG",
-      "roleName": "РП / Менеджмент",
-      "h": 32,
-      "wd": 4,
-      "fte": 1,
-      "start": "2026-01-29",
-      "end": "2026-02-04",
-      "status": "Завершена",
-      "category": "done"
-    },
-    {
-      "key": "B2BAPP-46",
-      "summary": "[DS] Макеты: детальная информация по договору",
-      "epic": "B2BAPP-23",
-      "role": "DS",
-      "roleName": "Дизайнер (Балашов)",
-      "h": 42,
-      "wd": 6,
-      "fte": 1,
-      "start": "2026-03-30",
-      "end": "2026-04-07",
-      "status": "Завершена",
-      "category": "done"
-    },
-    {
-      "key": "B2BAPP-47",
-      "summary": "[DS] Макеты: список договоров",
-      "epic": "B2BAPP-23",
-      "role": "DS",
-      "roleName": "Дизайнер (Балашов)",
-      "h": 42,
-      "wd": 6,
-      "fte": 1,
-      "start": "2026-04-07",
-      "end": "2026-04-15",
-      "status": "Завершена",
-      "category": "done"
-    },
-    {
-      "key": "B2BAPP-48",
-      "summary": "[BA] Сбор требований к AI-ассистенту",
-      "epic": "B2BAPP-27",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 37,
-      "wd": 5,
-      "fte": 1,
-      "start": "2026-05-29",
-      "end": "2026-06-05",
-      "status": "Завершена",
-      "category": "done"
-    },
-    {
-      "key": "B2BAPP-49",
-      "summary": "[DVO] Получить ресурсы Vega",
-      "epic": "B2BAPP-1",
-      "role": "DVO",
-      "roleName": "DevOps (Егоров)",
-      "h": 42,
-      "wd": 11,
-      "fte": 0.5,
-      "start": "2026-01-12",
-      "end": "2026-01-27",
-      "status": "Завершена",
-      "category": "done"
-    },
-    {
-      "key": "B2BAPP-10",
-      "summary": "[ORG] Найм аналитика",
-      "epic": "B2BAPP-1",
-      "role": "ORG",
-      "roleName": "РП / Менеджмент",
-      "h": 104,
-      "wd": 13,
-      "fte": 1,
-      "start": "2026-06-29",
-      "end": "2026-07-16",
-      "status": "В работе",
-      "category": "active"
-    },
-    {
-      "key": "B2BAPP-11",
-      "summary": "[ORG] Управление проектом",
-      "epic": "B2BAPP-1",
-      "role": "ORG",
-      "roleName": "РП / Менеджмент",
-      "h": 208,
-      "wd": 26,
-      "fte": 1,
-      "start": "2026-06-18",
-      "end": "2026-07-24",
-      "status": "В работе",
-      "category": "active"
-    },
-    {
-      "key": "B2BAPP-50",
-      "summary": "[ARC] Схема оркестратора",
-      "epic": "B2BAPP-27",
-      "role": "ARC",
-      "roleName": "Архитектор (Макаренко/Бачинский)",
-      "h": 32,
-      "wd": 8,
-      "fte": 0.5,
-      "start": "2026-07-01",
-      "end": "2026-07-13",
-      "status": "В работе",
-      "category": "active"
-    },
-    {
-      "key": "B2BAPP-52",
-      "summary": "[ARC] Схема webSocketGate",
-      "epic": "B2BAPP-27",
-      "role": "ARC",
-      "roleName": "Архитектор (Макаренко/Бачинский)",
-      "h": 16,
-      "wd": 4,
-      "fte": 0.5,
-      "start": "2026-07-03",
-      "end": "2026-07-09",
-      "status": "В работе",
-      "category": "active"
-    },
-    {
-      "key": "B2BAPP-53",
-      "summary": "[BE] Реализация webSocketGate",
-      "epic": "B2BAPP-27",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 48,
-      "wd": 6,
-      "fte": 1,
-      "start": "2026-07-02",
-      "end": "2026-07-10",
-      "status": "В работе",
-      "category": "active"
-    },
-    {
-      "key": "B2BAPP-1-ORG",
-      "summary": "[ORG] Управление проектом Q3-Q4",
-      "epic": "B2BAPP-1",
-      "role": "ORG",
-      "roleName": "РП / Менеджмент",
-      "h": 200,
-      "wd": 25,
-      "fte": 1,
-      "start": "2026-07-24",
-      "end": "2026-08-28",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-1-DVO",
-      "summary": "[DVO] Тестовый стенд и LangFuse",
-      "epic": "B2BAPP-1",
-      "role": "DVO",
-      "roleName": "DevOps (Егоров)",
-      "h": 120,
-      "wd": 30,
-      "fte": 0.5,
-      "start": "2026-07-07",
-      "end": "2026-08-18",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-21-ARC",
-      "summary": "[ARC] Архитектура авторизации / IDP",
-      "epic": "B2BAPP-21",
-      "role": "ARC",
-      "roleName": "Архитектор (Макаренко/Бачинский)",
-      "h": 160,
-      "wd": 40,
-      "fte": 0.5,
-      "start": "2026-07-09",
-      "end": "2026-09-03",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-21-BA",
-      "summary": "[BA] Аналитика авторизации",
-      "epic": "B2BAPP-21",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 320,
-      "wd": 40,
-      "fte": 1,
-      "start": "2026-07-07",
-      "end": "2026-09-01",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-21-BE",
-      "summary": "[BE] Backend авторизации",
-      "epic": "B2BAPP-21",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 480,
-      "wd": 60,
-      "fte": 1,
-      "start": "2026-08-03",
-      "end": "2026-10-26",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-21-FE",
-      "summary": "[FE] Frontend авторизации",
-      "epic": "B2BAPP-21",
+      "name": "Самойло Андрей",
       "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 320,
-      "wd": 40,
-      "fte": 1,
-      "start": "2026-08-03",
-      "end": "2026-09-28",
-      "status": "Бэклог",
-      "category": "planned"
+      "fte": 0.2,
+      "start": "2026-08-01",
+      "status": "vacation"
     },
     {
-      "key": "B2BAPP-22-DS",
-      "summary": "[DS] Дизайн главного экрана",
-      "epic": "B2BAPP-22",
-      "role": "DS",
-      "roleName": "Дизайнер (Балашов)",
-      "h": 180,
-      "wd": 23,
-      "fte": 1,
-      "start": "2026-07-07",
-      "end": "2026-08-07",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-22-BA",
-      "summary": "[BA] Аналитика главного экрана",
-      "epic": "B2BAPP-22",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 200,
-      "wd": 25,
-      "fte": 1,
-      "start": "2026-09-01",
-      "end": "2026-10-06",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-22-BE",
-      "summary": "[BE] Backend главного экрана",
-      "epic": "B2BAPP-22",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 240,
-      "wd": 30,
-      "fte": 1,
-      "start": "2026-10-26",
-      "end": "2026-12-08",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-22-FE",
-      "summary": "[FE] Frontend главного экрана",
-      "epic": "B2BAPP-22",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 340,
-      "wd": 43,
-      "fte": 1,
-      "start": "2026-09-28",
-      "end": "2026-11-27",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-27-ARC",
-      "summary": "[ARC] Архитектура AI-ассистента",
-      "epic": "B2BAPP-27",
-      "role": "ARC",
-      "roleName": "Архитектор (Макаренко/Бачинский)",
-      "h": 320,
-      "wd": 80,
-      "fte": 0.5,
-      "start": "2026-09-03",
-      "end": "2026-12-25",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-27-BA",
-      "summary": "[BA] Аналитика AI-ассистента",
-      "epic": "B2BAPP-27",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 600,
-      "wd": 75,
-      "fte": 1,
-      "start": "2026-10-06",
-      "end": "2027-01-21",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-27-DS",
-      "summary": "[DS] Дизайн AI-ассистента",
-      "epic": "B2BAPP-27",
-      "role": "DS",
-      "roleName": "Дизайнер (Балашов)",
-      "h": 280,
-      "wd": 35,
-      "fte": 1,
-      "start": "2026-08-07",
-      "end": "2026-09-25",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-27-BE",
-      "summary": "[BE] Backend AI-оркестратора",
-      "epic": "B2BAPP-27",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 720,
-      "wd": 90,
-      "fte": 1,
-      "start": "2026-12-08",
-      "end": "2027-04-14",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-27-FE",
-      "summary": "[FE] Frontend AI-ассистента",
-      "epic": "B2BAPP-27",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 480,
-      "wd": 60,
-      "fte": 1,
-      "start": "2026-11-27",
-      "end": "2027-02-22",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-24-BA",
-      "summary": "[BA] Аналитика финансов",
-      "epic": "B2BAPP-24",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 240,
-      "wd": 30,
-      "fte": 1,
-      "start": "2027-01-21",
-      "end": "2027-03-04",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-24-BE",
-      "summary": "[BE] Backend финансов",
-      "epic": "B2BAPP-24",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 400,
-      "wd": 50,
-      "fte": 1,
-      "start": "2027-04-14",
-      "end": "2027-06-23",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-24-FE",
-      "summary": "[FE] Frontend финансов",
-      "epic": "B2BAPP-24",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 320,
-      "wd": 40,
-      "fte": 1,
-      "start": "2027-02-22",
-      "end": "2027-04-19",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-23-BA",
-      "summary": "[BA] Аналитика договоров",
-      "epic": "B2BAPP-23",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 96,
-      "wd": 12,
-      "fte": 1,
-      "start": "2027-03-04",
-      "end": "2027-03-22",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-23-BE",
-      "summary": "[BE] Backend договоров",
-      "epic": "B2BAPP-23",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 160,
-      "wd": 20,
-      "fte": 1,
-      "start": "2027-06-23",
-      "end": "2027-07-21",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-134-DVO",
-      "summary": "[DVO] Инфраструктура платформы",
-      "epic": "B2BAPP-134",
-      "role": "DVO",
-      "roleName": "DevOps (Егоров)",
-      "h": 200,
-      "wd": 50,
-      "fte": 0.5,
-      "start": "2026-08-18",
-      "end": "2026-10-27",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-134-BE",
-      "summary": "[BE] Backend инфраструктуры",
-      "epic": "B2BAPP-134",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 320,
-      "wd": 40,
-      "fte": 1,
-      "start": "2027-07-21",
-      "end": "2027-09-15",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-134-ARC",
-      "summary": "[ARC] Архитектура инфраструктуры",
-      "epic": "B2BAPP-134",
-      "role": "ARC",
-      "roleName": "Архитектор (Макаренко/Бачинский)",
-      "h": 120,
-      "wd": 30,
-      "fte": 0.5,
-      "start": "2026-12-25",
-      "end": "2027-02-08",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-26-ARC",
-      "summary": "[ARC] Архитектура ОАТС",
-      "epic": "B2BAPP-26",
-      "role": "ARC",
-      "roleName": "Архитектор (Макаренко/Бачинский)",
-      "h": 80,
-      "wd": 20,
-      "fte": 0.5,
-      "start": "2027-02-08",
-      "end": "2027-03-08",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-26-BA",
-      "summary": "[BA] Аналитика ОАТС",
-      "epic": "B2BAPP-26",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 160,
-      "wd": 20,
-      "fte": 1,
-      "start": "2027-03-22",
-      "end": "2027-04-19",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-26-BE",
-      "summary": "[BE] Backend ОАТС",
-      "epic": "B2BAPP-26",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 200,
-      "wd": 25,
-      "fte": 1,
-      "start": "2027-09-15",
-      "end": "2027-10-20",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-26-FE",
-      "summary": "[FE] Frontend ОАТС",
-      "epic": "B2BAPP-26",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 200,
-      "wd": 25,
-      "fte": 1,
-      "start": "2027-04-19",
-      "end": "2027-05-24",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-415-ARC",
-      "summary": "[ARC] Архитектура публикации",
-      "epic": "B2BAPP-415",
-      "role": "ARC",
-      "roleName": "Архитектор (Макаренко/Бачинский)",
-      "h": 160,
-      "wd": 40,
-      "fte": 0.5,
-      "start": "2027-03-08",
-      "end": "2027-05-03",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-415-DVO",
-      "summary": "[DVO] Деплой в App Store / Google Play",
-      "epic": "B2BAPP-415",
-      "role": "DVO",
-      "roleName": "DevOps (Егоров)",
-      "h": 200,
-      "wd": 50,
-      "fte": 0.5,
-      "start": "2026-10-27",
-      "end": "2027-01-07",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-415-FE",
-      "summary": "[FE] Frontend платформы",
-      "epic": "B2BAPP-415",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 280,
-      "wd": 35,
-      "fte": 1,
-      "start": "2027-05-24",
-      "end": "2027-07-12",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-25-BA",
-      "summary": "[BA] Аналитика поддержки",
-      "epic": "B2BAPP-25",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 80,
-      "wd": 10,
-      "fte": 1,
-      "start": "2027-04-19",
-      "end": "2027-05-03",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-25-BE",
-      "summary": "[BE] Backend поддержки",
-      "epic": "B2BAPP-25",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 80,
-      "wd": 10,
-      "fte": 1,
-      "start": "2027-10-20",
-      "end": "2027-11-03",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-25-FE",
-      "summary": "[FE] Frontend поддержки",
-      "epic": "B2BAPP-25",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 120,
-      "wd": 15,
-      "fte": 1,
-      "start": "2027-07-12",
-      "end": "2027-08-02",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-484-BA",
-      "summary": "[BA] Аналитика AI-отчётов",
-      "epic": "B2BAPP-484",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 200,
-      "wd": 25,
-      "fte": 1,
-      "start": "2027-05-03",
-      "end": "2027-06-07",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-484-DS",
-      "summary": "[DS] Дизайн AI-отчётов",
-      "epic": "B2BAPP-484",
-      "role": "DS",
-      "roleName": "Дизайнер (Балашов)",
-      "h": 120,
-      "wd": 15,
-      "fte": 1,
-      "start": "2026-09-25",
-      "end": "2026-10-16",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-484-BE",
-      "summary": "[BE] Backend AI-отчётов",
-      "epic": "B2BAPP-484",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 200,
-      "wd": 25,
-      "fte": 1,
-      "start": "2027-11-03",
-      "end": "2027-12-08",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-484-FE",
-      "summary": "[FE] Frontend AI-отчётов",
-      "epic": "B2BAPP-484",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 160,
-      "wd": 20,
-      "fte": 1,
-      "start": "2027-08-02",
-      "end": "2027-08-30",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-141-BA",
-      "summary": "[BA] Аналитика PrePay",
-      "epic": "B2BAPP-141",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 140,
-      "wd": 18,
-      "fte": 1,
-      "start": "2027-06-07",
-      "end": "2027-07-01",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-141-BE",
-      "summary": "[BE] Backend PrePay",
-      "epic": "B2BAPP-141",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 140,
-      "wd": 18,
-      "fte": 1,
-      "start": "2027-12-08",
-      "end": "2028-01-03",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-141-FE",
-      "summary": "[FE] Frontend PrePay",
-      "epic": "B2BAPP-141",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 140,
-      "wd": 18,
-      "fte": 1,
-      "start": "2027-08-30",
-      "end": "2027-09-23",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-140-BA",
-      "summary": "[BA] Аналитика КСС",
-      "epic": "B2BAPP-140",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 100,
-      "wd": 13,
-      "fte": 1,
-      "start": "2027-07-01",
-      "end": "2027-07-20",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-140-BE",
-      "summary": "[BE] Backend КСС",
-      "epic": "B2BAPP-140",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 80,
-      "wd": 10,
-      "fte": 1,
-      "start": "2028-01-03",
-      "end": "2028-01-17",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-140-FE",
-      "summary": "[FE] Frontend КСС",
-      "epic": "B2BAPP-140",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 80,
-      "wd": 10,
-      "fte": 1,
-      "start": "2027-09-23",
-      "end": "2027-10-07",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-136-BA",
-      "summary": "[BA] Аналитика услуг",
-      "epic": "B2BAPP-136",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 120,
-      "wd": 15,
-      "fte": 1,
-      "start": "2027-07-20",
-      "end": "2027-08-10",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-136-BE",
-      "summary": "[BE] Backend услуг",
-      "epic": "B2BAPP-136",
-      "role": "BE",
-      "roleName": "Backend (Макаренко full)",
-      "h": 100,
-      "wd": 13,
-      "fte": 1,
-      "start": "2028-01-17",
-      "end": "2028-02-03",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-136-FE",
-      "summary": "[FE] Frontend услуг",
-      "epic": "B2BAPP-136",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 120,
-      "wd": 15,
-      "fte": 1,
-      "start": "2027-10-07",
-      "end": "2027-10-28",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-137-BA",
-      "summary": "[BA] Аналитика маркетинга",
-      "epic": "B2BAPP-137",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 120,
-      "wd": 15,
-      "fte": 1,
-      "start": "2027-08-10",
-      "end": "2027-08-31",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-137-FE",
-      "summary": "[FE] Frontend маркетинга",
-      "epic": "B2BAPP-137",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 120,
-      "wd": 15,
-      "fte": 1,
-      "start": "2027-10-28",
-      "end": "2027-11-18",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-138-DS",
-      "summary": "[DS] Дизайн витрины",
-      "epic": "B2BAPP-138",
-      "role": "DS",
-      "roleName": "Дизайнер (Балашов)",
-      "h": 60,
-      "wd": 8,
-      "fte": 1,
-      "start": "2026-10-16",
-      "end": "2026-10-28",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-138-FE",
-      "summary": "[FE] Frontend витрины",
-      "epic": "B2BAPP-138",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 80,
-      "wd": 10,
-      "fte": 1,
-      "start": "2027-11-18",
-      "end": "2027-12-02",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-135-BA",
-      "summary": "[BA] Аналитика Админ-панели",
-      "epic": "B2BAPP-135",
-      "role": "BA",
-      "roleName": "Аналитик (Смирнов)",
-      "h": 40,
-      "wd": 5,
-      "fte": 1,
-      "start": "2027-08-31",
-      "end": "2027-09-07",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-135-FE",
-      "summary": "[FE] Frontend Админ-панели",
-      "epic": "B2BAPP-135",
-      "role": "FE",
-      "roleName": "Frontend (Самойло)",
-      "h": 60,
-      "wd": 8,
-      "fte": 1,
-      "start": "2027-12-02",
-      "end": "2027-12-14",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-491-ORG",
-      "summary": "[ORG] Онбординг и активация",
-      "epic": "B2BAPP-491",
-      "role": "ORG",
-      "roleName": "РП / Менеджмент",
-      "h": 40,
-      "wd": 5,
-      "fte": 1,
-      "start": "2026-08-28",
-      "end": "2026-09-04",
-      "status": "Бэклог",
-      "category": "planned"
-    },
-    {
-      "key": "B2BAPP-492-ORG",
-      "summary": "[ORG] Go-to-market",
-      "epic": "B2BAPP-492",
-      "role": "ORG",
-      "roleName": "РП / Менеджмент",
-      "h": 52,
-      "wd": 7,
-      "fte": 1,
-      "start": "2026-09-04",
-      "end": "2026-09-15",
-      "status": "Бэклог",
-      "category": "planned"
+      "name": "Егоров Иван",
+      "role": "DevOps",
+      "fte": 0.1,
+      "start": "2026-01-01",
+      "status": "active"
     }
   ],
-  "resources": [
+  "milestones": [
     {
-      "role": "ВП",
-      "fte": "100%",
-      "total_days": "28.6",
-      "task_count": "11",
-      "months": {
-        "Июн": "·",
-        "Июл": "87%",
-        "Авг": "41%",
-        "Сен": "·",
-        "Окт": "·",
-        "Ноя": "·",
-        "Дек": "·",
-        "Янв'27": "·",
-        "Фев'27": "·",
-        "Мар'27": "·"
-      }
+      "date": "2026-01-01",
+      "label": "Старт проекта",
+      "status": "done"
     },
     {
-      "role": "РП",
-      "fte": "100%",
-      "total_days": "195.9",
-      "task_count": "27",
-      "months": {
-        "Июн": "87%",
-        "Июл": "183%",
-        "Авг": "129%",
-        "Сен": "99%",
-        "Окт": "45%",
-        "Ноя": "·",
-        "Дек": "·",
-        "Янв'27": "·",
-        "Фев'27": "·",
-        "Мар'27": "·"
-      }
+      "date": "2026-04-22",
+      "label": "Аналитик в команде",
+      "status": "done"
     },
     {
-      "role": "Аналитик 1",
-      "fte": "100%",
-      "total_days": "67.3",
-      "task_count": "18",
-      "months": {
-        "Июн": "·",
-        "Июл": "98%",
-        "Авг": "93%",
-        "Сен": "52%",
-        "Окт": "·",
-        "Ноя": "·",
-        "Дек": "·",
-        "Янв'27": "·",
-        "Фев'27": "·",
-        "Мар'27": "·"
-      }
+      "date": "2026-08-01",
+      "label": "Старт спринтов",
+      "status": "planned"
     },
     {
-      "role": "Аналитик 2",
-      "fte": "100%",
-      "total_days": "49.4",
-      "task_count": "12",
-      "months": {
-        "Июн": "",
-        "Июл": "90%",
-        "Авг": "97%",
-        "Сен": "37%",
-        "Окт": "·",
-        "Ноя": "·",
-        "Дек": "·",
-        "Янв'27": "·",
-        "Фев'27": "·",
-        "Мар'27": "·"
-      }
+      "date": "2026-10-01",
+      "label": "Alpha (внутренний)",
+      "status": "planned"
     },
     {
-      "role": "Дизайнер 1",
-      "fte": "100%",
-      "total_days": "46.6",
-      "task_count": "11",
-      "months": {
-        "Июн": "·",
-        "Июл": "90%",
-        "Авг": "56%",
-        "Сен": "·",
-        "Окт": "·",
-        "Ноя": "·",
-        "Дек": "·",
-        "Янв'27": "·",
-        "Фев'27": "·",
-        "Мар'27": "·"
-      }
+      "date": "2026-11-15",
+      "label": "Beta (тестировщики)",
+      "status": "planned"
     },
     {
-      "role": "Фронтенд 1",
-      "fte": "100%",
-      "total_days": "68.9",
-      "task_count": "16",
-      "months": {
-        "Июн": "",
-        "Июл": "17%",
-        "Авг": "32%",
-        "Сен": "28%",
-        "Окт": "35%",
-        "Ноя": "·",
-        "Дек": "65%",
-        "Янв'27": "·",
-        "Фев'27": "22%",
-        "Мар'27": "30%"
-      }
-    },
-    {
-      "role": "Фронтенд 2",
-      "fte": "100%",
-      "total_days": "65.7",
-      "task_count": "17",
-      "months": {
-        "Июн": "",
-        "Июл": "",
-        "Авг": "·",
-        "Сен": "58%",
-        "Окт": "75%",
-        "Ноя": "20%",
-        "Дек": "·",
-        "Янв'27": "17%",
-        "Фев'27": "·",
-        "Мар'27": "41%"
-      }
-    },
-    {
-      "role": "Фронтенд 3",
-      "fte": "100%",
-      "total_days": "59.8",
-      "task_count": "11",
-      "months": {
-        "Июн": "",
-        "Июл": "",
-        "Авг": "·",
-        "Сен": "54%",
-        "Окт": "62%",
-        "Ноя": "9%",
-        "Дек": "9%",
-        "Янв'27": "13%",
-        "Фев'27": "29%",
-        "Мар'27": "16%"
-      }
-    },
-    {
-      "role": "Бэкенд 1",
-      "fte": "100%",
-      "total_days": "248.2",
-      "task_count": "50",
-      "months": {
-        "Июн": "",
-        "Июл": "73%",
-        "Авг": "88%",
-        "Сен": "95%",
-        "Окт": "92%",
-        "Ноя": "94%",
-        "Дек": "90%",
-        "Янв'27": "93%",
-        "Фев'27": "92%",
-        "Мар'27": "89%"
-      }
-    },
-    {
-      "role": "QA 1",
-      "fte": "100%",
-      "total_days": "71.1",
-      "task_count": "8",
-      "months": {
-        "Июн": "",
-        "Июл": "·",
-        "Авг": "·",
-        "Сен": "22%",
-        "Окт": "36%",
-        "Ноя": "·",
-        "Дек": "44%",
-        "Янв'27": "71%",
-        "Фев'27": "41%",
-        "Мар'27": "12%"
-      }
-    },
-    {
-      "role": "QA 2",
-      "fte": "100%",
-      "total_days": "71.6",
-      "task_count": "8",
-      "months": {
-        "Июн": "",
-        "Июл": "",
-        "Авг": "·",
-        "Сен": "23%",
-        "Окт": "36%",
-        "Ноя": "·",
-        "Дек": "44%",
-        "Янв'27": "71%",
-        "Фев'27": "41%",
-        "Мар'27": "12%"
-      }
-    },
-    {
-      "role": "DevOps 1",
-      "fte": "20%",
-      "total_days": "13",
-      "task_count": "3",
-      "months": {
-        "Июн": "",
-        "Июл": "283%",
-        "Авг": "·",
-        "Сен": "·",
-        "Окт": "·",
-        "Ноя": "·",
-        "Дек": "·",
-        "Янв'27": "·",
-        "Фев'27": "·",
-        "Мар'27": "·"
-      }
-    },
-    {
-      "role": "Сист. архитектор",
-      "fte": "30%",
-      "total_days": "18.2",
-      "task_count": "7",
-      "months": {
-        "Июн": "·",
-        "Июл": "264%",
-        "Авг": "·",
-        "Сен": "·",
-        "Окт": "·",
-        "Ноя": "·",
-        "Дек": "·",
-        "Янв'27": "·",
-        "Фев'27": "·",
-        "Мар'27": "·"
-      }
-    },
-    {
-      "role": "Солюшн архитектор",
-      "fte": "50%",
-      "total_days": "46.8",
-      "task_count": "15",
-      "months": {
-        "Июн": "·",
-        "Июл": "184%",
-        "Авг": "187%",
-        "Сен": "32%",
-        "Окт": "·",
-        "Ноя": "·",
-        "Дек": "·",
-        "Янв'27": "·",
-        "Фев'27": "·",
-        "Мар'27": "·"
-      }
+      "date": "2026-12-10",
+      "label": "MVP / Дедлайн",
+      "status": "planned"
     }
-  ],
-  "mvp": [
-    {
-      "quarter": "Q3 2026",
-      "epic": "Фундамент + Авторизация",
-      "content": "ЕСВ-авторизация, WebSocket-шлюз, AI-оркестратор, push, профиль, биометрия, главный экран, смарт-карточки",
-      "value": "Безопасный вход и базовый каркас приложения — основа для всех функций"
-    },
-    {
-      "quarter": "Q3 2026",
-      "epic": "Инфраструктура AI",
-      "content": "Service account LLM, MCP-сервер, CI/CD, среды DEV/TEST",
-      "value": "Платформа для AI-ассистента — ключевого дифференциатора продукта"
-    },
-    {
-      "quarter": "Q4 2026",
-      "epic": "AI-ассистент (ядро)",
-      "content": "Чат со стримингом, история, голосовой ввод (STT), intent/RAG, виджеты данных и действий, guardrails ПДн",
-      "value": "Главная фишка: управление бизнесом через естественный язык — снижает порог входа для микробизнеса"
-    },
-    {
-      "quarter": "Q4 2026",
-      "epic": "Договоры (через AI)",
-      "content": "Список/карточка договоров, MCP договоров, AI-виджеты, проактивные инсайты",
-      "value": "Быстрый доступ к договорам без звонков в поддержку"
-    },
-    {
-      "quarter": "Q1 2027",
-      "epic": "Финансы (полностью)",
-      "content": "Счета, детализация, QR-оплата СБП, закрывающие документы, история платежей, AI-виджеты баланса",
-      "value": "Самый частый сценарий (проверка баланса/оплата ежедневно) — драйвер retention"
-    },
-    {
-      "quarter": "Q1 2027",
-      "epic": "Поддержка + ОАТС",
-      "content": "Обращения ДОКК, MCP ОАТС, AI-виджеты звонков, настройки секретаря",
-      "value": "Снижение нагрузки на колл-центр, самообслуживание"
-    },
-    {
-      "quarter": "Q1-Q2 2027",
-      "epic": "Услуги, КСС, Маркетинг, Витрина, Админ",
-      "content": "Услуги/тарифы, управление номерами КСС, этикетка, делегирование, SMS-рассылки, витрина не-клиентов, админ промптов",
-      "value": "Полнота функционала, привлечение не-клиентов, корп. управление"
-    },
-    {
-      "quarter": "Q2 2027",
-      "epic": "PrePay-подписка",
-      "content": "Подписка, бандлы, апгрейд, Мерчант API, Balance Manager, ОФД-чеки, автопродление",
-      "value": "Монетизация препейд-сегмента (ключевой для микробизнеса)"
-    },
-    {
-      "quarter": "Q2-Q3 2027",
-      "epic": "Лояльность (опц.) + Вывод в продуктив",
-      "content": "Бонусы/кэшбэк, ИБ-документация, SAST/DAST, нагрузочное тестирование, Prod-среда, РА/РП",
-      "value": "Финальный релиз: безопасность, отказоустойчивость, готовность к промышленной эксплуатации"
-    }
-  ],
-  "scope_dec": [
-    {
-      "epic": "9. Инфраструктура",
-      "content": "Фундамент: ЕСВ-авторизация, WebSocket, AI-оркестратор, MCP, push, CI/CD, service account",
-      "total": "10",
-      "ready": "10",
-      "status": "✅ Готово"
-    },
-    {
-      "epic": "2. Авторизация и профили",
-      "content": "Авторизация, профиль, биометрия, сессии, переключение организаций",
-      "total": "12",
-      "ready": "0",
-      "status": "⬜ Не начато"
-    },
-    {
-      "epic": "3. Главная страница",
-      "content": "Главный экран: смарт-карточки, чипсы, онбординг, строка AI-чата, отчёты",
-      "total": "14",
-      "ready": "0",
-      "status": "⬜ Не начато"
-    },
-    {
-      "epic": "8. AI-ассистент",
-      "content": "AI-ассистент: чат, стриминг, история, голос, intent/RAG, виджеты, guardrails, метрики",
-      "total": "40",
-      "ready": "30",
-      "status": "🟡 Частично"
-    },
-    {
-      "epic": "4. Договоры",
-      "content": "Договоры: список, карточка, MCP, AI-виджеты, инсайты",
-      "total": "8",
-      "ready": "6",
-      "status": "🟡 Частично"
-    },
-    {
-      "epic": "5. Финансы",
-      "content": "Финансы: счета, детализация, QR-оплата, документы, AI-виджеты баланса",
-      "total": "11",
-      "ready": "4",
-      "status": "🟡 Частично"
-    },
-    {
-      "epic": "6. Поддержка",
-      "content": "Поддержка: обращения ДОКК, статусы",
-      "total": "5",
-      "ready": "2",
-      "status": "🟡 Частично"
-    },
-    {
-      "epic": "7. Коммуникации/ОАТС",
-      "content": "Коммуникации/ОАТС: MCP ОАТС, AI-виджеты, секретарь",
-      "total": "7",
-      "ready": "2",
-      "status": "🟡 Частично"
-    },
-    {
-      "epic": "10. Админ-панель",
-      "content": "Админ-панель: управление промптами AI",
-      "total": "3",
-      "ready": "1",
-      "status": "🟡 Частично"
-    },
-    {
-      "epic": "11. Услуги и тарифы",
-      "content": "Услуги и тарифы, лояльность",
-      "total": "6",
-      "ready": "2",
-      "status": "🟡 Частично"
-    },
-    {
-      "epic": "12. Маркетинг",
-      "content": "Маркетинг: SMS-рассылки",
-      "total": "3",
-      "ready": "1",
-      "status": "🟡 Частично"
-    },
-    {
-      "epic": "13. Витрина не-клиентов",
-      "content": "Витрина для не-клиентов",
-      "total": "3",
-      "ready": "1",
-      "status": "🟡 Частично"
-    },
-    {
-      "epic": "14. КСС",
-      "content": "КСС: номера, этикетка, делегирование",
-      "total": "10",
-      "ready": "4",
-      "status": "🟡 Частично"
-    },
-    {
-      "epic": "15. PrePay-подписка",
-      "content": "PrePay-подписка: бандлы, Мерчант API, ОФД",
-      "total": "6",
-      "ready": "2",
-      "status": "🟡 Частично"
-    },
-    {
-      "epic": "1. Управление развитием систем",
-      "content": "Вывод в продуктив: ИБ, SAST/DAST, нагрузочное, Prod",
-      "total": "16",
-      "ready": "2",
-      "status": "🟡 Частично"
-    }
-  ],
-  "okr_dec": [
-    [
-      "OBJECTIVE (Цель к 10.12.2026)"
-    ],
-    [
-      "Запустить технологический фундамент и интеллектуальное ядро B2BAPP, доказав работоспособность AI-ассистента как основного интерфейса для микробизнеса."
-    ],
-    [
-      "KEY RESULTS (Ключевые результаты)"
-    ],
-    [
-      "KR1 — 100% пользователей могут безопасно войти через ЕСВ (ЛК B2B) с биометрией и работать в нескольких организациях. Авторизация, профиль и ролевая модель полностью готовы."
-    ],
-    [
-      "KR2 — AI-ассистент отвечает на запросы в реальном времени (стриминг через WebSocket), распознаёт намерения, ищет по базе знаний (RAG), поддерживает голосовой ввод. Целевая метрика: решение типовой задачи за 1-3 сообщения."
-    ],
-    [
-      "KR3 — Реализованы guardrails безопасности AI (фильтрация ПДн, запрещённые темы) и fallback-режим при недоступности LLM — продукт устойчив к сбоям и соответствует требованиям ИБ."
-    ],
-    [
-      "KR4 — Главный экран персонализирован: смарт-карточки (баланс, договоры, события), быстрые команды, периодические отчёты — пользователь видит ключевую информацию сразу при входе."
-    ],
-    [
-      "KR5 — Развёрнута инфраструктура: AI-оркестратор, MCP-серверы, системный API-ключ LLM, CI/CD, среды DEV/TEST — платформа готова к наращиванию функционала."
-    ],
-    [
-      "ЧТО ЭТО ДАЁТ БИЗНЕСУ"
-    ],
-    [
-      "К 10.12.2026 мы получаем работающий MVP-каркас с главным конкурентным преимуществом — AI-ассистентом. Это позволяет провести закрытое тестирование на реальных пользователях,проверить ценность подхода «управление бизнесом через чат» и собрать обратную связь до вложений в полный продуктовый скоуп."
-    ],
-    [
-      "ЧЕСТНОЕ ОГРАНИЧЕНИЕ (допущение)"
-    ],
-    [
-      "При текущем составе (1 бэкенд-разработчик) полный MVP с договорами и финансами завершается в Q1 2027 (≈18.03.2027), а не к 10.12.2026. Бэкенд — критический путь. Найм второго бэкенд-разработчика ускоряет MVP примерно на 3 месяца и позволяет закрыть договоры+финансы к декабрю."
-    ]
-  ],
-  "okr_q": [
-    [
-      "Q3 2026 — OBJECTIVE: Заложить фундамент и доказать AI-концепцию"
-    ],
-    [
-      "KR: ЕСВ-авторизация + профиль + главный экран готовы на 100%. AI-оркестратор и WebSocket развёрнуты. Базовый AI-чат отвечает в реальном времени."
-    ],
-    [
-      "Ценность: каркас продукта + ключевой дифференциатор (AI) работают, можно показывать стейкхолдерам."
-    ],
-    [
-      "Q4 2026 — OBJECTIVE: Превратить AI-ассистента в полноценный интерфейс"
-    ],
-    [
-      "KR: AI-ядро завершено (intent/RAG, виджеты действий, голос, guardrails, метрики). Договоры доступны через AI. К 10.12 закрыт фундамент + авторизация + ядро AI."
-    ],
-    [
-      "Ценность: пользователь решает реальные задачи (договоры, баланс) через чат — проверяем гипотезу ценности."
-    ],
-    [
-      "Q1 2027 — OBJECTIVE: Закрыть ежедневные сценарии и выйти на полный MVP"
-    ],
-    [
-      "KR: Финансы полностью (QR-оплата, документы, история). Поддержка (ДОКК) и ОАТС с AI-виджетами. MVP (фазы 1-4) завершён ≈18.03.2027."
-    ],
-    [
-      "Ценность: покрыты самые частые сценарии (баланс/оплата ежедневно) — драйвер удержания."
-    ],
-    [
-      "Q2 2027 — OBJECTIVE: Полнота функционала и монетизация"
-    ],
-    [
-      "KR: Услуги/тарифы, КСС (+этикетка, делегирование), маркетинг, витрина, админ-панель. PrePay-подписка с Мерчант API и ОФД-чеками."
-    ],
-    [
-      "Ценность: монетизация препейд-сегмента + привлечение не-клиентов через витрину."
-    ],
-    [
-      "Q2-Q3 2027 — OBJECTIVE: Промышленный релиз"
-    ],
-    [
-      "KR: Лояльность (опц.), ИБ-документация, SAST/DAST, нагрузочное тестирование, Prod-среда, РА/РП. Полный релиз ≈27.08.2027."
-    ],
-    [
-      "Ценность: продукт готов к промышленной эксплуатации с гарантиями безопасности и отказоустойчивости."
-    ],
-    [
-      "СКВОЗНОЕ ДОПУЩЕНИЕ"
-    ],
-    [
-      "Все даты рассчитаны при 1 бэкенд-разработчике (критический путь) с заложенным риском 30% и российским производственным календарём. Второй бэкенд сдвигает релиз влево на ~3-4 месяца."
-    ]
   ],
   "risks": [
     {
       "id": "R1",
-      "desc": "Один бэкенд-разработчик — критический путь; вся разработка сериализуется на нём",
-      "prob": "5",
-      "impact": "5",
-      "mitigation": "Нанять 2-го BE (ускорение MVP на ~3 мес); приоритизировать BE-задачи; вынести часть на интеграции ЕЛК",
-      "owner": "РП / Ресурс-менеджер"
+      "desc": "Один бэкенд-разработчик — критический путь; вся разработка BE зависит от Макаренко Дмитрия (50% FTE)",
+      "prob": 5,
+      "impact": 5,
+      "mitigation": "Найм BE (заморожен), приоритизация задач, парное программирование",
+      "owner": "РП / Ресурс-менеджер",
+      "status": "open",
+      "source": "Грумминг 09.07.2026",
+      "link": "https://bwiki.beeline.ru/pages/viewpage.action?pageId=2033323131"
     },
     {
       "id": "R2",
-      "desc": "Найм заморожен до июля 2026 — команда стартует поздно",
-      "prob": "4",
-      "impact": "4",
-      "mitigation": "Подготовить аналитику/дизайн/архитектуру заранее (Q2); онбординг-планы готовы к выходу",
-      "owner": "ВП / HR"
+      "desc": "Найм заморожен до июля 2026 — команда стартует позже, дедлайн не сдвигается",
+      "prob": 4,
+      "impact": 4,
+      "mitigation": "Использование существующей команды, пересмотр скоупа MVP",
+      "owner": "ВП / HR",
+      "status": "open",
+      "source": "data.json v07.07.2026",
+      "link": ""
     },
     {
       "id": "R3",
-      "desc": "Внешний API биллинга подписок (PrePay) не готов к Q3 2026",
-      "prob": "3",
-      "impact": "4",
-      "mitigation": "Раннее согласование контракта API; заглушки для разработки; PrePay в конце плана",
-      "owner": "Солюшн архитектор"
+      "desc": "Внешний API биллинга подписок (PrePay) не готов к дедлайну",
+      "prob": 3,
+      "impact": 4,
+      "mitigation": "Заглушка в MVP, согласование с командой PrePay",
+      "owner": "Солюшн архитектор",
+      "status": "open",
+      "source": "data.json v07.07.2026",
+      "link": ""
     },
     {
       "id": "R4",
-      "desc": "Алгоритмические оценки (~95 задач) занижены — риск 30% может не покрыть",
-      "prob": "3",
-      "impact": "4",
-      "mitigation": "Груминг с командой (см. отдельный файл); пересмотр после первых спринтов",
-      "owner": "РП / Команда"
+      "desc": "Алгоритмические оценки (~95 задач) занижены — риск роста объёма",
+      "prob": 3,
+      "impact": 4,
+      "mitigation": "QA-коэффициент 35% уже применён, пересмотр скоупа",
+      "owner": "РП / Команда",
+      "status": "open",
+      "source": "Грумминг",
+      "link": "https://bwiki.beeline.ru/pages/viewpage.action?pageId=2033323131"
     },
     {
       "id": "R5",
-      "desc": "LLM-провайдер: лимиты, стоимость токенов, недоступность",
-      "prob": "3",
-      "impact": "4",
-      "mitigation": "Fallback-режим (реализован); кэш; мониторинг лимитов; резервный провайдер",
-      "owner": "Солюшн архитектор"
+      "desc": "LLM-провайдер: лимиты, стоимость токенов, недоступность ВегА",
+      "prob": 3,
+      "impact": 4,
+      "mitigation": "Резервный провайдер, кэширование ответов",
+      "owner": "Солюшн архитектор",
+      "status": "open",
+      "source": "Встреча с AI-платформой",
+      "link": ""
     },
     {
       "id": "R6",
-      "desc": "Требования ИБ к AI (ПДн, аудит) ужесточатся в ходе согласования",
-      "prob": "3",
-      "impact": "4",
-      "mitigation": "Ранний чек-лист с безопасником по ИИ; guardrails в скоупе; буфер на доработки",
-      "owner": "Сист. архитектор / ИБ"
+      "desc": "Требования ИБ к AI (ПДн, аудит) ужесточатся в ходе разработки",
+      "prob": 3,
+      "impact": 4,
+      "mitigation": "Ранний аудит ИБ, ИБ-истории в спринте 1",
+      "owner": "Сист. архитектор / ИБ",
+      "status": "open",
+      "source": "data.json v07.07.2026",
+      "link": ""
     },
     {
       "id": "R7",
-      "desc": "Интеграция через Capacitor/WebView даёт проблемы производительности на устройствах",
-      "prob": "2",
-      "impact": "3",
-      "mitigation": "Технические прототипы (выполнены); физические устройства для тестов; стратегия автотестов",
-      "owner": "Фронтенд / Архитектор"
+      "desc": "Интеграция через Capacitor/WebView даёт проблемы при публикации в App Store / Google Play",
+      "prob": 2,
+      "impact": 3,
+      "mitigation": "Ранний тест публикации, изучение опыта BUZZ",
+      "owner": "Фронтенд / Архитектор",
+      "status": "open",
+      "source": "Транскрипция BUZZ",
+      "link": ""
     },
     {
       "id": "R8",
-      "desc": "Зависимость от смежных команд (ЕЛК, ДОКК, ОАТС, ОФД) — задержки интеграций",
-      "prob": "4",
-      "impact": "3",
-      "mitigation": "Реестр внешних зависимостей (лист 12); ранние запросы доступов; контактные лица",
-      "owner": "РП"
+      "desc": "Зависимость от смежных команд (ЕЛК, ДОКК, ОАТС, ОФИС) — задержки по их стороне блокируют нас",
+      "prob": 4,
+      "impact": 3,
+      "mitigation": "Заглушки, заблаговременные запросы, эскалация",
+      "owner": "РП",
+      "status": "open",
+      "source": "data.json v07.07.2026",
+      "link": ""
     },
     {
       "id": "R9",
-      "desc": "Дедлайн 10.12.2026 воспринимается как дата полного MVP, хотя это веха фундамента",
-      "prob": "3",
-      "impact": "3",
-      "mitigation": "Явная коммуникация скоупа до 10.12 (листы 4-5); согласование ожиданий с руководством",
-      "owner": "ВП"
+      "desc": "Дедлайн 10.12.2026 воспринимается как дата полного продукта, а не MVP",
+      "prob": 3,
+      "impact": 3,
+      "mitigation": "Явная коммуникация скоупа MVP стейкхолдерам",
+      "owner": "ВП",
+      "status": "open",
+      "source": "data.json v07.07.2026",
+      "link": ""
     },
     {
       "id": "R10",
-      "desc": "Текучесть/болезни в маленькой команде критично бьют по срокам",
-      "prob": "2",
-      "impact": "4",
-      "mitigation": "Документирование, парное ревью, отсутствие bus-factor=1 по ключевым компонентам",
-      "owner": "РП"
+      "desc": "Текучесть/болезни в маленькой команде критично бьют по дедлайну",
+      "prob": 2,
+      "impact": 4,
+      "mitigation": "Документирование, перекрёстное обучение",
+      "owner": "РП",
+      "status": "open",
+      "source": "data.json v07.07.2026",
+      "link": ""
     },
     {
       "id": "R11",
-      "desc": "Скоуп растёт (новые хотелки: лояльность, делегирование) без сдвига сроков",
-      "prob": "3",
-      "impact": "3",
-      "mitigation": "Change-control; новые задачи → груминг и переоценка; фиксация MVP-границы",
-      "owner": "ВП / РП"
+      "desc": "Скоуп растёт (новые хотелки: лояльность, делегирование, рыночная аналитика)",
+      "prob": 3,
+      "impact": 3,
+      "mitigation": "Change control, фиксация скоупа MVP",
+      "owner": "ВП / РП",
+      "status": "open",
+      "source": "data.json v07.07.2026",
+      "link": ""
     },
     {
       "id": "R12",
-      "desc": "QA стартует поздно (с июля/августа) — дефекты копятся к концу",
-      "prob": "3",
-      "impact": "3",
-      "mitigation": "Сдвиг тестирования влево; автотесты; QA подключается к ядру AI с Q4",
-      "owner": "QA лид"
+      "desc": "QA стартует поздно (с июля/августа) — дефекты копятся",
+      "prob": 3,
+      "impact": 3,
+      "mitigation": "QA с первого спринта, автотесты",
+      "owner": "QA лид",
+      "status": "open",
+      "source": "data.json v07.07.2026",
+      "link": ""
     },
     {
       "id": "R13",
-      "desc": "Тестовый стенд не развёрнут: DevOps (Егоров) не развернул тестовый стенд — нет среды для интеграционного тестирования",
-      "prob": "4",
-      "impact": "5",
-      "mitigation": "Эскалация в руководство, установить конкретный дедлайн",
+      "desc": "Тестовый стенд не развёрнут: DevOps (Егоров) не работает на проект достаточно",
+      "prob": 4,
+      "impact": 5,
+      "mitigation": "Приоритизация DevOps задач, эскалация",
       "owner": "Егоров Иван",
       "status": "open",
-      "source": "jira-07.07.2026"
+      "source": "Дейлик 02.07.2026",
+      "link": ""
     },
     {
       "id": "R14",
-      "desc": "IDP/авторизация заблокирована: Нет домена и IP-адреса для IDP — авторизация не может быть реализована",
-      "prob": "4",
-      "impact": "5",
-      "mitigation": "Ускорить выдачу домена/IP через инфраструктурную команду",
+      "desc": "IDP/авторизация заблокирована: нет домена и IP-адреса для IDP с июня 2026",
+      "prob": 4,
+      "impact": 5,
+      "mitigation": "Ожидание Бачинского (вышел 08.07), ускорение CSP",
       "owner": "Бачинский Александр",
       "status": "open",
-      "source": "jira-07.07.2026"
+      "source": "Дейлик 25.06.2026",
+      "link": ""
     },
     {
       "id": "R15",
-      "desc": "Яковлев Евгений — узкое место ЕЛК API: Единственный аналитик ЕЛК API, критически перегружен, блокирует интеграцию",
-      "prob": "4",
-      "impact": "4",
-      "mitigation": "Приоритизировать задачи Яковлева, зафиксировать временные слоты",
+      "desc": "Яковлев Евгений — узкое место ЕЛК API: единственный аналитик ЕЛК, перегружен",
+      "prob": 4,
+      "impact": 4,
+      "mitigation": "Фиксация встреч, подготовка вопросов заранее",
       "owner": "Яковлев Евгений",
       "status": "open",
-      "source": "jira-07.07.2026"
+      "source": "RAG-саммари",
+      "link": ""
     },
     {
       "id": "R16",
-      "desc": "LangFuse не развёрнут: Платформа мониторинга AI-ассистента не развёрнута — нет возможности отслеживать качество ответов",
-      "prob": "3",
-      "impact": "4",
-      "mitigation": "Включить в ближайший спринт DevOps",
+      "desc": "LangFuse не развёрнут: платформа мониторинга AI-ассистента не готова",
+      "prob": 3,
+      "impact": 4,
+      "mitigation": "Ускорение DevOps, альтернативный мониторинг",
       "owner": "Макаренко Дмитрий",
       "status": "open",
-      "source": "jira-07.07.2026"
+      "source": "Встреча AI-платформа",
+      "link": ""
     },
     {
       "id": "R17",
-      "desc": "Prime API покрывает ~30% сценариев: Недостаточное покрытие API для MVP — часть сценариев нереализуема",
-      "prob": "3",
-      "impact": "4",
-      "mitigation": "Уточнить дорожную карту Prime API, проработать обходные пути",
+      "desc": "Prime API покрывает ~30% сценариев: недостаточное покрытие API для B2BAPP",
+      "prob": 3,
+      "impact": 4,
+      "mitigation": "Бачинский изучает перечень доработок Prime API",
       "owner": "Смирнов Александр",
       "status": "open",
-      "source": "jira-07.07.2026"
+      "source": "USM NextSteps NS4",
+      "link": ""
     },
     {
       "id": "R18",
-      "desc": "Самойло Андрей в отпуске (FE 20% FTE): Единственный FE-разработчик частично недоступен, старт спринтов 01.08.2026",
-      "prob": "3",
-      "impact": "3",
-      "mitigation": "Планировать задачи с учётом доступности, усилить FE-ресурс",
+      "desc": "Самойло Андрей в отпуске (FE 20% FTE): единственный FE-разработчик недоступен до 01.08",
+      "prob": 3,
+      "impact": 3,
+      "mitigation": "Задачи FE отложены на август, планирование спринта 1",
       "owner": "Немудров Виктор",
       "status": "open",
-      "source": "jira-07.07.2026"
+      "source": "data.json v07.07.2026",
+      "link": ""
     },
     {
       "id": "R19",
-      "desc": "Нехватка ресурсов BE/FE для дедлайна: Расчётный гант показывает: при текущей команде BE завершает работу в феврале 2028, FE — в декабре 2027. Для MVP 10.12.2026 необходимо либо сократить скоуп, либо усилить команду",
-      "prob": "5",
-      "impact": "5",
-      "mitigation": "Обсудить сокращение скоупа MVP / найм дополнительных разработчиков",
+      "desc": "Нехватка ресурсов BE/FE для дедлайна: расчётный гант показывает BE до 2030, FE до 2033 при текущих FTE",
+      "prob": 5,
+      "impact": 5,
+      "mitigation": "Сокращение скоупа MVP, найм, переприоритизация",
       "owner": "Немудров Виктор",
       "status": "open",
-      "source": "jira-07.07.2026-gantt"
-    }
-  ],
-  "assumptions": [
-    {
-      "id": "A1",
-      "desc": "Команда: 1 ВП, 1 РП, 2 BA, 1 DS, 3 FE, 1 BE, 2 QA, DevOps 0.2, Сист.арх 0.3, Солюшн 0.5",
-      "impact": "Изменение состава полностью меняет сроки. При 2 BE — MVP к декабрю; при задержке найма — сдвиг вправо",
-      "owner": "ВП / РП"
-    },
-    {
-      "id": "A2",
-      "desc": "Даты выхода: BA1 с 01.04, BE/FE1/QA1 с 01.07, FE2/FE3/QA2 с 01.08",
-      "impact": "Поздний выход сдвигает старт разработки и весь план",
-      "owner": "HR / РП"
-    },
-    {
-      "id": "A3",
-      "desc": "Риск-буфер 30% адекватен для алгоритмических оценок",
-      "impact": "Если занижено — все сроки растут пропорционально; нужен пересмотр после груминга",
-      "owner": "Команда (груминг)"
-    },
-    {
-      "id": "A4",
-      "desc": "QA = 35% от разработки, заложен поверх dev-оценок (в Jira отдельных QA-задач нет)",
-      "impact": "Если QA больше — нагрузка на QA1/QA2 и сроки тестирования растут",
-      "owner": "QA лид"
-    },
-    {
-      "id": "A5",
-      "desc": "Логическая декомпозиция фаз (фундамент→AI→договоры/финансы→…→продуктив) построена нами, в Jira явных зависимостей нет",
-      "impact": "Иной порядок сборки меняет критический путь и даты",
-      "owner": "Солюшн архитектор"
-    },
-    {
-      "id": "A6",
-      "desc": "Зависимости задач выведены логически (BA→BE→FE→QA внутри стори); в Jira связей blocks нет",
-      "impact": "Реальные тех. зависимости могут отличаться → пересчёт дат",
-      "owner": "Команда (груминг)"
-    },
-    {
-      "id": "A7",
-      "desc": "Критический путь = цепочка Бэкенд 1 (единственный BE)",
-      "impact": "При 2 BE критический путь меняется",
-      "owner": "РП"
-    },
-    {
-      "id": "A8",
-      "desc": "Внешний API биллинга подписок PrePay готов к Q3 2026",
-      "impact": "PrePay-блок сдвигается; монетизация препейд откладывается",
-      "owner": "Смежная команда биллинга"
-    },
-    {
-      "id": "A9",
-      "desc": "Приоритеты сторей = логика сборки продукта (можно скорректировать под бизнес)",
-      "impact": "Бизнес-приоритизация может изменить порядок и состав MVP",
-      "owner": "ВП"
-    },
-    {
-      "id": "A10",
-      "desc": "Производственный календарь РФ 2026-2027 (выходные/праздники) применён",
-      "impact": "Изменения в календаре незначительно влияют на даты",
-      "owner": "—"
-    },
-    {
-      "id": "A11",
-      "desc": "Пре-продакшн работы (исследования, найм, архитектура) — выполнены/в процессе (фев-июн 2026)",
-      "impact": "Если не завершены — старт фаз сдвигается",
-      "owner": "РП"
-    },
-    {
-      "id": "A12",
-      "desc": "Эпики 10-15 (услуги, маркетинг, КСС, витрина, PrePay) и лояльность — после MVP",
-      "impact": "Если нужны в MVP — потребуется 2-й BE или перенос дедлайна",
-      "owner": "ВП"
-    },
-    {
-      "id": "A13",
-      "desc": "Названия и состав некоторых стори взяты из Jira на дату выгрузки; могут уточняться на груминге",
-      "impact": "Уточнения не меняют сроки существенно",
-      "owner": "Команда"
-    },
-    {
-      "id": "A14",
-      "desc": "Дедлайн 10.12.2026 — фиксированная веха; полный MVP при 1 BE — Q1 2027",
-      "impact": "Если 10.12 = жёсткий полный MVP, нужен пересмотр ресурсов/скоупа",
-      "owner": "ВП / Руководство"
+      "source": "Гант v2 09.07.2026",
+      "link": "https://b2bapp-dashboard.vercel.app/pages/gantt.html"
     }
   ],
   "questions": [
@@ -1829,1117 +655,1229 @@
       "status": "Mid"
     }
   ],
-  "glossary": [
+  "assumptions": [
     {
-      "term": "B2BAPP",
-      "definition": "Мобильное приложение Билайн Бизнес для микробизнеса (самозанятые, ИП, ООО до 15 сотрудников)"
+      "id": "A1",
+      "desc": "Команда: 1 ВП, 1 РП, 2 BA, 1 DS, 3 FE, 1 BE, 2 QA, DevOps 0.2, Сист.арх 0.3, Солюшн 0.5",
+      "impact": "Изменение состава полностью меняет сроки. При 2 BE — MVP к декабрю; при задержке найма — сдвиг вправо",
+      "owner": "ВП / РП"
     },
     {
-      "term": "MVP",
-      "definition": "Minimum Viable Product — минимально жизнеспособный продукт для запуска и проверки гипотез"
+      "id": "A2",
+      "desc": "Даты выхода: BA1 с 01.04, BE/FE1/QA1 с 01.07, FE2/FE3/QA2 с 01.08",
+      "impact": "Поздний выход сдвигает старт разработки и весь план",
+      "owner": "HR / РП"
     },
     {
-      "term": "AI-ассистент",
-      "definition": "Основной интерфейс приложения: чат + смарт-карточки + виджеты для управления бизнесом через естественный язык"
+      "id": "A3",
+      "desc": "Риск-буфер 30% адекватен для алгоритмических оценок",
+      "impact": "Если занижено — все сроки растут пропорционально; нужен пересмотр после груминга",
+      "owner": "Команда (груминг)"
     },
     {
-      "term": "AI-оркестратор",
-      "definition": "Сервис, управляющий обработкой запросов к LLM: распознавание намерений, роутинг, генерация ответов"
+      "id": "A4",
+      "desc": "QA = 35% от разработки, заложен поверх dev-оценок (в Jira отдельных QA-задач нет)",
+      "impact": "Если QA больше — нагрузка на QA1/QA2 и сроки тестирования растут",
+      "owner": "QA лид"
     },
     {
-      "term": "MCP-сервер",
-      "definition": "Model Context Protocol сервер — поставляет AI-ассистенту данные (договоры, финансы, ОАТС) через инструменты"
+      "id": "A5",
+      "desc": "Логическая декомпозиция фаз (фундамент→AI→договоры/финансы→…→продуктив) построена нами, в Jira явных зависимостей нет",
+      "impact": "Иной порядок сборки меняет критический путь и даты",
+      "owner": "Солюшн архитектор"
     },
     {
-      "term": "RAG",
-      "definition": "Retrieval-Augmented Generation — поиск по базе знаний для обогащения ответов AI актуальной информацией"
+      "id": "A6",
+      "desc": "Зависимости задач выведены логически (BA→BE→FE→QA внутри стори); в Jira связей blocks нет",
+      "impact": "Реальные тех. зависимости могут отличаться → пересчёт дат",
+      "owner": "Команда (груминг)"
     },
     {
-      "term": "STT / TTS",
-      "definition": "Speech-to-Text (голосовой ввод) / Text-to-Speech (озвучка ответов)"
+      "id": "A7",
+      "desc": "Критический путь = цепочка Бэкенд 1 (единственный BE)",
+      "impact": "При 2 BE критический путь меняется",
+      "owner": "РП"
     },
     {
-      "term": "Guardrails",
-      "definition": "Защитные фильтры AI: блокировка ПДн, запрещённых тем, обеспечение безопасности ответов"
+      "id": "A8",
+      "desc": "Внешний API биллинга подписок PrePay готов к Q3 2026",
+      "impact": "PrePay-блок сдвигается; монетизация препейд откладывается",
+      "owner": "Смежная команда биллинга"
     },
     {
-      "term": "Fallback-режим",
-      "definition": "Кнопочный режим базовых операций при недоступности LLM (degraded mode)"
+      "id": "A9",
+      "desc": "Приоритеты сторей = логика сборки продукта (можно скорректировать под бизнес)",
+      "impact": "Бизнес-приоритизация может изменить порядок и состав MVP",
+      "owner": "ВП"
     },
     {
-      "term": "ЕСВ",
-      "definition": "Единая система входа / авторизации (через ЛК B2B Билайн, OTP)"
+      "id": "A10",
+      "desc": "Производственный календарь РФ 2026-2027 (выходные/праздники) применён",
+      "impact": "Изменения в календаре незначительно влияют на даты",
+      "owner": "—"
     },
     {
-      "term": "ЛК B2B / ЕЛК",
-      "definition": "Личный кабинет для корпоративных клиентов / Единый личный кабинет"
+      "id": "A11",
+      "desc": "Пре-продакшн работы (исследования, найм, архитектура) — выполнены/в процессе (фев-июн 2026)",
+      "impact": "Если не завершены — старт фаз сдвигается",
+      "owner": "РП"
     },
     {
-      "term": "IDP",
-      "definition": "Identity Provider — провайдер идентификации для авторизации"
+      "id": "A12",
+      "desc": "Эпики 10-15 (услуги, маркетинг, КСС, витрина, PrePay) и лояльность — после MVP",
+      "impact": "Если нужны в MVP — потребуется 2-й BE или перенос дедлайна",
+      "owner": "ВП"
     },
     {
-      "term": "WebSocket / webSocketGate",
-      "definition": "Протокол реального времени для стриминга ответов AI; микросервис-шлюз"
+      "id": "A13",
+      "desc": "Названия и состав некоторых стори взяты из Jira на дату выгрузки; могут уточняться на груминге",
+      "impact": "Уточнения не меняют сроки существенно",
+      "owner": "Команда"
     },
     {
-      "term": "Capacitor",
-      "definition": "Фреймворк для упаковки веб-приложения (React) в нативное мобильное (iOS/Android)"
-    },
-    {
-      "term": "RMS",
-      "definition": "Role Management System — ролевая модель (Владелец / Менеджер / Сотрудник)"
-    },
-    {
-      "term": "ОАТС",
-      "definition": "Облачная АТС — телефония для бизнеса (звонки, секретарь, статистика)"
-    },
-    {
-      "term": "ДОКК",
-      "definition": "Система обработки обращений клиентов (поддержка)"
-    },
-    {
-      "term": "КСС",
-      "definition": "Корпоративная сотовая связь — управление номерами сотрудников"
-    },
-    {
-      "term": "PrePay / PostPay",
-      "definition": "Препейд (предоплата) / постпейд (постоплата) — модели биллинга"
-    },
-    {
-      "term": "Ensemble / Comverse",
-      "definition": "Биллинговые системы: Ensemble (postpaid), Comverse/CAMEL (prepaid)"
-    },
-    {
-      "term": "MAPIC / Balance Manager",
-      "definition": "Сервис управления балансом prepaid-клиентов"
-    },
-    {
-      "term": "Мерчант API",
-      "definition": "API для привязки карты и рекуррентных платежей (подписки)"
-    },
-    {
-      "term": "ОФД",
-      "definition": "Оператор фискальных данных — кассовые чеки (билайн.Pay)"
-    },
-    {
-      "term": "СБП",
-      "definition": "Система быстрых платежей (оплата по QR-коду)"
-    },
-    {
-      "term": "Этикетка номера",
-      "definition": "Название компании, отображаемое при входящем звонке (caller ID)"
-    },
-    {
-      "term": "Vega",
-      "definition": "Внутренняя платформа/ресурсы для развёртывания"
-    },
-    {
-      "term": "SAST / DAST",
-      "definition": "Static / Dynamic Application Security Testing — проверки безопасности кода"
-    },
-    {
-      "term": "РА / РП (документы)",
-      "definition": "Руководство администратора / Руководство пользователя"
-    },
-    {
-      "term": "ДПП",
-      "definition": "Дорожная карта продукта / целевые продуктовые метрики"
-    },
-    {
-      "term": "FTE",
-      "definition": "Full-Time Equivalent — доля полной занятости (1.0 = полный день)"
-    },
-    {
-      "term": "Критический путь",
-      "definition": "Цепочка задач, определяющая минимальную длительность проекта (здесь — Бэкенд 1)"
-    },
-    {
-      "term": "Груминг",
-      "definition": "Сессия команды по уточнению и оценке задач бэклога"
-    },
-    {
-      "term": "Стори / Эпик / Задача",
-      "definition": "Иерархия Jira: Эпик → Стори (история) → Задача"
-    },
-    {
-      "term": "Часть (Part)",
-      "definition": "Тип связи в Jira: стори \"состоит из\" задач"
+      "id": "A14",
+      "desc": "Дедлайн 10.12.2026 — фиксированная веха; полный MVP при 1 BE — Q1 2027",
+      "impact": "Если 10.12 = жёсткий полный MVP, нужен пересмотр ресурсов/скоупа",
+      "owner": "ВП / Руководство"
     }
   ],
-  "stakeholders": [
-    {
-      "name": "2. Авторизация и профили",
-      "role": "A",
-      "team": "R",
-      "raci": "C",
-      "contact": "C"
-    },
-    {
-      "name": "3. Главная страница",
-      "role": "A",
-      "team": "R",
-      "raci": "C",
-      "contact": "I"
-    },
-    {
-      "name": "8. AI-ассистент",
-      "role": "A",
-      "team": "R",
-      "raci": "R",
-      "contact": "C"
-    },
-    {
-      "name": "4. Договоры",
-      "role": "A",
-      "team": "R",
-      "raci": "C",
-      "contact": "I"
-    },
-    {
-      "name": "5. Финансы",
-      "role": "A",
-      "team": "R",
-      "raci": "C",
-      "contact": "I"
-    },
-    {
-      "name": "6. Поддержка (ДОКК)",
-      "role": "A",
-      "team": "R",
-      "raci": "C",
-      "contact": "I"
-    },
-    {
-      "name": "7. Коммуникации/ОАТС",
-      "role": "A",
-      "team": "R",
-      "raci": "C",
-      "contact": "I"
-    },
-    {
-      "name": "9. Инфраструктура",
-      "role": "A",
-      "team": "R",
-      "raci": "R",
-      "contact": "R"
-    },
-    {
-      "name": "10. Админ-панель",
-      "role": "A",
-      "team": "R",
-      "raci": "C",
-      "contact": "I"
-    },
-    {
-      "name": "11-13. Услуги/Маркетинг/Витрина",
-      "role": "A",
-      "team": "R",
-      "raci": "C",
-      "contact": "I"
-    },
-    {
-      "name": "14. КСС",
-      "role": "A",
-      "team": "R",
-      "raci": "C",
-      "contact": "I"
-    },
-    {
-      "name": "15. PrePay-подписка",
-      "role": "A",
-      "team": "R",
-      "raci": "R",
-      "contact": "C"
-    },
-    {
-      "name": "1. Вывод в продуктив",
-      "role": "A",
-      "team": "R",
-      "raci": "C",
-      "contact": "R"
-    }
-  ],
-  "dependencies": [
-    {
-      "id": "D1",
-      "system": "ЕСВ / IDP (авторизация ЛК B2B)",
-      "desc": "API / интеграция",
-      "owner": "Команда ЕЛК / IDP",
-      "status": "2. Авторизация, 9. Инфра",
-      "risk": "Критично"
-    },
-    {
-      "id": "D2",
-      "system": "Системный API-ключ LLM (service account)",
-      "desc": "Доступ / ключ",
-      "owner": "ИИ-платформа (Юкина/Мочалов)",
-      "status": "8. AI, 9. Инфра",
-      "risk": "Критично"
-    },
-    {
-      "id": "D3",
-      "system": "LLM-провайдер (генерация, RAG)",
-      "desc": "Внешний сервис",
-      "owner": "ИИ-платформа",
-      "status": "8. AI-ассистент",
-      "risk": "Критично"
-    },
-    {
-      "id": "D4",
-      "system": "API договоров (ЕЛК)",
-      "desc": "API",
-      "owner": "Команда ЕЛК",
-      "status": "4. Договоры",
-      "risk": "Высокая"
-    },
-    {
-      "id": "D5",
-      "system": "API финансов/счетов (ЕЛК)",
-      "desc": "API",
-      "owner": "Команда ЕЛК",
-      "status": "5. Финансы",
-      "risk": "Высокая"
-    },
-    {
-      "id": "D6",
-      "system": "СБП / QR-оплата",
-      "desc": "Интеграция",
-      "owner": "Платёжный шлюз",
-      "status": "5. Финансы",
-      "risk": "Высокая"
-    },
-    {
-      "id": "D7",
-      "system": "ДОКК (обращения в поддержку)",
-      "desc": "API",
-      "owner": "Команда поддержки/ДОКК",
-      "status": "6. Поддержка",
-      "risk": "Средняя"
-    },
-    {
-      "id": "D8",
-      "system": "ОАТС (звонки, секретарь)",
-      "desc": "API",
-      "owner": "Команда ОАТС / CPBX",
-      "status": "7. Коммуникации",
-      "risk": "Средняя"
-    },
-    {
-      "id": "D9",
-      "system": "билайн.ПРОдвижение (SMS-рассылки)",
-      "desc": "Интеграция",
-      "owner": "Маркетинг-платформа",
-      "status": "12. Маркетинг",
-      "risk": "Средняя"
-    },
-    {
-      "id": "D10",
-      "system": "API биллинга подписок (PrePay)",
-      "desc": "API",
-      "owner": "Команда биллинга",
-      "status": "15. PrePay",
-      "risk": "Критично"
-    },
-    {
-      "id": "D11",
-      "system": "Balance Manager / MAPIC (prepaid)",
-      "desc": "Интеграция",
-      "owner": "Биллинг Comverse",
-      "status": "15. PrePay",
-      "risk": "Высокая"
-    },
-    {
-      "id": "D12",
-      "system": "Мерчант API (карта, рекуррентные)",
-      "desc": "API",
-      "owner": "Платёжный провайдер",
-      "status": "15. PrePay",
-      "risk": "Высокая"
-    },
-    {
-      "id": "D13",
-      "system": "ОФД / билайн.Pay (кассовые чеки)",
-      "desc": "Интеграция",
-      "owner": "ОФД",
-      "status": "15. PrePay",
-      "risk": "Высокая"
-    },
-    {
-      "id": "D14",
-      "system": "Ресурсы Vega + CI/CD",
-      "desc": "Инфраструктура",
-      "owner": "DevOps / платформа",
-      "status": "9. Инфраструктура",
-      "risk": "Критично"
-    },
-    {
-      "id": "D15",
-      "system": "Согласование ИБ (ПДн, аудит, SAST/DAST)",
-      "desc": "Юр./ИБ",
-      "owner": "Служба ИБ",
-      "status": "1. Продуктив, 8. AI",
-      "risk": "Высокая"
-    },
-    {
-      "id": "D16",
-      "system": "API КСС (управление номерами, этикетка)",
-      "desc": "API",
-      "owner": "Команда сотовой связи",
-      "status": "14. КСС",
-      "risk": "Средняя"
-    },
-    {
-      "id": "D17",
-      "system": "API лояльности (бонусы, кэшбэк)",
-      "desc": "API",
-      "owner": "Команда лояльности (Багдасарова)",
-      "status": "11. Услуги/лояльность",
-      "risk": "Низкая"
-    }
-  ],
-  "sprints": [
-    [
-      "Спринт 1",
-      "01.Июл–15.Июл 2026",
-      "Вывод в продуктив",
-      "132,169,173,179,194,195,197,199,200,201",
-      "DevOps 1,Аналитик 1,Аналитик 2,Бэкенд 1,ВП,Дизайнер 1,РП,Сист. архитектор,Солюшн архитектор",
-      "97.5"
-    ],
-    [
-      "Спринт 2",
-      "15.Июл–29.Июл 2026",
-      "Вывод в продуктив",
-      "130,176,185,210,211,212,213,214,216,217",
-      "Аналитик 1,Аналитик 2,Бэкенд 1,ВП,Дизайнер 1,РП,Сист. архитектор,Солюшн архитектор,Фронтенд 1",
-      "67.6"
-    ],
-    [
-      "Спринт 3",
-      "29.Июл–12.Авг 2026",
-      "AI-ядро",
-      "131,174,177,180,218,219,220,221,224,226",
-      "Аналитик 1,Аналитик 2,Бэкенд 1,ВП,Дизайнер 1,РП,Солюшн архитектор,Фронтенд 1",
-      "66.3"
-    ],
-    [
-      "Спринт 4",
-      "12.Авг–26.Авг 2026",
-      "Поддержка+ОАТС",
-      "168,170,175,178,229,237,246,247,261,268",
-      "Аналитик 1,Аналитик 2,Бэкенд 1,ВП,Дизайнер 1,Солюшн архитектор",
-      "45.4"
-    ],
-    [
-      "Спринт 5",
-      "26.Авг–09.Сен 2026",
-      "Авторизация/Профиль/Главный",
-      "198,206,240,273,274,330,344,352,365,398",
-      "Аналитик 1,Аналитик 2,Бэкенд 1,Солюшн архитектор,Фронтенд 1,Фронтенд 2,Фронтенд 3",
-      "48.1"
-    ],
-    [
-      "Спринт 6",
-      "09.Сен–23.Сен 2026",
-      "Авторизация/Профиль/Главный",
-      "248,252,263,271,272,290,351",
-      "Аналитик 1,Бэкенд 1,Фронтенд 1,Фронтенд 2,Фронтенд 3",
-      "28.6"
-    ],
-    [
-      "Спринт 7",
-      "23.Сен–07.Окт 2026",
-      "Авторизация/Профиль/Главный",
-      "346,349,350,355,357,358",
-      "QA 1,QA 2,Бэкенд 1,Фронтенд 1,Фронтенд 2,Фронтенд 3",
-      "48.5"
-    ],
-    [
-      "Спринт 8",
-      "07.Окт–21.Окт 2026",
-      "AI-ядро",
-      "317,321,324,356,372,374,379",
-      "Бэкенд 1,Фронтенд 1,Фронтенд 2,Фронтенд 3",
-      "31.2"
-    ],
-    [
-      "Спринт 9",
-      "21.Окт–04.Ноя 2026",
-      "AI-ядро",
-      "319,323,381",
-      "Бэкенд 1,Фронтенд 2,Фронтенд 3",
-      "18.2"
-    ],
-    [
-      "Спринт 10",
-      "04.Ноя–18.Ноя 2026",
-      "AI-ядро",
-      "318,382",
-      "Бэкенд 1,Фронтенд 2",
-      "11.7"
-    ],
-    [
-      "Спринт 11",
-      "18.Ноя–02.Дек 2026",
-      "AI-ядро",
-      "375,378",
-      "Бэкенд 1",
-      "9.1"
-    ],
-    [
-      "Спринт 12 🚩",
-      "02.Дек–16.Дек 2026",
-      "AI-ядро",
-      "256,325,373,383,386,387",
-      "Бэкенд 1,Фронтенд 1",
-      "26"
-    ],
-    [
-      "Спринт 13",
-      "16.Дек–30.Дек 2026",
-      "AI-ядро",
-      "238,239,242",
-      "QA 1,QA 2,Бэкенд 1,Фронтенд 3",
-      "53.5"
-    ],
-    [
-      "Спринт 14",
-      "30.Дек–13.Янв",
-      "AI-ядро",
-      "239,242",
-      "QA 1,QA 2,Бэкенд 1,Фронтенд 3",
-      "48.3"
-    ],
-    [
-      "Спринт 15",
-      "13.Янв–27.Янв 2027",
-      "AI-ядро",
-      "243,244,388",
-      "Бэкенд 1,Фронтенд 2",
-      "11.7"
-    ],
-    [
-      "Спринт 16",
-      "27.Янв–10.Фев 2027",
-      "Договоры+Финансы",
-      "188,245,258,364",
-      "QA 1,QA 2,Бэкенд 1,Фронтенд 1",
-      "31.5"
-    ],
-    [
-      "Спринт 17",
-      "10.Фев–24.Фев 2027",
-      "Договоры+Финансы",
-      "259,370",
-      "Бэкенд 1,Фронтенд 3",
-      "9.1"
-    ],
-    [
-      "Спринт 18",
-      "24.Фев–10.Мар 2027",
-      "Договоры+Финансы",
-      "183,363",
-      "Бэкенд 1",
-      "7.8"
-    ],
-    [
-      "Спринт 19",
-      "10.Мар–24.Мар 2027",
-      "Поддержка+ОАТС",
-      "182,184,187,328,371",
-      "Бэкенд 1,Фронтенд 1,Фронтенд 2",
-      "22.1"
-    ],
-    [
-      "Спринт 20",
-      "24.Мар–07.Апр 2027",
-      "Поддержка+ОАТС",
-      "390,391,392,393,405,406",
-      "QA 1,QA 2,Бэкенд 1,Фронтенд 1,Фронтенд 2,Фронтенд 3",
-      "39.6"
-    ],
-    [
-      "Спринт 21",
-      "07.Апр–21.Апр 2027",
-      "Услуги/КСС/Маркетинг",
-      "396,397,399",
-      "Бэкенд 1,Фронтенд 3",
-      "15.6"
-    ],
-    [
-      "Спринт 22",
-      "21.Апр–05.Май 2027",
-      "Услуги/КСС/Маркетинг",
-      "400,408",
-      "Бэкенд 1,Фронтенд 1",
-      "11.7"
-    ],
-    [
-      "Спринт 23",
-      "05.Май–19.Май 2027",
-      "Услуги/КСС/Маркетинг",
-      "250,264,402,403",
-      "QA 1,QA 2,Бэкенд 1,Фронтенд 2,Фронтенд 3",
-      "48"
-    ],
-    [
-      "Спринт 24",
-      "19.Май–02.Июн 2027",
-      "Услуги/КСС/Маркетинг",
-      "251,253",
-      "Бэкенд 1,Фронтенд 1",
-      "10.4"
-    ],
-    [
-      "Спринт 25",
-      "02.Июн–16.Июн 2027",
-      "PrePay",
-      "235,255,267,411",
-      "Бэкенд 1,Фронтенд 2,Фронтенд 3",
-      "24.7"
-    ],
-    [
-      "Спринт 26",
-      "16.Июн–30.Июн 2027",
-      "PrePay",
-      "413",
-      "QA 1,QA 2,Бэкенд 1",
-      "15.6"
-    ],
-    [
-      "Спринт 27",
-      "30.Июн–14.Июл 2027",
-      "Лояльность",
-      "266,270",
-      "QA 1,QA 2,Бэкенд 1,Фронтенд 1",
-      "15.8"
-    ],
-    [
-      "Спринт 28",
-      "14.Июл–28.Июл 2027",
-      "Вывод в продуктив",
-      "202",
-      "Бэкенд 1",
-      "5.2"
-    ],
-    [
-      "Спринт 29",
-      "28.Июл–11.Авг 2027",
-      "Вывод в продуктив",
-      "223,227",
-      "Бэкенд 1",
-      "10.4"
-    ],
-    [
-      "Спринт 30",
-      "11.Авг–25.Авг 2027",
-      "Вывод в продуктив",
-      "215,228",
-      "QA 1,QA 2,Бэкенд 1,Фронтенд 2",
-      "19.6"
-    ],
-    [
-      "Всего 31 спринтов. 🚩 — спринт с вехой 10.12.2026. Состав спринта = задачи, стартующие в его окне (resource-constrained план). Скорректируйте на планировании под фактическую velocity команды.",
-      "",
-      "",
-      "",
-      "",
-      ""
-    ]
-  ],
-  "acceptance": [
-    {
-      "area": "№",
-      "criterion": "Критерий приёмки",
-      "measure": "Категория",
-      "status": "К вехе"
-    },
-    {
-      "area": "1",
-      "criterion": "Пользователь входит через ЕСВ (ЛК B2B) с OTP и биометрией, работает в нескольких организациях",
-      "measure": "Авторизация",
-      "status": "10.12.2026"
-    },
-    {
-      "area": "2",
-      "criterion": "Ролевая модель (RMS) разграничивает права (Владелец/Менеджер/Сотрудник)",
-      "measure": "Авторизация",
-      "status": "10.12.2026"
-    },
-    {
-      "area": "3",
-      "criterion": "Главный экран показывает смарт-карточки (баланс, договоры, события) и быстрые команды",
-      "measure": "Главный экран",
-      "status": "10.12.2026"
-    },
-    {
-      "area": "4",
-      "criterion": "AI-ассистент отвечает в реальном времени (стриминг), ведёт историю диалогов",
-      "measure": "AI",
-      "status": "10.12.2026"
-    },
-    {
-      "area": "5",
-      "criterion": "AI распознаёт намерения (intent) и ищет по базе знаний (RAG) с корректными ответами",
-      "measure": "AI",
-      "status": "10.12.2026"
-    },
-    {
-      "area": "6",
-      "criterion": "Голосовой ввод (STT) работает; ответы можно озвучить (TTS)",
-      "measure": "AI",
-      "status": "10.12.2026"
-    },
-    {
-      "area": "7",
-      "criterion": "Guardrails AI: не раскрывает ПДн, отклоняет запрещённые темы; есть fallback при сбое LLM",
-      "measure": "AI / ИБ",
-      "status": "10.12.2026"
-    },
-    {
-      "area": "8",
-      "criterion": "Инфраструктура (оркестратор, MCP, WebSocket, service account, CI/CD) развёрнута и стабильна",
-      "measure": "Инфра",
-      "status": "10.12.2026"
-    },
-    {
-      "area": "9",
-      "criterion": "Договоры доступны: список, карточка, скачивание, AI-виджеты и инсайты",
-      "measure": "Договоры",
-      "status": "Q1 2027"
-    },
-    {
-      "area": "10",
-      "criterion": "Финансы: счета, детализация, история платежей, закрывающие документы",
-      "measure": "Финансы",
-      "status": "Q1 2027"
-    },
-    {
-      "area": "11",
-      "criterion": "Оплата счёта через QR-код СБП работает end-to-end",
-      "measure": "Финансы",
-      "status": "Q1 2027"
-    },
-    {
-      "area": "12",
-      "criterion": "Обращения в поддержку (ДОКК) создаются и отслеживаются",
-      "measure": "Поддержка",
-      "status": "Q1 2027"
-    },
-    {
-      "area": "13",
-      "criterion": "ОАТС: AI-виджеты звонков и настройки секретаря",
-      "measure": "ОАТС",
-      "status": "Q1 2027"
-    },
-    {
-      "area": "14",
-      "criterion": "Метрика «решение задачи за 1-3 сообщения» собирается и достигает целевого значения",
-      "measure": "AI / Продукт",
-      "status": "Q1 2027"
-    },
-    {
-      "area": "15",
-      "criterion": "Приложение опубликовано/собрано под iOS и Android (Capacitor), проходит smoke E2E",
-      "measure": "Платформа",
-      "status": "Q1 2027"
-    },
-    {
-      "area": "16",
-      "criterion": "Пройдено нагрузочное тестирование; настроены дашборды наблюдаемости",
-      "measure": "НФТ",
-      "status": "Q2 2027"
-    },
-    {
-      "area": "17",
-      "criterion": "Пройдены SAST/DAST; согласованы ИБ-документы (реестр данных, сетевая схема)",
-      "measure": "ИБ",
-      "status": "Q2 2027"
-    },
-    {
-      "area": "18",
-      "criterion": "Подготовлены РА/РП (руководства), оформлен приказ о вводе в эксплуатацию",
-      "measure": "Документы",
-      "status": "Q2 2027"
-    }
-  ],
-  "updated": "07.07.2026",
-  "epics": [
-    {
-      "key": "B2BAPP-1",
-      "name": "1. Управление развитием систем",
-      "stories": 6,
-      "tasks": 60,
-      "totalH": 2484,
-      "doneH": 410,
-      "status": "В работе"
-    },
-    {
-      "key": "B2BAPP-21",
-      "name": "2. Авторизация и профиль",
-      "stories": 20,
-      "tasks": 51,
-      "totalH": 1515,
-      "doneH": 0,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-22",
-      "name": "3. Главная страница",
-      "stories": 21,
-      "tasks": 41,
-      "totalH": 1177,
-      "doneH": 40,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-23",
-      "name": "4. Договоры",
-      "stories": 14,
-      "tasks": 19,
-      "totalH": 366,
-      "doneH": 132,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-24",
-      "name": "5. Финансы",
-      "stories": 29,
-      "tasks": 56,
-      "totalH": 1154,
-      "doneH": 42,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-25",
-      "name": "6. Поддержка",
-      "stories": 5,
-      "tasks": 12,
-      "totalH": 277,
-      "doneH": 0,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-26",
-      "name": "7. Коммуникации (ОАТС)",
-      "stories": 18,
-      "tasks": 30,
-      "totalH": 630,
-      "doneH": 0,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-27",
-      "name": "8. AI-ассистент",
-      "stories": 60,
-      "tasks": 112,
-      "totalH": 2686,
-      "doneH": 79,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-134",
-      "name": "9. Инфраструктура",
-      "stories": 17,
-      "tasks": 39,
-      "totalH": 748,
-      "doneH": 8,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-135",
-      "name": "10. Админ-панель",
-      "stories": 1,
-      "tasks": 4,
-      "totalH": 96,
-      "doneH": 0,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-136",
-      "name": "11. Услуги и тарифы",
-      "stories": 3,
-      "tasks": 9,
-      "totalH": 350,
-      "doneH": 0,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-137",
-      "name": "12. Маркетинг",
-      "stories": 7,
-      "tasks": 13,
-      "totalH": 322,
-      "doneH": 0,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-138",
-      "name": "13. Витрина",
-      "stories": 4,
-      "tasks": 4,
-      "totalH": 108,
-      "doneH": 0,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-140",
-      "name": "14. КСС",
-      "stories": 6,
-      "tasks": 8,
-      "totalH": 244,
-      "doneH": 0,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-141",
-      "name": "15. PrePay",
-      "stories": 8,
-      "tasks": 13,
-      "totalH": 392,
-      "doneH": 0,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-415",
-      "name": "16. Платформы",
-      "stories": 11,
-      "tasks": 37,
-      "totalH": 1061,
-      "doneH": 0,
-      "status": "Бэклог"
-    },
-    {
-      "key": "B2BAPP-484",
-      "name": "17. AI-отчёты",
-      "stories": 8,
-      "tasks": 18,
-      "totalH": 602,
-      "doneH": 0,
-      "status": "Бэклог"
-    }
-  ],
-  "milestones": [
-    {
-      "date": "2026-01-01",
-      "label": "Старт проекта",
-      "status": "done"
-    },
-    {
-      "date": "2026-04-22",
-      "label": "Аналитик в команде",
-      "status": "done"
-    },
-    {
-      "date": "2026-08-01",
-      "label": "Старт спринтов",
-      "status": "planned"
-    },
-    {
-      "date": "2026-10-01",
-      "label": "Alpha (внутренний)",
-      "status": "planned"
-    },
-    {
-      "date": "2026-11-15",
-      "label": "Beta (тестировщики)",
-      "status": "planned"
-    },
-    {
-      "date": "2026-12-10",
-      "label": "MVP / Дедлайн",
-      "status": "planned"
-    }
-  ],
-  "team": [
-    {
-      "name": "Пальчиков Леонид",
-      "role": "PO",
-      "fte": 1,
+  "ganttV2": [
+    {
+      "key": "B2BAPP-1_ORG",
+      "summary": "1. Управление развитием систем",
+      "epic": "B2BAPP-1",
+      "role": "ORG",
+      "roleName": "РП/ВП",
+      "h": 538,
+      "wd": 67,
+      "fte": 1.0,
       "start": "2026-01-01",
-      "status": "active"
+      "end": "2026-07-09",
+      "status": "in_progress",
+      "totalTasks": 37,
+      "doneTasks": 2,
+      "spentH": 880
     },
     {
-      "name": "Немудров Виктор",
-      "role": "PM/РП",
-      "fte": 1,
-      "start": "2026-02-02",
-      "status": "active"
-    },
-    {
-      "name": "Макаренко Дмитрий",
-      "role": "BE/Архитектор",
-      "fte": 0.5,
-      "start": "2026-03-27",
-      "status": "active"
-    },
-    {
-      "name": "Бачинский Александр",
-      "role": "Солюшн-арх.",
-      "fte": 0.5,
-      "start": "2026-03-27",
-      "status": "active"
-    },
-    {
-      "name": "Балашов Влад",
-      "role": "Дизайнер",
-      "fte": 1,
-      "start": "2026-03-23",
-      "status": "active"
-    },
-    {
-      "name": "Смирнов Александр",
-      "role": "Аналитик",
-      "fte": 1,
+      "key": "B2BAPP-1_BA",
+      "summary": "1. Управление развитием систем",
+      "epic": "B2BAPP-1",
+      "role": "BA",
+      "roleName": "Аналитики",
+      "h": 485,
+      "wd": 61,
+      "fte": 1.8,
       "start": "2026-04-22",
-      "status": "active"
+      "end": "2026-07-09",
+      "status": "in_progress",
+      "totalTasks": 22,
+      "doneTasks": 1,
+      "spentH": 72
     },
     {
-      "name": "Самойло Андрей",
+      "key": "B2BAPP-1_ARC",
+      "summary": "1. Управление развитием систем",
+      "epic": "B2BAPP-1",
+      "role": "ARC",
+      "roleName": "Бачинский Александр",
+      "h": 238,
+      "wd": 60,
+      "fte": 0.5,
+      "start": "2026-03-27",
+      "end": "2026-07-09",
+      "status": "in_progress",
+      "totalTasks": 9,
+      "doneTasks": 1,
+      "spentH": 101
+    },
+    {
+      "key": "B2BAPP-1_DS",
+      "summary": "1. Управление развитием систем",
+      "epic": "B2BAPP-1",
+      "role": "DS",
+      "roleName": "Балашов Влад",
+      "h": 265,
+      "wd": 33,
+      "fte": 1.0,
+      "start": "2026-03-23",
+      "end": "2026-07-09",
+      "status": "in_progress",
+      "totalTasks": 4,
+      "doneTasks": 0,
+      "spentH": 429
+    },
+    {
+      "key": "B2BAPP-27_BE",
+      "summary": "8. AI-ассистент",
+      "epic": "B2BAPP-27",
+      "role": "BE",
+      "roleName": "Макаренко Дмитрий",
+      "h": 1109,
+      "wd": 277,
+      "fte": 0.5,
+      "start": "2026-08-01",
+      "end": "2027-09-25",
+      "status": "planned",
+      "totalTasks": 28,
+      "doneTasks": 0,
+      "spentH": 25
+    },
+    {
+      "key": "B2BAPP-27_BA",
+      "summary": "8. AI-ассистент",
+      "epic": "B2BAPP-27",
+      "role": "BA",
+      "roleName": "Аналитики",
+      "h": 392,
+      "wd": 49,
+      "fte": 1.8,
+      "start": "2026-08-01",
+      "end": "2026-10-07",
+      "status": "planned",
+      "totalTasks": 12,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-27_DS",
+      "summary": "8. AI-ассистент",
+      "epic": "B2BAPP-27",
+      "role": "DS",
+      "roleName": "Балашов Влад",
+      "h": 347,
+      "wd": 43,
+      "fte": 1.0,
+      "start": "2026-08-01",
+      "end": "2026-09-29",
+      "status": "planned",
+      "totalTasks": 7,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-27_FE",
+      "summary": "8. AI-ассистент",
+      "epic": "B2BAPP-27",
       "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 622,
+      "wd": 389,
       "fte": 0.2,
       "start": "2026-08-01",
-      "status": "vacation"
+      "end": "2028-05-15",
+      "status": "planned",
+      "totalTasks": 16,
+      "doneTasks": 0,
+      "spentH": 0
     },
     {
-      "name": "Егоров Иван",
-      "role": "DevOps",
-      "fte": 0.1,
-      "start": "2026-01-01",
-      "status": "active"
+      "key": "B2BAPP-24_BA",
+      "summary": "5. Финансы",
+      "epic": "B2BAPP-24",
+      "role": "BA",
+      "roleName": "Аналитики",
+      "h": 320,
+      "wd": 40,
+      "fte": 1.8,
+      "start": "2026-10-08",
+      "end": "2026-12-02",
+      "status": "planned",
+      "totalTasks": 10,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-24_DS",
+      "summary": "5. Финансы",
+      "epic": "B2BAPP-24",
+      "role": "DS",
+      "roleName": "Балашов Влад",
+      "h": 180,
+      "wd": 22,
+      "fte": 1.0,
+      "start": "2026-09-30",
+      "end": "2026-10-29",
+      "status": "planned",
+      "totalTasks": 5,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-23_BA",
+      "summary": "4. Договоры",
+      "epic": "B2BAPP-23",
+      "role": "BA",
+      "roleName": "Аналитики",
+      "h": 256,
+      "wd": 32,
+      "fte": 1.8,
+      "start": "2026-12-03",
+      "end": "2027-01-18",
+      "status": "planned",
+      "totalTasks": 8,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-134_BE",
+      "summary": "9. Инфраструктура",
+      "epic": "B2BAPP-134",
+      "role": "BE",
+      "roleName": "Макаренко Дмитрий",
+      "h": 784,
+      "wd": 196,
+      "fte": 0.5,
+      "start": "2027-09-26",
+      "end": "2028-06-25",
+      "status": "planned",
+      "totalTasks": 17,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-22_FE",
+      "summary": "3. Главная страница",
+      "epic": "B2BAPP-22",
+      "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 480,
+      "wd": 300,
+      "fte": 0.2,
+      "start": "2028-05-16",
+      "end": "2029-11-08",
+      "status": "planned",
+      "totalTasks": 12,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-25_FE",
+      "summary": "6. Поддержка",
+      "epic": "B2BAPP-25",
+      "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 368,
+      "wd": 230,
+      "fte": 0.2,
+      "start": "2029-11-11",
+      "end": "2030-11-13",
+      "status": "planned",
+      "totalTasks": 8,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-26_FE",
+      "summary": "7. Коммуникации (ОАТС)",
+      "epic": "B2BAPP-26",
+      "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 480,
+      "wd": 300,
+      "fte": 0.2,
+      "start": "2030-11-14",
+      "end": "2032-04-09",
+      "status": "planned",
+      "totalTasks": 10,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-21_FE",
+      "summary": "2. Авторизация и профиль",
+      "epic": "B2BAPP-21",
+      "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 224,
+      "wd": 140,
+      "fte": 0.2,
+      "start": "2032-04-10",
+      "end": "2033-02-13",
+      "status": "planned",
+      "totalTasks": 6,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-140_FE",
+      "summary": "14. КСС / Сотовая связь",
+      "epic": "B2BAPP-140",
+      "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 176,
+      "wd": 110,
+      "fte": 0.2,
+      "start": "2033-02-14",
+      "end": "2033-08-11",
+      "status": "planned",
+      "totalTasks": 4,
+      "doneTasks": 0,
+      "spentH": 0
     }
   ],
-  "kpi": {
-    "totalStories": 250,
-    "totalTasks": 560,
-    "totalEstimateH": 13855,
-    "completedH": 711,
-    "completionPct": 5.1,
-    "daysToDeadline": 156,
-    "sprintsPlanned": 0,
-    "sprintsCompleted": 0,
-    "velocity": 0,
-    "blockers": 6
-  },
-  "summary": {
-    "stories": 250,
-    "tasks": 560,
-    "epics": 17,
-    "storiesInProgress": 5,
-    "storiesDone": 0,
-    "tasksInProgress": 12,
-    "tasksDone": 20,
-    "totalEstimateHours": 13855,
-    "doneHours": 711
-  },
-  "roleEstimates": {
-    "BA": {
-      "hours": 3446,
-      "count": 160
+  "gantt": [
+    {
+      "key": "B2BAPP-1_ORG",
+      "summary": "1. Управление развитием систем",
+      "epic": "B2BAPP-1",
+      "role": "ORG",
+      "roleName": "РП/ВП",
+      "h": 538,
+      "wd": 67,
+      "fte": 1.0,
+      "start": "2026-01-01",
+      "end": "2026-07-09",
+      "status": "in_progress",
+      "totalTasks": 37,
+      "doneTasks": 2,
+      "spentH": 880
     },
-    "BE": {
-      "hours": 3449,
-      "count": 110
+    {
+      "key": "B2BAPP-1_BA",
+      "summary": "1. Управление развитием систем",
+      "epic": "B2BAPP-1",
+      "role": "BA",
+      "roleName": "Аналитики",
+      "h": 485,
+      "wd": 61,
+      "fte": 1.8,
+      "start": "2026-04-22",
+      "end": "2026-07-09",
+      "status": "in_progress",
+      "totalTasks": 22,
+      "doneTasks": 1,
+      "spentH": 72
     },
-    "FE": {
-      "hours": 2833,
-      "count": 106
+    {
+      "key": "B2BAPP-1_ARC",
+      "summary": "1. Управление развитием систем",
+      "epic": "B2BAPP-1",
+      "role": "ARC",
+      "roleName": "Бачинский Александр",
+      "h": 238,
+      "wd": 60,
+      "fte": 0.5,
+      "start": "2026-03-27",
+      "end": "2026-07-09",
+      "status": "in_progress",
+      "totalTasks": 9,
+      "doneTasks": 1,
+      "spentH": 101
     },
-    "ORG": {
-      "hours": 1340,
-      "count": 37
+    {
+      "key": "B2BAPP-1_DS",
+      "summary": "1. Управление развитием систем",
+      "epic": "B2BAPP-1",
+      "role": "DS",
+      "roleName": "Балашов Влад",
+      "h": 265,
+      "wd": 33,
+      "fte": 1.0,
+      "start": "2026-03-23",
+      "end": "2026-07-09",
+      "status": "in_progress",
+      "totalTasks": 4,
+      "doneTasks": 0,
+      "spentH": 429
     },
-    "DS": {
-      "hours": 1028,
-      "count": 35
+    {
+      "key": "B2BAPP-27_BE",
+      "summary": "8. AI-ассистент",
+      "epic": "B2BAPP-27",
+      "role": "BE",
+      "roleName": "Макаренко Дмитрий",
+      "h": 1109,
+      "wd": 277,
+      "fte": 0.5,
+      "start": "2026-08-01",
+      "end": "2027-09-25",
+      "status": "planned",
+      "totalTasks": 28,
+      "doneTasks": 0,
+      "spentH": 25
     },
-    "DVO": {
-      "hours": 927,
-      "count": 41
+    {
+      "key": "B2BAPP-27_BA",
+      "summary": "8. AI-ассистент",
+      "epic": "B2BAPP-27",
+      "role": "BA",
+      "roleName": "Аналитики",
+      "h": 392,
+      "wd": 49,
+      "fte": 1.8,
+      "start": "2026-08-01",
+      "end": "2026-10-07",
+      "status": "planned",
+      "totalTasks": 12,
+      "doneTasks": 0,
+      "spentH": 0
     },
-    "ARC": {
-      "hours": 780,
-      "count": 42
+    {
+      "key": "B2BAPP-27_DS",
+      "summary": "8. AI-ассистент",
+      "epic": "B2BAPP-27",
+      "role": "DS",
+      "roleName": "Балашов Влад",
+      "h": 347,
+      "wd": 43,
+      "fte": 1.0,
+      "start": "2026-08-01",
+      "end": "2026-09-29",
+      "status": "planned",
+      "totalTasks": 7,
+      "doneTasks": 0,
+      "spentH": 0
     },
-    "QA": {
-      "hours": 52,
-      "count": 2
+    {
+      "key": "B2BAPP-27_FE",
+      "summary": "8. AI-ассистент",
+      "epic": "B2BAPP-27",
+      "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 622,
+      "wd": 389,
+      "fte": 0.2,
+      "start": "2026-08-01",
+      "end": "2028-05-15",
+      "status": "planned",
+      "totalTasks": 16,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-24_BA",
+      "summary": "5. Финансы",
+      "epic": "B2BAPP-24",
+      "role": "BA",
+      "roleName": "Аналитики",
+      "h": 320,
+      "wd": 40,
+      "fte": 1.8,
+      "start": "2026-10-08",
+      "end": "2026-12-02",
+      "status": "planned",
+      "totalTasks": 10,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-24_DS",
+      "summary": "5. Финансы",
+      "epic": "B2BAPP-24",
+      "role": "DS",
+      "roleName": "Балашов Влад",
+      "h": 180,
+      "wd": 22,
+      "fte": 1.0,
+      "start": "2026-09-30",
+      "end": "2026-10-29",
+      "status": "planned",
+      "totalTasks": 5,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-23_BA",
+      "summary": "4. Договоры",
+      "epic": "B2BAPP-23",
+      "role": "BA",
+      "roleName": "Аналитики",
+      "h": 256,
+      "wd": 32,
+      "fte": 1.8,
+      "start": "2026-12-03",
+      "end": "2027-01-18",
+      "status": "planned",
+      "totalTasks": 8,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-134_BE",
+      "summary": "9. Инфраструктура",
+      "epic": "B2BAPP-134",
+      "role": "BE",
+      "roleName": "Макаренко Дмитрий",
+      "h": 784,
+      "wd": 196,
+      "fte": 0.5,
+      "start": "2027-09-26",
+      "end": "2028-06-25",
+      "status": "planned",
+      "totalTasks": 17,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-22_FE",
+      "summary": "3. Главная страница",
+      "epic": "B2BAPP-22",
+      "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 480,
+      "wd": 300,
+      "fte": 0.2,
+      "start": "2028-05-16",
+      "end": "2029-11-08",
+      "status": "planned",
+      "totalTasks": 12,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-25_FE",
+      "summary": "6. Поддержка",
+      "epic": "B2BAPP-25",
+      "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 368,
+      "wd": 230,
+      "fte": 0.2,
+      "start": "2029-11-11",
+      "end": "2030-11-13",
+      "status": "planned",
+      "totalTasks": 8,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-26_FE",
+      "summary": "7. Коммуникации (ОАТС)",
+      "epic": "B2BAPP-26",
+      "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 480,
+      "wd": 300,
+      "fte": 0.2,
+      "start": "2030-11-14",
+      "end": "2032-04-09",
+      "status": "planned",
+      "totalTasks": 10,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-21_FE",
+      "summary": "2. Авторизация и профиль",
+      "epic": "B2BAPP-21",
+      "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 224,
+      "wd": 140,
+      "fte": 0.2,
+      "start": "2032-04-10",
+      "end": "2033-02-13",
+      "status": "planned",
+      "totalTasks": 6,
+      "doneTasks": 0,
+      "spentH": 0
+    },
+    {
+      "key": "B2BAPP-140_FE",
+      "summary": "14. КСС / Сотовая связь",
+      "epic": "B2BAPP-140",
+      "role": "FE",
+      "roleName": "Самойло Андрей",
+      "h": 176,
+      "wd": 110,
+      "fte": 0.2,
+      "start": "2033-02-14",
+      "end": "2033-08-11",
+      "status": "planned",
+      "totalTasks": 4,
+      "doneTasks": 0,
+      "spentH": 0
     }
+  ],
+  "criticalPath": {
+    "role": "FE",
+    "roleName": "Самойло Андрей",
+    "end": "2033-05-27"
   },
-  "storyStatuses": {
-    "Бэклог": 245,
-    "Анализ": 3,
-    "Разработка": 2
+  "latestByRole": {
+    "BA": "2027-01-18",
+    "BE": "2030-01-10",
+    "FE": "2033-05-27",
+    "DS": "2026-10-29",
+    "ARC": "2026-10-15",
+    "DVO": "2026-12-01",
+    "ORG": "2026-07-09",
+    "OTHER": "2026-10-01"
   },
-  "taskStatuses": {
-    "Бэклог": 523,
-    "В работе": 12,
-    "Завершена": 20,
-    "Разработка": 3,
-    "Review": 2
+  "criticalPathExplained": {
+    "method": "per_task_v2 / жадный алгоритм по ролевым очередям",
+    "steps": [
+      "FE: 0.2 FTE, ~2833ч остатка → ~354 р.д. → критический путь",
+      "BE: 0.5 FTE, ~3577ч остатка → ~447 р.д. → завершение 2030-01",
+      "BA: 1.8 FTE, ~3553ч остатка → ~247 р.д. → завершение 2027-01",
+      "DS: 1.0 FTE, ~1381ч остатка → ~173 р.д. → завершение 2026-10"
+    ],
+    "conclusion": "MVP 10.12.2026 НЕДОСТИЖИМ при текущих FTE. Критический блокер: FE (1 чел. 20%) и BE (1 чел. 50%). Требуется: 1) сокращение скоупа, 2) найм, 3) увеличение FTE"
   },
-  "totalIssues": 810,
-  "project": "B2BAPP",
+  "ganttAssumptions": {
+    "dataSource": "Jira REST API, 09.07.2026 09:30-21:30 МСК (545 задач, 251 история, 19 эпиков)",
+    "teamSource": "Confluence pageId=1562745210 + подтверждение Виктора 09.07.2026",
+    "method": "per_task_v2 / жадный алгоритм по ролевым очередям без простоев",
+    "ganttType": "per_task_v2",
+    "roleAssumptions": {
+      "BA": "Смирнов 100% + РП 20% = 1.2 FTE (оценки BA: 80% аналитик + 20% РП)",
+      "BE": "Макаренко 50% FTE",
+      "FE": "Самойло 20% FTE (в отпуске до 01.08.2026)",
+      "DS": "Балашов 100% FTE",
+      "ARC": "Бачинский 50% FTE (вышел из отпуска 08.07.2026)",
+      "DVO": "Егоров 10% FTE",
+      "ORG": "РП + ВП, ORG-задачи параллельны основному потоку"
+    },
+    "holidays": "РФ 2026-2028: 04.11.2026, 31.12.2026, 01-08.01.2027",
+    "qaNote": "QA-коэффициент 35% включён в оценки BE-задач (согласован с Лариным Романом)",
+    "criticalPathConclusion": "MVP 10.12.2026 недостижим при текущих FTE. FE: 2033-05-27 (0.2 FTE, 2833ч). BE: 2030-01-10 (0.5 FTE, 3577ч). Требуется: сокращение скоупа или найм.",
+    "noEstimateCount": 12,
+    "noEstimateKeys": [
+      "B2BAPP-813",
+      "B2BAPP-696",
+      "B2BAPP-695",
+      "B2BAPP-694",
+      "B2BAPP-576",
+      "B2BAPP-575",
+      "B2BAPP-574",
+      "B2BAPP-573",
+      "B2BAPP-490",
+      "B2BAPP-56"
+    ]
+  },
+  "scopeGrowth": [
+    {
+      "date": "2026-02-01",
+      "tasks": 6,
+      "estH": 559
+    },
+    {
+      "date": "2026-03-01",
+      "tasks": 8,
+      "estH": 703
+    },
+    {
+      "date": "2026-04-01",
+      "tasks": 12,
+      "estH": 940
+    },
+    {
+      "date": "2026-05-01",
+      "tasks": 19,
+      "estH": 1167
+    },
+    {
+      "date": "2026-06-01",
+      "tasks": 425,
+      "estH": 12193
+    },
+    {
+      "date": "2026-07-01",
+      "tasks": 542,
+      "estH": 14932
+    }
+  ],
+  "blockersNow": [
+    {
+      "text": "IDP авторизация: нет домена и IP-адреса для настройки (блокирует FE/BE с июня 2026)",
+      "owner": "Бачинский Александр",
+      "since": "2026-06-01",
+      "source": "CSP-11744",
+      "link": "https://btask.beeline.ru/browse/CSP-11744"
+    },
+    {
+      "text": "Тестовый стенд не развёрнут (Егоров DevOps 10% FTE — не хватает ресурса)",
+      "owner": "Егоров Иван",
+      "since": "2026-06-15",
+      "source": "Дейлик 02.07.2026",
+      "link": ""
+    },
+    {
+      "text": "ДОКК-интеграция: внешний API бота не поддерживается — требуется консультация Юткина/Сурина",
+      "owner": "Немудров Виктор",
+      "since": "2026-07-01",
+      "source": "Аналитика ДОКК",
+      "link": "https://bwiki.beeline.ru/pages/viewpage.action?pageId=2076246064"
+    }
+  ],
+  "weekly": [
+    {
+      "weekStart": "2026-07-06",
+      "weekEnd": "2026-07-12",
+      "done": [
+        {
+          "key": "B2BAPP-553",
+          "title": "Аналитика: открытая аналитика рынка (виджеты Земцова)",
+          "status": "Завершена"
+        },
+        {
+          "key": "B2BAPP-554",
+          "title": "Аналитика: открытая аналитика рынка (рыночные новости)",
+          "status": "Завершена"
+        },
+        {
+          "text": "Аналитика ДОКК завершена, интеграционные сценарии описаны",
+          "jira": ""
+        },
+        {
+          "text": "Аналитика ОАТС завершена, INDIVIDUALID, PAT API задокументированы",
+          "jira": ""
+        },
+        {
+          "text": "Аналитика КСС создана",
+          "jira": ""
+        },
+        {
+          "text": "Бачинский вышел из отпуска 08.07, создал WF_Jira",
+          "jira": ""
+        }
+      ],
+      "planned": [
+        {
+          "text": "Встреча ДОКК (Юткина/Сурин) — решение по API-интеграции"
+        },
+        {
+          "text": "Встреча по ОАТС — финализация интеграционного сценария"
+        },
+        {
+          "text": "Prime API: Бачинский изучает покрытие, перечень доработок"
+        },
+        {
+          "text": "Смирнов: 4 задачи по виджетам аналитики"
+        },
+        {
+          "text": "Старт груминга спринта 1 (01.08.2026)"
+        }
+      ],
+      "blockers": [
+        {
+          "text": "IDP: нет домена/IP",
+          "owner": "Бачинский"
+        },
+        {
+          "text": "ДОКК API: нет внешнего вызова",
+          "owner": "Юткина/Сурин"
+        },
+        {
+          "text": "DevOps стенд",
+          "owner": "Егоров"
+        }
+      ],
+      "decisions": [
+        {
+          "text": "Бачинский Александр вышел из отпуска 08.07 (на 1 день раньше)",
+          "date": "2026-07-08"
+        },
+        {
+          "text": "Data.json v3: обновлён из Jira (545 задач, 251 история, 19 эпиков)",
+          "date": "2026-07-09"
+        }
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "ts": "2026-07-04T00:00:00+03:00",
+      "area": "ui",
+      "action": "Первый деплой дашборда v1 на Vercel"
+    },
+    {
+      "ts": "2026-07-07T00:00:00+03:00",
+      "area": "data",
+      "action": "Объединение Ганта и USM в единый data.json, нативные страницы"
+    },
+    {
+      "ts": "2026-07-08T00:00:00+03:00",
+      "area": "usm",
+      "action": "Аудит Confluence: добавлены B2BAPP-553/554 в USM, nextSteps NS15-NS18"
+    },
+    {
+      "ts": "2026-07-09T00:00:00+03:00",
+      "area": "data",
+      "action": "Refresh 09.07.2026: Jira выгружена (545 задач, 251 история, 19 эпиков). tasksDone=22, totalEstH=14984"
+    },
+    {
+      "ts": "2026-07-09T00:00:00+03:00",
+      "area": "gantt",
+      "action": "Гант V2 пересчитан: критический путь FE до 2033-05-27, BE до 2030-01-10 при текущих FTE"
+    },
+    {
+      "ts": "2026-07-09T00:00:00+03:00",
+      "area": "risks",
+      "action": "R19 добавлен: нехватка FE/BE ресурсов для дедлайна 10.12.2026"
+    },
+    {
+      "ts": "2026-07-09T00:00:00+03:00",
+      "area": "epics",
+      "action": "Добавлены 2 новых эпика: B2BAPP-491 (Онбординг) и B2BAPP-492 (GTM)"
+    }
+  ],
+  "baselines": [
+    {
+      "id": "baseline-20260601",
+      "ts": "2026-06-01T00:00:00+03:00",
+      "label": "Ретро: старт массового бэклога (июнь 2026)",
+      "criticalEnd": "",
+      "items": []
+    },
+    {
+      "id": "baseline-20260709",
+      "ts": "2026-07-09T21:30:00+03:00",
+      "label": "Refresh 09.07.2026",
+      "criticalEnd": "2033-05-27",
+      "items": [
+        {
+          "key": "ganttV2",
+          "critEnd": "2033-05-27",
+          "critRole": "FE"
+        },
+        {
+          "key": "summary",
+          "tasks": 545,
+          "stories": 251,
+          "epics": 19,
+          "estH": 14984
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "epicsTotal": 19,
+    "storiesTotal": 251,
+    "storiesDone": 0,
+    "tasksTotal": 545,
+    "tasksDone": 22,
+    "openQuestions": 10
+  },
+  "mvpScope": [
+    {
+      "epic": "B2BAPP-27",
+      "name": "8. AI-ассистент",
+      "priority": 1,
+      "status": "critical"
+    },
+    {
+      "epic": "B2BAPP-21",
+      "name": "2. Авторизация и профиль",
+      "priority": 2,
+      "status": "critical"
+    },
+    {
+      "epic": "B2BAPP-24",
+      "name": "5. Финансы",
+      "priority": 3,
+      "status": "high"
+    },
+    {
+      "epic": "B2BAPP-25",
+      "name": "6. Поддержка",
+      "priority": 4,
+      "status": "high"
+    },
+    {
+      "epic": "B2BAPP-134",
+      "name": "9. Инфраструктура",
+      "priority": 5,
+      "status": "critical"
+    }
+  ],
   "usm": {
-    "updated": "08.07.2026",
-    "sources": "Источники: Jira live 02.07.2026 · Слайды 5/6/13/22 расширенной презы · Доска-картинка Пальчикова · Транскрипции встреч 01.07, 02.07 и 06.07.2026",
+    "updated": "2026-07-09T21:30:00+03:00",
+    "sources": [
+      {
+        "label": "Jira B2BAPP",
+        "url": "https://btask.beeline.ru/projects/B2BAPP"
+      },
+      {
+        "label": "Confluence B2BAPP",
+        "url": "https://bwiki.beeline.ru/display/B2BAPP"
+      },
+      {
+        "label": "Refresh 09.07.2026",
+        "url": ""
+      }
+    ],
     "stats": {
       "fromJira": {
-        "value": "212",
-        "label": "историй из Jira"
+        "value": "251",
+        "label": "историй в Jira",
+        "sub": "(+1 vs v2)"
       },
       "toCreate": {
-        "value": "27",
-        "label": "⊕ создать"
-      },
-      "blocks": {
-        "value": "7",
-        "label": "блоков"
-      },
-      "scenarios": {
-        "value": "27",
-        "label": "сценариев"
+        "value": "29",
+        "label": "историй к созданию",
+        "sub": "(оценка)"
       },
       "gaps": {
         "value": "12",
-        "label": "белых пятен"
+        "label": "белых пятен",
+        "sub": "требуют решения"
       },
       "nextSteps": {
         "value": "18",
-        "label": "дальн. шагов"
+        "label": "следующих шагов",
+        "sub": "5 выполнено, 4 в процессе"
       }
     },
     "versionHistory": [
       {
-        "v": "v7",
-        "date": "08.07.2026",
-        "desc": "Аудит Confluence+Jira: +2 истории B2BAPP-553/554 в G1; UC-страницы Договоры и Финансы (Смирнов); аналитика КСС; возвращение Бачинского; NS15–NS18; NS5/12/14 → В процессе; G6/G11/G13 обновлены"
-      },
-      {
-        "v": "v5",
-        "date": "03.07.2026",
-        "desc": "КСС (встреча Гоголевой), ОАТС-аналитика, разбор G1/G7/G9/G10/G11, зависимости словами, история версий, цвета по статусу задач"
-      },
-      {
-        "v": "v4",
-        "date": "02.07.2026",
-        "desc": "B2BAPP-241/525, задачи 792/793/794, «Дальнейшие шаги», ФИО с фамилиями"
-      },
-      {
-        "v": "v3",
-        "date": "01.07.2026",
-        "desc": "201 история Jira верифицирована 100%"
-      },
-      {
-        "v": "v2",
-        "date": "01.07.2026",
-        "desc": "HTML с навигацией, реестр пятен"
-      },
-      {
         "v": "v1",
         "date": "01.07.2026",
         "desc": "Первый черновик USM"
+      },
+      {
+        "v": "v2",
+        "date": "07.07.2026",
+        "desc": "Объединение с дашбордом, нативная страница, 210 историй"
+      },
+      {
+        "v": "v3",
+        "date": "09.07.2026",
+        "desc": "Refresh 09.07: 251 историй (+1 B2BAPP-815+), 19 эпиков (+Онбординг/GTM), tasksDone 22"
+      }
+    ],
+    "nextSteps": [
+      {
+        "id": "NS1",
+        "status": "✅ Выполнено (06.07)",
+        "action": "Встреча с командой Земцова Михаила — определены виджеты аналитики",
+        "deadline": "06.07.2026",
+        "owner": "Немудров Виктор",
+        "jira": ""
+      },
+      {
+        "id": "NS2",
+        "status": "🔴 Не начато",
+        "action": "Предварительный созвон с Лазаревым Романом, затем встреча по записи звонков",
+        "deadline": "Середина недели / пятница",
+        "owner": "Немудров Виктор → Лазарев Роман",
+        "jira": ""
+      },
+      {
+        "id": "NS3",
+        "status": "🟡 В процессе",
+        "action": "Матрица пересечений ЕЛК/КСС/B2C (Смирнов) + техдетализация с Яковлевым",
+        "deadline": "Через неделю",
+        "owner": "Смирнов Александр",
+        "jira": ""
+      },
+      {
+        "id": "NS4",
+        "status": "🔴 Не начато",
+        "action": "Бачинский изучает Prime API → перечень доработок → рабочая группа",
+        "deadline": "На следующей неделе",
+        "owner": "Бачинский Александр",
+        "jira": ""
+      },
+      {
+        "id": "NS5",
+        "status": "🟡 В процессе",
+        "action": "Встреча с ДОКК (Черепанов Марк, Кобыляцкая Екатерина) — интеграция бота",
+        "deadline": "Вторник",
+        "owner": "Немудров Виктор",
+        "jira": ""
+      },
+      {
+        "id": "NS6",
+        "status": "🔴 Не начато",
+        "action": "Ждём согласования сценариев Солопренёра с партнёром GPTunnel",
+        "deadline": "В течение 2 недель",
+        "owner": "Морозова Валерия",
+        "jira": ""
+      },
+      {
+        "id": "NS7",
+        "status": "🟡 В процессе — есть наработка",
+        "action": "Валидировать ролевую модель ЕЛК↔ОАТС (INDIVIDUALID, PAT API)",
+        "deadline": "После встречи ОАТС",
+        "owner": "Немудров Виктор",
+        "jira": ""
+      },
+      {
+        "id": "NS8",
+        "status": "🔴 Не начато",
+        "action": "Вынести конфликт retention (6 vs 12 мес.) на согласование ИБ",
+        "deadline": "На техвстрече с B2C",
+        "owner": "Немудров Виктор",
+        "jira": ""
+      },
+      {
+        "id": "NS9",
+        "status": "🟡 В процессе",
+        "action": "Подтвердить сценарий ЕСВ/ОАТС на встрече с командой",
+        "deadline": "Эта неделя",
+        "owner": "Немудров Виктор",
+        "jira": ""
+      },
+      {
+        "id": "NS10",
+        "status": "🔴 Не начато",
+        "action": "Узнать у AI-платформы про голосовой ввод в MVP",
+        "deadline": "ASAP",
+        "owner": "Немудров Виктор",
+        "jira": ""
+      },
+      {
+        "id": "NS11",
+        "status": "✅ Договорились",
+        "action": "Единый HTML-документ USM — Пальчиков работает с ним, ссылаемся на дашборд",
+        "deadline": "Постоянно",
+        "owner": "Оба",
+        "jira": ""
+      },
+      {
+        "id": "NS12",
+        "status": "🟡 В процессе",
+        "action": "Смирнов Александр создаёт 4 задачи на интеграцию виджетов (12-07)",
+        "deadline": "08.07.2026",
+        "owner": "Смирнов Александр",
+        "jira": "B2BAPP-553, B2BAPP-554"
+      },
+      {
+        "id": "NS13",
+        "status": "📅 Запланировано",
+        "action": "Богданов Виталий готовит расширенное описание минимум 1 виджета",
+        "deadline": "18.07.2026",
+        "owner": "Богданов Виталий",
+        "jira": ""
+      },
+      {
+        "id": "NS14",
+        "status": "🟡 В процессе",
+        "action": "Немудров Виктор организует встречу с Макаренко Дмитрием (~20 мин) по AI-Orchestrator",
+        "deadline": "07.07.2026",
+        "owner": "Немудров Виктор",
+        "jira": ""
+      },
+      {
+        "id": "NS15",
+        "status": "✅ Выполнено",
+        "action": "Смирнов Александр создал аналитику по ЕЛК Договорам (BC-03.1–4, BI-03)",
+        "deadline": "08.07.2026",
+        "owner": "Смирнов Александр",
+        "jira": ""
+      },
+      {
+        "id": "NS16",
+        "status": "✅ Выполнено",
+        "action": "Смирнов Александр завершил аналитику Финансов (BC-04.1–4, BI-04)",
+        "deadline": "08.07.2026",
+        "owner": "Смирнов Александр",
+        "jira": ""
+      },
+      {
+        "id": "NS17",
+        "status": "✅ Выполнено",
+        "action": "Немудров Виктор создал страницу Аналитика: КСС, архивировал + B2BAPP-553/554 добавлены в USM",
+        "deadline": "08.07.2026",
+        "owner": "Немудров Виктор",
+        "jira": "B2BAPP-553, B2BAPP-554"
+      },
+      {
+        "id": "NS18",
+        "status": "✅ Выполнено",
+        "action": "Бачинский Александр вышел из отпуска 08.07, создал WF_Jira и шаблон задачи",
+        "deadline": "08.07.2026",
+        "owner": "Бачинский Александр",
+        "jira": ""
+      }
+    ],
+    "gaps": [
+      {
+        "id": "G1",
+        "spot": "Открытая аналитика рынка (2 активности)",
+        "severity": "🟡",
+        "unknown": "Финальный формат данных от Земцова",
+        "owner": "Земцов Михаил · Кохель Дмитрий · Богданов Виталий · Вегнер Елизавета",
+        "action": "NS12/NS13"
+      },
+      {
+        "id": "G2",
+        "spot": "ИИ-сценарии Солопренёра",
+        "severity": "🔴",
+        "unknown": "Согласование с партнёром GPTunnel",
+        "owner": "Морозова Валерия (стейкхолдер) + партнёр GPTunnel; Земцов Михаил (резерв)",
+        "action": "NS6"
+      },
+      {
+        "id": "G4",
+        "spot": "ОАТС: API, ролевая модель, скоуп",
+        "severity": "🔴",
+        "unknown": "Финальный сценарий интеграции, ролевая модель INDIVIDUALID",
+        "owner": "Бремкевич Артём (ОАТС), Злобина Настя (подписки), Лазарев Роман, Бачинский Александр",
+        "action": "NS7/NS9"
+      },
+      {
+        "id": "G6",
+        "spot": "Сотовая связь (КСС)",
+        "severity": "🟡",
+        "unknown": "Финальный API (Ivanoff API vs MAPI)",
+        "owner": "Смирнов Александр ведёт; Иванов Сергей, Волков Сергей, Хуснудинов Роман (КСС)",
+        "action": "NS3"
+      },
+      {
+        "id": "G7",
+        "spot": "СМС-рассылка (билайн.ПРОдвижение)",
+        "severity": "🟡",
+        "unknown": "API для отправки рассылок из B2BAPP",
+        "owner": "Ткачук Виктория, Колыго Алексей, Бестужева Екатерина; Бачинский изучает API",
+        "action": "NS4"
+      },
+      {
+        "id": "G9",
+        "spot": "ИБ — источник детальных спек",
+        "severity": "🟡",
+        "unknown": "Требования ИБ к AI, ПДн, GDPR",
+        "owner": "ИБ-куратор / ДИБ",
+        "action": ""
+      },
+      {
+        "id": "G10",
+        "spot": "Retention при интеграции с tools B2C",
+        "severity": "🔴",
+        "unknown": "Конфликт retention 6 vs 12 мес.",
+        "owner": "B2C AI-команда; Лазарев Роман; ИБ",
+        "action": "NS8"
+      },
+      {
+        "id": "G11",
+        "spot": "Административная панель управления ИИ",
+        "severity": "🟡",
+        "unknown": "Требования к функциональности",
+        "owner": "Макаренко Дмитрий",
+        "action": ""
+      },
+      {
+        "id": "G12",
+        "spot": "Голосовой ввод в MVP",
+        "severity": "🟡",
+        "unknown": "Входит ли в MVP, какой провайдер",
+        "owner": "AI-платформа билайн (Земцов Михаил); уточнить у Юткина",
+        "action": "NS10"
+      },
+      {
+        "id": "G13",
+        "spot": "Консультирование: ДОКК × Копилот Земцова",
+        "severity": "🔴",
+        "unknown": "Возможна ли внешняя API-интеграция с ДОКК-ботом",
+        "owner": "ДОКК (Черепанов Марк, Кобыляцкая Екатерина), Земцов Михаил",
+        "action": "NS5"
+      },
+      {
+        "id": "G14",
+        "spot": "ПДн-флоу активации SIM",
+        "severity": "🟡",
+        "unknown": "Сценарий B2C vs B2B",
+        "owner": "Лазарев Роман, ИБ",
+        "action": ""
+      },
+      {
+        "id": "G15",
+        "spot": "IDP авторизация — домен и IP",
+        "severity": "🔴",
+        "unknown": "Когда будет домен, IP, тестовая конфигурация",
+        "owner": "Бачинский Александр",
+        "action": "NS2 → Q2"
       }
     ],
     "blocks": [
@@ -6381,288 +5319,1253 @@
           }
         ]
       }
-    ],
-    "nextSteps": [
-      {
-        "id": "NS1",
-        "status": "✅ Выполнено (06.07)",
-        "statusClass": "ns-plan",
-        "action": "Встреча с командой Земцова Михаила (Кохель Д., Богданов В., Вегнер Е.): изучены 27 виджетов аналитики, определён путь интеграции через MCP",
-        "deadline": "06.07.2026",
-        "owner": "Немудров Виктор",
-        "jira": "B2BAPP-792",
-        "result": "4 виджета почти готовы (фронт). Путь: MCP-обёртка ~2 дня/виджет. Аналитика опубликована."
-      },
-      {
-        "id": "NS2",
-        "status": "🔴 Не начато",
-        "statusClass": "ns-todo",
-        "action": "Предварительный созвон с Лазаревым Романом (15 мин), затем встреча с командой ОАТС",
-        "deadline": "Середина недели / пятница",
-        "owner": "Немудров Виктор → Лазарев Роман (организатор)",
-        "jira": "B2BAPP-794",
-        "result": "Способ получения данных, ролевая модель, дата API (см. файл аналитики ОАТС)"
-      },
-      {
-        "id": "NS3",
-        "status": "🟡 В процессе",
-        "statusClass": "ns-wip",
-        "action": "Матрица пересечений ЕЛК/КСС/B2C (Смирнов) + техдетализация с Ивановым Сергеем и Волковым Сергеем",
-        "deadline": "Через неделю",
-        "owner": "Смирнов Александр",
-        "jira": "—",
-        "result": "API-спеки КСС, демо-стенд, матрица пересечений"
-      },
-      {
-        "id": "NS4",
-        "status": "🔴 Не начато",
-        "statusClass": "ns-todo",
-        "action": "Бачинский изучает Prime API → перечень доработок → рабочая группа с билайн.ПРОдвижение",
-        "deadline": "На следующей неделе",
-        "owner": "Бачинский Александр",
-        "jira": "—",
-        "result": "Перечень доработок Prime API, встреча с Колыго/Ткачук/Бестужевой"
-      },
-      {
-        "id": "NS5",
-        "status": "🟡 В процессе",
-        "statusClass": "ns-wip",
-        "action": "Встреча с ДОКК (Черепанов Марк, Кобыляцкая Екатерина) + Земцов Михаил по консультированию",
-        "deadline": "Вторник",
-        "owner": "Немудров Виктор",
-        "jira": "—",
-        "result": "Интеграция чат-бота ДОКК, привлечение оператора, разграничение с Копилотом"
-      },
-      {
-        "id": "NS6",
-        "status": "🔴 Не начато",
-        "statusClass": "ns-todo",
-        "action": "Ждём согласования сценариев Солопренёра Морозовой с партнёром (во время отпуска Пальчикова)",
-        "deadline": "В течение 2 недель",
-        "owner": "Морозова Валерия",
-        "jira": "—",
-        "result": "Перечень сценариев MVP для Солопренёра"
-      },
-      {
-        "id": "NS7",
-        "status": "🟡 В процессе — есть наработка",
-        "statusClass": "ns-wip",
-        "action": "Валидировать ролевую модель ЕЛК↔ОАТС (аналитика Немудрова В. готова)",
-        "deadline": "После встречи ОАТС",
-        "owner": "Немудров Виктор",
-        "jira": "B2BAPP-525",
-        "result": "Правило маппинга ролей"
-      },
-      {
-        "id": "NS8",
-        "status": "🔴 Не начато",
-        "statusClass": "ns-todo",
-        "action": "Вынести конфликт retention (6 vs 12 мес.) на согласование ИБ + B2C на техвстрече",
-        "deadline": "На техвстрече с B2C",
-        "owner": "Немудров Виктор",
-        "jira": "—",
-        "result": "Архитектурное решение по хранению истории диалогов"
-      },
-      {
-        "id": "NS9",
-        "status": "🟡 В процессе — есть фронт",
-        "statusClass": "ns-wip",
-        "action": "Уточнить с Макаренко Дмитрием объём админ-панели в MVP и результаты гипотезы авто-оборачивания",
-        "deadline": "На дейлике",
-        "owner": "Немудров Виктор",
-        "jira": "B2BAPP-133",
-        "result": "Объём MVP, подтверждение/опровержение гипотезы MCP-обёртки"
-      },
-      {
-        "id": "NS10",
-        "status": "🔴 Не начато",
-        "statusClass": "ns-todo",
-        "action": "Узнать у AI-платформы про голосовой ввод в MVP",
-        "deadline": "ASAP",
-        "owner": "Немудров Виктор",
-        "jira": "B2BAPP-38",
-        "result": "Доступность голосового интерфейса"
-      },
-      {
-        "id": "NS11",
-        "status": "✅ Договорились",
-        "statusClass": "ns-done",
-        "action": "Единый HTML-документ USM — Пальчиков работает с ним, ссылаемся при встречах",
-        "deadline": "Постоянно",
-        "owner": "Оба",
-        "jira": "—",
-        "result": "Единый источник истины по сценариям"
-      },
-      {
-        "id": "NS12",
-        "status": "🟡 В процессе",
-        "statusClass": "ns-wip",
-        "action": "Смирнов Александр создаёт 4 задачи на интеграцию виджетов (1 задача = 1 виджет) и передаёт Кохелю Дмитрию",
-        "deadline": "08.07.2026",
-        "owner": "Смирнов Александр",
-        "jira": "—",
-        "result": "4 задачи в бэклоге B2BAPP + зеркальные задачи в MICROB2B"
-      },
-      {
-        "id": "NS13",
-        "status": "📅 Запланировано",
-        "statusClass": "ns-plan",
-        "action": "Богданов Виталий готовит расширенное описание минимум 1 виджета как образец для LLM-триггера MCP",
-        "deadline": "18.07.2026",
-        "owner": "Богданов Виталий",
-        "jira": "—",
-        "result": "Образец описания виджета в формате MCP-скилла (триггер + параметры)"
-      },
-      {
-        "id": "NS14",
-        "status": "🟡 В процессе",
-        "statusClass": "ns-wip",
-        "action": "Немудров Виктор организует встречу с Макаренко Дмитрием (~20.07) по технической реализации: авто-оборачивание Swagger → MCP для виджетов Земцова",
-        "deadline": "07.07.2026",
-        "owner": "Немудров Виктор",
-        "jira": "—",
-        "result": "Встреча запланирована; решение о способе создания MCP"
-      },
-      {
-        "id": "NS15",
-        "status": "✅ Выполнено",
-        "statusClass": "ns-done",
-        "action": "Смирнов Александр создал аналитику по ЕЛК Договорам (BC-03.1, BC-03.2, BI-03, Интент карта: Договоры)",
-        "deadline": "08.07.2026",
-        "owner": "Смирнов Александр",
-        "jira": "",
-        "result": "Страницы BC-03.1, BC-03.2, BI-03, Интент карта: Договоры опубликованы в Confluence B2BAPP"
-      },
-      {
-        "id": "NS16",
-        "status": "✅ Выполнено",
-        "statusClass": "ns-done",
-        "action": "Смирнов Александр завершил аналитику Финансов (BC-04.1–4, BI-04, макеты платежей)",
-        "deadline": "08.07.2026",
-        "owner": "Смирнов Александр",
-        "jira": "",
-        "result": "Страницы BC-04.1–4, BI-04 опубликованы; макеты платежей обновлены (v8)"
-      },
-      {
-        "id": "NS17",
-        "status": "✅ Выполнено",
-        "statusClass": "ns-done",
-        "action": "Немудров Виктор создал страницу Аналитика: КСС, архивировал старые страницы КСС и ЛККСС",
-        "deadline": "08.07.2026",
-        "owner": "Немудров Виктор",
-        "jira": "",
-        "result": "Аналитика: КСС создана; старые страницы переведены в архив"
-      },
-      {
-        "id": "NS18",
-        "status": "✅ Выполнено",
-        "statusClass": "ns-done",
-        "action": "Бачинский Александр вышел из отпуска, создал WF_Jira и шаблон ГеоЦОД",
-        "deadline": "08.07.2026",
-        "owner": "Бачинский Александр",
-        "jira": "",
-        "result": "Бачинский активен с 08.07.2026"
-      }
-    ],
-    "gaps": [
-      {
-        "id": "G1",
-        "spot": "Открытая аналитика рынка (2 активности)",
-        "severity": "🟡",
-        "unknown": "(1) Рыночная аналитика — ТЗ агенту уточняется; (2) 27 виджетов изучены (06.07), 4 готовы к интеграции через MCP",
-        "owner": "Земцов Михаил · Кохель Дмитрий · Богданов Виталий · Вегнер Елизавета",
-        "action": "Аналитика виджетов готова. MCP-путь согласован. Встреча с Макаренко Д. ~20.07 по технической реализации"
-      },
-      {
-        "id": "G2",
-        "spot": "ИИ-сценарии Солопренёра",
-        "severity": "🔴",
-        "unknown": "Перечень, вид, сроки",
-        "owner": "Морозова Валерия (стейкхолдер) + партнёр GPTunnel; Земцов Михаил (резерв)",
-        "action": "Морозова с партнёром согласуют набор сценариев → совместное приземление в мобилку. Ждём во время отпуска Пальчикова"
-      },
-      {
-        "id": "G4/G5/G8",
-        "spot": "ОАТС: API, ролевая модель, скоуп",
-        "severity": "🔴",
-        "unknown": "Способ получения данных (API/Kafka/REST), маппинг ролей ЕЛК↔ОАТС, скоуп доп.сценариев",
-        "owner": "Бремкевич Артём (ОАТС), Злобина Настя (подписки), Лазарев Роман, Бачинский Александр",
-        "action": "Встреча B2BAPP-794 (см. файл аналитики ОАТС). Предварительно — 15 мин с Лазаревым. Слот ~пятница"
-      },
-      {
-        "id": "G6",
-        "spot": "Сотовая связь (КСС)",
-        "severity": "🟡",
-        "unknown": "Прояснено на встрече 03.07 — приоритеты проставлены, точки интеграции определены",
-        "owner": "Смирнов Александр ведёт; Иванов Сергей, Волков Сергей, Хуснудинов Роман (КСС)",
-        "action": "Аналитика КСС создана (08.07). Матрица пересечений в процессе (Смирнов). Техдетализация с Ивановым/Волковым/Хуснутдиновым — следующий шаг"
-      },
-      {
-        "id": "G7",
-        "spot": "СМС-рассылка (билайн.ПРОдвижение)",
-        "severity": "🟡",
-        "unknown": "Аналитика готова (Prime API v3.0). Механика идентификации, доработки API",
-        "owner": "Ткачук Виктория, Колыго Алексей, Бестужева Екатерина; Бачинский изучает API",
-        "action": "Бачинский изучает Prime API → перечень доработок → рабочая группа (см. стр. 2054144083)"
-      },
-      {
-        "id": "G9",
-        "spot": "ИБ — источник детальных спек",
-        "severity": "🟡",
-        "unknown": "ИБ-эпик в MVP обязателен (стори 567–570 заведены). Детальных спек (cert pinning) нет в Confluence",
-        "owner": "ИБ-куратор / ДИБ",
-        "action": "Запросить детальные ИБ-спеки напрямую у ДИБ (не путать с «нужен ли ИБ» — он в MVP)"
-      },
-      {
-        "id": "G10",
-        "spot": "Retention при интеграции с tools B2C",
-        "severity": "🔴",
-        "unknown": "Конфликт: B2C=6 мес. vs ИБ B2BAPP=12 мес. Возник при проработке инструментов B2C",
-        "owner": "B2C AI-команда; Лазарев Роман; ИБ",
-        "action": "Архитектурное решение на техвстрече с B2C (источник: стр. 2073825949, вопрос Д3.4)"
-      },
-      {
-        "id": "G11",
-        "spot": "Административная панель управления ИИ",
-        "severity": "🟡",
-        "unknown": "Макаренко Дмитрий показал фронт на дейлике 03.07. Ядро — MCP-обёртка над ЕЛК",
-        "owner": "Макаренко Дмитрий",
-        "action": "Обсудить объём MVP с Макаренко Дмитрием (встреча ~20.07, NS14). Гипотеза авто-оборачивания в работе"
-      },
-      {
-        "id": "G12",
-        "spot": "Голосовой ввод в MVP",
-        "severity": "🟡",
-        "unknown": "Хотим взять, но нет понимания доступности. Через AI-платформу?",
-        "owner": "AI-платформа билайн (Земцов Михаил); уточнить у Юткина",
-        "action": "Узнать у AI-платформы: будет ли голосовой интерфейс, как заютзать (стори B2BAPP-38)"
-      },
-      {
-        "id": "G13",
-        "spot": "Консультирование: ДОКК × Копилот Земцова",
-        "severity": "🔴",
-        "unknown": "Пересечение/дублирование функциональности ДОКК и нейропоиска Земцова",
-        "owner": "ДОКК (Черепанов Марк, Кобыляцкая Екатерина), Земцов Михаил",
-        "action": "Встреча с ДОКК запланирована/прошла (07.07, NS5). Ждём фиксации решений по интеграции чат-бота ДОКК"
-      },
-      {
-        "id": "G14",
-        "spot": "ПДн-флоу активации SIM",
-        "severity": "🟡",
-        "unknown": "Сквозной сценарий подтверждения ПДн через Госуслуги при покупке SIM",
-        "owner": "Рогова Настя, Красняков Андрей (владельцы процесса ПДн)",
-        "action": "Оценить ценность сценария для MVP (Пальчиков сомневается) + техреализация флоу"
-      },
-      {
-        "id": "G15",
-        "spot": "Техническая интеграция виджетов Земцова через MCP",
-        "severity": "🔴",
-        "unknown": "Виджеты сейчас как REST API. Нужны MCP-обёртки + расширенное описание для LLM. Swagger недостаточно описан для модели.",
-        "owner": "Богданов Виталий (описание) + Макаренко Дмитрий (авто-оборачивание) + Бачинский Александр (аутентификация)",
-        "action": "~2 дня/виджет. Инструмент Макаренко Д. может автоматизировать. Встреча ~20.07. Аутентификация (IdP-токен vs party_id) — открытый вопрос."
-      }
     ]
   },
+  "resources": [
+    {
+      "role": "ВП",
+      "fte": "100%",
+      "total_days": "28.6",
+      "task_count": "11",
+      "months": {
+        "Июн": "·",
+        "Июл": "87%",
+        "Авг": "41%",
+        "Сен": "·",
+        "Окт": "·",
+        "Ноя": "·",
+        "Дек": "·",
+        "Янв'27": "·",
+        "Фев'27": "·",
+        "Мар'27": "·"
+      }
+    },
+    {
+      "role": "РП",
+      "fte": "100%",
+      "total_days": "195.9",
+      "task_count": "27",
+      "months": {
+        "Июн": "87%",
+        "Июл": "183%",
+        "Авг": "129%",
+        "Сен": "99%",
+        "Окт": "45%",
+        "Ноя": "·",
+        "Дек": "·",
+        "Янв'27": "·",
+        "Фев'27": "·",
+        "Мар'27": "·"
+      }
+    },
+    {
+      "role": "Аналитик 1",
+      "fte": "100%",
+      "total_days": "67.3",
+      "task_count": "18",
+      "months": {
+        "Июн": "·",
+        "Июл": "98%",
+        "Авг": "93%",
+        "Сен": "52%",
+        "Окт": "·",
+        "Ноя": "·",
+        "Дек": "·",
+        "Янв'27": "·",
+        "Фев'27": "·",
+        "Мар'27": "·"
+      }
+    },
+    {
+      "role": "Аналитик 2",
+      "fte": "100%",
+      "total_days": "49.4",
+      "task_count": "12",
+      "months": {
+        "Июн": "",
+        "Июл": "90%",
+        "Авг": "97%",
+        "Сен": "37%",
+        "Окт": "·",
+        "Ноя": "·",
+        "Дек": "·",
+        "Янв'27": "·",
+        "Фев'27": "·",
+        "Мар'27": "·"
+      }
+    },
+    {
+      "role": "Дизайнер 1",
+      "fte": "100%",
+      "total_days": "46.6",
+      "task_count": "11",
+      "months": {
+        "Июн": "·",
+        "Июл": "90%",
+        "Авг": "56%",
+        "Сен": "·",
+        "Окт": "·",
+        "Ноя": "·",
+        "Дек": "·",
+        "Янв'27": "·",
+        "Фев'27": "·",
+        "Мар'27": "·"
+      }
+    },
+    {
+      "role": "Фронтенд 1",
+      "fte": "100%",
+      "total_days": "68.9",
+      "task_count": "16",
+      "months": {
+        "Июн": "",
+        "Июл": "17%",
+        "Авг": "32%",
+        "Сен": "28%",
+        "Окт": "35%",
+        "Ноя": "·",
+        "Дек": "65%",
+        "Янв'27": "·",
+        "Фев'27": "22%",
+        "Мар'27": "30%"
+      }
+    },
+    {
+      "role": "Фронтенд 2",
+      "fte": "100%",
+      "total_days": "65.7",
+      "task_count": "17",
+      "months": {
+        "Июн": "",
+        "Июл": "",
+        "Авг": "·",
+        "Сен": "58%",
+        "Окт": "75%",
+        "Ноя": "20%",
+        "Дек": "·",
+        "Янв'27": "17%",
+        "Фев'27": "·",
+        "Мар'27": "41%"
+      }
+    },
+    {
+      "role": "Фронтенд 3",
+      "fte": "100%",
+      "total_days": "59.8",
+      "task_count": "11",
+      "months": {
+        "Июн": "",
+        "Июл": "",
+        "Авг": "·",
+        "Сен": "54%",
+        "Окт": "62%",
+        "Ноя": "9%",
+        "Дек": "9%",
+        "Янв'27": "13%",
+        "Фев'27": "29%",
+        "Мар'27": "16%"
+      }
+    },
+    {
+      "role": "Бэкенд 1",
+      "fte": "100%",
+      "total_days": "248.2",
+      "task_count": "50",
+      "months": {
+        "Июн": "",
+        "Июл": "73%",
+        "Авг": "88%",
+        "Сен": "95%",
+        "Окт": "92%",
+        "Ноя": "94%",
+        "Дек": "90%",
+        "Янв'27": "93%",
+        "Фев'27": "92%",
+        "Мар'27": "89%"
+      }
+    },
+    {
+      "role": "QA 1",
+      "fte": "100%",
+      "total_days": "71.1",
+      "task_count": "8",
+      "months": {
+        "Июн": "",
+        "Июл": "·",
+        "Авг": "·",
+        "Сен": "22%",
+        "Окт": "36%",
+        "Ноя": "·",
+        "Дек": "44%",
+        "Янв'27": "71%",
+        "Фев'27": "41%",
+        "Мар'27": "12%"
+      }
+    },
+    {
+      "role": "QA 2",
+      "fte": "100%",
+      "total_days": "71.6",
+      "task_count": "8",
+      "months": {
+        "Июн": "",
+        "Июл": "",
+        "Авг": "·",
+        "Сен": "23%",
+        "Окт": "36%",
+        "Ноя": "·",
+        "Дек": "44%",
+        "Янв'27": "71%",
+        "Фев'27": "41%",
+        "Мар'27": "12%"
+      }
+    },
+    {
+      "role": "DevOps 1",
+      "fte": "20%",
+      "total_days": "13",
+      "task_count": "3",
+      "months": {
+        "Июн": "",
+        "Июл": "283%",
+        "Авг": "·",
+        "Сен": "·",
+        "Окт": "·",
+        "Ноя": "·",
+        "Дек": "·",
+        "Янв'27": "·",
+        "Фев'27": "·",
+        "Мар'27": "·"
+      }
+    },
+    {
+      "role": "Сист. архитектор",
+      "fte": "30%",
+      "total_days": "18.2",
+      "task_count": "7",
+      "months": {
+        "Июн": "·",
+        "Июл": "264%",
+        "Авг": "·",
+        "Сен": "·",
+        "Окт": "·",
+        "Ноя": "·",
+        "Дек": "·",
+        "Янв'27": "·",
+        "Фев'27": "·",
+        "Мар'27": "·"
+      }
+    },
+    {
+      "role": "Солюшн архитектор",
+      "fte": "50%",
+      "total_days": "46.8",
+      "task_count": "15",
+      "months": {
+        "Июн": "·",
+        "Июл": "184%",
+        "Авг": "187%",
+        "Сен": "32%",
+        "Окт": "·",
+        "Ноя": "·",
+        "Дек": "·",
+        "Янв'27": "·",
+        "Фев'27": "·",
+        "Мар'27": "·"
+      }
+    }
+  ],
+  "mvp": [
+    {
+      "quarter": "Q3 2026",
+      "epic": "Фундамент + Авторизация",
+      "content": "ЕСВ-авторизация, WebSocket-шлюз, AI-оркестратор, push, профиль, биометрия, главный экран, смарт-карточки",
+      "value": "Безопасный вход и базовый каркас приложения — основа для всех функций"
+    },
+    {
+      "quarter": "Q3 2026",
+      "epic": "Инфраструктура AI",
+      "content": "Service account LLM, MCP-сервер, CI/CD, среды DEV/TEST",
+      "value": "Платформа для AI-ассистента — ключевого дифференциатора продукта"
+    },
+    {
+      "quarter": "Q4 2026",
+      "epic": "AI-ассистент (ядро)",
+      "content": "Чат со стримингом, история, голосовой ввод (STT), intent/RAG, виджеты данных и действий, guardrails ПДн",
+      "value": "Главная фишка: управление бизнесом через естественный язык — снижает порог входа для микробизнеса"
+    },
+    {
+      "quarter": "Q4 2026",
+      "epic": "Договоры (через AI)",
+      "content": "Список/карточка договоров, MCP договоров, AI-виджеты, проактивные инсайты",
+      "value": "Быстрый доступ к договорам без звонков в поддержку"
+    },
+    {
+      "quarter": "Q1 2027",
+      "epic": "Финансы (полностью)",
+      "content": "Счета, детализация, QR-оплата СБП, закрывающие документы, история платежей, AI-виджеты баланса",
+      "value": "Самый частый сценарий (проверка баланса/оплата ежедневно) — драйвер retention"
+    },
+    {
+      "quarter": "Q1 2027",
+      "epic": "Поддержка + ОАТС",
+      "content": "Обращения ДОКК, MCP ОАТС, AI-виджеты звонков, настройки секретаря",
+      "value": "Снижение нагрузки на колл-центр, самообслуживание"
+    },
+    {
+      "quarter": "Q1-Q2 2027",
+      "epic": "Услуги, КСС, Маркетинг, Витрина, Админ",
+      "content": "Услуги/тарифы, управление номерами КСС, этикетка, делегирование, SMS-рассылки, витрина не-клиентов, админ промптов",
+      "value": "Полнота функционала, привлечение не-клиентов, корп. управление"
+    },
+    {
+      "quarter": "Q2 2027",
+      "epic": "PrePay-подписка",
+      "content": "Подписка, бандлы, апгрейд, Мерчант API, Balance Manager, ОФД-чеки, автопродление",
+      "value": "Монетизация препейд-сегмента (ключевой для микробизнеса)"
+    },
+    {
+      "quarter": "Q2-Q3 2027",
+      "epic": "Лояльность (опц.) + Вывод в продуктив",
+      "content": "Бонусы/кэшбэк, ИБ-документация, SAST/DAST, нагрузочное тестирование, Prod-среда, РА/РП",
+      "value": "Финальный релиз: безопасность, отказоустойчивость, готовность к промышленной эксплуатации"
+    }
+  ],
+  "scope_dec": [
+    {
+      "epic": "9. Инфраструктура",
+      "content": "Фундамент: ЕСВ-авторизация, WebSocket, AI-оркестратор, MCP, push, CI/CD, service account",
+      "total": "10",
+      "ready": "10",
+      "status": "✅ Готово"
+    },
+    {
+      "epic": "2. Авторизация и профили",
+      "content": "Авторизация, профиль, биометрия, сессии, переключение организаций",
+      "total": "12",
+      "ready": "0",
+      "status": "⬜ Не начато"
+    },
+    {
+      "epic": "3. Главная страница",
+      "content": "Главный экран: смарт-карточки, чипсы, онбординг, строка AI-чата, отчёты",
+      "total": "14",
+      "ready": "0",
+      "status": "⬜ Не начато"
+    },
+    {
+      "epic": "8. AI-ассистент",
+      "content": "AI-ассистент: чат, стриминг, история, голос, intent/RAG, виджеты, guardrails, метрики",
+      "total": "40",
+      "ready": "30",
+      "status": "🟡 Частично"
+    },
+    {
+      "epic": "4. Договоры",
+      "content": "Договоры: список, карточка, MCP, AI-виджеты, инсайты",
+      "total": "8",
+      "ready": "6",
+      "status": "🟡 Частично"
+    },
+    {
+      "epic": "5. Финансы",
+      "content": "Финансы: счета, детализация, QR-оплата, документы, AI-виджеты баланса",
+      "total": "11",
+      "ready": "4",
+      "status": "🟡 Частично"
+    },
+    {
+      "epic": "6. Поддержка",
+      "content": "Поддержка: обращения ДОКК, статусы",
+      "total": "5",
+      "ready": "2",
+      "status": "🟡 Частично"
+    },
+    {
+      "epic": "7. Коммуникации/ОАТС",
+      "content": "Коммуникации/ОАТС: MCP ОАТС, AI-виджеты, секретарь",
+      "total": "7",
+      "ready": "2",
+      "status": "🟡 Частично"
+    },
+    {
+      "epic": "10. Админ-панель",
+      "content": "Админ-панель: управление промптами AI",
+      "total": "3",
+      "ready": "1",
+      "status": "🟡 Частично"
+    },
+    {
+      "epic": "11. Услуги и тарифы",
+      "content": "Услуги и тарифы, лояльность",
+      "total": "6",
+      "ready": "2",
+      "status": "🟡 Частично"
+    },
+    {
+      "epic": "12. Маркетинг",
+      "content": "Маркетинг: SMS-рассылки",
+      "total": "3",
+      "ready": "1",
+      "status": "🟡 Частично"
+    },
+    {
+      "epic": "13. Витрина не-клиентов",
+      "content": "Витрина для не-клиентов",
+      "total": "3",
+      "ready": "1",
+      "status": "🟡 Частично"
+    },
+    {
+      "epic": "14. КСС",
+      "content": "КСС: номера, этикетка, делегирование",
+      "total": "10",
+      "ready": "4",
+      "status": "🟡 Частично"
+    },
+    {
+      "epic": "15. PrePay-подписка",
+      "content": "PrePay-подписка: бандлы, Мерчант API, ОФД",
+      "total": "6",
+      "ready": "2",
+      "status": "🟡 Частично"
+    },
+    {
+      "epic": "1. Управление развитием систем",
+      "content": "Вывод в продуктив: ИБ, SAST/DAST, нагрузочное, Prod",
+      "total": "16",
+      "ready": "2",
+      "status": "🟡 Частично"
+    }
+  ],
+  "okr_dec": [
+    [
+      "OBJECTIVE (Цель к 10.12.2026)"
+    ],
+    [
+      "Запустить технологический фундамент и интеллектуальное ядро B2BAPP, доказав работоспособность AI-ассистента как основного интерфейса для микробизнеса."
+    ],
+    [
+      "KEY RESULTS (Ключевые результаты)"
+    ],
+    [
+      "KR1 — 100% пользователей могут безопасно войти через ЕСВ (ЛК B2B) с биометрией и работать в нескольких организациях. Авторизация, профиль и ролевая модель полностью готовы."
+    ],
+    [
+      "KR2 — AI-ассистент отвечает на запросы в реальном времени (стриминг через WebSocket), распознаёт намерения, ищет по базе знаний (RAG), поддерживает голосовой ввод. Целевая метрика: решение типовой задачи за 1-3 сообщения."
+    ],
+    [
+      "KR3 — Реализованы guardrails безопасности AI (фильтрация ПДн, запрещённые темы) и fallback-режим при недоступности LLM — продукт устойчив к сбоям и соответствует требованиям ИБ."
+    ],
+    [
+      "KR4 — Главный экран персонализирован: смарт-карточки (баланс, договоры, события), быстрые команды, периодические отчёты — пользователь видит ключевую информацию сразу при входе."
+    ],
+    [
+      "KR5 — Развёрнута инфраструктура: AI-оркестратор, MCP-серверы, системный API-ключ LLM, CI/CD, среды DEV/TEST — платформа готова к наращиванию функционала."
+    ],
+    [
+      "ЧТО ЭТО ДАЁТ БИЗНЕСУ"
+    ],
+    [
+      "К 10.12.2026 мы получаем работающий MVP-каркас с главным конкурентным преимуществом — AI-ассистентом. Это позволяет провести закрытое тестирование на реальных пользователях,проверить ценность подхода «управление бизнесом через чат» и собрать обратную связь до вложений в полный продуктовый скоуп."
+    ],
+    [
+      "ЧЕСТНОЕ ОГРАНИЧЕНИЕ (допущение)"
+    ],
+    [
+      "При текущем составе (1 бэкенд-разработчик) полный MVP с договорами и финансами завершается в Q1 2027 (≈18.03.2027), а не к 10.12.2026. Бэкенд — критический путь. Найм второго бэкенд-разработчика ускоряет MVP примерно на 3 месяца и позволяет закрыть договоры+финансы к декабрю."
+    ]
+  ],
+  "okr_q": [
+    [
+      "Q3 2026 — OBJECTIVE: Заложить фундамент и доказать AI-концепцию"
+    ],
+    [
+      "KR: ЕСВ-авторизация + профиль + главный экран готовы на 100%. AI-оркестратор и WebSocket развёрнуты. Базовый AI-чат отвечает в реальном времени."
+    ],
+    [
+      "Ценность: каркас продукта + ключевой дифференциатор (AI) работают, можно показывать стейкхолдерам."
+    ],
+    [
+      "Q4 2026 — OBJECTIVE: Превратить AI-ассистента в полноценный интерфейс"
+    ],
+    [
+      "KR: AI-ядро завершено (intent/RAG, виджеты действий, голос, guardrails, метрики). Договоры доступны через AI. К 10.12 закрыт фундамент + авторизация + ядро AI."
+    ],
+    [
+      "Ценность: пользователь решает реальные задачи (договоры, баланс) через чат — проверяем гипотезу ценности."
+    ],
+    [
+      "Q1 2027 — OBJECTIVE: Закрыть ежедневные сценарии и выйти на полный MVP"
+    ],
+    [
+      "KR: Финансы полностью (QR-оплата, документы, история). Поддержка (ДОКК) и ОАТС с AI-виджетами. MVP (фазы 1-4) завершён ≈18.03.2027."
+    ],
+    [
+      "Ценность: покрыты самые частые сценарии (баланс/оплата ежедневно) — драйвер удержания."
+    ],
+    [
+      "Q2 2027 — OBJECTIVE: Полнота функционала и монетизация"
+    ],
+    [
+      "KR: Услуги/тарифы, КСС (+этикетка, делегирование), маркетинг, витрина, админ-панель. PrePay-подписка с Мерчант API и ОФД-чеками."
+    ],
+    [
+      "Ценность: монетизация препейд-сегмента + привлечение не-клиентов через витрину."
+    ],
+    [
+      "Q2-Q3 2027 — OBJECTIVE: Промышленный релиз"
+    ],
+    [
+      "KR: Лояльность (опц.), ИБ-документация, SAST/DAST, нагрузочное тестирование, Prod-среда, РА/РП. Полный релиз ≈27.08.2027."
+    ],
+    [
+      "Ценность: продукт готов к промышленной эксплуатации с гарантиями безопасности и отказоустойчивости."
+    ],
+    [
+      "СКВОЗНОЕ ДОПУЩЕНИЕ"
+    ],
+    [
+      "Все даты рассчитаны при 1 бэкенд-разработчике (критический путь) с заложенным риском 30% и российским производственным календарём. Второй бэкенд сдвигает релиз влево на ~3-4 месяца."
+    ]
+  ],
+  "glossary": [
+    {
+      "term": "B2BAPP",
+      "definition": "Мобильное приложение Билайн Бизнес для микробизнеса (самозанятые, ИП, ООО до 15 сотрудников)"
+    },
+    {
+      "term": "MVP",
+      "definition": "Minimum Viable Product — минимально жизнеспособный продукт для запуска и проверки гипотез"
+    },
+    {
+      "term": "AI-ассистент",
+      "definition": "Основной интерфейс приложения: чат + смарт-карточки + виджеты для управления бизнесом через естественный язык"
+    },
+    {
+      "term": "AI-оркестратор",
+      "definition": "Сервис, управляющий обработкой запросов к LLM: распознавание намерений, роутинг, генерация ответов"
+    },
+    {
+      "term": "MCP-сервер",
+      "definition": "Model Context Protocol сервер — поставляет AI-ассистенту данные (договоры, финансы, ОАТС) через инструменты"
+    },
+    {
+      "term": "RAG",
+      "definition": "Retrieval-Augmented Generation — поиск по базе знаний для обогащения ответов AI актуальной информацией"
+    },
+    {
+      "term": "STT / TTS",
+      "definition": "Speech-to-Text (голосовой ввод) / Text-to-Speech (озвучка ответов)"
+    },
+    {
+      "term": "Guardrails",
+      "definition": "Защитные фильтры AI: блокировка ПДн, запрещённых тем, обеспечение безопасности ответов"
+    },
+    {
+      "term": "Fallback-режим",
+      "definition": "Кнопочный режим базовых операций при недоступности LLM (degraded mode)"
+    },
+    {
+      "term": "ЕСВ",
+      "definition": "Единая система входа / авторизации (через ЛК B2B Билайн, OTP)"
+    },
+    {
+      "term": "ЛК B2B / ЕЛК",
+      "definition": "Личный кабинет для корпоративных клиентов / Единый личный кабинет"
+    },
+    {
+      "term": "IDP",
+      "definition": "Identity Provider — провайдер идентификации для авторизации"
+    },
+    {
+      "term": "WebSocket / webSocketGate",
+      "definition": "Протокол реального времени для стриминга ответов AI; микросервис-шлюз"
+    },
+    {
+      "term": "Capacitor",
+      "definition": "Фреймворк для упаковки веб-приложения (React) в нативное мобильное (iOS/Android)"
+    },
+    {
+      "term": "RMS",
+      "definition": "Role Management System — ролевая модель (Владелец / Менеджер / Сотрудник)"
+    },
+    {
+      "term": "ОАТС",
+      "definition": "Облачная АТС — телефония для бизнеса (звонки, секретарь, статистика)"
+    },
+    {
+      "term": "ДОКК",
+      "definition": "Система обработки обращений клиентов (поддержка)"
+    },
+    {
+      "term": "КСС",
+      "definition": "Корпоративная сотовая связь — управление номерами сотрудников"
+    },
+    {
+      "term": "PrePay / PostPay",
+      "definition": "Препейд (предоплата) / постпейд (постоплата) — модели биллинга"
+    },
+    {
+      "term": "Ensemble / Comverse",
+      "definition": "Биллинговые системы: Ensemble (postpaid), Comverse/CAMEL (prepaid)"
+    },
+    {
+      "term": "MAPIC / Balance Manager",
+      "definition": "Сервис управления балансом prepaid-клиентов"
+    },
+    {
+      "term": "Мерчант API",
+      "definition": "API для привязки карты и рекуррентных платежей (подписки)"
+    },
+    {
+      "term": "ОФД",
+      "definition": "Оператор фискальных данных — кассовые чеки (билайн.Pay)"
+    },
+    {
+      "term": "СБП",
+      "definition": "Система быстрых платежей (оплата по QR-коду)"
+    },
+    {
+      "term": "Этикетка номера",
+      "definition": "Название компании, отображаемое при входящем звонке (caller ID)"
+    },
+    {
+      "term": "Vega",
+      "definition": "Внутренняя платформа/ресурсы для развёртывания"
+    },
+    {
+      "term": "SAST / DAST",
+      "definition": "Static / Dynamic Application Security Testing — проверки безопасности кода"
+    },
+    {
+      "term": "РА / РП (документы)",
+      "definition": "Руководство администратора / Руководство пользователя"
+    },
+    {
+      "term": "ДПП",
+      "definition": "Дорожная карта продукта / целевые продуктовые метрики"
+    },
+    {
+      "term": "FTE",
+      "definition": "Full-Time Equivalent — доля полной занятости (1.0 = полный день)"
+    },
+    {
+      "term": "Критический путь",
+      "definition": "Цепочка задач, определяющая минимальную длительность проекта (здесь — Бэкенд 1)"
+    },
+    {
+      "term": "Груминг",
+      "definition": "Сессия команды по уточнению и оценке задач бэклога"
+    },
+    {
+      "term": "Стори / Эпик / Задача",
+      "definition": "Иерархия Jira: Эпик → Стори (история) → Задача"
+    },
+    {
+      "term": "Часть (Part)",
+      "definition": "Тип связи в Jira: стори \"состоит из\" задач"
+    }
+  ],
+  "stakeholders": [
+    {
+      "name": "2. Авторизация и профили",
+      "role": "A",
+      "team": "R",
+      "raci": "C",
+      "contact": "C"
+    },
+    {
+      "name": "3. Главная страница",
+      "role": "A",
+      "team": "R",
+      "raci": "C",
+      "contact": "I"
+    },
+    {
+      "name": "8. AI-ассистент",
+      "role": "A",
+      "team": "R",
+      "raci": "R",
+      "contact": "C"
+    },
+    {
+      "name": "4. Договоры",
+      "role": "A",
+      "team": "R",
+      "raci": "C",
+      "contact": "I"
+    },
+    {
+      "name": "5. Финансы",
+      "role": "A",
+      "team": "R",
+      "raci": "C",
+      "contact": "I"
+    },
+    {
+      "name": "6. Поддержка (ДОКК)",
+      "role": "A",
+      "team": "R",
+      "raci": "C",
+      "contact": "I"
+    },
+    {
+      "name": "7. Коммуникации/ОАТС",
+      "role": "A",
+      "team": "R",
+      "raci": "C",
+      "contact": "I"
+    },
+    {
+      "name": "9. Инфраструктура",
+      "role": "A",
+      "team": "R",
+      "raci": "R",
+      "contact": "R"
+    },
+    {
+      "name": "10. Админ-панель",
+      "role": "A",
+      "team": "R",
+      "raci": "C",
+      "contact": "I"
+    },
+    {
+      "name": "11-13. Услуги/Маркетинг/Витрина",
+      "role": "A",
+      "team": "R",
+      "raci": "C",
+      "contact": "I"
+    },
+    {
+      "name": "14. КСС",
+      "role": "A",
+      "team": "R",
+      "raci": "C",
+      "contact": "I"
+    },
+    {
+      "name": "15. PrePay-подписка",
+      "role": "A",
+      "team": "R",
+      "raci": "R",
+      "contact": "C"
+    },
+    {
+      "name": "1. Вывод в продуктив",
+      "role": "A",
+      "team": "R",
+      "raci": "C",
+      "contact": "R"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "D1",
+      "system": "ЕСВ / IDP (авторизация ЛК B2B)",
+      "desc": "API / интеграция",
+      "owner": "Команда ЕЛК / IDP",
+      "status": "2. Авторизация, 9. Инфра",
+      "risk": "Критично"
+    },
+    {
+      "id": "D2",
+      "system": "Системный API-ключ LLM (service account)",
+      "desc": "Доступ / ключ",
+      "owner": "ИИ-платформа (Юкина/Мочалов)",
+      "status": "8. AI, 9. Инфра",
+      "risk": "Критично"
+    },
+    {
+      "id": "D3",
+      "system": "LLM-провайдер (генерация, RAG)",
+      "desc": "Внешний сервис",
+      "owner": "ИИ-платформа",
+      "status": "8. AI-ассистент",
+      "risk": "Критично"
+    },
+    {
+      "id": "D4",
+      "system": "API договоров (ЕЛК)",
+      "desc": "API",
+      "owner": "Команда ЕЛК",
+      "status": "4. Договоры",
+      "risk": "Высокая"
+    },
+    {
+      "id": "D5",
+      "system": "API финансов/счетов (ЕЛК)",
+      "desc": "API",
+      "owner": "Команда ЕЛК",
+      "status": "5. Финансы",
+      "risk": "Высокая"
+    },
+    {
+      "id": "D6",
+      "system": "СБП / QR-оплата",
+      "desc": "Интеграция",
+      "owner": "Платёжный шлюз",
+      "status": "5. Финансы",
+      "risk": "Высокая"
+    },
+    {
+      "id": "D7",
+      "system": "ДОКК (обращения в поддержку)",
+      "desc": "API",
+      "owner": "Команда поддержки/ДОКК",
+      "status": "6. Поддержка",
+      "risk": "Средняя"
+    },
+    {
+      "id": "D8",
+      "system": "ОАТС (звонки, секретарь)",
+      "desc": "API",
+      "owner": "Команда ОАТС / CPBX",
+      "status": "7. Коммуникации",
+      "risk": "Средняя"
+    },
+    {
+      "id": "D9",
+      "system": "билайн.ПРОдвижение (SMS-рассылки)",
+      "desc": "Интеграция",
+      "owner": "Маркетинг-платформа",
+      "status": "12. Маркетинг",
+      "risk": "Средняя"
+    },
+    {
+      "id": "D10",
+      "system": "API биллинга подписок (PrePay)",
+      "desc": "API",
+      "owner": "Команда биллинга",
+      "status": "15. PrePay",
+      "risk": "Критично"
+    },
+    {
+      "id": "D11",
+      "system": "Balance Manager / MAPIC (prepaid)",
+      "desc": "Интеграция",
+      "owner": "Биллинг Comverse",
+      "status": "15. PrePay",
+      "risk": "Высокая"
+    },
+    {
+      "id": "D12",
+      "system": "Мерчант API (карта, рекуррентные)",
+      "desc": "API",
+      "owner": "Платёжный провайдер",
+      "status": "15. PrePay",
+      "risk": "Высокая"
+    },
+    {
+      "id": "D13",
+      "system": "ОФД / билайн.Pay (кассовые чеки)",
+      "desc": "Интеграция",
+      "owner": "ОФД",
+      "status": "15. PrePay",
+      "risk": "Высокая"
+    },
+    {
+      "id": "D14",
+      "system": "Ресурсы Vega + CI/CD",
+      "desc": "Инфраструктура",
+      "owner": "DevOps / платформа",
+      "status": "9. Инфраструктура",
+      "risk": "Критично"
+    },
+    {
+      "id": "D15",
+      "system": "Согласование ИБ (ПДн, аудит, SAST/DAST)",
+      "desc": "Юр./ИБ",
+      "owner": "Служба ИБ",
+      "status": "1. Продуктив, 8. AI",
+      "risk": "Высокая"
+    },
+    {
+      "id": "D16",
+      "system": "API КСС (управление номерами, этикетка)",
+      "desc": "API",
+      "owner": "Команда сотовой связи",
+      "status": "14. КСС",
+      "risk": "Средняя"
+    },
+    {
+      "id": "D17",
+      "system": "API лояльности (бонусы, кэшбэк)",
+      "desc": "API",
+      "owner": "Команда лояльности (Багдасарова)",
+      "status": "11. Услуги/лояльность",
+      "risk": "Низкая"
+    }
+  ],
+  "sprints": [
+    [
+      "Спринт 1",
+      "01.Июл–15.Июл 2026",
+      "Вывод в продуктив",
+      "132,169,173,179,194,195,197,199,200,201",
+      "DevOps 1,Аналитик 1,Аналитик 2,Бэкенд 1,ВП,Дизайнер 1,РП,Сист. архитектор,Солюшн архитектор",
+      "97.5"
+    ],
+    [
+      "Спринт 2",
+      "15.Июл–29.Июл 2026",
+      "Вывод в продуктив",
+      "130,176,185,210,211,212,213,214,216,217",
+      "Аналитик 1,Аналитик 2,Бэкенд 1,ВП,Дизайнер 1,РП,Сист. архитектор,Солюшн архитектор,Фронтенд 1",
+      "67.6"
+    ],
+    [
+      "Спринт 3",
+      "29.Июл–12.Авг 2026",
+      "AI-ядро",
+      "131,174,177,180,218,219,220,221,224,226",
+      "Аналитик 1,Аналитик 2,Бэкенд 1,ВП,Дизайнер 1,РП,Солюшн архитектор,Фронтенд 1",
+      "66.3"
+    ],
+    [
+      "Спринт 4",
+      "12.Авг–26.Авг 2026",
+      "Поддержка+ОАТС",
+      "168,170,175,178,229,237,246,247,261,268",
+      "Аналитик 1,Аналитик 2,Бэкенд 1,ВП,Дизайнер 1,Солюшн архитектор",
+      "45.4"
+    ],
+    [
+      "Спринт 5",
+      "26.Авг–09.Сен 2026",
+      "Авторизация/Профиль/Главный",
+      "198,206,240,273,274,330,344,352,365,398",
+      "Аналитик 1,Аналитик 2,Бэкенд 1,Солюшн архитектор,Фронтенд 1,Фронтенд 2,Фронтенд 3",
+      "48.1"
+    ],
+    [
+      "Спринт 6",
+      "09.Сен–23.Сен 2026",
+      "Авторизация/Профиль/Главный",
+      "248,252,263,271,272,290,351",
+      "Аналитик 1,Бэкенд 1,Фронтенд 1,Фронтенд 2,Фронтенд 3",
+      "28.6"
+    ],
+    [
+      "Спринт 7",
+      "23.Сен–07.Окт 2026",
+      "Авторизация/Профиль/Главный",
+      "346,349,350,355,357,358",
+      "QA 1,QA 2,Бэкенд 1,Фронтенд 1,Фронтенд 2,Фронтенд 3",
+      "48.5"
+    ],
+    [
+      "Спринт 8",
+      "07.Окт–21.Окт 2026",
+      "AI-ядро",
+      "317,321,324,356,372,374,379",
+      "Бэкенд 1,Фронтенд 1,Фронтенд 2,Фронтенд 3",
+      "31.2"
+    ],
+    [
+      "Спринт 9",
+      "21.Окт–04.Ноя 2026",
+      "AI-ядро",
+      "319,323,381",
+      "Бэкенд 1,Фронтенд 2,Фронтенд 3",
+      "18.2"
+    ],
+    [
+      "Спринт 10",
+      "04.Ноя–18.Ноя 2026",
+      "AI-ядро",
+      "318,382",
+      "Бэкенд 1,Фронтенд 2",
+      "11.7"
+    ],
+    [
+      "Спринт 11",
+      "18.Ноя–02.Дек 2026",
+      "AI-ядро",
+      "375,378",
+      "Бэкенд 1",
+      "9.1"
+    ],
+    [
+      "Спринт 12 🚩",
+      "02.Дек–16.Дек 2026",
+      "AI-ядро",
+      "256,325,373,383,386,387",
+      "Бэкенд 1,Фронтенд 1",
+      "26"
+    ],
+    [
+      "Спринт 13",
+      "16.Дек–30.Дек 2026",
+      "AI-ядро",
+      "238,239,242",
+      "QA 1,QA 2,Бэкенд 1,Фронтенд 3",
+      "53.5"
+    ],
+    [
+      "Спринт 14",
+      "30.Дек–13.Янв",
+      "AI-ядро",
+      "239,242",
+      "QA 1,QA 2,Бэкенд 1,Фронтенд 3",
+      "48.3"
+    ],
+    [
+      "Спринт 15",
+      "13.Янв–27.Янв 2027",
+      "AI-ядро",
+      "243,244,388",
+      "Бэкенд 1,Фронтенд 2",
+      "11.7"
+    ],
+    [
+      "Спринт 16",
+      "27.Янв–10.Фев 2027",
+      "Договоры+Финансы",
+      "188,245,258,364",
+      "QA 1,QA 2,Бэкенд 1,Фронтенд 1",
+      "31.5"
+    ],
+    [
+      "Спринт 17",
+      "10.Фев–24.Фев 2027",
+      "Договоры+Финансы",
+      "259,370",
+      "Бэкенд 1,Фронтенд 3",
+      "9.1"
+    ],
+    [
+      "Спринт 18",
+      "24.Фев–10.Мар 2027",
+      "Договоры+Финансы",
+      "183,363",
+      "Бэкенд 1",
+      "7.8"
+    ],
+    [
+      "Спринт 19",
+      "10.Мар–24.Мар 2027",
+      "Поддержка+ОАТС",
+      "182,184,187,328,371",
+      "Бэкенд 1,Фронтенд 1,Фронтенд 2",
+      "22.1"
+    ],
+    [
+      "Спринт 20",
+      "24.Мар–07.Апр 2027",
+      "Поддержка+ОАТС",
+      "390,391,392,393,405,406",
+      "QA 1,QA 2,Бэкенд 1,Фронтенд 1,Фронтенд 2,Фронтенд 3",
+      "39.6"
+    ],
+    [
+      "Спринт 21",
+      "07.Апр–21.Апр 2027",
+      "Услуги/КСС/Маркетинг",
+      "396,397,399",
+      "Бэкенд 1,Фронтенд 3",
+      "15.6"
+    ],
+    [
+      "Спринт 22",
+      "21.Апр–05.Май 2027",
+      "Услуги/КСС/Маркетинг",
+      "400,408",
+      "Бэкенд 1,Фронтенд 1",
+      "11.7"
+    ],
+    [
+      "Спринт 23",
+      "05.Май–19.Май 2027",
+      "Услуги/КСС/Маркетинг",
+      "250,264,402,403",
+      "QA 1,QA 2,Бэкенд 1,Фронтенд 2,Фронтенд 3",
+      "48"
+    ],
+    [
+      "Спринт 24",
+      "19.Май–02.Июн 2027",
+      "Услуги/КСС/Маркетинг",
+      "251,253",
+      "Бэкенд 1,Фронтенд 1",
+      "10.4"
+    ],
+    [
+      "Спринт 25",
+      "02.Июн–16.Июн 2027",
+      "PrePay",
+      "235,255,267,411",
+      "Бэкенд 1,Фронтенд 2,Фронтенд 3",
+      "24.7"
+    ],
+    [
+      "Спринт 26",
+      "16.Июн–30.Июн 2027",
+      "PrePay",
+      "413",
+      "QA 1,QA 2,Бэкенд 1",
+      "15.6"
+    ],
+    [
+      "Спринт 27",
+      "30.Июн–14.Июл 2027",
+      "Лояльность",
+      "266,270",
+      "QA 1,QA 2,Бэкенд 1,Фронтенд 1",
+      "15.8"
+    ],
+    [
+      "Спринт 28",
+      "14.Июл–28.Июл 2027",
+      "Вывод в продуктив",
+      "202",
+      "Бэкенд 1",
+      "5.2"
+    ],
+    [
+      "Спринт 29",
+      "28.Июл–11.Авг 2027",
+      "Вывод в продуктив",
+      "223,227",
+      "Бэкенд 1",
+      "10.4"
+    ],
+    [
+      "Спринт 30",
+      "11.Авг–25.Авг 2027",
+      "Вывод в продуктив",
+      "215,228",
+      "QA 1,QA 2,Бэкенд 1,Фронтенд 2",
+      "19.6"
+    ],
+    [
+      "Всего 31 спринтов. 🚩 — спринт с вехой 10.12.2026. Состав спринта = задачи, стартующие в его окне (resource-constrained план). Скорректируйте на планировании под фактическую velocity команды.",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  ],
+  "acceptance": [
+    {
+      "area": "№",
+      "criterion": "Критерий приёмки",
+      "measure": "Категория",
+      "status": "К вехе"
+    },
+    {
+      "area": "1",
+      "criterion": "Пользователь входит через ЕСВ (ЛК B2B) с OTP и биометрией, работает в нескольких организациях",
+      "measure": "Авторизация",
+      "status": "10.12.2026"
+    },
+    {
+      "area": "2",
+      "criterion": "Ролевая модель (RMS) разграничивает права (Владелец/Менеджер/Сотрудник)",
+      "measure": "Авторизация",
+      "status": "10.12.2026"
+    },
+    {
+      "area": "3",
+      "criterion": "Главный экран показывает смарт-карточки (баланс, договоры, события) и быстрые команды",
+      "measure": "Главный экран",
+      "status": "10.12.2026"
+    },
+    {
+      "area": "4",
+      "criterion": "AI-ассистент отвечает в реальном времени (стриминг), ведёт историю диалогов",
+      "measure": "AI",
+      "status": "10.12.2026"
+    },
+    {
+      "area": "5",
+      "criterion": "AI распознаёт намерения (intent) и ищет по базе знаний (RAG) с корректными ответами",
+      "measure": "AI",
+      "status": "10.12.2026"
+    },
+    {
+      "area": "6",
+      "criterion": "Голосовой ввод (STT) работает; ответы можно озвучить (TTS)",
+      "measure": "AI",
+      "status": "10.12.2026"
+    },
+    {
+      "area": "7",
+      "criterion": "Guardrails AI: не раскрывает ПДн, отклоняет запрещённые темы; есть fallback при сбое LLM",
+      "measure": "AI / ИБ",
+      "status": "10.12.2026"
+    },
+    {
+      "area": "8",
+      "criterion": "Инфраструктура (оркестратор, MCP, WebSocket, service account, CI/CD) развёрнута и стабильна",
+      "measure": "Инфра",
+      "status": "10.12.2026"
+    },
+    {
+      "area": "9",
+      "criterion": "Договоры доступны: список, карточка, скачивание, AI-виджеты и инсайты",
+      "measure": "Договоры",
+      "status": "Q1 2027"
+    },
+    {
+      "area": "10",
+      "criterion": "Финансы: счета, детализация, история платежей, закрывающие документы",
+      "measure": "Финансы",
+      "status": "Q1 2027"
+    },
+    {
+      "area": "11",
+      "criterion": "Оплата счёта через QR-код СБП работает end-to-end",
+      "measure": "Финансы",
+      "status": "Q1 2027"
+    },
+    {
+      "area": "12",
+      "criterion": "Обращения в поддержку (ДОКК) создаются и отслеживаются",
+      "measure": "Поддержка",
+      "status": "Q1 2027"
+    },
+    {
+      "area": "13",
+      "criterion": "ОАТС: AI-виджеты звонков и настройки секретаря",
+      "measure": "ОАТС",
+      "status": "Q1 2027"
+    },
+    {
+      "area": "14",
+      "criterion": "Метрика «решение задачи за 1-3 сообщения» собирается и достигает целевого значения",
+      "measure": "AI / Продукт",
+      "status": "Q1 2027"
+    },
+    {
+      "area": "15",
+      "criterion": "Приложение опубликовано/собрано под iOS и Android (Capacitor), проходит smoke E2E",
+      "measure": "Платформа",
+      "status": "Q1 2027"
+    },
+    {
+      "area": "16",
+      "criterion": "Пройдено нагрузочное тестирование; настроены дашборды наблюдаемости",
+      "measure": "НФТ",
+      "status": "Q2 2027"
+    },
+    {
+      "area": "17",
+      "criterion": "Пройдены SAST/DAST; согласованы ИБ-документы (реестр данных, сетевая схема)",
+      "measure": "ИБ",
+      "status": "Q2 2027"
+    },
+    {
+      "area": "18",
+      "criterion": "Подготовлены РА/РП (руководства), оформлен приказ о вводе в эксплуатацию",
+      "measure": "Документы",
+      "status": "Q2 2027"
+    }
+  ],
+  "epicProgress": {},
+  "resourcePlan": {},
   "ganttExcelArchive": [
     {
       "epic": "Эпик",
@@ -9244,91 +9147,5 @@
       "deps": "B2BAPP-193/BE",
       "critical": ""
     }
-  ],
-  "criticalPath": {
-    "role": "BE",
-    "roleName": "Backend (Макаренко full)",
-    "end": "2028-02-03"
-  },
-  "latestByRole": {
-    "ORG": "2026-09-15",
-    "BA": "2027-09-07",
-    "DS": "2026-10-28",
-    "DVO": "2027-01-07",
-    "ARC": "2027-05-03",
-    "BE": "2028-02-03",
-    "FE": "2027-12-14"
-  },
-  "ganttAssumptions": {
-    "dataSource": "Jira B2BAPP, выгрузка 07.07.2026, 810 задач",
-    "teamSource": "Confluence page 1562745210, читано 07.07.2026",
-    "projectStart": "2026-01-01",
-    "mvpDeadline": "2026-12-10",
-    "sprintStart": "2026-08-01",
-    "method": "Расчётный гант (плановых дат в Jira нет). Задачи со статусом Завершена — размещены в прошлом по очерёдности ключей. В работе — текущий момент (07.07). Бэклог — от текущей даты последовательно по роли.",
-    "roleAssumptions": {
-      "FE": "1.0 FTE с 01.08.2026 (допущение: Самойло выходит из отпуска, работает fulltime)",
-      "BE": "1.0 FTE с 01.08.2026 (допущение: Макаренко переключается на BE fulltime)",
-      "ARC": "0.5 FTE с 27.03.2026 (Макаренко + Бачинский, частичная занятость)",
-      "DVO": "0.5 FTE (Егоров работает блоками, не равномерно)",
-      "QA": "0.5 FTE с 01.10.2026 (планируется, ресурс не закрыт → риск)"
-    },
-    "criticalPathConclusion": "При текущем составе команды (1 BE, 1 FE) весь бэклог не укладывается в дедлайн 10.12.2026. BE завершает в феврале 2028, FE в декабре 2027. Необходимо: (1) сократить скоуп MVP или (2) нанять дополнительных разработчиков.",
-    "holidays": "Праздники РФ 2026 учтены (январские, 23 февраля, 8 марта, майские, 12 июня, 4 ноября)",
-    "ganttType": "aggregate_by_epic_role"
-  },
-  "refreshedAt": null,
-  "weekly": [],
-  "metrics": {
-    "epicsTotal": 17,
-    "storiesTotal": 250,
-    "storiesDone": 0,
-    "tasksTotal": 560,
-    "tasksDone": 20,
-    "openQuestions": 12
-  },
-  "blockersNow": [],
-  "mvpScope": {
-    "inStories": [],
-    "outStories": [],
-    "rationale": ""
-  },
-  "epicProgress": [],
-  "scopeGrowth": [],
-  "criticalPathExplained": {
-    "steps": [],
-    "conclusion": "",
-    "endDate": null,
-    "method": ""
-  },
-  "changelog": [
-    {
-      "ts": "2026-07-04T00:00:00+03:00",
-      "area": "ui",
-      "text": "v1 — первая публикация сайта на Vercel: 14 разделов (Гант, USM, Ресурсы, MVP, Скоуп, Риски, Допущения, Вопросы, Стейкхолдеры, Зависимости, Спринты, Критерии, Груминг, Глоссарий), данные из Jira B2BAPP + план проекта Excel → data.json, счётчик обратного отсчёта, KPI-карточки, прогресс эпиков."
-    },
-    {
-      "ts": "2026-07-04T00:00:00+03:00",
-      "area": "ui",
-      "text": "v2 — Health Score/RAG-статус, таймер до 10.12.2026 с рабочими днями, sticky-сайдбар с якорями, фильтр «только критичное», мобильная адаптация, глобальный поиск, Executive Summary (3 колонки), Burndown Chart, Top Blockers, прогноз завершения (3 сценария), матрица рисков 5×5, deviation от плана, тепловая карта загрузки команды, граф критических зависимостей, скоуп In/Out/Deferred, валидация данных при загрузке."
-    },
-    {
-      "ts": "2026-07-04T00:00:00+03:00",
-      "area": "ui",
-      "text": "v3 — единая цветовая легенда, экспорт в PDF, тултипы глоссария, сворачиваемые секции (аккордеон), бейдж «Что изменилось», deviation % у прогресс-баров эпиков, чек-лист критериев приёмки, Decision Log, «Победы за неделю», SLA на вопросы, логика расчётов перенесена в JS."
-    },
-    {
-      "ts": "2026-07-04T00:00:00+03:00",
-      "area": "ui",
-      "text": "v4 — переключатель аудитории (Руководство/PM/Команда), Scope Creep Tracker, Velocity команды, Бюджет трудозатрат (план vs факт), sticky-заголовки таблиц, manual.json вынесен из хардкода, data-aud атрибуты на секциях."
-    },
-    {
-      "ts": "2026-07-09T00:00:00+03:00",
-      "area": "ui",
-      "text": "v5 — SPEC_DASHBOARD_V2: общий сайдбар (shared-nav.js) на всех страницах, убраны карточная сетка «Все разделы» и фильтр-чипы, легенда объединена со строкой поиска, логотип с переключением по теме, шапка переименована в «Мобильное приложение для микробизнеса», удалена страница sprints.html."
-    }
-  ],
-  "ganttV2": null,
-  "baselines": [],
-  "resourcePlan": []
+  ]
 }

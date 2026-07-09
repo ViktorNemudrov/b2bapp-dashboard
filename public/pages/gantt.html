@@ -134,10 +134,46 @@ function initGanttTooltip(){
   });
 }
 
+// Скилл иногда присылает ganttV2 как плоский массив агрегатов эпик×роль
+// (тот же формат, что старый gantt[]) вместо иерархии {items:[{type,parent,deps...}]} —
+// в нём нет story/task-уровня. Строим из него двухуровневое дерево эпик→роль,
+// чтобы страница показывала реальные данные, а не пустую заглушку.
+function adaptFlatGanttV2(rows, data){
+  const epicName={}; (data.epics||[]).forEach(e=>epicName[e.key]=e.name);
+  const byEpic={};
+  rows.forEach(r=>{(byEpic[r.epic]=byEpic[r.epic]||[]).push(r);});
+  const items=[];
+  Object.entries(byEpic).forEach(([ek,rs])=>{
+    const starts=rs.map(r=>new Date(r.start)).filter(d=>!isNaN(d));
+    const ends=rs.map(r=>new Date(r.end)).filter(d=>!isNaN(d));
+    if(!starts.length||!ends.length)return;
+    const estimateH=rs.reduce((s,r)=>s+(r.h||0),0);
+    const spentH=rs.reduce((s,r)=>s+(r.spentH||0),0);
+    const allDone=rs.every(r=>r.status==='done'||r.category==='done');
+    const anyWip=rs.some(r=>r.status==='in_progress'||r.category==='in_progress');
+    items.push({
+      key:ek, type:'epic', parent:null, epic:ek, summary:epicName[ek]||ek,
+      estimateH, spentH, category:allDone?'done':anyWip?'in_progress':'planned',
+      start:new Date(Math.min(...starts)).toISOString().slice(0,10),
+      end:new Date(Math.max(...ends)).toISOString().slice(0,10),
+      status:allDone?'Завершено':anyWip?'В работе':'Бэклог', onCriticalPath:false, deps:[]
+    });
+    rs.forEach(r=>{
+      items.push({
+        key:r.key, type:'task', parent:ek, epic:ek, summary:r.summary, role:r.role,
+        estimateH:r.h||0, spentH:r.spentH||0, status:r.status, category:r.status||r.category||'planned',
+        start:r.start, end:r.end, resource:r.roleName||r.role, onCriticalPath:false, deps:[]
+      });
+    });
+  });
+  return {generatedAt:null, workCalendar:{holidays:[],hoursPerDay:8}, resources:[], items, _flatAdapted:true};
+}
+
 let CURRENT_DATA=null;
 function renderGanttV2(){
   const data=CURRENT_DATA;
-  const gv=data.ganttV2;
+  let gv=data.ganttV2;
+  if(Array.isArray(gv)) gv = gv.length ? adaptFlatGanttV2(gv, data) : null;
   if(!gv || !gv.items || !gv.items.length){
     $('ganttEmpty').innerHTML=renderEmptyState('Нет данных, запустите обновление (скилл b2bapp-dashboard-refresh)');
     $('ganttApp').style.display='none';
@@ -145,6 +181,9 @@ function renderGanttV2(){
   }
   $('ganttEmpty').innerHTML='';
   $('ganttApp').style.display='block';
+  if(gv._flatAdapted){
+    $('ganttEmpty').innerHTML=`<div class="note-banner" style="background:rgba(255,200,3,.08);border:1px solid rgba(255,200,3,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mute);margin-bottom:14px">⚠ Скилл ещё не даёт story/task-уровень в ganttV2 — показан агрегат по ролям внутри эпика вместо полной иерархии Эпик▸Стори▸Задача.</div>`;
+  }
 
   const items=gv.items;
   const tree=buildTree(items);

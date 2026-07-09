@@ -17,8 +17,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
   
 // §3.8/§6.3: основной блок — mvpScope (расчёт из ganttV2)
-const ms = d.mvpScope || {};
-const inS=ms.inStories||[], outS=ms.outStories||[];
+const ms = d.mvpScope;
 const prio=s=>parseInt((typeof s==='string'?s:(s.name||s.summary||'')).match(/^(\d+)/)?.[1]||999);
 const line=s=>{
   if(typeof s==='string')return `<div class="scope-item">${s}</div>`;
@@ -26,9 +25,16 @@ const line=s=>{
   return `<div class="scope-item">${s.key?jiraLink(s.key)+' ':''}${s.name||s.summary||''}${readyNote}</div>`;
 };
 let primaryHtml;
-if(!inS.length && !outS.length){
+if(!ms || (Array.isArray(ms)&&!ms.length) || (!Array.isArray(ms)&&!ms.inStories?.length&&!ms.outStories?.length)){
   primaryHtml = renderEmptyState('Нет данных, запустите обновление');
+} else if(Array.isArray(ms)){
+  // Скилл пока не даёт story-уровень (нужен ganttV2.items) — плоский приоритизированный список эпиков
+  const STATUS_CLS={critical:'badge-err',high:'badge-warn',medium:'badge-yel'};
+  const sorted=[...ms].sort((a,b)=>(a.priority??999)-(b.priority??999));
+  primaryHtml = `<div style="font-size:10px;color:var(--mute);margin-bottom:8px">Разбивка по стори (входит/не входит) недоступна — в ganttV2 нет story-уровня. Показан приоритизированный список эпиков.</div>`+
+    sorted.map(e=>`<div class="scope-item">${e.epic?jiraLink(e.epic)+' ':''}${e.name||''} <span class="badge ${STATUS_CLS[e.status]||'badge-blue'}" style="margin-left:6px">${e.status||'—'}</span></div>`).join('');
 } else {
+  const inS=ms.inStories||[], outS=ms.outStories||[];
   primaryHtml = `<div class="scope-grid" style="grid-template-columns:1fr 1fr">
     <div class="scope-col in-col"><h4>✅ Входит в веху</h4>${[...inS].sort((a,b)=>prio(a)-prio(b)).map(line).join('')||'—'}</div>
     <div class="scope-col out-col"><h4>❌ Не входит (расчётная дата готовности)</h4>${[...outS].sort((a,b)=>prio(a)-prio(b)).map(line).join('')||'—'}</div>
