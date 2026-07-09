@@ -94,10 +94,58 @@ def prune_removed(root="public", msg="chore: remove files deleted locally"):
     for gh_path in sorted(remote - local):
         delete(gh_path, msg)
 
+def push_all(msg, root="public"):
+    """Push every file under root in a SINGLE commit (Git Data API), so Vercel
+    triggers exactly one deployment instead of one per file (push() does one
+    commit per call, which floods the deploy queue when pushing many files)."""
+    files = collect_files(root)
+
+    ref_req = urllib.request.Request(f"{BASE}/git/ref/heads/main", headers=HDR)
+    with urllib.request.urlopen(ref_req) as r:
+        base_commit_sha = json.loads(r.read())["object"]["sha"]
+
+    commit_req = urllib.request.Request(f"{BASE}/git/commits/{base_commit_sha}", headers=HDR)
+    with urllib.request.urlopen(commit_req) as r:
+        base_tree_sha = json.loads(r.read())["tree"]["sha"]
+
+    tree_entries = []
+    for gh, loc in files:
+        if not os.path.exists(loc):
+            print(f"SKIP {loc} not found"); continue
+        with open(loc, "rb") as f:
+            b64 = base64.b64encode(f.read()).decode()
+        blob_req = urllib.request.Request(f"{BASE}/git/blobs", headers=HDR, method="POST")
+        blob_req.data = json.dumps({"content": b64, "encoding": "base64"}).encode()
+        with urllib.request.urlopen(blob_req) as r:
+            blob_sha = json.loads(r.read())["sha"]
+        tree_entries.append({"path": gh, "mode": "100644", "type": "blob", "sha": blob_sha})
+
+    tree_req = urllib.request.Request(f"{BASE}/git/trees", headers=HDR, method="POST")
+    tree_req.data = json.dumps({"base_tree": base_tree_sha, "tree": tree_entries}).encode()
+    with urllib.request.urlopen(tree_req) as r:
+        new_tree_sha = json.loads(r.read())["sha"]
+
+    new_commit_req = urllib.request.Request(f"{BASE}/git/commits", headers=HDR, method="POST")
+    new_commit_req.data = json.dumps({"message": msg, "tree": new_tree_sha, "parents": [base_commit_sha]}).encode()
+    with urllib.request.urlopen(new_commit_req) as r:
+        new_commit_sha = json.loads(r.read())["sha"]
+
+    ref_update_req = urllib.request.Request(f"{BASE}/git/refs/heads/main", headers=HDR, method="PATCH")
+    ref_update_req.data = json.dumps({"sha": new_commit_sha}).encode()
+    with urllib.request.urlopen(ref_update_req) as r:
+        r.read()
+
+    print(f"OK single commit {new_commit_sha[:8]} with {len(tree_entries)} files -> one Vercel deploy")
+    return new_commit_sha
+
 if __name__ == "__main__":
     msg = sys.argv[1] if len(sys.argv) > 1 else "feat: dashboard update"
-    for gh, loc in collect_files():
-        push(gh, loc, msg)
+    try:
+        push_all(msg)
+    except Exception as e:
+        print(f"push_all failed ({e}), falling back to per-file push")
+        for gh, loc in collect_files():
+            push(gh, loc, msg)
     print("Done! Vercel deploys automatically.")
     # Note: prune_removed(msg=msg) is available but NOT run automatically —
     # it deletes files from GitHub/Vercel that no longer exist locally under public/.
