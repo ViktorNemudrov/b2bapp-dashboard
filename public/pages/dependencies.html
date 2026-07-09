@@ -18,8 +18,8 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   
 const items = d.dependencies || [];
 const SCLS={'Подтверждено':'ok','Согласовано':'ok','В работе':'warn','Ожидание':'err','Нет':'err'};
-document.getElementById('root').innerHTML=`<table class="tbl">
-  <thead><tr><th>ID</th><th>Система</th><th>Описание</th><th>Владелец</th><th>Статус</th><th>Риск</th></tr></thead>
+document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">
+  <thead><tr><th>ID</th><th>Система</th><th>Описание</th><th>Владелец</th><th>Статус</th><th>Риск</th><th>Источник</th></tr></thead>
   <tbody>${items.map(dep=>{
     const cls=Object.entries(SCLS).find(([k])=>dep.status&&dep.status.includes(k))?.[1]||'blue';
     return `<tr>
@@ -29,8 +29,9 @@ document.getElementById('root').innerHTML=`<table class="tbl">
       <td style="font-size:11px">${dep.owner}</td>
       <td><span class="badge badge-${cls}">${dep.status}</span></td>
       <td style="font-size:11px;color:#e67e22">${dep.risk}</td>
+      <td style="font-size:10px;color:var(--mute)">${dep.link?`<a href="${dep.link}" target="_blank" rel="noopener">${dep.source||'источник'}</a>`:(dep.source||'—')}</td>
     </tr>`;}).join('')}</tbody></table>`;
-
+makeSortable(document.getElementById('tbl'));
 });
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>

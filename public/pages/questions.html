@@ -18,18 +18,25 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   
 const items = d.questions || [];
 const SCLS={'Открыт':'err','Решён':'ok','В работе':'warn','Закрыт':'gray'};
-document.getElementById('root').innerHTML=`<table class="tbl">
-  <thead><tr><th>ID</th><th>Вопрос</th><th>Ответственный</th><th>Дедлайн</th><th>Статус</th></tr></thead>
+document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">
+  <thead><tr><th>ID</th><th>Вопрос</th><th>Ответственный</th><th>Дедлайн</th><th>Статус</th><th>Ждёт</th><th>Источник</th></tr></thead>
   <tbody>${items.map(q=>{
     const cls=Object.entries(SCLS).find(([k])=>q.status&&q.status.includes(k))?.[1]||'blue';
-    return `<tr>
+    // C11: подсветка красным, если вопрос открыт >14 дней от даты создания (если она известна)
+    const closed=q.status&&(q.status.includes('Закрыт')||q.status.includes('Решён'));
+    const created=q.created?new Date(q.created):null;
+    const daysOpen=(!closed&&created&&!isNaN(created))?Math.round((Date.now()-created)/86400000):null;
+    const escalate=daysOpen!=null&&daysOpen>14;
+    return `<tr${escalate?' style="background:rgba(231,76,60,.08)"':''}>
       <td><span class="badge badge-yel">${q.id}</span></td>
       <td>${q.question}</td>
       <td style="font-size:11px;color:var(--mute)">${q.owner}</td>
       <td style="font-size:11px;color:var(--mute)">${q.deadline}</td>
       <td><span class="badge badge-${cls}">${q.status}</span></td>
+      <td style="font-size:11px;${escalate?'color:var(--err);font-weight:700':'color:var(--mute)'}">${daysOpen!=null?`ждёт ${daysOpen} дней`:'—'}</td>
+      <td style="font-size:10px;color:var(--mute)">${q.link?`<a href="${q.link}" target="_blank" rel="noopener">${q.source||'источник'}</a>`:(q.source||'—')}</td>
     </tr>`;}).join('')}</tbody></table>`;
-
+makeSortable(document.getElementById('tbl'));
 });
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>

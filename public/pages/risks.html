@@ -21,7 +21,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     <span class="count-badge" id="cnt"></span>
   </div>
   <table class="tbl" id="tbl">
-    <thead><tr><th>ID</th><th>Описание</th><th>Вер.</th><th>Влияние</th><th>Скор</th><th>Митигация</th><th>Ответств.</th></tr></thead>
+    <thead><tr><th>ID</th><th>Описание</th><th>Вер.</th><th>Влияние</th><th>Скор</th><th>Митигация</th><th>Ответств.</th><th>Источник</th></tr></thead>
     <tbody id="tbody"></tbody>
   </table>
 </div>
@@ -32,6 +32,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   DATA=d.risks||[];
   document.getElementById('upd').textContent=d.updated||'—';
   render(DATA);
+  makeSortable(document.getElementById('tbl'));
 });
 function render(rows){
   const tb=document.getElementById('tbody');
@@ -46,6 +47,7 @@ function render(rows){
       <td class="score-cell"><span class="badge badge-${sc}">${score}</span></td>
       <td style="font-size:11px;color:#ccc">${r.mitigation}</td>
       <td style="font-size:11px;color:var(--mute)">${r.owner}</td>
+      <td style="font-size:10px;color:var(--mute)">${r.link?`<a href="${r.link}" target="_blank" rel="noopener">${r.source||'источник'}</a>`:(r.source||'—')}</td>
     </tr>`;
   }).join('');
   document.getElementById('cnt').textContent=rows.length+' рисков';

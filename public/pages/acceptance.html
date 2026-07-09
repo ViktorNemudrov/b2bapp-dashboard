@@ -18,7 +18,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   
 const items = d.acceptance || [];
 const SCLS={'✅':'ok','🟡':'warn','⬜':'gray','❌':'err'};
-document.getElementById('root').innerHTML=`<table class="tbl">
+document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">
   <thead><tr><th>Область</th><th>Критерий</th><th>Метрика / Мера</th><th>Статус</th></tr></thead>
   <tbody>${items.map(a=>{
     const cls=Object.entries(SCLS).find(([k])=>a.status&&a.status.startsWith(k))?.[1]||'blue';
@@ -28,7 +28,7 @@ document.getElementById('root').innerHTML=`<table class="tbl">
       <td style="font-size:11px;color:var(--mute)">${a.measure}</td>
       <td><span class="badge badge-${cls}">${a.status}</span></td>
     </tr>`;}).join('')}</tbody></table>`;
-
+makeSortable(document.getElementById('tbl'));
 });
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>
