@@ -2,14 +2,14 @@
 <title>Ресурсный план — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
-<script src="../shared-nav.js"></script><script>renderSidebar();
+<script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   mountFreshness('freshness', d.refreshedAt, d.updated);
 }).catch(()=>{});</script>
 <div class="main">
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">👥 Ресурсный план</span></div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
@@ -34,7 +34,7 @@ if(!rp.length){
   const html = `<table class="tbl heatmap-table" id="tbl">
     <thead><tr><th>Человек</th><th>Роль</th>${months.map(m=>`<th>${m}</th>`).join('')}</tr></thead>
     <tbody>${rp.map(r=>`<tr>
-      <td style="font-weight:600;color:#fff">${r.person}</td>
+      <td style="font-weight:600;color:var(--text)">${r.person}</td>
       <td style="color:var(--mute)">${r.role}</td>
       ${months.map(m=>{const v=r.monthly[m];return `<td class="${heatClass(v)}">${v!=null?v+'%':'·'}</td>`;}).join('')}
     </tr>`).join('')}</tbody></table>
