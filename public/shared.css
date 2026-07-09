@@ -106,6 +106,18 @@ body.light-theme .theme-dark-only{display:none}
 th.sorted-asc::after{content:' ▲';font-size:9px}
 th.sorted-desc::after{content:' ▼';font-size:9px}
 
+/* ── SCOPE GRID / SECTION TITLE (переиспользуется на подстраницах) ── */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.scope-col{background:var(--card);border-radius:10px;border:1px solid var(--line);padding:14px}
+.scope-col h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.scope-col.in-col h4{color:var(--ok)}
+.scope-col.out-col h4{color:var(--err)}
+.scope-col.def-col h4{color:var(--mute)}
+.scope-item{font-size:11px;color:var(--mute);padding:4px 0;border-bottom:1px solid var(--line);line-height:1.4}
+.scope-item:last-child{border-bottom:none}
+.sec-title{font-size:11px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--line)}
+
 /* ── SHARED TOOLTIP (риски / гант) ───────────────────────────── */
 .gls-tip{position:fixed;background:#1a2940;border:1px solid var(--yel);border-radius:7px;padding:8px 12px;font-size:11px;color:var(--text);max-width:280px;z-index:9999;pointer-events:none;display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);line-height:1.5}
 .gls-tip strong{color:var(--yel);display:block;margin-bottom:3px}
