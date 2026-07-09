@@ -81,12 +81,19 @@ a{text-decoration:none;color:inherit}
 </head>
 <body>
 
+<div class="layout">
+<div id="sidebar-root"></div>
+<script src="../shared-nav.js"></script><script>renderSidebar();
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  mountFreshness('freshness', d.refreshedAt, d.updated);
+}).catch(()=>{});</script>
+<div class="main">
 <header class="hdr">
   <div style="display:flex;align-items:center;gap:12px">
     <a class="back-btn" href="../index.html">← Главная</a>
     <span class="page-title">🎯 OKR — Цели и ключевые результаты</span>
   </div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd" style="color:var(--yel)">—</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd" style="color:var(--yel)">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
 </header>
 
 <div class="content">
@@ -238,5 +245,6 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 
 });
 </script>
+</div><!-- /main --></div><!-- /layout -->
 </body>
 </html>

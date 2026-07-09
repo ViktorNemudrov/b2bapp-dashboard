@@ -492,7 +492,8 @@ body.light-theme .manual-note{background:rgba(255,200,3,.08);border-color:rgba(2
 
 /* ── MOBILE (п.6) ── */
 @media(max-width:768px){
-  .sidebar{display:none}
+  .sidebar{position:fixed;left:-260px;top:0;width:240px;transition:left .2s;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+  .sidebar.open{left:0}
   .exec-grid{grid-template-columns:1fr}
   .forecast-row,.scope-grid,.two-col{grid-template-columns:1fr}
   .section{padding:16px 16px 8px}
@@ -509,65 +510,50 @@ body.light-theme .manual-note{background:rgba(255,200,3,.08);border-color:rgba(2
   .hdr{padding:0 14px}
   .search-bar{padding:7px 14px}
 }
+
+/* ── ЛОГОТИП (тема) / СВОРАЧИВАНИЕ САЙДБАРА / БУРГЕР (SPEC v2 §1.1–1.2) ── */
+.sidebar-logo{text-decoration:none;cursor:pointer}
+.sidebar-logo-img{width:28px;height:28px;flex-shrink:0;object-fit:contain}
+.theme-light-only{display:none}
+body.light-theme .theme-light-only{display:inline-block}
+body.light-theme .theme-dark-only{display:none}
+.nav-label{white-space:nowrap}
+@media(max-width:1100px) and (min-width:769px){
+  .sidebar{width:56px}
+  .sidebar-logo-text,.nav-section,.nav-label{display:none}
+  .sidebar-logo{justify-content:center}
+  .nav-link{justify-content:center;padding:9px 0}
+}
+.sidebar-burger{display:none;position:fixed;top:10px;left:10px;z-index:300;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:6px;width:34px;height:34px;font-size:16px;cursor:pointer}
+@media(max-width:768px){.sidebar-burger{display:block}}
+body.light-theme .sidebar-burger{background:#fff;border-color:#d0d8e8;color:#1a2940}
+.freshness{font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;white-space:nowrap}
+.freshness-ok{background:rgba(39,174,96,.18);color:#2ecc71}
+.freshness-warn{background:rgba(230,126,34,.18);color:var(--warn)}
+.freshness-err{background:rgba(231,76,60,.18);color:var(--err)}
+.freshness-gray{background:rgba(127,143,166,.15);color:var(--mute)}
+th.sorted-asc::after{content:' ▲';font-size:9px}
+th.sorted-desc::after{content:' ▼';font-size:9px}
+.demo-links{margin-top:6px;font-size:10px}
+.demo-links a{color:var(--mute)}
+.demo-links a:hover{color:var(--yel)}
 </style>
 </head>
 <body>
 <div class="layout">
 
-<!-- ── SIDEBAR (п.3) ─────────────────────────────────────────── -->
-<nav class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <svg viewBox="0 0 28 28"><defs><clipPath id="sc"><circle cx="14" cy="14" r="12"/></clipPath></defs>
-      <circle cx="14" cy="14" r="12" fill="#111"/>
-      <g clip-path="url(#sc)">
-        <rect x="2" y="4"  width="24" height="2" fill="#FFC803"/>
-        <rect x="2" y="9"  width="24" height="2" fill="#FFC803"/>
-        <rect x="2" y="14" width="24" height="2" fill="#FFC803"/>
-        <rect x="2" y="19" width="24" height="2" fill="#FFC803"/>
-        <rect x="2" y="24" width="24" height="2" fill="#FFC803"/>
-      </g>
-    </svg>
-    <div><div class="sidebar-logo-text">beeline<br>B2BAPP</div></div>
-  </div>
-  <div class="sidebar-nav">
-    <div class="nav-section">Обзор</div>
-    <div class="nav-link active" onclick="navScrollTo('s-hero')"><span class="nav-icon">🏠</span>Главная</div>
-    <div class="nav-link" onclick="navScrollTo('s-exec')"><span class="nav-icon">📋</span>Executive Summary</div>
-    <div class="nav-link" onclick="navScrollTo('s-forecast')"><span class="nav-icon">🔮</span>Прогноз</div>
-    <div class="nav-link" onclick="navScrollTo('s-kpi')"><span class="nav-icon">📊</span>KPI</div>
-    <div class="nav-link" onclick="navScrollTo('s-blockers')"><span class="nav-icon">🚧</span>Блокеры</div>
-    <div class="nav-section">Планирование</div>
-    <div class="nav-link" onclick="navScrollTo('s-burndown')"><span class="nav-icon">📉</span>Burndown</div>
-    <div class="nav-link" onclick="navScrollTo('s-scope')"><span class="nav-icon">📅</span>Скоуп вехи</div>
-    <div class="nav-link" onclick="navScrollTo('s-progress')"><span class="nav-icon">✅</span>Готовность</div>
-    <div class="nav-section">Команда и риски</div>
-    <div class="nav-link" onclick="navScrollTo('s-capacity')"><span class="nav-icon">👥</span>Загрузка команды</div>
-    <div class="nav-link" onclick="navScrollTo('s-risks')"><span class="nav-icon">⚠️</span>Матрица рисков</div>
-    <div class="nav-link" onclick="navScrollTo('s-deps')"><span class="nav-icon">🔗</span>Зависимости</div>
-    <div class="nav-section">Контент</div>
-    <div class="nav-link" onclick="navScrollTo('s-wins')"><span class="nav-icon">🏅</span>Победы недели</div>
-    <div class="nav-link" onclick="navScrollTo('s-decisions')"><span class="nav-icon">📝</span>Decision Log</div>
-    <div class="nav-link" onclick="navScrollTo('s-acceptance')"><span class="nav-icon">✅</span>Критерии приёмки</div>
-    <div class="nav-link" onclick="navScrollTo('s-qsla')"><span class="nav-icon">❓</span>Вопросы + SLA</div>
-    <div class="nav-section">Служебное</div>
-    <div class="nav-link" onclick="navScrollTo('s-cards')"><span class="nav-icon">🗂️</span>Все разделы</div>
-    <div class="nav-link" onclick="navScrollTo('s-changelog')"><span class="nav-icon">📜</span>Changelog</div>
-  </div>
-  <div class="sidebar-health">
-    <div class="health-label">Статус проекта</div>
-    <div class="health-badge" id="sidebarHealth">
-      <div class="health-dot" style="background:#888"></div>
-      <span style="color:#888">Загрузка…</span>
-    </div>
-  </div>
-</nav>
+<!-- ── SIDEBAR (общий компонент, shared-nav.js) ─────────────────── -->
+<div id="sidebar-root"></div>
+<script src="shared-nav.js"></script>
+<script>renderSidebar();</script>
 
 <!-- ── MAIN ──────────────────────────────────────────────────── -->
 <div class="main">
 
   <!-- HEADER -->
   <header class="hdr">
-    <div style="font-size:13px;font-weight:700;color:#fff">B2BAPP Dashboard</div>
+    <button class="sidebar-burger" id="sidebarBurger" style="position:static" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <div style="font-size:13px;font-weight:700;color:#fff">Мобильное приложение для микробизнеса</div>
     <div class="hdr-right">
       <div class="upd-label">
         <span class="upd-dot" id="updDot"></span>
@@ -585,44 +571,31 @@ body.light-theme .manual-note{background:rgba(255,200,3,.08);border-color:rgba(2
     <button class="aud-btn" onclick="setAudience('exec',this)"><span class="aud-icon">👔</span>Руководство</button>
     <button class="aud-btn" onclick="setAudience('pm',this)"><span class="aud-icon">📋</span>PM</button>
     <button class="aud-btn" onclick="setAudience('team',this)"><span class="aud-icon">💻</span>Команда</button>
-    <span style="margin-left:auto;font-size:10px;color:var(--mute)" id="audHint">Показаны все разделы</span>
   </div>
 
-  <!-- SEARCH BAR (п.7) -->
-  <div class="search-bar">
+  <!-- SEARCH BAR + LEGEND (п.1.3: поиск слева, легенда справа в одной строке) -->
+  <div class="search-bar" style="flex-wrap:wrap">
     <div class="srch-wrap">
       <span class="srch-icon">🔍</span>
       <input class="srch-input" id="srchInput" placeholder="Поиск по рискам, вопросам, задачам, стейкхолдерам..." oninput="doSearch(this.value)" onblur="setTimeout(()=>closeSearch(),200)">
       <div class="srch-results" id="srchResults"></div>
     </div>
-    <div class="filter-btns" id="filterBtns">
-      <button class="f-btn on" onclick="setFilter('all',this)">Всё</button>
-      <button class="f-btn" onclick="setFilter('risks',this)">⚠️ Риски</button>
-      <button class="f-btn" onclick="setFilter('questions',this)">❓ Вопросы</button>
-      <button class="f-btn" onclick="setFilter('deps',this)">🔗 Зависимости</button>
-      <button class="f-btn" onclick="setFilter('crit',this)">★ Крит. путь</button>
+    <div class="legend-bar" style="margin:0;margin-left:auto;flex-shrink:1">
+      <span class="legend-title">Легенда:</span>
+      <div class="leg-item"><div class="leg-dot" style="background:#27ae60"></div>Норма</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#e67e22"></div>Внимание</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#e74c3c"></div>Критично</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#FFC803"></div>Плановый</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#4472C4"></div>Инфо</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#7f8fa6"></div>Отложено</div>
     </div>
     <div id="changedBadge" style="display:none;flex-shrink:0"></div>
-  </div>
-
-  <!-- LEGEND (п.8) -->
-  <div style="padding:8px 24px 0">
-    <div class="legend-bar">
-      <span class="legend-title">Цветовая легенда:</span>
-      <div class="leg-item"><div class="leg-dot" style="background:#27ae60"></div>Выполнено / В норме</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#e67e22"></div>Внимание / Напряжённо</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#e74c3c"></div>Критично / Перегруз / Блокер</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#FFC803"></div>Плановый / Нейтральный</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#4472C4"></div>Информационный</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#7f8fa6"></div>Отложено / Не начато</div>
-    </div>
   </div>
 
   <!-- HERO -->
   <div class="hero" id="s-hero">
     <div class="hero-left">
-      <h1>Мобильное приложение<br>для <em>микробизнеса</em></h1>
-      <div class="hero-sub">React / Capacitor (iOS + Android) · AI-ассистент как главный интерфейс<br>Jira B2BAPP · Команда 8 человек · Старт разработки 01.08.2026</div>
+      <div class="hero-sub">React / Capacitor (iOS + Android) · AI-ассистент как главный интерфейс</div>
     </div>
 
     <!-- RAG HEALTH (п.1) -->
@@ -947,12 +920,6 @@ body.light-theme .manual-note{background:rgba(255,200,3,.08);border-color:rgba(2
     </div>
   </div>
 
-  <!-- CARDS -->
-  <div class="section" id="s-cards" data-aud="all">
-    <div class="sec-title">🗂️ Все разделы дашборда</div>
-    <div class="grid" id="cardsGrid"></div>
-  </div>
-
   <!-- CHANGELOG — добавляем v4 -->
   <div class="section" id="s-changelog">
     <div class="sec-title">📜 Changelog — история версий дашборда</div>
@@ -1037,6 +1004,7 @@ body.light-theme .manual-note{background:rgba(255,200,3,.08);border-color:rgba(2
 
   <footer class="footer">
     B2BAPP Dashboard · Билайн Бизнес · <a href="https://btask.beeline.ru/projects/B2BAPP" target="_blank" style="color:var(--mute)">Jira B2BAPP</a>
+    <div class="demo-links">Демо: <a href="https://b2b-telecom-prototype-ai.vercel.app/assistant" target="_blank">ИИ-ассистент</a> · <a href="https://b2b-telecom-prototype-classic.vercel.app/onboarding" target="_blank">Классический онбординг</a> · <a href="https://b2b-ai-app.vercel.app" target="_blank">B2B AI app</a></div>
   </footer>
 </div><!-- /main -->
 </div><!-- /layout -->
@@ -1056,22 +1024,6 @@ function updateCountdown(){
   $('cdWorkdays').innerHTML=`Веха: <span>10 декабря 2026</span> · ~${workdays} рабочих дней`;
 }
 updateCountdown(); setInterval(updateCountdown,30000);
-
-// ── SCROLLING NAV (п.3) ──────────────────────────────────────
-function navScrollTo(id){
-  document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
-  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-}
-// Intersection observer для подсветки активного пункта
-const sections=['s-hero','s-exec','s-forecast','s-kpi','s-blockers','s-burndown','s-scope','s-progress','s-capacity','s-risks','s-deps','s-cards'];
-const navLinks=document.querySelectorAll('.nav-link');
-const sectionMap={};
-sections.forEach((sid,i)=>{if(document.getElementById(sid))sectionMap[sid]=navLinks[i];});
-new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(l=>l.classList.remove('active'));sectionMap[e.target.id]?.classList.add('active');}});
-},{rootMargin:'-40% 0px -55% 0px'}).observe.bind(null);
-sections.forEach(sid=>{const el=document.getElementById(sid);if(el)new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(l=>l.classList.remove('active'));sectionMap[sid]?.classList.add('active');}});},{rootMargin:'-40% 0px -55% 0px'}).observe(el);});
 
 // ── SEARCH (п.7) ─────────────────────────────────────────────
 let SEARCH_IDX=[];
@@ -1097,17 +1049,6 @@ function doSearch(q){
 }
 function closeSearch(){$('srchResults').classList.remove('open');}
 
-// ── FILTER BUTTONS ────────────────────────────────────────────
-let activeFilter='all';
-function setFilter(f,btn){
-  activeFilter=f;
-  document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  // Could be used to filter cards — for now scrolls to relevant section
-  const map={risks:'s-risks',questions:'s-blockers',deps:'s-deps',crit:'s-burndown'};
-  if(map[f])document.getElementById(map[f])?.scrollIntoView({behavior:'smooth'});
-}
-
 // ── RAG HEALTH (п.1) ─────────────────────────────────────────
 function computeRAG(data){
   const risks=data.risks||[], qs=data.questions||[], res=data.resources||[], scope=data.scope_dec||[];
@@ -1131,7 +1072,7 @@ function computeRAG(data){
   const reds=overall.filter(r=>r==='🔴').length;
   const yels=overall.filter(r=>r==='🟡').length;
   const [col,lbl]=reds>=2?['#e74c3c','🔴 Critical']:yels>=2||reds>=1?['#e67e22','🟡 At Risk']:['#27ae60','🟢 On Track'];
-  $('sidebarHealth').innerHTML=`<div class="health-dot" style="background:${col}"></div><span style="color:${col}">${lbl}</span>`;
+  if($('sidebarHealth'))$('sidebarHealth').innerHTML=`<div class="health-dot" style="background:${col}"></div><span style="color:${col}">${lbl}</span>`;
 }
 
 // ── KPI ───────────────────────────────────────────────────────
@@ -1372,37 +1313,6 @@ function renderDeps(data){
   $('depChain').innerHTML=chains.map(chain=>`
     <div class="dep-row">${chain.map(n=>n.cls===''||n.cls==='crit-arr'?`<span class="dep-arrow ${n.cls}">${n.label}</span>`:`<span class="dep-node ${n.cls}">${n.label}</span>`).join('')}</div>
   `).join('');
-}
-
-// ── CARDS (п.6 mobile + динамические бейджи) ─────────────────
-const CARDS=[
-  {icon:'📊',title:'Диаграмма Ганта',desc:'Прогресс по эпикам, вехи, команда и план по задачам.',href:'pages/gantt.html',badges:[{t:'17 эпиков',c:'b-gray'}]},
-  {icon:'🗺️',title:'User Story Map',desc:'210 историй из Jira + 29 к созданию, 7 блоков. Реестр белых пятен.',href:'pages/usm.html',badges:[{t:'210 историй',c:'b-blue'}]},
-  {icon:'👥',title:'Ресурсный план',desc:'Тепловая карта загрузки 14 ролей по месяцам. Красный ≥100%.',href:'pages/resources.html',badges:[{t:'14 ролей',c:'b-gray'}]},
-  {icon:'🏆',title:'MVP по кварталам',desc:'Дорожная карта Q3\'26–Q3\'27. Продуктовая ценность каждого этапа.',href:'pages/mvp.html',badges:[{t:'9 этапов',c:'b-blue'}]},
-  {icon:'📅',title:'Скоуп до 10.12',desc:'Что готово к вехе при 1 BE. Статус по эпикам.',href:'pages/scope_dec.html',badges:[],badgeKey:'scope'},
-  {icon:'⚠️',title:'Реестр рисков',desc:'12 рисков. Матрица, митигация, ответственные.',href:'pages/risks.html',badges:[],badgeKey:'risks'},
-  {icon:'📌',title:'Допущения',desc:'14 допущений плана и последствия нарушения.',href:'pages/assumptions.html',badges:[{t:'14',c:'b-gray'}]},
-  {icon:'❓',title:'Открытые вопросы',desc:'Нерешённые вопросы с дедлайнами и ответственными.',href:'pages/questions.html',badges:[],badgeKey:'questions'},
-  {icon:'🤝',title:'Стейкхолдеры + RACI',desc:'Матрица ответственности и контакты участников.',href:'pages/stakeholders.html',badges:[{t:'13 участников',c:'b-gray'}]},
-  {icon:'🔗',title:'Внешние зависимости',desc:'17 зависимостей от смежных команд: ЕЛК, ДОКК, ОАТС.',href:'pages/dependencies.html',badges:[],badgeKey:'deps'},
-  {icon:'🏃',title:'Бэклог по спринтам',desc:'Распределение задач по спринтам.',href:'pages/sprints.html',badges:[{t:'31 запись',c:'b-gray'}]},
-  {icon:'✅',title:'Критерии приёмки',desc:'19 критериев готовности MVP.',href:'pages/acceptance.html',badges:[{t:'19 критериев',c:'b-gray'}]},
-];
-function renderCards(data){
-  const risks=data?.risks||[], critR=risks.filter(r=>parseInt(r.prob||0)*parseInt(r.impact||0)>=16).length;
-  const qs=data?.questions||[], openQ=qs.filter(q=>q.status&&!q.status.includes('Закрыт')&&!q.status.includes('Решён')).length;
-  const scope=data?.scope_dec||[], readyPct=scope.length?Math.round(scope.filter(s=>s.status?.includes('✅')).length/scope.length*100):0;
-  const deps=data?.dependencies||[], riskDeps=deps.filter(d=>d.risk&&d.risk.length>2&&!d.risk.includes('·')).length;
-  const DYN={risks:critR>0?[{t:`🔴 ${critR} критичных`,c:'b-err'}]:[{t:'Под контролем',c:'b-ok'}],questions:openQ>0?[{t:`${openQ} открытых`,c:'b-warn'}]:[{t:'Все решены',c:'b-ok'}],scope:[{t:`${readyPct}% эпиков готово`,c:readyPct>=50?'b-ok':'b-warn'}],deps:riskDeps>0?[{t:`${riskDeps} с рисками`,c:'b-warn'}]:[{t:'17 зависимостей',c:'b-gray'}]};
-  $('cardsGrid').innerHTML=CARDS.map(c=>{
-    const badges=c.badgeKey?(DYN[c.badgeKey]||c.badges):c.badges;
-    return `<a class="pcard" href="${c.href}">
-      <div class="pcard-top"><span class="pcard-icon">${c.icon}</span><span class="pcard-arrow">→</span></div>
-      <div class="pcard-title">${c.title}</div>
-      <div class="pcard-desc">${c.desc}</div>
-      <div class="pcard-footer">${badges.map(b=>`<span class="badge ${b.c}">${b.t}</span>`).join('')}</div>
-    </a>`;}).join('');
 }
 
 // ── ACCORDION (п.11) ─────────────────────────────────────────
@@ -1862,7 +1772,6 @@ function init(data, manual){
   renderScopeCreep(data);
   renderVelocity(data);
   renderBudget(data);
-  renderCards(data);
   const upd=data.updated||'—';
   setSmartTime(upd);
   setTimeout(()=>{initGlossaryTooltips(data.glossary);restoreAccordions();restoreAudience();},100);

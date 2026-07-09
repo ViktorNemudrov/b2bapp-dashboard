@@ -4,9 +4,16 @@
 .risk-row td:nth-child(3),.risk-row td:nth-child(4){text-align:center;font-weight:700;font-size:14px}
 .score-cell{font-size:12px;text-align:center}
 </style></head><body>
+<div class="layout">
+<div id="sidebar-root"></div>
+<script src="../shared-nav.js"></script><script>renderSidebar();
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  mountFreshness('freshness', d.refreshedAt, d.updated);
+}).catch(()=>{});</script>
+<div class="main">
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">⚠️ Реестр рисков</span></div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
 </header>
 <div class="content">
   <div class="search-row">
@@ -47,4 +54,5 @@ function filter(){
   const q=document.getElementById('srch').value.toLowerCase();
   render(DATA.filter(r=>JSON.stringify(r).toLowerCase().includes(q)));
 }
-</script></body></html>
+</script></div><!-- /main --></div><!-- /layout -->
+</body></html>

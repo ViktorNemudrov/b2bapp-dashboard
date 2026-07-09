@@ -1,8 +1,15 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Скоуп до 10.12.2026 — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
+<div class="layout">
+<div id="sidebar-root"></div>
+<script src="../shared-nav.js"></script><script>renderSidebar();
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  mountFreshness('freshness', d.refreshedAt, d.updated);
+}).catch(()=>{});</script>
+<div class="main">
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📅 Скоуп до 10.12.2026</span></div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
@@ -27,4 +34,5 @@ const html=`<table class="tbl">
 document.getElementById('root').innerHTML=html;
 
 });
-</script></body></html>
+</script></div><!-- /main --></div><!-- /layout -->
+</body></html>

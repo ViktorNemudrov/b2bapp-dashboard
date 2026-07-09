@@ -20,12 +20,19 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1b2a;color:#e8edf5;fo
 .r-I{background:rgba(127,143,166,.15);color:#7f8fa6}
 </style>
 </head><body>
+<div class="layout">
+<div id="sidebar-root"></div>
+<script src="../shared-nav.js"></script><script>renderSidebar();
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  mountFreshness('freshness', d.refreshedAt, d.updated);
+}).catch(()=>{});</script>
+<div class="main">
 <header class="hdr">
   <div style="display:flex;align-items:center;gap:12px">
     <a class="back-btn" href="../index.html">← Главная</a>
     <span style="font-size:14px;font-weight:700;color:#fff">🤝 Стейкхолдеры + RACI</span>
   </div>
-  <div style="font-size:11px;color:#7f8fa6">B2BAPP | Данные на <span id="upd" style="color:#FFC803">—</span></div>
+  <div style="font-size:11px;color:#7f8fa6">B2BAPP | Данные на <span id="upd" style="color:#FFC803">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
 </header>
 <div class="content">
   <div class="raci-legend">
@@ -61,4 +68,5 @@ function render(rows){
   document.getElementById('cnt').textContent=rows.length+' участников';
 }
 function filter(){const q=document.getElementById('srch').value.toLowerCase();render(DATA.filter(r=>JSON.stringify(r).toLowerCase().includes(q)));}
-</script></body></html>
+</script></div><!-- /main --></div><!-- /layout -->
+</body></html>

@@ -42,9 +42,16 @@
 .gantt-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--mute)}
 .gantt-legend .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
 </style></head><body>
+<div class="layout">
+<div id="sidebar-root"></div>
+<script src="../shared-nav.js"></script><script>renderSidebar();
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  mountFreshness('freshness', d.refreshedAt, d.updated);
+}).catch(()=>{});</script>
+<div class="main">
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📊 План и диаграмма Ганта</span></div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
@@ -169,4 +176,5 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     <div class="team-grid">${teamHtml}</div>
   `;
 });
-</script></body></html>
+</script></div><!-- /main --></div><!-- /layout -->
+</body></html>
