@@ -1,46 +1,38 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>План и диаграмма Ганта — B2BAPP</title><link rel="stylesheet" href="../shared.css">
 <style>
-.note-banner{background:rgba(255,200,3,.08);border:1px solid rgba(255,200,3,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mute);margin-bottom:16px}
-.note-banner strong{color:var(--yel)}
-.mstones{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
-.mstone{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:160px;flex:1}
-.mstone.done{border-color:var(--ok)}
-.mstone .md{font-size:11px;color:var(--yel);font-weight:700}
-.mstone .ml{font-size:12px;margin-top:2px}
-.epic-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
-.epic-row:last-child{border-bottom:none}
-.epic-name{flex:0 0 260px;font-size:12px}
-.epic-bar-wrap{flex:1;background:#1e2d3d;border-radius:4px;height:18px;position:relative;overflow:hidden}
-.epic-bar-fill{height:100%;border-radius:4px;background:var(--ok)}
-.epic-pct{position:absolute;right:6px;top:0;line-height:18px;font-size:10px;color:#fff}
-.epic-meta{flex:0 0 150px;font-size:11px;color:var(--mute);text-align:right}
-.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:20px}
-.team-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
-.team-card .tn{font-weight:700;font-size:12px}
-.team-card .tr{font-size:11px;color:var(--yel);margin-top:2px}
-.team-card .tf{font-size:11px;color:var(--mute);margin-top:4px}
-.sec-h{font-size:14px;font-weight:700;margin:22px 0 10px}
-.crit-badge{background:rgba(231,76,60,.15);color:var(--err);border-radius:8px;padding:1px 7px;font-size:10px;font-weight:700}
-.assum-box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12px;line-height:1.6}
+.assum-box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px;font-size:12px;line-height:1.6}
 .assum-box b{color:var(--yel)}
 .assum-list{margin:6px 0 0 18px}
-.gantt-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
-.gtl{border-collapse:collapse;min-width:1000px;width:100%}
-.gtl th{background:#1e2d3d;color:#ccc;font-size:10.5px;font-weight:600;padding:5px 8px;text-align:left;position:sticky;top:0}
-.gtl td{padding:2px 6px;vertical-align:middle;border-bottom:1px solid var(--line)}
-.gtl .erow-h td{background:#1e2d3d;font-weight:700;font-size:12px;padding:6px 8px}
-.gtl .role-lbl{font-size:11px;color:var(--mute);white-space:nowrap;width:150px}
-.gbar-cell{position:relative;height:22px;min-width:600px}
-.gbar-track{position:absolute;inset:2px 0;background:#152232;border-radius:3px}
-.gbar{position:absolute;top:2px;height:18px;border-radius:3px;display:flex;align-items:center;padding:0 5px;font-size:9px;color:#fff;white-space:nowrap;overflow:hidden}
-.gbar.done{background:var(--ok)}
-.gbar.inprogress{background:var(--warn)}
-.gbar.planned{background:var(--blue)}
-.gbar.crit{outline:2px solid var(--err)}
-.today-line{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--err);z-index:5}
-.gantt-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--mute)}
-.gantt-legend .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
+
+.gantt2-toolbar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:14px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.gantt2-toolbar-group{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mute)}
+.gantt2-toolbar-group select{background:#1e2d3d;border:1px solid var(--line);color:var(--text);border-radius:5px;padding:3px 8px;font-size:11px}
+.gantt2-toolbar-group button{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--mute);border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer}
+.gantt2-toolbar-group button.on{background:rgba(255,200,3,.15);border-color:var(--yel);color:var(--yel)}
+.gantt2-body{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
+.gantt2-tree{width:340px;flex-shrink:0;border-right:1px solid var(--line);overflow:hidden}
+.gantt2-timeline-scroll{overflow-x:auto;flex:1}
+.gantt2-timeline-inner{position:relative}
+.gantt2-row{height:26px;display:flex;align-items:center;border-bottom:1px solid #1a2535;position:relative}
+.gantt2-header-row{font-weight:700;background:#1e2d3d;position:sticky;top:52px;z-index:4}
+.gantt2-label{padding:0 8px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:340px;box-sizing:border-box}
+.gantt2-toggle{cursor:pointer;display:inline-block;width:14px;color:var(--mute)}
+.gantt2-toggle-spacer{display:inline-block;width:14px}
+.gantt2-ruler{height:26px;position:sticky;top:52px;background:#1e2d3d;z-index:3}
+.gantt2-ruler-mark{position:absolute;top:0;bottom:0;border-left:1px solid var(--line);padding-left:4px;font-size:9px;color:var(--mute);display:flex;align-items:center;white-space:nowrap}
+.gantt2-bar{position:absolute;top:3px;height:20px;border-radius:3px;overflow:hidden;cursor:pointer}
+.gantt2-bar-fill{position:absolute;left:0;top:0;bottom:0;background:rgba(0,0,0,.35)}
+.gantt2-bar.g2-planned{opacity:.55}
+.gantt2-bar.g2-inprogress{outline:1px dashed rgba(255,255,255,.6);animation:g2pulse 2s infinite}
+@keyframes g2pulse{0%,100%{outline-color:rgba(255,255,255,.25)}50%{outline-color:rgba(255,255,255,.85)}}
+.gantt2-bar.g2-crit{outline:2px solid var(--err)}
+.gantt2-bar-ghost{position:absolute;top:3px;height:20px;border-radius:3px;background:rgba(255,255,255,.12);border:1px dashed rgba(255,255,255,.3)}
+.gantt2-today-line{position:absolute;top:0;width:2px;background:var(--err);z-index:2;pointer-events:none}
+.gantt2-milestone-line{position:absolute;top:0;width:2px;background:var(--yel);z-index:2;pointer-events:none}
+.gantt2-hire-line{position:absolute;top:0;width:1px;background:var(--blue);z-index:2;opacity:.6;pointer-events:none}
+.gantt2-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:10px;color:var(--mute)}
+.gantt2-legend .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -53,128 +45,221 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📊 План и диаграмма Ганта</span></div>
   <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
 </header>
-<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<div class="content" id="root">
+  <div id="ganttEmpty"></div>
+  <div id="ganttApp" style="display:none">
+    <div class="gantt2-toolbar">
+      <div class="gantt2-toolbar-group">
+        <label>Показывать:</label>
+        <select id="levelFilter">
+          <option value="all">Эпики ▸ Стори ▸ Задачи</option>
+          <option value="story">Эпики ▸ Стори</option>
+          <option value="epic">Только эпики</option>
+        </select>
+      </div>
+      <div class="gantt2-toolbar-group">
+        <label>Масштаб:</label>
+        <button data-scale="week">Недели</button><button data-scale="month" class="on">Месяцы</button><button data-scale="quarter">Кварталы</button>
+      </div>
+      <div class="gantt2-toolbar-group">
+        <label>Зум:</label>
+        <button id="zoomOut">−</button><button id="zoomIn">+</button>
+      </div>
+      <div class="gantt2-toolbar-group">
+        <label>Сравнить с baseline:</label>
+        <select id="baselineSelect"><option value="">—</option></select>
+      </div>
+    </div>
+    <div class="gantt2-body">
+      <div class="gantt2-tree" id="ganttTree"></div>
+      <div class="gantt2-timeline-scroll" id="ganttScroll">
+        <div class="gantt2-timeline-inner">
+          <div class="gantt2-ruler" id="ganttRuler"></div>
+          <div id="ganttRows"></div>
+        </div>
+      </div>
+    </div>
+    <div class="gantt2-legend" id="ganttLegend"></div>
+    <div class="assum-box" id="ganttAssumptions"></div>
+  </div>
+</div>
 <script>
-const CAT_CLASS={done:'done',in_progress:'inprogress',inprogress:'inprogress',planned:'planned'};
+const $ = id => document.getElementById(id);
+const ROLE_COLOR={BE:'#FF4444',FE:'#4472C4',BA:'#70AD47',DS:'#FFC803',QA:'#ED7D31',DVO:'#7030A0',ARC:'#00B0F0',ORG:'#A5A5A5'};
+const SCALE_PX={week:26,month:6,quarter:2};
+const GS={pxPerDay:6,scale:'month',level:'all',expanded:new Set(),baseline:''};
+
+function buildTree(items){
+  const byParent={};
+  items.forEach(i=>{ if(i.parent){ (byParent[i.parent]=byParent[i.parent]||[]).push(i); } });
+  return items.filter(i=>i.type==='epic').map(e=>({...e, children:(byParent[e.key]||[]).map(s=>({...s, children:byParent[s.key]||[]}))}));
+}
+
+function buildRulerMarks(minD,maxD,scale,pxPerDay){
+  const marks=[]; const d=new Date(minD);
+  if(scale==='week'){
+    while(d.getDay()!==1) d.setDate(d.getDate()-1);
+    while(d<=maxD){ marks.push({x:Math.round((d-minD)/86400000*pxPerDay), label:`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`}); d.setDate(d.getDate()+7); }
+  } else if(scale==='month'){
+    d.setDate(1);
+    while(d<=maxD){ marks.push({x:Math.round((d-minD)/86400000*pxPerDay), label:d.toLocaleDateString('ru',{month:'short',year:'2-digit'})}); d.setMonth(d.getMonth()+1); }
+  } else {
+    d.setMonth(Math.floor(d.getMonth()/3)*3,1);
+    while(d<=maxD){ const q=Math.floor(d.getMonth()/3)+1; marks.push({x:Math.round((d-minD)/86400000*pxPerDay), label:`Q${q} ${d.getFullYear()}`}); d.setMonth(d.getMonth()+3); }
+  }
+  return marks;
+}
+
+let ganttTipEl=null, ganttTipBound=false;
+function initGanttTooltip(){
+  if(!ganttTipEl){ganttTipEl=document.createElement('div');ganttTipEl.className='gls-tip';document.body.appendChild(ganttTipEl);}
+  if(ganttTipBound)return; ganttTipBound=true;
+  document.addEventListener('mouseover',e=>{
+    const t=e.target.closest('.gantt2-bar[data-tip-key]');
+    if(!t)return;
+    const d=t.dataset;
+    ganttTipEl.innerHTML=`<strong>${d.tipKey}</strong> ${d.tipSummary}<div style="margin-top:5px;font-size:10px;color:var(--mute)">Ресурс: ${d.tipResource||'—'}</div><div style="font-size:10px">Оценка/списано: ${d.tipEst}ч / ${d.tipSpent}ч</div><div style="font-size:10px">${d.tipStart} → ${d.tipEnd}</div><div style="font-size:10px;color:var(--mute)">Статус: ${d.tipStatus||'—'}</div>`;
+    ganttTipEl.style.display='block';
+    const x=Math.min(e.clientX+14,window.innerWidth-296), y=Math.min(e.clientY+14,window.innerHeight-110);
+    ganttTipEl.style.left=x+'px';ganttTipEl.style.top=y+'px';
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!ganttTipEl||ganttTipEl.style.display==='none')return;
+    if(!e.target.closest('.gantt2-bar[data-tip-key]')){ganttTipEl.style.display='none';}
+    else{const x=Math.min(e.clientX+14,window.innerWidth-296),y=Math.min(e.clientY+14,window.innerHeight-110);ganttTipEl.style.left=x+'px';ganttTipEl.style.top=y+'px';}
+  });
+}
+
+let CURRENT_DATA=null;
+function renderGanttV2(){
+  const data=CURRENT_DATA;
+  const gv=data.ganttV2;
+  if(!gv || !gv.items || !gv.items.length){
+    $('ganttEmpty').innerHTML=renderEmptyState('Нет данных, запустите обновление (скилл b2bapp-dashboard-refresh)');
+    $('ganttApp').style.display='none';
+    return;
+  }
+  $('ganttEmpty').innerHTML='';
+  $('ganttApp').style.display='block';
+
+  const items=gv.items;
+  const tree=buildTree(items);
+  const dates=items.flatMap(i=>[new Date(i.start),new Date(i.end)]).filter(d=>!isNaN(d));
+  if(!dates.length){$('ganttEmpty').innerHTML=renderEmptyState('Нет корректных дат в ganttV2');$('ganttApp').style.display='none';return;}
+  const minD=new Date(Math.min(...dates)); minD.setDate(minD.getDate()-3);
+  const maxD=new Date(Math.max(...dates)); maxD.setDate(maxD.getDate()+3);
+  const totalDays=Math.max(1,Math.round((maxD-minD)/86400000));
+  const totalPx=totalDays*GS.pxPerDay;
+  const xOf=ds=>{const t=new Date(ds); return isNaN(t)?0:Math.round((t-minD)/86400000*GS.pxPerDay);};
+  const widthOf=(s,e)=>Math.max(3,xOf(e)-xOf(s));
+
+  const rows=[];
+  function walk(node,depth){
+    rows.push({node,depth});
+    const isExpanded=GS.expanded.has(node.key);
+    if(node.type==='epic' && GS.level==='epic')return;
+    if(node.children && node.children.length && isExpanded){
+      node.children.forEach(c=>{
+        if(node.type==='story' && GS.level==='story')return;
+        walk(c,depth+1);
+      });
+    }
+  }
+  tree.forEach(e=>walk(e,0));
+
+  $('ganttTree').innerHTML=`<div class="gantt2-row gantt2-header-row"><div class="gantt2-label">Эпик / Стори / Задача</div></div>`+
+    rows.map(({node,depth})=>{
+      const hasChildren=node.children && node.children.length>0;
+      const isExpanded=GS.expanded.has(node.key);
+      const toggle=hasChildren?`<span class="gantt2-toggle" data-key="${node.key}">${isExpanded?'▾':'▸'}</span>`:'<span class="gantt2-toggle-spacer"></span>';
+      const icon=node.type==='epic'?'📦':node.type==='story'?'📄':'▫';
+      return `<div class="gantt2-row"><div class="gantt2-label" title="${(node.summary||'').replace(/"/g,'&quot;')}" style="padding-left:${depth*16+8}px">${toggle}${icon} ${jiraLink(node.key)} ${(node.summary||'').slice(0,42)}</div></div>`;
+    }).join('');
+  $('ganttTree').querySelectorAll('.gantt2-toggle[data-key]').forEach(t=>{
+    t.onclick=()=>{ const k=t.dataset.key; GS.expanded.has(k)?GS.expanded.delete(k):GS.expanded.add(k); renderGanttV2(); };
+  });
+
+  const marks=buildRulerMarks(minD,maxD,GS.scale,GS.pxPerDay);
+  $('ganttRuler').style.width=totalPx+'px';
+  $('ganttRuler').innerHTML=marks.map(m=>`<div class="gantt2-ruler-mark" style="left:${m.x}px">${m.label}</div>`).join('');
+
+  let baselineItems=null;
+  if(GS.baseline){
+    const bl=(data.baselines||[]).find(b=>b.id===GS.baseline);
+    if(bl && bl.items && bl.items.length){ baselineItems={}; bl.items.forEach(it=>baselineItems[it.key]=it); }
+  }
+
+  const rowsHtml=rows.map(({node})=>{
+    const color=ROLE_COLOR[node.role]||'#7f8fa6';
+    const x=xOf(node.start), w=widthOf(node.start,node.end);
+    const progress=node.estimateH?Math.min(100,Math.round((node.spentH||0)/node.estimateH*100)):0;
+    const catClass=node.category==='done'?'g2-done':node.category==='in_progress'?'g2-inprogress':'g2-planned';
+    let ghost='';
+    if(baselineItems && baselineItems[node.key]){
+      const b=baselineItems[node.key];
+      ghost=`<div class="gantt2-bar-ghost" style="left:${xOf(b.start)}px;width:${widthOf(b.start,b.end)}px"></div>`;
+    }
+    return `<div class="gantt2-row">${ghost}<div class="gantt2-bar ${catClass}${node.onCriticalPath?' g2-crit':''}" style="left:${x}px;width:${w}px;background:${color}"
+      data-tip-key="${node.key}" data-tip-summary="${(node.summary||'').replace(/"/g,'&quot;')}" data-tip-resource="${node.resource||''}"
+      data-tip-est="${node.estimateH||0}" data-tip-spent="${node.spentH||0}" data-tip-start="${node.start||''}" data-tip-end="${node.end||''}" data-tip-status="${node.status||''}">
+      <div class="gantt2-bar-fill" style="width:${progress}%"></div>
+    </div></div>`;
+  }).join('');
+  $('ganttRows').style.width=totalPx+'px';
+  $('ganttRows').style.position='relative';
+  $('ganttRows').innerHTML=rowsHtml;
+
+  const overlayH=rows.length*26;
+  const today=new Date(), todayX=xOf(today.toISOString().slice(0,10));
+  if(todayX>=0 && todayX<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-today-line" style="left:${todayX}px;height:${overlayH}px" title="Сегодня"></div>`);
+  const mvpX=xOf('2026-12-10');
+  if(mvpX>=0 && mvpX<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-milestone-line" style="left:${mvpX}px;height:${overlayH}px" title="Веха MVP 10.12.2026"></div>`);
+  (gv.resources||[]).forEach(r=>{
+    if(!r.from)return;
+    const hx=xOf(r.from);
+    if(hx>=0 && hx<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-hire-line" style="left:${hx}px;height:${overlayH}px" title="Выход: ${r.name||r.role} (${r.from})"></div>`);
+  });
+
+  $('ganttLegend').innerHTML=Object.entries(ROLE_COLOR).map(([r,c])=>`<span><span class="sw" style="background:${c}"></span>${r}</span>`).join('')+
+    `<span style="margin-left:12px"><span class="sw" style="background:var(--err)"></span>критический путь (обводка)</span>`+
+    `<span><span class="sw" style="background:var(--yel)"></span>веха 10.12.2026</span>`;
+
+  initGanttTooltip();
+
+  const assum=data.ganttAssumptions||{};
+  const cpe=data.criticalPathExplained||{};
+  $('ganttAssumptions').innerHTML=`
+    <div>🔴 <b>Критический путь:</b> ${cpe.conclusion||'—'}</div>
+    ${(cpe.steps&&cpe.steps.length)?`<div style="margin-top:8px"><b>Шаги:</b></div><ul class="assum-list">${cpe.steps.map(s=>`<li>${s}</li>`).join('')}</ul>`:''}
+    ${assum.roleAssumptions?`<div style="margin-top:10px"><b>Допущения по ролям:</b></div><ul class="assum-list">${Object.entries(assum.roleAssumptions).map(([r,a])=>`<li><b>${r}</b>: ${a}</li>`).join('')}</ul>`:''}
+    <div style="margin-top:8px;color:var(--mute);font-size:11px">Часов в дне: ${gv.workCalendar?.hoursPerDay||8} · праздников учтено: ${(gv.workCalendar?.holidays||[]).length} · сгенерировано: ${gv.generatedAt||'—'}</div>
+  `;
+
+  const blSel=$('baselineSelect');
+  if(blSel.dataset.populated!=='1'){
+    blSel.innerHTML='<option value="">—</option>'+(data.baselines||[]).map(b=>`<option value="${b.id}">${b.label||b.ts}</option>`).join('');
+    blSel.dataset.populated='1';
+    blSel.onchange=()=>{ GS.baseline=blSel.value; renderGanttV2(); };
+  }
+}
+
+document.querySelectorAll('.gantt2-toolbar-group button[data-scale]').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.gantt2-toolbar-group button[data-scale]').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    GS.scale=btn.dataset.scale; GS.pxPerDay=SCALE_PX[GS.scale];
+    renderGanttV2();
+  };
+});
+$('zoomIn').onclick=()=>{ GS.pxPerDay=Math.min(60,GS.pxPerDay+2); renderGanttV2(); };
+$('zoomOut').onclick=()=>{ GS.pxPerDay=Math.max(1,GS.pxPerDay-2); renderGanttV2(); };
+$('levelFilter').onchange=e=>{ GS.level=e.target.value; renderGanttV2(); };
 
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
-  const root=document.getElementById('root');
-  const kpi=d.kpi||{};
-  const epics=d.epics||[];
-  const milestones=d.milestones||[];
-  const team=d.team||[];
-  const gantt=d.gantt||[];
-  const cp=d.criticalPath;
-  const assum=d.ganttAssumptions||{};
-
-  const kpiCards=[
-    {v:kpi.totalStories ?? '—', l:'Историй'},
-    {v:kpi.totalTasks ?? '—', l:'Задач'},
-    {v:kpi.totalEstimateH ? kpi.totalEstimateH+' ч' : '—', l:'Оценка'},
-    {v:kpi.completedH ? kpi.completedH+' ч' : '—', l:'Выполнено'},
-    {v:(kpi.completionPct!=null? kpi.completionPct+'%':'—'), l:'Прогресс'},
-    {v:kpi.daysToDeadline ?? '—', l:'Дней до дедлайна'},
-    {v:kpi.blockers ?? '—', l:'Блокеров'},
-  ];
-
-  const msHtml=milestones.map(m=>`<div class="mstone ${m.status==='done'?'done':''}"><div class="md">${m.status==='done'?'✅':'📅'} ${m.date}</div><div class="ml">${m.label}</div></div>`).join('');
-
-  const epicRows=epics.map(e=>{
-    const pct=e.totalH?Math.round(e.doneH/e.totalH*100):0;
-    return `<div class="epic-row">
-      <div class="epic-name">${e.name}</div>
-      <div class="epic-bar-wrap"><div class="epic-bar-fill" style="width:${pct}%"></div><span class="epic-pct">${pct}%</span></div>
-      <div class="epic-meta">${e.stories} стори · ${e.tasks} задач · ${e.totalH} ч</div>
-    </div>`;
-  }).join('');
-
-  const teamHtml=team.map(m=>`<div class="team-card">
-    <div class="tn">${m.name}</div>
-    <div class="tr">${m.role}</div>
-    <div class="tf">${(m.fte*100).toFixed(0)}% FTE · ${m.status==='active'?'✅ на проекте':'⏳ '+m.status}</div>
-  </div>`).join('');
-
-  // ── Timeline Gantt from Jira-derived aggregate rows ──
-  let ganttHtml='<div class="empty">Нет данных таймлайна</div>';
-  if(gantt.length){
-    const dates=gantt.flatMap(t=>[new Date(t.start), new Date(t.end)]);
-    const GS=new Date(Math.min(...dates)), GE=new Date(Math.max(...dates));
-    const today=new Date(d.updated.split('.').reverse().join('-'));
-    const totalMs=GE-GS;
-    const pct=ds=>Math.max(0,Math.min(100,(new Date(ds)-GS)/totalMs*100));
-    const wpct=(s,e)=>Math.max(0.5,(new Date(e)-new Date(s))/totalMs*100);
-    const todayP=pct(today);
-
-    const byEpic={};
-    gantt.forEach(t=>{(byEpic[t.epic]=byEpic[t.epic]||[]).push(t);});
-    const epicNameByKey={}; epics.forEach(e=>epicNameByKey[e.key]=e.name);
-
-    const rowsHtml=Object.entries(byEpic).map(([epicKey,rows])=>{
-      const eName=epicNameByKey[epicKey]||epicKey;
-      const roleRows=rows.map(t=>{
-        const cls=CAT_CLASS[t.category]||'planned';
-        const isCrit=cp&&t.role===cp.role;
-        const left=pct(t.start), width=wpct(t.start,t.end);
-        return `<tr>
-          <td class="role-lbl">${t.roleName||t.role}${isCrit?' <span class="crit-badge">крит.путь</span>':''}</td>
-          <td class="gbar-cell">
-            <div class="gbar-track"></div>
-            <div class="gbar ${cls}${isCrit?' crit':''}" style="left:${left}%;width:${width}%" title="${t.summary} · ${t.start} → ${t.end} · ${t.h} ч">${t.summary}</div>
-            <div class="today-line" style="left:${todayP}%"></div>
-          </td>
-        </tr>`;
-      }).join('');
-      return `<tr class="erow-h"><td colspan="2">${eName}</td></tr>${roleRows}`;
-    }).join('');
-
-    ganttHtml=`<div class="gantt-wrap"><table class="gtl">
-      <thead><tr><th style="width:150px">Роль</th><th>Таймлайн (${GS.toISOString().slice(0,10)} → ${GE.toISOString().slice(0,10)})</th></tr></thead>
-      <tbody>${rowsHtml}</tbody>
-    </table>
-    <div class="gantt-legend">
-      <span><span class="sw" style="background:var(--ok)"></span>Готово</span>
-      <span><span class="sw" style="background:var(--warn)"></span>В работе</span>
-      <span><span class="sw" style="background:var(--blue)"></span>Планируется</span>
-      <span><span class="sw" style="background:var(--err);border-radius:50%"></span>Красная линия — сегодня (${d.updated})</span>
-      <span><span class="crit-badge">крит.путь</span> — самая поздняя роль, определяет срок всего проекта</span>
-    </div></div>`;
-  }
-
-  const latestByRoleHtml=Object.entries(d.latestByRole||{}).map(([role,date])=>
-    `<div class="epic-row"><div class="epic-name">${role}${cp&&cp.role===role?' <span class="crit-badge">крит.путь</span>':''}</div><div class="epic-meta" style="flex:1;text-align:left">${date}</div></div>`
-  ).join('');
-
-  root.innerHTML=`
-    <div class="note-banner">✅ <strong>Таймлайн ниже — расчётный Гант из Jira</strong> (${assum.dataSource||''}). У задач в Jira нет плановых дат, поэтому даты вычислены методом: ${assum.method||''}</div>
-
-    <div class="cards-grid" style="margin-bottom:20px">
-      ${kpiCards.map(c=>`<div class="info-card"><h3 style="color:var(--yel);font-size:20px">${c.v}</h3><div style="font-size:11px;color:var(--mute)">${c.l}</div></div>`).join('')}
-    </div>
-
-    <div class="sec-h">📅 Ключевые вехи</div>
-    <div class="mstones">${msHtml}</div>
-
-    <div class="sec-h">📊 Таймлайн по эпикам и ролям (Jira, расчётный)</div>
-    ${ganttHtml}
-
-    <div class="assum-box">
-      <div>🔴 <b>Критический путь:</b> ${cp?`${cp.roleName} — завершение ${cp.end}`:'—'}</div>
-      <div style="margin-top:8px">${assum.criticalPathConclusion||''}</div>
-      <div style="margin-top:10px"><b>Допущения по ролям:</b></div>
-      <ul class="assum-list">${Object.entries(assum.roleAssumptions||{}).map(([r,a])=>`<li><b>${r}</b>: ${a}</li>`).join('')}</ul>
-      <div style="margin-top:8px;color:var(--mute);font-size:11px">Источник команды: ${assum.teamSource||'—'} · ${assum.holidays||''}</div>
-    </div>
-
-    <div class="sec-h">🏁 Последняя задача по роли</div>
-    <div class="info-card">${latestByRoleHtml}</div>
-
-    <div class="sec-h">📦 Прогресс по эпикам</div>
-    <div class="info-card">${epicRows}</div>
-
-    <div class="sec-h">🏃 Команда</div>
-    <div class="team-grid">${teamHtml}</div>
-  `;
+  CURRENT_DATA=d;
+  renderGanttV2();
 });
-</script></div><!-- /main --></div><!-- /layout -->
+</script>
+</div><!-- /main --></div><!-- /layout -->
 </body></html>
