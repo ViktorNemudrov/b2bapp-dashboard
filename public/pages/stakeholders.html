@@ -13,7 +13,7 @@
 </head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
-<script src="../shared-nav.js"></script><script>renderSidebar();
+<script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   mountFreshness('freshness', d.refreshedAt, d.updated);
 }).catch(()=>{});</script>
@@ -23,7 +23,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     <a class="back-btn" href="../index.html">← Главная</a>
     <span style="font-size:14px;font-weight:700;color:#fff">🤝 Стейкхолдеры + RACI</span>
   </div>
-  <div style="font-size:11px;color:#7f8fa6">B2BAPP | Данные на <span id="upd" style="color:#FFC803">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
+  <div style="font-size:11px;color:#7f8fa6">B2BAPP | Данные на <span id="upd" style="color:#FFC803">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
 <div class="content">
   <div class="raci-legend">
@@ -34,8 +34,8 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     <div class="raci-item"><div class="raci-badge r-I">I</div><div><strong style="color:#7f8fa6">Informed</strong><div class="raci-desc">Информируемый — получает статус</div></div></div>
   </div>
   <div style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap">
-    <input id="srch" style="background:#1e2d3d;border:1px solid #253850;color:#e8edf5;border-radius:6px;padding:6px 12px;font-size:12px;width:240px;outline:none" placeholder="🔍 Поиск..." oninput="filter()">
-    <span id="cnt" style="font-size:11px;color:#7f8fa6;align-self:center"></span>
+    <input id="srch" class="search-input" placeholder="🔍 Поиск..." oninput="filter()">
+    <span id="cnt" style="font-size:11px;color:var(--mute);align-self:center"></span>
   </div>
   <table class="tbl" id="tbl"><thead><tr><th>Имя</th><th>Роль в проекте</th><th>Команда / Отдел</th><th>RACI</th><th>Контакт / Роль</th></tr></thead>
   <tbody id="tbody"></tbody></table>
@@ -51,11 +51,11 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 function raciBadge(r){return r.split('').map(c=>`<span class="badge r-${c}" style="margin-right:3px">${c}</span>`).join('');}
 function render(rows){
   document.getElementById('tbody').innerHTML=rows.map(s=>`<tr>
-    <td style="font-weight:600;color:#fff;white-space:nowrap">${s.name}</td>
+    <td style="font-weight:600;color:var(--text);white-space:nowrap">${s.name}</td>
     <td>${s.role}</td>
-    <td style="font-size:11px;color:#7f8fa6">${s.team}</td>
+    <td style="font-size:11px;color:var(--mute)">${s.team}</td>
     <td>${raciBadge(s.raci||'')}</td>
-    <td style="font-size:11px;color:#7f8fa6">${s.contact||'—'}</td>
+    <td style="font-size:11px;color:var(--mute)">${s.contact||'—'}</td>
   </tr>`).join('');
   document.getElementById('cnt').textContent=rows.length+' участников';
 }
