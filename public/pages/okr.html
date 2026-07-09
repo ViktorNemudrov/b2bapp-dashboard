@@ -77,13 +77,16 @@ a{text-decoration:none;color:inherit}
   .q-title{font-size:12px}
   .obj-text{font-size:13px}
 }
+body.light-theme .obj-business{background:#f0f2f5;color:#556080}
+body.light-theme .kr-bar{background:#e0e6f0}
+body.light-theme .obj-text{color:#1a2940}
 </style>
 </head>
 <body>
 
 <div class="layout">
 <div id="sidebar-root"></div>
-<script src="../shared-nav.js"></script><script>renderSidebar();
+<script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   mountFreshness('freshness', d.refreshedAt, d.updated);
 }).catch(()=>{});</script>
@@ -93,7 +96,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     <a class="back-btn" href="../index.html">← Главная</a>
     <span class="page-title">🎯 OKR — Цели и ключевые результаты</span>
   </div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd" style="color:var(--yel)">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd" style="color:var(--yel)">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
 
 <div class="content">
