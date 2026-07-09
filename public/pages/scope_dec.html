@@ -2,14 +2,14 @@
 <title>Скоуп до 10.12.2026 — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
-<script src="../shared-nav.js"></script><script>renderSidebar();
+<script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   mountFreshness('freshness', d.refreshedAt, d.updated);
 }).catch(()=>{});</script>
 <div class="main">
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📅 Скоуп до 10.12.2026</span></div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
@@ -44,7 +44,7 @@ const detailHtml = sc.length ? `<table class="tbl" id="tbl">
     const pct=s.total?Math.round((parseInt(s.ready)||0)/(parseInt(s.total)||1)*100):0;
     const cls=Object.entries(STATUS).find(([k])=>s.status&&s.status.includes(k.substring(0,2)))?.[1]||'blue';
     return `<tr>
-      <td style="font-weight:600;color:#fff;min-width:200px">${s.epic}</td>
+      <td style="font-weight:600;color:var(--text);min-width:200px">${s.epic}</td>
       <td style="font-size:11px;color:var(--mute)">${s.content}</td>
       <td style="text-align:center">${s.total}</td>
       <td style="text-align:center;color:var(--yel);font-weight:700">${s.ready}</td>

@@ -2,14 +2,14 @@
 <title>Критерии приёмки MVP — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
-<script src="../shared-nav.js"></script><script>renderSidebar();
+<script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   mountFreshness('freshness', d.refreshedAt, d.updated);
 }).catch(()=>{});</script>
 <div class="main">
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">✅ Критерии приёмки MVP</span></div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
