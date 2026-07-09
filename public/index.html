@@ -913,6 +913,14 @@ function renderWeeklyPicker(pickerElId, weekly, onRender){
 }
 
 // ── EXECUTIVE SUMMARY понедельно (§3.4) ────────────────────────
+// Понедельные записи weekly[] — скилл кладёт элементы то строками, то объектами
+// ({text,...} / {title,key,status} / {key,title,status}) — приводим единообразно.
+function weeklyItemText(t){
+  if(typeof t==='string')return t;
+  const key=t.key||t.jira;
+  const label=t.text||t.title||t.action||'';
+  return key?`${jiraLink(key)} ${label}`.trim():label;
+}
 function renderWeeklyExec(data){
   renderWeeklyPicker('execWeekPicker', data.weekly, w=>{
     if(!w){
@@ -920,10 +928,10 @@ function renderWeeklyExec(data){
       $('execPlanned').innerHTML='';$('execBlocks').innerHTML='';$('execNeeds').innerHTML='';
       return;
     }
-    $('execDone').innerHTML=(w.done&&w.done.length?w.done:['—']).map(t=>`<div class="exec-item">✅ ${t}</div>`).join('');
-    $('execPlanned').innerHTML=(w.planned&&w.planned.length?w.planned:['—']).map(t=>`<div class="exec-item">📅 ${t}</div>`).join('');
-    $('execBlocks').innerHTML=(w.blockers&&w.blockers.length?w.blockers:['Нет блокеров']).map(t=>`<div class="exec-item">${t}</div>`).join('');
-    $('execNeeds').innerHTML=(w.needs&&w.needs.length?w.needs:['—']).map(t=>`<div class="exec-item">🙋 ${t}</div>`).join('');
+    $('execDone').innerHTML=(w.done&&w.done.length?w.done:['—']).map(t=>`<div class="exec-item">✅ ${weeklyItemText(t)}</div>`).join('');
+    $('execPlanned').innerHTML=(w.planned&&w.planned.length?w.planned:['—']).map(t=>`<div class="exec-item">📅 ${weeklyItemText(t)}</div>`).join('');
+    $('execBlocks').innerHTML=(w.blockers&&w.blockers.length?w.blockers:['Нет блокеров']).map(t=>`<div class="exec-item">${weeklyItemText(t)}${t.owner?` <span style="color:var(--mute)">— ${t.owner}</span>`:''}</div>`).join('');
+    $('execNeeds').innerHTML=(w.needs&&w.needs.length?w.needs:['—']).map(t=>`<div class="exec-item">🙋 ${weeklyItemText(t)}</div>`).join('');
   });
 }
 
@@ -972,13 +980,23 @@ function renderEpicProgress(data){
 
 // ── СКОУП MVP (§3.8: mvpScope из ganttV2) ────────────────────────
 function renderMvpScope(data){
-  const ms=data.mvpScope||{};
-  const inS=ms.inStories||[], outS=ms.outStories||[];
-  if(!inS.length && !outS.length){
+  const ms=data.mvpScope;
+  if(!ms || (Array.isArray(ms)&&!ms.length) || (!Array.isArray(ms)&&!ms.inStories?.length&&!ms.outStories?.length)){
     $('mvpScopeIn').innerHTML=renderEmptyState('Нет данных, запустите обновление');
     $('mvpScopeOut').innerHTML='';
     return;
   }
+  // Скилл пока не всегда даёт story-уровень (нужен ganttV2.items) — тогда вместо in/out
+  // присылает плоский приоритизированный список эпиков {epic,name,priority,status}.
+  if(Array.isArray(ms)){
+    const STATUS_CLS={critical:'badge-err',high:'badge-warn',medium:'badge-yel'};
+    const sorted=[...ms].sort((a,b)=>(a.priority??999)-(b.priority??999));
+    $('mvpScopeIn').innerHTML=`<div style="font-size:10px;color:var(--mute);margin-bottom:8px">Разбивка по стори (входит/не входит) недоступна — в ganttV2 нет story-уровня. Показан приоритизированный список эпиков.</div>`+
+      sorted.map(e=>`<div class="scope-item">${e.epic?jiraLink(e.epic)+' ':''}${e.name||''} <span class="badge ${STATUS_CLS[e.status]||'badge-blue'}" style="margin-left:6px">${e.status||'—'}</span></div>`).join('');
+    $('mvpScopeOut').innerHTML='';
+    return;
+  }
+  const inS=ms.inStories||[], outS=ms.outStories||[];
   const prio=s=>parseInt((typeof s==='string'?s:(s.name||s.summary||'')).match(/^(\d+)/)?.[1]||999);
   const line=s=>{
     if(typeof s==='string')return `<div class="scope-item">${s}</div>`;
@@ -1236,15 +1254,18 @@ function renderScopeGrowth(data){
   const pts=data.scopeGrowth||[];
   const el=$('scopeGrowthChart');
   if(!pts.length){el.innerHTML=renderEmptyState('Нет данных, запустите обновление');return;}
-  const sorted=[...pts].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  // Скилл иногда кладёт часы под ключом estH вместо hoursTotal — нормализуем на входе.
+  const sorted=[...pts].sort((a,b)=>new Date(a.date)-new Date(b.date)).map(p=>({...p,hoursTotal:p.hoursTotal??p.estH}));
   const W=760,H=220,PAD={top:14,right:14,bottom:26,left:40};
   const innerW=W-PAD.left-PAD.right, innerH=H-PAD.top-PAD.bottom;
-  const SERIES=[
+  const ALL_SERIES=[
     {key:'epics',label:'Эпики',color:'#A5A5A5'},
     {key:'stories',label:'Стори',color:'#70AD47'},
     {key:'tasks',label:'Задачи',color:'#4472C4'},
     {key:'hoursTotal',label:'Часы',color:'#FFC803'},
   ];
+  // Показываем только те серии, по которым скилл реально прислал данные хотя бы в одной точке
+  const SERIES=ALL_SERIES.filter(s=>sorted.some(p=>p[s.key]!=null));
   const dates=sorted.map(p=>new Date(p.date).getTime());
   const minD=Math.min(...dates), maxD=Math.max(...dates)||minD+1;
   const xScale=t=>PAD.left+(t-minD)/(maxD-minD||1)*innerW;
@@ -1391,7 +1412,7 @@ function renderChangelogList(data){
       const ds=isNaN(d)?'':`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
       return `<div class="cl-entry"><div class="cl-dot prev">${AREA_LABEL[i.area]?.[0]||'•'}</div><div class="cl-body">
         <div class="cl-ver">${ds}<span class="badge badge-blue" style="margin-left:8px">${AREA_LABEL[i.area]||i.area||'—'}</span></div>
-        <div class="cl-changes"><div class="cl-change">${i.text}</div></div>
+        <div class="cl-changes"><div class="cl-change">${i.text||i.action||''}</div></div>
       </div></div>`;
     }).join(''):renderEmptyState('Нет записей для этого фильтра');
   }
