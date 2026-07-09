@@ -60,3 +60,70 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
 
 /* EMPTY */
 .empty{text-align:center;padding:48px;color:var(--mute);font-size:13px}
+
+/* ── LAYOUT / SIDEBAR ─────────────────────────────────────────── */
+.layout{display:flex;min-height:100vh}
+.main{flex:1;overflow-x:hidden;min-width:0;display:flex;flex-direction:column}
+.sidebar{width:200px;flex-shrink:0;background:#0a1520;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:150}
+.sidebar-logo{padding:14px 16px;border-bottom:2px solid var(--yel);display:flex;align-items:center;gap:9px;flex-shrink:0;text-decoration:none;cursor:pointer}
+.sidebar-logo-img{width:28px;height:28px;flex-shrink:0;object-fit:contain}
+.sidebar-logo-text{font-size:12px;font-weight:800;color:#fff;line-height:1.2}
+.sidebar-nav{padding:10px 0;flex:1}
+.nav-section{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#3d5068;padding:10px 16px 4px}
+.nav-link{display:flex;align-items:center;gap:8px;padding:7px 16px;font-size:11px;color:var(--mute);cursor:pointer;transition:.15s;border-left:2px solid transparent;text-decoration:none}
+.nav-link:hover{color:var(--text);background:rgba(255,255,255,.03);border-left-color:rgba(255,200,3,.4)}
+.nav-link.active{color:var(--yel);border-left-color:var(--yel);background:rgba(255,200,3,.06)}
+.nav-icon{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+.nav-label{white-space:nowrap}
+
+.theme-light-only{display:none}
+body.light-theme .theme-light-only{display:inline-block}
+body.light-theme .theme-dark-only{display:none}
+
+@media(max-width:1100px) and (min-width:769px){
+  .sidebar{width:56px}
+  .sidebar-logo-text,.nav-section,.nav-label{display:none}
+  .sidebar-logo{justify-content:center}
+  .nav-link{justify-content:center;padding:9px 0}
+}
+
+.sidebar-burger{display:none;position:fixed;top:10px;left:10px;z-index:300;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:6px;width:34px;height:34px;font-size:16px;cursor:pointer}
+@media(max-width:768px){
+  .sidebar-burger{display:block}
+  .sidebar{position:fixed;left:-260px;top:0;width:240px;transition:left .2s;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+  .sidebar.open{left:0}
+  .content{padding-top:52px}
+}
+
+/* ── FRESHNESS INDICATOR (U7) ────────────────────────────────── */
+.freshness{font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;white-space:nowrap}
+.freshness-ok{background:rgba(39,174,96,.18);color:#2ecc71}
+.freshness-warn{background:rgba(230,126,34,.18);color:var(--warn)}
+.freshness-err{background:rgba(231,76,60,.18);color:var(--err)}
+.freshness-gray{background:rgba(127,143,166,.15);color:var(--mute)}
+
+/* ── SORTABLE TABLES (U13) ───────────────────────────────────── */
+th.sorted-asc::after{content:' ▲';font-size:9px}
+th.sorted-desc::after{content:' ▼';font-size:9px}
+
+/* ── LIGHT THEME (подстраницы) ───────────────────────────────── */
+body.light-theme{--dark:#f0f2f5;--card:#ffffff;--text:#1a2940;--mute:#6b7a99;--line:#d0d8e8;--ok:#1a7a45;--warn:#b35e00;--err:#c0392b;--blue:#2c5fad}
+body.light-theme .sidebar{background:#e8ecf5;border-right-color:#d0d8e8}
+body.light-theme .sidebar-logo-text{color:#1a2940}
+body.light-theme .nav-section{color:#8899bb}
+body.light-theme .nav-link{color:#556080}
+body.light-theme .nav-link:hover{background:rgba(0,0,0,.05);color:#1a2940}
+body.light-theme .nav-link.active{color:#1a2940;background:rgba(255,200,3,.12)}
+body.light-theme .hdr{background:linear-gradient(135deg,#1a2940,#253850);border-bottom-color:#FFC803}
+body.light-theme .back-btn{background:rgba(255,200,3,.15);border-color:rgba(255,200,3,.5)}
+body.light-theme .content{color:var(--text)}
+body.light-theme .tbl th{background:#e8ecf5;color:#556080}
+body.light-theme .tbl td{border-bottom-color:#e8ecf5;color:#1a2940}
+body.light-theme .tbl tr:hover td{background:rgba(0,0,0,.02)}
+body.light-theme .info-card{background:#fff;border-color:#d0d8e8}
+body.light-theme .search-input,body.light-theme .filter-select{background:#fff;border-color:#c0cce0;color:#1a2940}
+body.light-theme .heatmap-table th{background:#e8ecf5;color:#556080}
+body.light-theme .heatmap-table td{border-bottom-color:#e8ecf5}
+body.light-theme .h-0{background:transparent;color:#99aabb}
+body.light-theme .empty{color:#6b7a99}
+body.light-theme .sidebar-burger{background:#fff;border-color:#d0d8e8;color:#1a2940}
