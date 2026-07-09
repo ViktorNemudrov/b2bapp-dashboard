@@ -41,12 +41,19 @@ def push(gh_path, local_path, msg):
     except Exception as e:
         print(f"ERR {gh_path}: {e}")
 
-FILES = [
-    ("public/index.html",               "public/index.html"),
-    ("public/pages/stakeholders.html",  "public/pages/stakeholders.html"),
-    ("public/pages/okr.html",           "public/pages/okr.html"),
-    ("public/data/manual.json",         "public/data/manual.json"),
-]
-for gh, loc in FILES:
-    push(gh, loc, f"feat: dashboard v5 update {loc.split('/')[-1]}")
-print("Done! Vercel deploys automatically.")
+def collect_files(root="public"):
+    files = []
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in (".git", "node_modules")]
+        for fn in filenames:
+            if fn.startswith("."):
+                continue
+            local_path = os.path.join(dirpath, fn).replace("\\", "/")
+            files.append((local_path, local_path))
+    return sorted(files)
+
+if __name__ == "__main__":
+    msg = sys.argv[1] if len(sys.argv) > 1 else "feat: dashboard update"
+    for gh, loc in collect_files():
+        push(gh, loc, msg)
+    print("Done! Vercel deploys automatically.")
