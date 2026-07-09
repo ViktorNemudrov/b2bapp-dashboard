@@ -16,33 +16,37 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
   
-const res = d.resources || [];
-const months = res.length ? Object.keys(res[0].months||{}) : [];
-function heatClass(v){
-  if(!v||v==='·'||v===''||v==='None') return 'heat-0';
-  const n=parseInt(v);
-  if(isNaN(n)) return 'heat-0';
-  if(n>=100) return 'heat-high';
-  if(n>=70) return 'heat-mid';
-  return 'heat-low';
+const rp = d.resourcePlan || [];
+if(!rp.length){
+  document.getElementById('root').innerHTML=renderEmptyState('Нет данных, запустите обновление');
+} else {
+  const allMonths=new Set();
+  rp.forEach(r=>Object.keys(r.monthly||{}).forEach(m=>allMonths.add(m)));
+  const months=[...allMonths].sort(); // "YYYY-MM" ключи — с января 2026, лексикографическая сортировка = хронологическая
+  function heatClass(v){
+    if(v==null||v==='') return 'heat-0';
+    const n=parseFloat(v);
+    if(isNaN(n)) return 'heat-0';
+    if(n>=100) return 'heat-high';
+    if(n>=70) return 'heat-mid';
+    return 'heat-low';
+  }
+  const html = `<table class="tbl heatmap-table" id="tbl">
+    <thead><tr><th>Человек</th><th>Роль</th>${months.map(m=>`<th>${m}</th>`).join('')}</tr></thead>
+    <tbody>${rp.map(r=>`<tr>
+      <td style="font-weight:600;color:#fff">${r.person}</td>
+      <td style="color:var(--mute)">${r.role}</td>
+      ${months.map(m=>{const v=r.monthly[m];return `<td class="${heatClass(v)}">${v!=null?v+'%':'·'}</td>`;}).join('')}
+    </tr>`).join('')}</tbody></table>
+  <div style="margin-top:16px;display:flex;gap:12px;font-size:11px">
+    <span style="color:#2ecc71">■ &lt;70% — норма</span>
+    <span style="color:#e67e22">■ 70-99% — напряжённо</span>
+    <span style="color:#e74c3c">■ ≥100% — перегруз</span>
+    <span style="color:var(--mute)">■ · — не в проекте</span>
+  </div>`;
+  document.getElementById('root').innerHTML=html;
+  makeSortable(document.getElementById('tbl'));
 }
-const html = `<table class="tbl heatmap-table">
-  <thead><tr><th>Роль</th><th>FTE</th><th>Всего дн.</th><th>Задач</th>${months.map(m=>`<th>${m}</th>`).join('')}</tr></thead>
-  <tbody>${res.map(r=>`<tr>
-    <td style="font-weight:600;color:#fff">${r.role}</td>
-    <td style="color:var(--mute)">${r.fte}</td>
-    <td style="color:var(--yel)">${r.total_days}</td>
-    <td>${r.task_count}</td>
-    ${months.map(m=>{const v=r.months[m]||'·';return `<td class="${heatClass(v)}">${v}</td>`;}).join('')}
-  </tr>`).join('')}</tbody></table>
-<div style="margin-top:16px;display:flex;gap:12px;font-size:11px">
-  <span style="color:#2ecc71">■ &lt;70% — норма</span>
-  <span style="color:#e67e22">■ 70-99% — напряжённо</span>
-  <span style="color:#e74c3c">■ ≥100% — перегруз</span>
-  <span style="color:var(--mute)">■ · — не в проекте</span>
-</div>`;
-document.getElementById('root').innerHTML=html;
-
 });
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>
