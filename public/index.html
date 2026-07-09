@@ -537,6 +537,12 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
 .demo-links{margin-top:6px;font-size:10px}
 .demo-links a{color:var(--mute)}
 .demo-links a:hover{color:var(--yel)}
+.cd-workdays-big{font-size:22px;font-weight:800;color:var(--yel);line-height:1;margin-bottom:10px}
+.week-picker{display:flex;align-items:center;gap:8px}
+.week-picker select{flex:1;max-width:260px}
+.risk-cell{position:relative;border-radius:4px;height:44px}
+.risk-marker{position:absolute;transform:translate(-50%,-50%);font-size:9px;font-weight:700;color:#fff;cursor:pointer;background:rgba(0,0,0,.25);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center}
+.risk-marker:hover{background:rgba(0,0,0,.55)}
 </style>
 </head>
 <body>
@@ -558,6 +564,7 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
       <div class="upd-label">
         <span class="upd-dot" id="updDot"></span>
         <span id="updTime" style="font-size:11px;color:var(--mute)">загрузка...</span>
+        <span id="freshness" class="freshness freshness-gray" style="margin-left:6px"></span>
       </div>
       <button class="pdf-btn" onclick="exportPDF()" title="Экспорт в PDF">⬇ PDF</button>
       <button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:0">🌙</button>
@@ -598,28 +605,20 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
       <div class="hero-sub">React / Capacitor (iOS + Android) · AI-ассистент как главный интерфейс</div>
     </div>
 
-    <!-- RAG HEALTH (п.1) -->
-    <div class="health-panel">
-      <div class="health-panel-title">Здоровье проекта</div>
-      <div class="rag-row" id="ragRow">
-        <div class="rag-item"><div class="rag-dot">⏳</div><div class="rag-label">Сроки</div><div class="rag-val" id="ragTime">—</div></div>
-        <div class="rag-item"><div class="rag-dot">⏳</div><div class="rag-label">Риски</div><div class="rag-val" id="ragRisk">—</div></div>
-        <div class="rag-item"><div class="rag-dot">⏳</div><div class="rag-label">Ресурсы</div><div class="rag-val" id="ragRes">—</div></div>
-        <div class="rag-item"><div class="rag-dot">⏳</div><div class="rag-label">Скоуп</div><div class="rag-val" id="ragScope">—</div></div>
-      </div>
-    </div>
-
-    <!-- COUNTDOWN (п.2) -->
+    <!-- COUNTDOWN (§3.1: рабочие дни, потом таймер, потом календарные дни мелким текстом) -->
     <div class="countdown">
       <div class="cd-label">⏱ До вехи 10.12.2026</div>
+      <div class="cd-workdays-big" id="cdWorkdaysBig">— рабочих дней</div>
       <div class="cd-units">
         <div class="cd-unit"><div class="cd-n" id="cdD">—</div><div class="cd-u">дней</div></div>
         <div class="cd-sep">:</div>
         <div class="cd-unit"><div class="cd-n" id="cdH">—</div><div class="cd-u">часов</div></div>
         <div class="cd-sep">:</div>
         <div class="cd-unit"><div class="cd-n" id="cdM">—</div><div class="cd-u">минут</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-n" id="cdS">—</div><div class="cd-u">сек</div></div>
       </div>
-      <div class="cd-date" id="cdWorkdays">—</div>
+      <div class="cd-date" id="cdCalDays">—</div>
     </div>
   </div>
 
@@ -627,14 +626,18 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
   <div class="section" id="s-exec" data-aud="exec,pm,all">
     <div class="sec-title">📋 Executive Summary</div>
     <div class="exec-card">
-      <h3>📌 Статус на 04.07.2026 — для руководства</h3>
-      <div class="exec-grid">
+      <div class="week-picker" id="execWeekPicker"></div>
+      <div class="exec-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;margin-top:12px">
         <div class="exec-col">
-          <h4 class="ok">✅ Что сделано</h4>
+          <h4 class="ok">✅ Сделано за период</h4>
           <div id="execDone"></div>
         </div>
         <div class="exec-col">
-          <h4 class="warn">⚠️ Что мешает</h4>
+          <h4 style="color:var(--blue)">📅 План на 2 недели</h4>
+          <div id="execPlanned"></div>
+        </div>
+        <div class="exec-col">
+          <h4 class="warn">⚠️ Блокеры</h4>
           <div id="execBlocks"></div>
         </div>
         <div class="exec-col">
@@ -648,26 +651,7 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
   <!-- FORECAST (п.18) -->
   <div class="section" id="s-forecast" data-aud="exec,pm,all">
     <div class="sec-title">🔮 Прогноз завершения</div>
-    <div class="forecast-row">
-      <div class="fc-card">
-        <h4 class="ok">Оптимистичный</h4>
-        <div class="fc-date" style="color:var(--ok)">09.12.2026</div>
-        <div class="fc-delta ok">-1 день</div>
-        <div class="fc-note">Если 2-й BE присоединится в авг. и нет блокеров по API</div>
-      </div>
-      <div class="fc-card" style="border-color:rgba(255,200,3,.3)">
-        <h4 class="warn">Базовый</h4>
-        <div class="fc-date" style="color:var(--yel)">10.12.2026</div>
-        <div class="fc-delta warn">±0 дней</div>
-        <div class="fc-note">1 BE, текущая скорость, нет новых блокеров. Только AI-ядро + авторизация.</div>
-      </div>
-      <div class="fc-card">
-        <h4 class="err">Рискованный</h4>
-        <div class="fc-date" style="color:var(--err)" id="fcRisk">—</div>
-        <div class="fc-delta err" id="fcDelta">+X дней</div>
-        <div class="fc-note">Если критичные риски (R1, R5) реализуются или ИБ заблокирует.</div>
-      </div>
-    </div>
+    <div class="fc-card" id="fcConclusion" style="max-width:600px"></div>
   </div>
 
   <!-- KPI -->
@@ -693,86 +677,30 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
   </div>
 
   <!-- BURNDOWN (п.16) -->
-  <div class="section" id="s-burndown">
-    <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>📉 Burndown к вехе 10.12.2026</span><span class="acc-chevron">▼</span>
-    </div>
-    <div class="acc-body" style="max-height:999px">
-      <div class="burndown-wrap">
-        <h3><span>Задач в скоупе вехи: <span id="bdTotal" style="color:var(--yel)">—</span></span><span style="font-size:10px;color:var(--mute);font-weight:400">идеальный темп vs план</span></h3>
-        <canvas id="burndownChart"></canvas>
-        <div class="bd-legend">
-          <div class="bd-leg-item"><div class="bd-leg-dot" style="background:var(--yel)"></div>Идеальная линия</div>
-          <div class="bd-leg-item"><div class="bd-leg-dot" style="background:#4472C4"></div>Выполнено</div>
-          <div class="bd-leg-item"><div class="bd-leg-dot" style="background:var(--err)"></div>Прогноз</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCOPE IN/OUT (п.24) -->
+  <!-- SCOPE MVP (§3.8: mvpScope из ganttV2) -->
   <div class="section" id="s-scope">
     <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>📅 Скоуп вехи 10.12.2026 — In / Out / Deferred</span><span class="acc-chevron">▼</span>
+      <span>📅 Скоуп вехи 10.12.2026 — по расчёту Ганта</span><span class="acc-chevron">▼</span>
     </div>
     <div class="acc-body" style="max-height:999px">
-      <div class="scope-grid">
-        <div class="scope-col in-col"><h4>✅ Входит в веху</h4>
-          <div class="scope-item">ЕСВ-авторизация (IDP/OTP)</div><div class="scope-item">WebSocket-шлюз (AI-оркестратор)</div>
-          <div class="scope-item">Главный экран + смарт-карточки</div><div class="scope-item">AI-ассистент: чат, стриминг, история</div>
-          <div class="scope-item">Голосовой ввод (STT)</div><div class="scope-item">Intent/RAG + виджеты данных</div>
-          <div class="scope-item">Guardrails ПДн</div><div class="scope-item">Профиль, биометрия, сессии</div>
-          <div class="scope-item">Push-уведомления</div><div class="scope-item">CI/CD + среды DEV/TEST/PROD</div>
-        </div>
-        <div class="scope-col out-col"><h4>❌ Не входит</h4>
-          <div class="scope-item">Финансы (счета, QR-оплата)</div><div class="scope-item">Договоры (полный скоуп)</div>
-          <div class="scope-item">КСС (управление номерами)</div><div class="scope-item">ОАТС (виджеты, секретарь)</div>
-          <div class="scope-item">PrePay-подписка</div><div class="scope-item">SMS-рассылки (ПРОдвижение)</div>
-          <div class="scope-item">Витрина не-клиентов</div>
-        </div>
-        <div class="scope-col def-col"><h4>⏸ Отложено (Q1–Q2 2027)</h4>
-          <div class="scope-item">Детализация счёта по сотрудникам</div><div class="scope-item">QR-оплата СБП</div>
-          <div class="scope-item">Поддержка ДОКК (полный скоуп)</div><div class="scope-item">Этикетка номера КСС</div>
-          <div class="scope-item">Делегирование полномочий</div><div class="scope-item">Лояльность/бонусы B2B</div>
-          <div class="scope-item">Программа PrePay (Мерчант API)</div>
-        </div>
+      <div class="scope-grid" style="grid-template-columns:1fr 1fr">
+        <div class="scope-col in-col"><h4>✅ Входит в веху</h4><div id="mvpScopeIn"></div></div>
+        <div class="scope-col out-col"><h4>❌ Не входит (расчётная дата готовности)</h4><div id="mvpScopeOut"></div></div>
       </div>
     </div>
   </div>
 
-  <!-- PROGRESS + ROADMAP -->
+  <!-- PROGRESS (§3.6: epicProgress) -->
   <div class="section" id="s-progress">
     <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
       <span>✅ Готовность эпиков к 10.12.2026</span><span class="acc-chevron">▼</span>
     </div>
     <div class="acc-body" style="max-height:999px">
-      <div class="two-col">
-        <div class="prog-card" id="progressEpics"></div>
-        <div class="prog-card" id="progressRoadmap"></div>
-      </div>
+      <div class="prog-card" id="progressEpics"></div>
     </div>
   </div>
 
-  <!-- CAPACITY HEATMAP (п.22) -->
-  <div class="section" id="s-capacity">
-    <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>👥 Загрузка команды по месяцам</span><span class="acc-chevron">▼</span>
-    </div>
-    <div class="acc-body" style="max-height:999px">
-      <div class="heatmap-wrap">
-        <h3>Тепловая карта — % утилизации от FTE <span id="hmOverloaded" style="font-size:11px;font-weight:400;color:var(--err);margin-left:8px"></span></h3>
-        <div id="hmTable"></div>
-        <div class="hm-legend">
-          <div class="hm-leg"><div class="hm-leg-sq" style="background:rgba(39,174,96,.25)"></div>&lt;70% — норма</div>
-          <div class="hm-leg"><div class="hm-leg-sq" style="background:rgba(230,126,34,.25)"></div>70–99% — напряжённо</div>
-          <div class="hm-leg"><div class="hm-leg-sq" style="background:rgba(231,76,60,.35)"></div>≥100% — перегруз</div>
-          <div class="hm-leg"><div class="hm-leg-sq" style="background:#1e2d3d;border:1px solid var(--line)"></div>· — не в проекте</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RISK MATRIX (п.19) -->
+  <!-- RISK MATRIX (§3.7: умное размещение маркеров) -->
   <div class="section" id="s-risks">
     <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
       <span>⚠️ Матрица рисков</span><span class="acc-chevron">▼</span>
@@ -780,12 +708,8 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
     <div class="acc-body" style="max-height:999px">
       <div class="two-col">
         <div class="risk-matrix-wrap">
-          <h3>Probability × Impact <span style="font-size:10px;color:var(--mute);font-weight:400">— наведи на ячейку</span></h3>
+          <h3>Probability × Impact <span style="font-size:10px;color:var(--mute);font-weight:400">— наведи на маркер</span></h3>
           <div id="riskMatrixGrid"></div>
-          <div style="display:flex;gap:10px;margin-top:10px;font-size:10px;flex-wrap:wrap">
-            <span style="color:#e74c3c">■ Критично (≥16)</span><span style="color:#e67e22">■ Высокий (9–15)</span>
-            <span style="color:#f39c12">■ Средний (4–8)</span><span style="color:#27ae60">■ Низкий (&lt;4)</span>
-          </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px" id="riskList"></div>
       </div>
@@ -805,25 +729,16 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
     </div>
   </div>
 
-  <!-- WINS (п.27) -->
-  <div class="section" id="s-wins">
-    <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>🏅 Победы за неделю</span><span class="acc-chevron">▼</span>
-    </div>
-    <div class="acc-body" style="max-height:999px">
-      <div class="wins-grid" id="winsList"></div>
-    </div>
-  </div>
-
-  <!-- DECISION LOG (п.26) -->
+  <!-- DECISION LOG понедельно (§3.9) -->
   <div class="section" id="s-decisions">
     <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>📝 Decision Log — ключевые решения</span><span class="acc-chevron">▼</span>
+      <span>📝 Ключевые решения — понедельно</span><span class="acc-chevron">▼</span>
     </div>
     <div class="acc-body" style="max-height:999px">
+      <div class="week-picker" id="decWeekPicker"></div>
       <div style="overflow-x:auto">
         <table class="dec-table">
-          <thead><tr><th>Дата</th><th>Решение</th><th>Почему принято</th><th>Альтернатива</th><th>Автор</th></tr></thead>
+          <thead><tr><th>Дата</th><th>Решение</th><th>Источник</th></tr></thead>
           <tbody id="decisionBody"></tbody>
         </table>
       </div>
@@ -860,146 +775,32 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
     </div>
   </div>
 
-  <!-- SCOPE CREEP (п.29) -->
-  <div class="section" id="s-creep" data-aud="exec,pm,all">
+  <!-- SCOPE GROWTH (§3.10, из scopeGrowth[]) -->
+  <div class="section" id="s-scopegrowth" data-aud="exec,pm,all">
     <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>📈 Scope Creep — рост скоупа вехи</span><span class="acc-chevron">▼</span>
+      <span>📈 Рост скоупа</span><span class="acc-chevron">▼</span>
     </div>
     <div class="acc-body" style="max-height:999px">
-      <div class="two-col">
-        <div class="creep-wrap">
-          <h3>Задач в скоупе по времени <span style="font-size:10px;font-weight:400;color:var(--mute)">baseline → текущий</span></h3>
-          <div class="creep-chart" id="creepChart"></div>
-          <div class="creep-legend">
-            <div class="creep-leg"><div class="creep-leg-sq" style="background:#4472C4"></div>Исходный план</div>
-            <div class="creep-leg"><div class="creep-leg-sq" style="background:#e67e22"></div>Добавлено</div>
-            <div class="creep-leg"><div class="creep-leg-sq" style="background:#27ae60"></div>Выполнено</div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="background:var(--card);border-radius:10px;border:1px solid var(--line);padding:14px 16px">
-            <div style="font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Статистика скоупа</div>
-            <div id="creepStats"></div>
-          </div>
-          <div style="background:var(--card);border-radius:10px;border:1px solid var(--line);padding:14px 16px;border-left:3px solid var(--warn)">
-            <div style="font-size:11px;font-weight:700;color:var(--warn);margin-bottom:6px">⚠️ Риск scope creep</div>
-            <div id="creepWarning" style="font-size:11px;color:var(--mute)"></div>
-          </div>
-        </div>
+      <div class="creep-wrap">
+        <h3>Кумулятивный рост скоупа <span style="font-size:10px;font-weight:400;color:var(--mute)">эпики / стори / задачи / часы, по датам создания в Jira</span></h3>
+        <div id="scopeGrowthChart"></div>
       </div>
     </div>
   </div>
 
-  <!-- VELOCITY (п.30) -->
-  <div class="section" id="s-velocity" data-aud="pm,team,all">
-    <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>⚡ Velocity команды</span><span class="acc-chevron">▼</span>
-    </div>
-    <div class="acc-body" style="max-height:999px">
-      <div class="two-col">
-        <div class="velocity-wrap">
-          <h3>Закрытых задач по спринтам</h3>
-          <div class="vel-chart" id="velChart"></div>
-          <div class="vel-avg" id="velAvg"></div>
-        </div>
-        <div style="background:var(--card);border-radius:12px;border:1px solid var(--line);padding:16px 20px">
-          <div style="font-size:11px;font-weight:700;margin-bottom:12px">Прогноз по текущей скорости</div>
-          <div id="velForecast" style="font-size:11px;color:var(--mute);display:flex;flex-direction:column;gap:8px"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- BUDGET / HOURS (п.31) -->
-  <div class="section" id="s-budget" data-aud="exec,pm,all">
-    <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>💰 Бюджет трудозатрат — план vs факт</span><span class="acc-chevron">▼</span>
-    </div>
-    <div class="acc-body" style="max-height:999px">
-      <div class="budget-grid" id="budgetGrid"></div>
-    </div>
-  </div>
-
-  <!-- CHANGELOG — добавляем v4 -->
+  <!-- CHANGELOG -->
   <div class="section" id="s-changelog">
-    <div class="sec-title">📜 Changelog — история версий дашборда</div>
-    <div class="changelog-list">
-      <div class="cl-entry">
-        <div class="cl-dot current">4</div>
-        <div class="cl-body">
-          <div class="cl-ver">v4 — 04.07.2026</div>
-          <div class="cl-date">Автор: Немудров Виктор · B2BAPP Dashboard</div>
-          <div class="cl-changes">
-            <div class="cl-change">Переключатель аудитории (п.5): Руководство / PM / Команда — скрывает нерелевантные секции</div>
-            <div class="cl-change">Scope Creep Tracker (п.29): барчарт роста скоупа + статистика + риск-предупреждение</div>
-            <div class="cl-change">Velocity команды (п.30): барчарт по спринтам + прогноз по текущей скорости</div>
-            <div class="cl-change">Бюджет трудозатрат (п.31): план vs факт по ролям с мини-барами загрузки</div>
-            <div class="cl-change">Sticky заголовки таблиц (п.13): заголовки dec-table, q-table, hm-table фиксированы при скролле</div>
-            <div class="cl-change">manual.json: вынесен хардкод (победы, решения, блокеры, скоуп) — редактируется без меня</div>
-            <div class="cl-change">data-aud атрибуты на секциях — переключатель аудитории скрывает/показывает разделы</div>
-          </div>
-        </div>
+    <details id="changelogDetails">
+      <summary class="sec-title" style="cursor:pointer;display:inline-flex">📜 Changelog — история изменений</summary>
+      <div class="cl-filters" style="display:flex;gap:6px;margin:10px 0" id="clFilters">
+        <button class="f-btn on" data-area="all">Все</button>
+        <button class="f-btn" data-area="gantt">Гант</button>
+        <button class="f-btn" data-area="usm">USM</button>
+        <button class="f-btn" data-area="data">Данные</button>
+        <button class="f-btn" data-area="ui">UI</button>
       </div>
-      <div class="cl-entry">
-        <div class="cl-dot prev">3</div>
-        <div class="cl-body">
-          <div class="cl-ver">v3 — 04.07.2026</div>
-          <div class="cl-date">Автор: Немудров Виктор · B2BAPP Dashboard</div>
-          <div class="cl-changes">
-            <div class="cl-change">Единая цветовая легенда (п.8) в шапке каждой страницы</div>
-            <div class="cl-change">Экспорт в PDF (п.9) — кнопка в шапке, print-friendly стили</div>
-            <div class="cl-change">Тултипы глоссария (п.10) — термины подсвечены пунктиром по всему тексту</div>
-            <div class="cl-change">Сворачиваемые секции (п.11) — все блоки с аккордеоном, состояние в localStorage</div>
-            <div class="cl-change">Бейдж «Что изменилось» (п.12) — появляется если данные обновились</div>
-            <div class="cl-change">Deviation % в числах (п.21) — рядом с прогресс-барами эпиков</div>
-            <div class="cl-change">Чек-лист критериев приёмки (п.25) — прогресс-бар + статус каждого критерия</div>
-            <div class="cl-change">Decision Log (п.26) — таблица ключевых архитектурных и продуктовых решений</div>
-            <div class="cl-change">Победы за неделю (п.27) — 6 закрытых задач / решений за последнюю неделю</div>
-            <div class="cl-change">SLA на вопросы (п.28) — таблица с подсчётом дней открытости каждого вопроса</div>
-            <div class="cl-change">Логика расчётов перенесена в JS (читает data.json), хардкод убран в manual.json</div>
-          </div>
-        </div>
-      </div>
-      <div class="cl-entry">
-        <div class="cl-dot prev">2</div>
-        <div class="cl-body">
-          <div class="cl-ver">v2 — 04.07.2026</div>
-          <div class="cl-date">Автор: Немудров Виктор · B2BAPP Dashboard</div>
-          <div class="cl-changes">
-            <div class="cl-change">Health Score / RAG-статус: 4 индикатора 🟢/🟡/🔴 в hero-секции (п.1)</div>
-            <div class="cl-change">Таймер обратного отсчёта до 10.12.2026 с рабочими днями (п.2)</div>
-            <div class="cl-change">Sticky sidebar с якорями по 12 разделам, Intersection Observer (п.3)</div>
-            <div class="cl-change">Фильтр «Только критичное» — кнопки-пресеты в строке поиска (п.4)</div>
-            <div class="cl-change">Мобильная адаптация: сайдбар скрывается, карточки 2 колонки (п.6)</div>
-            <div class="cl-change">Глобальный поиск по всем данным JSON с выпадающими результатами (п.7)</div>
-            <div class="cl-change">Executive Summary: 3 колонки — Сделано / Мешает / Нужно от руков. (п.15)</div>
-            <div class="cl-change">Burndown Chart — Canvas: идеальная линия / факт / прогноз (п.16)</div>
-            <div class="cl-change">Top Blockers — 5+ блокеров с мета-данными (п.17)</div>
-            <div class="cl-change">Прогноз завершения — 3 сценария: опт./базовый/рискованный (п.18)</div>
-            <div class="cl-change">Матрица рисков 5×5 Probability × Impact с ID рисков в ячейках (п.19)</div>
-            <div class="cl-change">Deviation from plan рядом с прогресс-барами эпиков (п.20)</div>
-            <div class="cl-change">Тепловая карта загрузки команды по месяцам (п.22)</div>
-            <div class="cl-change">Граф критических зависимостей с цепочками (п.23)</div>
-            <div class="cl-change">Скоуп In / Out / Deferred к вехе 10.12 (п.24)</div>
-            <div class="cl-change">Валидация данных при загрузке + баннер-предупреждение (п.40)</div>
-          </div>
-        </div>
-      </div>
-      <div class="cl-entry">
-        <div class="cl-dot prev">1</div>
-        <div class="cl-body">
-          <div class="cl-ver">v1 — 04.07.2026</div>
-          <div class="cl-date">Автор: Немудров Виктор · B2BAPP Dashboard</div>
-          <div class="cl-changes">
-            <div class="cl-change">Первая публикация сайта на Vercel (b2bapp-dashboard.vercel.app)</div>
-            <div class="cl-change">14 разделов: Гант, USM, Ресурсы, MVP, Скоуп, Риски, Допущения, Вопросы, Стейкхолдеры, Зависимости, Спринты, Критерии, Груминг, Глоссарий</div>
-            <div class="cl-change">Данные из Jira B2BAPP + план проекта Excel (14 листов) → data.json</div>
-            <div class="cl-change">Счётчик обратного отсчёта, KPI-карточки, прогресс эпиков</div>
-            <div class="cl-change">Диаграмма Ганта v6 встроена через iframe (п.Гант)</div>
-          </div>
-        </div>
-      </div>
-    </div>
+      <div class="changelog-list" id="changelogList"></div>
+    </details>
   </div>
 
   <footer class="footer">
@@ -1011,19 +812,35 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
 
 <script>
 // ── UTILS ─────────────────────────────────────────────────────
-const DEADLINE = new Date('2026-12-10T09:00:00+03:00');
+const DEADLINE = new Date('2026-12-10T00:00:00+03:00');
 const $ = id => document.getElementById(id);
 
-function updateCountdown(){
-  const diff = DEADLINE - new Date();
-  if(diff<=0){$('cdD').textContent='0'; return;}
-  const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000);
-  $('cdD').textContent=d; $('cdH').textContent=String(h).padStart(2,'0'); $('cdM').textContent=String(m).padStart(2,'0');
-  // Рабочие дни (приблизительно, без праздников)
-  const workdays=Math.round(d*5/7);
-  $('cdWorkdays').innerHTML=`Веха: <span>10 декабря 2026</span> · ~${workdays} рабочих дней`;
+// Праздники РФ 2026 (§3.1). Источник: производственный календарь РФ (ст.112 ТК РФ) +
+// известные переносы выходных дней (Мар.8 вс → Мар.9, Май.9 сб → Май.11).
+// Уточнить при публикации официального постановления Правительства РФ на 2026 год.
+const RF_HOLIDAYS_2026 = ['2026-01-01','2026-01-02','2026-01-05','2026-01-06','2026-01-07','2026-01-08','2026-02-23','2026-03-09','2026-05-01','2026-05-11','2026-06-12','2026-11-04'];
+function countWorkdaysBetween(from, to){
+  const d=new Date(from); d.setHours(0,0,0,0);
+  const end=new Date(to); end.setHours(0,0,0,0);
+  let count=0;
+  while(d<end){
+    d.setDate(d.getDate()+1);
+    const dow=d.getDay();
+    if(dow!==0 && dow!==6 && !RF_HOLIDAYS_2026.includes(d.toISOString().slice(0,10))) count++;
+  }
+  return count;
 }
-updateCountdown(); setInterval(updateCountdown,30000);
+function updateCountdown(){
+  const now=new Date();
+  const diff = DEADLINE - now;
+  if(diff<=0){$('cdD').textContent='0';$('cdH').textContent='00';$('cdM').textContent='00';$('cdS').textContent='00';$('cdWorkdaysBig').textContent='Веха наступила';$('cdCalDays').textContent='';return;}
+  const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+  $('cdD').textContent=d; $('cdH').textContent=String(h).padStart(2,'0'); $('cdM').textContent=String(m).padStart(2,'0'); $('cdS').textContent=String(s).padStart(2,'0');
+  const wd=countWorkdaysBetween(now, DEADLINE);
+  $('cdWorkdaysBig').textContent=`${wd} рабочих дней`;
+  $('cdCalDays').textContent=`(${d} календарных дней)`;
+}
+updateCountdown(); setInterval(updateCountdown,1000);
 
 // ── SEARCH (п.7) ─────────────────────────────────────────────
 let SEARCH_IDX=[];
@@ -1049,245 +866,185 @@ function doSearch(q){
 }
 function closeSearch(){$('srchResults').classList.remove('open');}
 
-// ── RAG HEALTH (п.1) ─────────────────────────────────────────
-function computeRAG(data){
-  const risks=data.risks||[], qs=data.questions||[], res=data.resources||[], scope=data.scope_dec||[];
-  const critRisks=risks.filter(r=>parseInt(r.prob||0)*parseInt(r.impact||0)>=16).length;
-  const openQ=qs.filter(q=>q.status&&!q.status.includes('Закрыт')&&!q.status.includes('Решён')).length;
-  const overloaded=res.filter(r=>Object.values(r.months||{}).some(v=>{const n=parseInt(v);return !isNaN(n)&&n>=100;})).length;
-  const readyEpics=scope.filter(s=>s.status?.includes('✅')).length;
-  const totalScope=scope.length;
-
-  const ragTime = openQ>5?'🔴':'🟡';
-  const ragRisk = critRisks>=2?'🔴':critRisks>=1?'🟡':'🟢';
-  const ragRes  = overloaded>=3?'🔴':overloaded>=1?'🟡':'🟢';
-  const ragScp  = readyEpics/totalScope>=0.5?'🟢':readyEpics/totalScope>=0.25?'🟡':'🔴';
-
-  const items=[['ragTime',ragTime,ragTime==='🔴'?'Под угрозой':ragTime==='🟡'?'Внимание':'В норме'],
-               ['ragRisk',ragRisk,critRisks+' критич.'],['ragRes',ragRes,overloaded+' перегруж.'],['ragScope',ragScp,readyEpics+'/'+totalScope+' эпиков']];
-  items.forEach(([id,dot,val])=>{$(id).textContent=val;$(id).previousElementSibling.textContent=dot;});
-
-  // Overall for sidebar
-  const overall=[ragTime,ragRisk,ragRes,ragScp];
-  const reds=overall.filter(r=>r==='🔴').length;
-  const yels=overall.filter(r=>r==='🟡').length;
-  const [col,lbl]=reds>=2?['#e74c3c','🔴 Critical']:yels>=2||reds>=1?['#e67e22','🟡 At Risk']:['#27ae60','🟢 On Track'];
-  if($('sidebarHealth'))$('sidebarHealth').innerHTML=`<div class="health-dot" style="background:${col}"></div><span style="color:${col}">${lbl}</span>`;
-}
 
 // ── KPI ───────────────────────────────────────────────────────
-function renderKPI(data){
-  const tasks=data.gantt||[], critTasks=tasks.filter(t=>t.critical==='★').length;
-  const risks=data.risks||[], highRisk=risks.filter(r=>parseInt(r.prob||0)*parseInt(r.impact||0)>=16).length;
-  const qs=data.questions||[], openQ=qs.filter(q=>q.status&&!q.status.includes('Закрыт')&&!q.status.includes('Решён')).length;
-  const scope=data.scope_dec||[], readyE=scope.filter(s=>s.status?.includes('✅')).length;
-  const res=data.resources||[], overloaded=res.filter(r=>Object.values(r.months||{}).some(v=>{const n=parseInt(v);return !isNaN(n)&&n>=100;})).length;
-  $('kpiRow').innerHTML=`
-    <div class="kpi"><div class="kpi-val">${tasks.length}</div><div class="kpi-lbl">Задач в плане</div><div class="kpi-sub">По всем эпикам</div></div>
-    <div class="kpi ok"><div class="kpi-val">${readyE}<span style="font-size:13px;color:var(--mute)">/${scope.length}</span></div><div class="kpi-lbl">Эпиков к 10.12</div><div class="kpi-sub">✅ Готово</div></div>
-    <div class="kpi blue"><div class="kpi-val">${critTasks}</div><div class="kpi-lbl">Крит. путь</div><div class="kpi-sub">★ задачи</div></div>
-    <div class="kpi ${highRisk>=2?'err':highRisk>=1?'warn':'ok'}"><div class="kpi-val">${highRisk}</div><div class="kpi-lbl">Критич. риски</div><div class="kpi-sub">Скор ≥16</div></div>
-    <div class="kpi ${openQ>5?'err':openQ>0?'warn':'ok'}"><div class="kpi-val">${openQ}</div><div class="kpi-lbl">Откр. вопросы</div><div class="kpi-sub">Требуют решения</div></div>
-    <div class="kpi ${overloaded>=3?'err':overloaded>=1?'warn':'ok'}"><div class="kpi-val">${overloaded}</div><div class="kpi-lbl">Ролей перегруж.</div><div class="kpi-sub">Загрузка ≥100%</div></div>`;
-}
-
-// ── EXECUTIVE SUMMARY (п.15) ──────────────────────────────────
-function renderExec(data, manual){
-  const scope=data.scope_dec||[], readyE=scope.filter(s=>s.status?.includes('✅')).length;
-  const risks=data.risks||[], critR=risks.filter(r=>parseInt(r.prob||0)*parseInt(r.impact||0)>=16);
-  const qs=data.questions||[], openQ=qs.filter(q=>q.status&&!q.status.includes('Закрыт')&&!q.status.includes('Решён'));
-  const DONE=manual?.exec_done||[`${readyE} из ${scope.length} эпиков подтверждены к вехе 10.12`,'Архитектура WebSocket и AI-оркестратора спроектирована','ЕСВ-авторизация: аналитика завершена, BE в ревью','12 DS-задач по дизайну заведены в Jira','CI/CD pipeline развёрнут'];
-  const BLOCKS=manual?.exec_blocks||critR.map(r=>`${r.id}: ${r.desc.slice(0,60)}…`).concat(openQ.slice(0,2).map(q=>`❓ ${q.question.slice(0,55)}…`));
-  const NEEDS=manual?.exec_needs||['Решение по 2-му бэкенд-разработчику (критич. путь)','Согласование ИБ-требований к AI (guardrails ПДн)','Подтверждение API ЕЛК от команды Яковлева'];
-  $('execDone').innerHTML=DONE.map(t=>`<div class="exec-item">✅ ${t}</div>`).join('');
-  $('execBlocks').innerHTML=(BLOCKS.length?BLOCKS:['Нет критичных блокеров']).map(t=>`<div class="exec-item">${t}</div>`).join('');
-  $('execNeeds').innerHTML=NEEDS.map(t=>`<div class="exec-item">🙋 ${t}</div>`).join('');
-}
-
-// ── FORECAST (п.18) ───────────────────────────────────────────
-function renderForecast(data){
-  const scope=data.scope_dec||[];
-  const totalTasks=scope.reduce((s,e)=>s+(parseInt(e.total)||0),0);
-  const doneTasks=scope.reduce((s,e)=>s+(parseInt(e.ready)||0),0);
-  // Рабочих дней от 04.07 до 10.12 ≈ 112. Пройдено ≈ 0 (старт 01.08)
-  // Если донТасков > 0, считаем скорость
-  const daysLeft=Math.round((DEADLINE-new Date())/86400000);
-  const remaining=totalTasks-doneTasks;
-  // Рискованный прогноз — +3 недели от вехи если критичные риски
-  const riskDate=new Date(DEADLINE); riskDate.setDate(riskDate.getDate()+21);
-  $('fcRisk').textContent=riskDate.toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'}).replace(' г.','');
-  $('fcDelta').textContent='+21 день';
-  $('bdTotal').textContent=totalTasks;
-}
-
-// ── BURNDOWN CHART (п.16) ─────────────────────────────────────
-function renderBurndown(data){
-  const canvas=$('burndownChart');
-  if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  canvas.width=canvas.offsetWidth||600;
-  canvas.height=180;
-  const W=canvas.width, H=canvas.height;
-  const PAD={top:10,right:20,bottom:30,left:40};
-  const scope=data.scope_dec||[];
-  const total=scope.reduce((s,e)=>s+(parseInt(e.total)||0),0);
-  const done=scope.reduce((s,e)=>s+(parseInt(e.ready)||0),0);
-  if(!total){ctx.fillStyle='#7f8fa6';ctx.font='12px sans-serif';ctx.fillText('Нет данных для burndown',PAD.left,H/2);return;}
-  // Weeks from Aug 1 to Dec 10 = ~18 weeks
-  const WEEKS=18;
-  const startDate=new Date('2026-08-01');
-  const now=new Date();
-  const weeksElapsed=Math.max(0,Math.min(WEEKS,Math.round((now-startDate)/604800000)));
-  // Ideal: linear from total to 0
-  const ideal=Array.from({length:WEEKS+1},(_,i)=>total-Math.round(total*i/WEEKS));
-  // Actual: only known at weeksElapsed
-  const actual=Array.from({length:WEEKS+1},(_,i)=>{
-    if(i===0)return total;
-    if(i<=weeksElapsed)return Math.round(total-done*(i/weeksElapsed));
-    return null;
-  });
-  // Forecast from weeksElapsed to end
-  const velocity=weeksElapsed>0?done/weeksElapsed:0;
-  const forecast=Array.from({length:WEEKS+1},(_,i)=>{
-    if(i<weeksElapsed)return null;
-    return Math.max(0,Math.round(total-done-velocity*(i-weeksElapsed)));
-  });
-
-  const innerW=W-PAD.left-PAD.right, innerH=H-PAD.top-PAD.bottom;
-  const xScale=i=>(PAD.left+i/WEEKS*innerW);
-  const yScale=v=>(H-PAD.bottom-v/total*innerH);
-
-  ctx.clearRect(0,0,W,H);
-  // Grid
-  ctx.strokeStyle='#253850';ctx.lineWidth=1;
-  for(let i=0;i<=4;i++){const y=PAD.top+i*innerH/4;ctx.beginPath();ctx.moveTo(PAD.left,y);ctx.lineTo(W-PAD.right,y);ctx.stroke();}
-  // Labels
-  ctx.fillStyle='#7f8fa6';ctx.font='9px sans-serif';ctx.textAlign='right';
-  for(let i=0;i<=4;i++){const v=Math.round(total*(1-i/4));const y=PAD.top+i*innerH/4;ctx.fillText(v,PAD.left-4,y+3);}
-  ctx.textAlign='center';
-  ['авг','сен','окт','ноя','дек'].forEach((m,i)=>{ctx.fillText(m,xScale(i*WEEKS/4.5),H-PAD.bottom+12);});
-
-  // Ideal line
-  ctx.beginPath();ctx.strokeStyle='#FFC803';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
-  ideal.forEach((v,i)=>{i===0?ctx.moveTo(xScale(i),yScale(v)):ctx.lineTo(xScale(i),yScale(v));});ctx.stroke();ctx.setLineDash([]);
-
-  // Actual
-  ctx.beginPath();ctx.strokeStyle='#4472C4';ctx.lineWidth=2;
-  let started=false;
-  actual.forEach((v,i)=>{if(v===null)return;if(!started){ctx.moveTo(xScale(i),yScale(v));started=true;}else ctx.lineTo(xScale(i),yScale(v));});ctx.stroke();
-
-  // Forecast
-  ctx.beginPath();ctx.strokeStyle='#e74c3c';ctx.lineWidth=1.5;ctx.setLineDash([3,3]);
-  started=false;
-  forecast.forEach((v,i)=>{if(v===null)return;if(!started){ctx.moveTo(xScale(i),yScale(v));started=true;}else ctx.lineTo(xScale(i),yScale(v));});ctx.stroke();ctx.setLineDash([]);
-
-  // Today marker
-  if(weeksElapsed>0&&weeksElapsed<WEEKS){
-    const tx=xScale(weeksElapsed);
-    ctx.beginPath();ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;ctx.setLineDash([2,2]);
-    ctx.moveTo(tx,PAD.top);ctx.lineTo(tx,H-PAD.bottom);ctx.stroke();ctx.setLineDash([]);
-    ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='8px sans-serif';ctx.textAlign='center';
-    ctx.fillText('сейчас',tx,PAD.top+8);
-  }
-}
-
-// ── TOP BLOCKERS (п.17) ───────────────────────────────────────
-function renderBlockers(data, manual){
-  const STATIC_BLOCKERS=manual?.blockers||[
-    {title:'Нет решения по 2-му BE-разработчику',meta:'Влияние: критическое · Сдвигает MVP на 3+ месяца',sev:'err'},
-    {title:'API ЕЛК не согласован командой Яковлева',meta:'Ответственный: Яковлев Евгений · Ожидание более 2 нед.',sev:'err'},
-    {title:'ИБ-аудит: guardrails ПДн для AI не подтверждены',meta:'Блокирует: prod-деплой AI-ассистента',sev:'err'},
-    {title:'IDP-токен веба B2B совместимость с мобильным BE',meta:'Главный технический блокер · Статус: в работе',sev:'warn'},
-    {title:'История диалогов: 6 мес (B2C) vs 12 мес (ИБ стандарт)',meta:'Конфликт требований · Нужно решение архитектора',sev:'warn'},
+function renderMetrics(data){
+  const m=data.metrics||{};
+  const jql=t=>'https://btask.beeline.ru/issues/?jql='+encodeURIComponent(`project=B2BAPP AND issuetype=${t}`);
+  const cells=[
+    {v:m.epicsTotal ?? '—', l:'Всего эпиков', href:'pages/gantt.html', ext:false},
+    {v:`${m.storiesDone ?? 0}<span style="font-size:13px;color:var(--mute)">/${m.storiesTotal ?? 0}</span>`, l:'Стори: сделано/всего', href:jql('Story'), ext:true},
+    {v:`${m.tasksDone ?? 0}<span style="font-size:13px;color:var(--mute)">/${m.tasksTotal ?? 0}</span>`, l:'Задач: сделано/всего', href:jql('Task'), ext:true},
+    {v:m.openQuestions ?? '—', l:'Открытых вопросов', href:'pages/questions.html', ext:false},
   ];
-  const qs=data.questions||[];
-  const openQ=qs.filter(q=>q.status&&!q.status.includes('Закрыт')&&!q.status.includes('Решён')).slice(0,2);
-  const extra=openQ.map(q=>({title:q.question.slice(0,70)+(q.question.length>70?'…':''),meta:`Ответственный: ${q.owner||'не назначен'} · Дедлайн: ${q.deadline||'—'}`,sev:'warn'}));
-  const all=[...STATIC_BLOCKERS,...extra];
-  $('blockersList').innerHTML=all.map((b,i)=>`
-    <div class="blocker-item${b.sev==='warn'?' warn-left':''}">
+  $('kpiRow').innerHTML=cells.map(c=>`<a class="kpi" href="${c.href}"${c.ext?' target="_blank" rel="noopener"':''}><div class="kpi-val">${c.v}</div><div class="kpi-lbl">${c.l}</div></a>`).join('');
+}
+
+// ── ОБЩИЙ ПАТТЕРН НЕДЕЛЬНОГО ПЕРЕКЛЮЧАТЕЛЯ (§3.4 + §3.9) ──────
+function renderWeeklyPicker(pickerElId, weekly, onRender){
+  const picker=$(pickerElId);
+  if(!picker)return;
+  if(!weekly||!weekly.length){picker.innerHTML='';onRender(null);return;}
+  const sorted=[...weekly].sort((a,b)=>new Date(a.weekStart)-new Date(b.weekStart));
+  const today=new Date();
+  let idx=sorted.findIndex(w=>{
+    const start=new Date(w.weekStart);
+    const end=new Date(start);end.setDate(end.getDate()+7);
+    return today>=start && today<end;
+  });
+  if(idx===-1)idx=sorted.length-1;
+  function fmtRange(ws){
+    const s=new Date(ws), e=new Date(s); e.setDate(e.getDate()+6);
+    const f=d=>`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`;
+    return `${f(s)}–${f(e)}.${e.getFullYear()}`;
+  }
+  function paint(){
+    const w=sorted[idx];
+    picker.innerHTML=`
+      <button class="pdf-btn" id="${pickerElId}Prev" ${idx<=0?'disabled':''} style="padding:5px 10px">←</button>
+      <select class="filter-select" id="${pickerElId}Select">${sorted.map((s,i)=>`<option value="${i}" ${i===idx?'selected':''}>Неделя ${fmtRange(s.weekStart)}</option>`).join('')}</select>
+      <button class="pdf-btn" id="${pickerElId}Next" ${idx>=sorted.length-1?'disabled':''} style="padding:5px 10px">→</button>`;
+    $(pickerElId+'Prev').onclick=()=>{if(idx>0){idx--;paint();}};
+    $(pickerElId+'Next').onclick=()=>{if(idx<sorted.length-1){idx++;paint();}};
+    $(pickerElId+'Select').onchange=e=>{idx=parseInt(e.target.value);paint();};
+    onRender(w);
+  }
+  paint();
+}
+
+// ── EXECUTIVE SUMMARY понедельно (§3.4) ────────────────────────
+function renderWeeklyExec(data){
+  renderWeeklyPicker('execWeekPicker', data.weekly, w=>{
+    if(!w){
+      $('execDone').innerHTML=renderEmptyState('Нет данных, запустите обновление');
+      $('execPlanned').innerHTML='';$('execBlocks').innerHTML='';$('execNeeds').innerHTML='';
+      return;
+    }
+    $('execDone').innerHTML=(w.done&&w.done.length?w.done:['—']).map(t=>`<div class="exec-item">✅ ${t}</div>`).join('');
+    $('execPlanned').innerHTML=(w.planned&&w.planned.length?w.planned:['—']).map(t=>`<div class="exec-item">📅 ${t}</div>`).join('');
+    $('execBlocks').innerHTML=(w.blockers&&w.blockers.length?w.blockers:['Нет блокеров']).map(t=>`<div class="exec-item">${t}</div>`).join('');
+    $('execNeeds').innerHTML=(w.needs&&w.needs.length?w.needs:['—']).map(t=>`<div class="exec-item">🙋 ${t}</div>`).join('');
+  });
+}
+
+// ── FORECAST (§3.5: читает criticalPathExplained, без своего расчёта) ──
+function renderForecast(data){
+  const cp=data.criticalPathExplained||{};
+  if(!cp.conclusion){
+    $('fcConclusion').innerHTML=renderEmptyState('Нет данных, запустите обновление');
+    return;
+  }
+  const endDate=cp.endDate?new Date(cp.endDate).toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'}).replace(' г.',''):'—';
+  $('fcConclusion').innerHTML=`<div class="fc-date" style="color:var(--yel)">${endDate}</div><div class="fc-note" style="margin-top:8px;font-size:12px">${cp.conclusion}</div>`;
+}
+
+// ── БЛОКЕРЫ ПРЯМО СЕЙЧАС (§3.3: blockersNow[]) ──────────────────
+function renderBlockersNow(data){
+  const items=data.blockersNow||[];
+  if(!items.length){$('blockersList').innerHTML=renderEmptyState('Нет данных, запустите обновление');return;}
+  $('blockersList').innerHTML=items.map((b,i)=>`
+    <div class="blocker-item">
       <div class="blocker-num">${i+1}</div>
       <div class="blocker-body">
-        <div class="blocker-title">${b.title}</div>
-        <div class="blocker-meta"><span>${b.meta}</span></div>
+        <div class="blocker-title">${b.text}</div>
+        <div class="blocker-meta"><span>Владелец: ${b.owner||'—'} · висит с ${b.since||'—'}</span>${b.link?` <a href="${b.link}" target="_blank" rel="noopener">источник →</a>`:''}</div>
       </div>
     </div>`).join('');
 }
 
 // ── PROGRESS + DEVIATION (п.20) ───────────────────────────────
-function renderProgress(data){
-  const scope=data.scope_dec||[];
-  // Реальные статусы — авторизация и главная ещё не начаты (старт разработки 01.08.2026)
-  const REAL_OVERRIDE={2:'⬜',3:'⬜'}; // индексы эпиков которые помечены неверно
-  const DEV=[null,null,'+2 нед.','+3 нед.',null,null,null,null,null,null,null,null,null,null,null];
-  const epicsBars=scope.map((s,i)=>{
-    const pct=s.total?Math.round((parseInt(s.ready)||0)/(parseInt(s.total)||1)*100):0;
-    const realSt=REAL_OVERRIDE[i]?REAL_OVERRIDE[i]+'Не начато':s.status;
-    const col=realSt?.includes('✅')?'#27ae60':realSt?.includes('🟡')?'#e67e22':'#3d5068';
-    const dev=DEV[i];
-    const devHtml=dev?`<span class="p-dev behind">${dev}</span>`:'';
-    const name=s.epic.replace(/^\d+\.\s*/,'').slice(0,28);
+// ── ГОТОВНОСТЬ ЭПИКОВ (§3.6: epicProgress[], две шкалы на эпик) ──
+function renderEpicProgress(data){
+  const items=data.epicProgress||[];
+  if(!items.length){$('progressEpics').innerHTML=renderEmptyState('Нет данных, запустите обновление');return;}
+  const rows=items.map(e=>{
+    const hPct=e.hoursTotal?Math.round((e.hoursSpent||0)/e.hoursTotal*100):0;
+    const sPct=e.storiesTotal?Math.round((e.storiesDone||0)/e.storiesTotal*100):0;
     return `<div class="p-item">
-      <div class="p-row"><span class="p-name">${name}</span><span class="p-nums">${s.ready||0}/${s.total||0}${devHtml}</span></div>
-      <div class="p-bar"><div class="p-fill" style="width:${pct}%;background:${col}"></div></div>
-    </div>`;}).join('');
-  $('progressEpics').innerHTML=`<h3>Готовность эпиков</h3>${epicsBars}`;
-
-  const mvp=data.mvp||[];
-  const byQ={};
-  mvp.forEach(m=>{if(!byQ[m.quarter])byQ[m.quarter]=[];byQ[m.quarter].push(m.epic);});
-  const QC={'Q3 2026':'#4472C4','Q4 2026':'#e67e22','Q1 2027':'#27ae60','Q1-Q2 2027':'#9b59b6','Q2 2027':'#e74c3c','Q2-Q3 2027':'#1abc9c'};
-  const roadmapBars=Object.entries(byQ).map(([q,epics])=>`
-    <div class="p-item">
-      <div class="p-row"><span class="p-name" style="color:${QC[q]||'var(--yel)'}"><strong>${q}</strong></span><span class="p-nums">${epics.length} блок${epics.length>1?'а':''}</span></div>
-      <div class="p-bar"><div class="p-fill" style="width:100%;background:${QC[q]||'var(--yel)'};opacity:.6"></div></div>
-    </div>`).join('');
-  $('progressRoadmap').innerHTML=`<h3>Дорожная карта (roadmap)</h3>${roadmapBars}`;
+      <div class="p-row"><span class="p-name">${e.epicKey?jiraLink(e.epicKey)+' ':''}${e.epicName||''}</span><span class="p-nums">${e.hoursSpent||0}ч / ${e.hoursTotal||0}ч (${hPct}%)</span></div>
+      <div class="p-bar"><div class="p-fill" style="width:${hPct}%;background:var(--blue)"></div></div>
+      <div class="p-row" style="margin-top:3px"><span class="p-name" style="color:var(--mute);font-size:10px">по стори</span><span class="p-nums">${e.storiesDone||0} / ${e.storiesTotal||0} стори</span></div>
+      <div class="p-bar"><div class="p-fill" style="width:${sPct}%;background:var(--ok)"></div></div>
+    </div>`;
+  }).join('');
+  $('progressEpics').innerHTML=`<h3>Готовность эпиков</h3>${rows}`;
 }
 
-// ── CAPACITY HEATMAP (п.22) ───────────────────────────────────
-function renderHeatmap(data){
-  const res=data.resources||[];
-  if(!res.length){$('hmTable').innerHTML='<p style="color:var(--mute)">Нет данных</p>';return;}
-  const months=Object.keys(res[0]?.months||{});
-  function hcls(v){if(!v||v==='·'||v==='None'||v==='')return 'h-0';const n=parseInt(v);if(isNaN(n))return 'h-0';if(n>=100)return 'h-high';if(n>=70)return 'h-mid';return 'h-low';}
-  let html=`<table class="hm-table"><thead><tr><th>Роль</th><th>FTE</th><th>Всего дн.</th>${months.map(m=>`<th>${m}</th>`).join('')}</tr></thead><tbody>`;
-  let over=0;
-  res.forEach(r=>{
-    const vals=months.map(m=>r.months[m]||'·');
-    if(vals.some(v=>parseInt(v)>=100))over++;
-    html+=`<tr><td>${r.role}</td><td style="color:var(--mute)">${r.fte}</td><td style="color:var(--yel)">${r.total_days}</td>${vals.map((v,i)=>`<td class="${hcls(v)}">${v==='None'?'·':v}</td>`).join('')}</tr>`;
+// ── СКОУП MVP (§3.8: mvpScope из ganttV2) ────────────────────────
+function renderMvpScope(data){
+  const ms=data.mvpScope||{};
+  const inS=ms.inStories||[], outS=ms.outStories||[];
+  if(!inS.length && !outS.length){
+    $('mvpScopeIn').innerHTML=renderEmptyState('Нет данных, запустите обновление');
+    $('mvpScopeOut').innerHTML='';
+    return;
+  }
+  const prio=s=>parseInt((typeof s==='string'?s:(s.name||s.summary||'')).match(/^(\d+)/)?.[1]||999);
+  const line=s=>{
+    if(typeof s==='string')return `<div class="scope-item">${s}</div>`;
+    const readyNote=s.readyDate?` <span style="color:var(--mute)">— готово ${s.readyDate}</span>`:'';
+    return `<div class="scope-item">${s.key?jiraLink(s.key)+' ':''}${s.name||s.summary||''}${readyNote}</div>`;
+  };
+  $('mvpScopeIn').innerHTML=[...inS].sort((a,b)=>prio(a)-prio(b)).map(line).join('')||renderEmptyState('Пусто');
+  $('mvpScopeOut').innerHTML=[...outS].sort((a,b)=>prio(a)-prio(b)).map(line).join('')||renderEmptyState('Пусто');
+}
+
+// ── RISK MATRIX (§3.7: умное размещение маркеров + попап) ────────
+let riskTipEl=null, riskTipBound=false;
+function initRiskTooltip(risks){
+  if(!riskTipEl){riskTipEl=document.createElement('div');riskTipEl.className='gls-tip';document.body.appendChild(riskTipEl);}
+  if(riskTipBound)return; riskTipBound=true;
+  document.addEventListener('mouseover',e=>{
+    const t=e.target.closest('.risk-marker[data-risk]');
+    if(!t)return;
+    const r=riskTipEl._risks[parseInt(t.dataset.risk)];
+    if(!r)return;
+    riskTipEl.innerHTML=`<strong>${r.id}</strong>${r.desc}<div style="margin-top:5px;font-size:10px;color:var(--mute)">Вероятность ${r.prob} · Влияние ${r.impact}</div><div style="margin-top:4px;font-size:10px">Митигация: ${r.mitigation||'—'}</div><div style="margin-top:2px;font-size:10px;color:var(--mute)">Владелец: ${r.owner||'—'}</div>`;
+    riskTipEl.style.display='block';
+    const x=Math.min(e.clientX+14,window.innerWidth-296), y=Math.min(e.clientY+14,window.innerHeight-100);
+    riskTipEl.style.left=x+'px';riskTipEl.style.top=y+'px';
   });
-  html+='</tbody></table>';
-  $('hmTable').innerHTML=html;
-  $('hmOverloaded').textContent=over>0?`⚠️ ${over} роли перегружены`:'';
+  document.addEventListener('mousemove',e=>{
+    if(!riskTipEl||riskTipEl.style.display==='none')return;
+    if(!e.target.closest('.risk-marker[data-risk]')){riskTipEl.style.display='none';}
+    else{const x=Math.min(e.clientX+14,window.innerWidth-296),y=Math.min(e.clientY+14,window.innerHeight-100);riskTipEl.style.left=x+'px';riskTipEl.style.top=y+'px';}
+  });
 }
-
-// ── RISK MATRIX (п.19) ────────────────────────────────────────
+function placeRiskMarkers(arr){
+  const n=arr.length;
+  if(n===0)return [];
+  if(n===1)return [{...arr[0],_x:50,_y:50}];
+  if(n===2)return [{...arr[0],_x:25,_y:50},{...arr[1],_x:75,_y:50}];
+  const quad=[[25,25],[75,25],[25,75],[75,75]];
+  if(n<=4)return arr.map((r,i)=>({...r,_x:quad[i][0],_y:quad[i][1]}));
+  const shown=arr.slice(0,3).map((r,i)=>({...r,_x:quad[i][0],_y:quad[i][1]}));
+  shown.push({_extra:n-3,_x:quad[3][0],_y:quad[3][1]});
+  return shown;
+}
 function renderRiskMatrix(data){
   const risks=data.risks||[];
-  // 5×5 matrix cells
+  if(!risks.length){$('riskMatrixGrid').innerHTML=renderEmptyState('Нет данных, запустите обновление');$('riskList').innerHTML='';return;}
   const cells={};
-  risks.forEach(r=>{const k=`${r.impact||1}-${r.prob||1}`;(cells[k]=cells[k]||[]).push(r);});
+  risks.forEach((r,i)=>{const k=`${r.impact||1}-${r.prob||1}`;(cells[k]=cells[k]||[]).push({...r,_i:i});});
   function cellCol(impact,prob){const s=impact*prob;return s>=16?'rgba(231,76,60,.35)':s>=9?'rgba(230,126,34,.3)':s>=4?'rgba(243,156,18,.25)':'rgba(39,174,96,.2)';}
   let html='<div style="display:grid;grid-template-columns:auto repeat(5,1fr);gap:3px;font-size:9px">';
-  // Y axis labels + rows (impact 5..1)
   for(let imp=5;imp>=1;imp--){
     html+=`<div style="text-align:right;padding-right:6px;color:var(--mute);display:flex;align-items:center;justify-content:flex-end;font-size:9px">${imp}</div>`;
     for(let prob=1;prob<=5;prob++){
       const key=`${imp}-${prob}`, arr=cells[key]||[];
       const col=cellCol(imp,prob);
-      const dots=arr.map(r=>`<span title="${r.id}: ${r.desc.slice(0,60)}" style="font-size:10px">${r.id}</span>`).join(' ');
-      html+=`<div style="background:${col};border-radius:4px;height:44px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px;font-size:9px;font-weight:700;color:#fff;padding:2px">${dots||''}</div>`;
+      const marks=placeRiskMarkers(arr).map(m=>m._extra
+        ?`<span class="risk-marker" style="left:${m._x}%;top:${m._y}%">+${m._extra}</span>`
+        :`<span class="risk-marker" data-risk="${m._i}" style="left:${m._x}%;top:${m._y}%">${m.id}</span>`
+      ).join('');
+      html+=`<div class="risk-cell" style="background:${col}">${marks}</div>`;
     }
   }
-  // X axis
   html+='<div></div>';
   for(let p=1;p<=5;p++)html+=`<div style="text-align:center;color:var(--mute);padding-top:4px;font-size:9px">${p}</div>`;
   html+='</div><div style="font-size:9px;color:var(--mute);margin-top:6px">← Вероятность / Влияние ↑</div>';
   $('riskMatrixGrid').innerHTML=html;
 
-  // Risk list (sorted by score)
   const sorted=[...risks].sort((a,b)=>parseInt(b.prob||0)*parseInt(b.impact||0)-parseInt(a.prob||0)*parseInt(a.impact||0));
   $('riskList').innerHTML=sorted.slice(0,6).map(r=>{
     const score=parseInt(r.prob||0)*parseInt(r.impact||0);
@@ -1299,6 +1056,9 @@ function renderRiskMatrix(data){
       </div>
       <div style="font-size:10px;color:var(--mute)">${r.mitigation.slice(0,70)}${r.mitigation.length>70?'…':''}</div>
     </div>`;}).join('');
+
+  initRiskTooltip(risks);
+  riskTipEl._risks=risks;
 }
 
 // ── DEPENDENCIES GRAPH (п.23) ─────────────────────────────────
@@ -1393,41 +1153,17 @@ function showChangedBadge(data){
 }
 
 // ── WINS (п.27) ───────────────────────────────────────────────
-function renderWins(data, manual){
-  const wins=manual?.wins||(data.gantt||[]).filter(t=>t.status==='D').slice(0,6).map(t=>({title:t.task||'Задача закрыта',meta:t.epic}));
-  const STATIC=[
-    {title:'Архитектура WebSocket согласована в ИБ-комитете',meta:'02.07.2026 · Архитектура'},
-    {title:'ЕСВ-авторизация: BE-задача переведена в ревью',meta:'01.07.2026 · Авторизация'},
-    {title:'12 DS-задач дизайна заведены в Jira (B2BAPP-228, 795–804)',meta:'03.07.2026 · Дизайн'},
-    {title:'MCP-сервер для договоров: аналитика завершена',meta:'30.06.2026 · Договоры'},
-    {title:'CI/CD pipeline развёрнут для мобильного приложения',meta:'29.06.2026 · DevOps'},
-    {title:'Бэклог B2BAPP: 201 стори верифицирована (USM)',meta:'03.07.2026 · PM'},
-  ];
-  const list=wins?.length>=2?wins:STATIC;
-  $('winsList').innerHTML=list.map(w=>`
-    <div class="win-item">
-      <div class="win-title">✅ ${w.title}</div>
-      <div class="win-meta">${w.meta||''}</div>
-    </div>`).join('');
-}
-
-// ── DECISION LOG (п.26) ───────────────────────────────────────
-function renderDecisions(manual){
-  const DECISIONS=manual?.decisions||[
-    {date:'03.07.2026',decision:'React/Capacitor вместо нативной разработки',why:'Скорость разработки × бюджет. Один кодбейз для iOS + Android.',alt:'Flutter, нативный Swift/Kotlin',author:'Пальчиков Л.'},
-    {date:'02.07.2026',decision:'AI-ассистент как главный интерфейс (не дополнение)',why:'Дифференциатор продукта. Микробизнес не хочет учить UI.',alt:'Традиционный UI + чат-виджет',author:'Пальчиков Л.'},
-    {date:'01.07.2026',decision:'Хранение JWT в Redis (auth-content-service)',why:'Требование ИБ: токены не должны жить в мобильном приложении.',alt:'Сессии в cookie',author:'Макаренко Д.'},
-    {date:'25.06.2026',decision:'IDP/ЕСВ через WebView, не через нативный SDK',why:'IDP не предоставляет мобильный SDK. WebView — единственный способ.',alt:'Custom OAuth flow',author:'Бачинский А.'},
-    {date:'20.06.2026',decision:'MCP-сервер как единый слой данных для AI',why:'Унификация инструментов AI-оркестратора.',alt:'Прямые REST-вызовы из оркестратора',author:'Макаренко Д.'},
-    {date:'15.06.2026',decision:'Имперсонализация ПДн перед передачей в LLM',why:'Требование ДИБ: ПДн не покидают контур в открытом виде.',alt:'Передавать данные с согласия пользователя',author:'Бачинский А.'},
-  ];
-  $('decisionBody').innerHTML=DECISIONS.map(d=>`<tr>
-    <td style="color:var(--mute);white-space:nowrap">${d.date}</td>
-    <td style="font-weight:600;color:var(--text)">${d.decision}</td>
-    <td style="font-size:11px;color:var(--mute)">${d.why}</td>
-    <td style="font-size:10px;color:#3d5068">${d.alt}</td>
-    <td style="font-size:10px;color:var(--mute);white-space:nowrap">${d.author}</td>
-  </tr>`).join('');
+// ── КЛЮЧЕВЫЕ РЕШЕНИЯ понедельно (§3.9: weekly[].decisions[]) ─────
+function renderWeeklyDecisions(data){
+  renderWeeklyPicker('decWeekPicker', data.weekly, w=>{
+    const decisions=(w&&w.decisions)||[];
+    if(!decisions.length){$('decisionBody').innerHTML=`<tr><td colspan="3">${renderEmptyState('Нет данных, запустите обновление')}</td></tr>`;return;}
+    $('decisionBody').innerHTML=decisions.map(d=>`<tr>
+      <td style="color:var(--mute);white-space:nowrap">${d.date||''}</td>
+      <td style="font-weight:600;color:var(--text)">${d.text||''}</td>
+      <td style="font-size:10px;color:var(--mute)">${d.link?`<a href="${d.link}" target="_blank" rel="noopener">${d.source||'источник'}</a>`:(d.source||'—')}</td>
+    </tr>`).join('');
+  });
 }
 
 // ── ACCEPTANCE CHECKLIST (п.25) ───────────────────────────────
@@ -1454,20 +1190,19 @@ function renderAcceptance(data){
 function renderQSLA(data){
   const qs=data.questions||[];
   const NOW=new Date();
-  const REF=new Date('2026-07-04'); // дата старта учёта
   $('qslaBody').innerHTML=qs.map(q=>{
-    // Вычисляем дней открыт: если есть created — от неё, иначе грубая оценка
-    const daysOpen=Math.round((NOW-REF)/86400000)+Math.floor(Math.random()*20)+1;
-    const slaCls=daysOpen>21?'sla-err':daysOpen>10?'sla-warn':'sla-ok';
-    const status=q.status||'Открыт';
-    const statusColor=status.includes('Закрыт')||status.includes('Решён')?'color:#27ae60':status.includes('работ')?'color:#e67e22':'color:#e74c3c';
+    // Дней открыт считаем только если есть честная дата создания (q.created) — иначе не выдумываем число (C11)
+    const created=q.created?new Date(q.created):null;
+    const daysOpen=created&&!isNaN(created)?Math.round((NOW-created)/86400000):null;
+    const slaCls=daysOpen==null?'sla-ok':daysOpen>21?'sla-err':daysOpen>10?'sla-warn':'sla-ok';
+    const status=q.status||'—';
     return `<tr>
       <td style="color:var(--mute);font-weight:700;font-size:10px">${q.id}</td>
       <td style="min-width:280px">${q.question}</td>
       <td style="font-size:10px;color:var(--mute)">${q.owner||'—'}</td>
       <td style="font-size:10px;color:var(--mute);white-space:nowrap">${q.deadline||'—'}</td>
-      <td style="text-align:center"><span class="sla-days ${slaCls}">${daysOpen} дн.</span></td>
-      <td><span style="font-size:10px;font-weight:600;${statusColor}">${status}</span></td>
+      <td style="text-align:center"><span class="sla-days ${slaCls}">${daysOpen==null?'—':daysOpen+' дн.'}</span></td>
+      <td><span style="font-size:10px;font-weight:600;color:var(--mute)">${status}</span></td>
     </tr>`;}).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--mute);padding:16px">Нет данных</td></tr>';
 }
 
@@ -1476,9 +1211,9 @@ function renderQSLA(data){
 // ── AUDIENCE SWITCHER (п.5) ───────────────────────────────────
 const AUD_CONFIG={
   all:{label:'Показаны все разделы',hidden:[]},
-  exec:{label:'Вид для руководства — упрощённый обзор',hidden:['s-burndown','s-acceptance','s-qsla','s-velocity','s-capacity']},
-  pm:{label:'Вид для PM — всё кроме деталей',hidden:[]},
-  team:{label:'Вид для команды — технические разделы',hidden:['s-exec','s-forecast','s-budget','s-creep']},
+  exec:{label:'',hidden:['s-acceptance','s-qsla']},
+  pm:{label:'',hidden:[]},
+  team:{label:'',hidden:['s-exec','s-forecast']},
 };
 function setAudience(aud,btn){
   document.querySelectorAll('.aud-btn').forEach(b=>b.classList.remove('active'));
@@ -1496,124 +1231,41 @@ function restoreAudience(){
   if(btn)setAudience(saved,btn);
 }
 
-// ── SCOPE CREEP (п.29) ────────────────────────────────────────
-function renderScopeCreep(data){
-  const scope=data.scope_dec||[];
-  const totalNow=scope.reduce((s,e)=>s+(parseInt(e.total)||0),0);
-  const doneNow=scope.reduce((s,e)=>s+(parseInt(e.ready)||0),0);
-  const baseline=Math.round(totalNow*0.82);
-  const added=totalNow-baseline;
-  const creepPct=Math.round(added/baseline*100);
-  const months=[
-    {label:'Фев',total:baseline+0,done:15},
-    {label:'Мар',total:baseline+Math.round(added*.2),done:28},
-    {label:'Апр',total:baseline+Math.round(added*.4),done:45},
-    {label:'Май',total:baseline+Math.round(added*.65),done:65},
-    {label:'Июн',total:baseline+Math.round(added*.85),done:doneNow-12},
-    {label:'Сейч.',total:totalNow,done:doneNow,cur:true},
+// ── РОСТ СКОУПА (§3.10: scopeGrowth[], inline SVG line chart) ────
+function renderScopeGrowth(data){
+  const pts=data.scopeGrowth||[];
+  const el=$('scopeGrowthChart');
+  if(!pts.length){el.innerHTML=renderEmptyState('Нет данных, запустите обновление');return;}
+  const sorted=[...pts].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const W=760,H=220,PAD={top:14,right:14,bottom:26,left:40};
+  const innerW=W-PAD.left-PAD.right, innerH=H-PAD.top-PAD.bottom;
+  const SERIES=[
+    {key:'epics',label:'Эпики',color:'#A5A5A5'},
+    {key:'stories',label:'Стори',color:'#70AD47'},
+    {key:'tasks',label:'Задачи',color:'#4472C4'},
+    {key:'hoursTotal',label:'Часы',color:'#FFC803'},
   ];
-  const maxV=Math.max(...months.map(m=>m.total));
-  $('creepChart').innerHTML=months.map(m=>{
-    const th=Math.round(m.total/maxV*90),dh=Math.round(m.done/maxV*90),ah=Math.round((m.total-baseline)/maxV*90);
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center">
-      <div style="font-size:9px;font-weight:700;color:${m.cur?'var(--yel)':'#aaa'};margin-bottom:2px">${m.total}</div>
-      <div style="width:100%;height:90px;position:relative;border-radius:4px 4px 0 0;overflow:hidden;background:#1e2d3d">
-        <div style="position:absolute;bottom:0;left:0;right:0;height:${Math.round(baseline/maxV*90)}px;background:#4472C4;opacity:.7"></div>
-        <div style="position:absolute;bottom:${Math.round(baseline/maxV*90)}px;left:0;right:0;height:${ah}px;background:#e67e22;opacity:.8"></div>
-        <div style="position:absolute;bottom:0;left:0;right:0;height:${dh}px;background:rgba(39,174,96,.45)"></div>
-      </div>
-      <div style="font-size:9px;color:var(--mute);margin-top:4px">${m.label}</div>
-    </div>`;
-  }).join('');
-  $('creepStats').innerHTML=`<div style="display:flex;flex-direction:column;gap:7px;font-size:11px">
-    <div style="display:flex;justify-content:space-between"><span style="color:var(--mute)">Исходный baseline:</span><strong>${baseline} задач</strong></div>
-    <div style="display:flex;justify-content:space-between"><span style="color:var(--mute)">Текущий скоуп:</span><strong style="color:var(--yel)">${totalNow} задач</strong></div>
-    <div style="display:flex;justify-content:space-between"><span style="color:var(--mute)">Добавлено:</span><strong style="color:${creepPct>20?'#e74c3c':'#e67e22'}">+${added} (+${creepPct}%)</strong></div>
-    <div style="display:flex;justify-content:space-between"><span style="color:var(--mute)">Выполнено:</span><strong style="color:#27ae60">${doneNow}</strong></div>
-    <div style="display:flex;justify-content:space-between"><span style="color:var(--mute)">Осталось:</span><strong>${totalNow-doneNow}</strong></div>
-  </div>`;
-  $('creepWarning').textContent=creepPct>20
-    ?`Скоуп вырос на ${creepPct}% от baseline — высокий риск не уложиться в 10.12. Зафиксировать скоуп, новые задачи — в следующую волну.`
-    :`Рост скоупа ${creepPct}% — в пределах нормы (до 20%). Продолжайте мониторинг.`;
-}
-
-// ── VELOCITY (п.30) ───────────────────────────────────────────
-function renderVelocity(data){
-  // Спринты ещё не запущены — данные появятся после старта разработки 01.08.2026
-  if(true) {
-    $('velChart').innerHTML='<div style="text-align:center;color:var(--mute);font-size:12px;padding:20px 0">Спринты начнутся 01.08.2026<br><span style="font-size:10px">Данные появятся после первого спринта</span></div>';
-    $('velAvg').innerHTML='';
-    $('velForecast').innerHTML='<div style="color:var(--mute);font-size:11px;padding:8px">Прогноз будет доступен после нескольких спринтов</div>';
-    return;
+  const dates=sorted.map(p=>new Date(p.date).getTime());
+  const minD=Math.min(...dates), maxD=Math.max(...dates)||minD+1;
+  const xScale=t=>PAD.left+(t-minD)/(maxD-minD||1)*innerW;
+  function line(key){
+    const vals=sorted.map(p=>p[key]||0);
+    const maxV=Math.max(...vals,1);
+    const yScale=v=>PAD.top+innerH-(v/maxV*innerH);
+    const path=sorted.map((p,i)=>`${i===0?'M':'L'}${xScale(new Date(p.date).getTime()).toFixed(1)},${yScale(p[key]||0).toFixed(1)}`).join(' ');
+    return {path,maxV,yScale};
   }
-  const sprints=data.sprints||[];
-  const spMap={};
-  sprints.forEach(r=>{const s=String(r[0]||'').match(/(\d+)/)?.[1];if(s){spMap[s]=(spMap[s]||0)+1;}});
-  let vel=Object.entries(spMap).map(([n,t])=>({n,tasks:t})).slice(-6);
-  const avg=Math.round(vel.reduce((s,v)=>s+v.tasks,0)/vel.length);
-  const maxV=Math.max(...vel.map(v=>v.tasks),1);
-  $('velChart').innerHTML=vel.map((v,i)=>{
-    const h=Math.round(v.tasks/maxV*85);
-    const isCur=i===vel.length-1;
-    return `<div class="vel-bar${isCur?' current':''}" style="height:${h}px">
-      <div class="vel-bar-val">${v.tasks}</div>
-      <div class="vel-bar-lbl">Сп.${v.n}</div>
-    </div>`;
+  const svgLines=SERIES.map(s=>{
+    const {path}=line(s.key);
+    return `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2"/>`;
   }).join('');
-  $('velAvg').innerHTML=`Средняя: <strong>${avg} задач/спринт</strong> · Тренд: <strong style="color:${vel.slice(-1)[0]?.tasks>=avg?'#27ae60':'#e74c3c'}">${vel.slice(-1)[0]?.tasks>=avg?'📈 растёт':'📉 снижается'}</strong>`;
-  const scope=data.scope_dec||[];
-  const rem=scope.reduce((s,e)=>s+(parseInt(e.total)||0)-(parseInt(e.ready)||0),0);
-  const spLeft=avg>0?Math.ceil(rem/avg):99;
-  const eta=new Date();eta.setDate(eta.getDate()+spLeft*14);
-  const onTime=eta<=new Date('2026-12-10');
-  $('velForecast').innerHTML=`
-    <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line)"><span>Осталось задач</span><strong>${rem}</strong></div>
-    <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line)"><span>Спринтов</span><strong>${spLeft}</strong></div>
-    <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line)"><span>ETA</span><strong style="color:${onTime?'#27ae60':'#e74c3c'}">${eta.toLocaleDateString('ru',{day:'numeric',month:'short'})}</strong></div>
-    <div style="padding:7px;background:${onTime?'rgba(39,174,96,.1)':'rgba(231,76,60,.1)'};border-radius:6px;font-weight:700;color:${onTime?'#27ae60':'#e74c3c'};text-align:center;margin-top:4px">${onTime?'✅ Укладываемся в 10.12':'⚠️ Риск не успеть'}</div>`;
-}
-
-// ── BUDGET (п.31) ─────────────────────────────────────────────
-function renderBudget(data){
-  // Данные план/факт по трудозатратам требуют интеграции с системой списания (Jira worklogs)
-  // Сейчас отображаем только плановые данные из ресурсного плана
-  const res=data.resources||[];
-  if(!res.length){$('budgetGrid').innerHTML='<p style="color:var(--mute)">Нет данных</p>';return;}
-  // Плановые данные корректны, факт пока недоступен
-  $('budgetGrid').innerHTML=`<div style="grid-column:1/-1;background:var(--card);border-radius:10px;border:1px solid var(--line);border-left:3px solid var(--warn);padding:16px 20px">
-    <div style="font-size:11px;font-weight:700;color:var(--warn);margin-bottom:8px">⚠️ Раздел в разработке</div>
-    <div style="font-size:11px;color:var(--mute);line-height:1.7">
-      Блок «план vs факт» требует данных о списанном времени (Jira worklogs) по каждой задаче.<br>
-      Учитывается: разработчики + тестировщики на одну задачу списывают раздельно.<br>
-      <strong style="color:var(--text)">Плановые данные:</strong> ${res.map(r=>r.role+' — '+r.total_days+' дн.').slice(0,4).join(', ')}...
-    </div>
-  </div>`;
-  return;
-  const GROUPS=[
-    {title:'🔧 Разработка',keys:['Фронтенд','Бэкенд','DevOps'],color:'#4472C4'},
-    {title:'📐 Аналитика и дизайн',keys:['Аналитик','Дизайнер','РП','ВП'],color:'#9b59b6'},
-    {title:'🏗️ Архитектура и QA',keys:['архитектор','QA'],color:'#27ae60'},
-  ];
-  $('budgetGrid').innerHTML=GROUPS.map(g=>{
-    const gr=res.filter(r=>g.keys.some(k=>r.role.toLowerCase().includes(k.toLowerCase())));
-    const planTotal=gr.reduce((s,r)=>s+(parseFloat(r.total_days)||0),0);
-    const factPct=Math.round(40+Math.random()*25);
-    const factD=Math.round(planTotal*factPct/100);
-    return `<div class="budget-card" style="border-top:3px solid ${g.color}">
-      <h4>${g.title}</h4>
-      ${gr.map(r=>{
-        const pct=planTotal>0?Math.round((parseFloat(r.total_days)||0)/planTotal*100):0;
-        return `<div class="budget-role">
-          <div class="budget-role-top"><span class="budget-role-name">${r.role}</span><span class="budget-role-pct" style="color:${g.color}">${r.total_days} дн.</span></div>
-          <div class="budget-mini-bar"><div class="budget-mini-fill" style="width:${pct}%;background:${g.color};opacity:.7"></div></div>
-        </div>`;
-      }).join('')}
-      <div class="budget-total">
-        <span>План: <strong style="color:${g.color}">${planTotal.toFixed(0)} дн.</strong></span>
-        <span>Факт ~${factD} (<strong style="color:${factPct>70?'#e74c3c':'#27ae60'}">${factPct}%</strong>)</span>
-      </div>
-    </div>`;
+  const xLabels=[sorted[0],sorted[sorted.length-1]].map((p,i)=>{
+    const d=new Date(p.date);
+    const x=i===0?PAD.left:W-PAD.right;
+    return `<text x="${x}" y="${H-6}" font-size="9" fill="var(--mute)" text-anchor="${i===0?'start':'end'}">${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}</text>`;
   }).join('');
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${svgLines}${xLabels}</svg>
+    <div class="creep-legend" style="margin-top:8px">${SERIES.map(s=>`<div class="creep-leg"><div class="creep-leg-sq" style="background:${s.color}"></div>${s.label}</div>`).join('')}</div>`;
 }
 
 // ── LOAD MANUAL JSON ──────────────────────────────────────────
@@ -1726,21 +1378,32 @@ window.addEventListener('pagehide',()=>{
   sessionStorage.setItem('b2bapp_scroll_'+location.pathname,window.scrollY);
 });
 
-// ── CHANGELOG ACCORDION ───────────────────────────────────────
-document.addEventListener('DOMContentLoaded',()=>{
-  const clSection=$('s-changelog');
-  if(!clSection)return;
-  const title=clSection.querySelector('.sec-title');
-  if(!title)return;
-  title.style.cursor='pointer';
-  title.innerHTML+=' <span id="cl-chevron" style="font-size:12px;color:var(--mute);margin-left:6px">▼</span>';
-  const list=clSection.querySelector('.changelog-list');
-  title.onclick=()=>{
-    const collapsed=list.style.display==='none';
-    list.style.display=collapsed?'':'none';
-    $('cl-chevron').textContent=collapsed?'▼':'▶';
-  };
-});
+// ── CHANGELOG (§3.11: data-driven, <details> свёрнут по умолчанию, фильтр по area) ──
+function renderChangelogList(data){
+  const items=(data.changelog||[]).slice().sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+  const list=$('changelogList');
+  if(!items.length){list.innerHTML=renderEmptyState('Нет записей в changelog');return;}
+  const AREA_LABEL={gantt:'Гант',usm:'USM',data:'Данные',ui:'UI'};
+  function paint(area){
+    const rows=area==='all'?items:items.filter(i=>i.area===area);
+    list.innerHTML=rows.length?rows.map(i=>{
+      const d=new Date(i.ts);
+      const ds=isNaN(d)?'':`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+      return `<div class="cl-entry"><div class="cl-dot prev">${AREA_LABEL[i.area]?.[0]||'•'}</div><div class="cl-body">
+        <div class="cl-ver">${ds}<span class="badge badge-blue" style="margin-left:8px">${AREA_LABEL[i.area]||i.area||'—'}</span></div>
+        <div class="cl-changes"><div class="cl-change">${i.text}</div></div>
+      </div></div>`;
+    }).join(''):renderEmptyState('Нет записей для этого фильтра');
+  }
+  paint('all');
+  document.querySelectorAll('#clFilters .f-btn').forEach(btn=>{
+    btn.onclick=()=>{
+      document.querySelectorAll('#clFilters .f-btn').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+      paint(btn.dataset.area);
+    };
+  });
+}
 
 // ── LOAD & RENDER ─────────────────────────────────────────────
 async function loadData(){
@@ -1755,23 +1418,20 @@ function init(data, manual){
   validateData(data);
   showChangedBadge(data);
   buildSearchIndex(data);
-  computeRAG(data);
-  renderKPI(data);
-  renderExec(data, manual);
+  renderMetrics(data);
+  renderWeeklyExec(data);
   renderForecast(data);
-  renderBurndown(data);
-  renderBlockers(data, manual);
-  renderProgress(data);
-  renderHeatmap(data);
+  renderBlockersNow(data);
+  renderEpicProgress(data);
+  renderMvpScope(data);
   renderRiskMatrix(data);
   renderDeps(data);
-  renderWins(data, manual);
-  renderDecisions(manual);
+  renderWeeklyDecisions(data);
   renderAcceptance(data);
   renderQSLA(data);
-  renderScopeCreep(data);
-  renderVelocity(data);
-  renderBudget(data);
+  renderScopeGrowth(data);
+  renderChangelogList(data);
+  mountFreshness('freshness', data.refreshedAt, data.updated);
   const upd=data.updated||'—';
   setSmartTime(upd);
   setTimeout(()=>{initGlossaryTooltips(data.glossary);restoreAccordions();restoreAudience();},100);
