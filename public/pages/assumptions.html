@@ -17,15 +17,16 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
   
 const items = d.assumptions || [];
-document.getElementById('root').innerHTML=`<table class="tbl">
-  <thead><tr><th>ID</th><th>Допущение</th><th>Последствие нарушения</th><th>Ответственный</th></tr></thead>
+document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">
+  <thead><tr><th>ID</th><th>Допущение</th><th>Последствие нарушения</th><th>Ответственный</th><th>Источник</th></tr></thead>
   <tbody>${items.map(a=>`<tr>
     <td><span class="badge badge-blue">${a.id}</span></td>
     <td>${a.desc}</td>
     <td style="font-size:11px;color:#e67e22">${a.impact}</td>
     <td style="font-size:11px;color:var(--mute)">${a.owner}</td>
+    <td style="font-size:10px;color:var(--mute)">${a.link?`<a href="${a.link}" target="_blank" rel="noopener">${a.source||'источник'}</a>`:(a.source||'—')}</td>
   </tr>`).join('')}</tbody></table>`;
-
+makeSortable(document.getElementById('tbl'));
 });
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>
