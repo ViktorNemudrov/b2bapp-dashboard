@@ -2,14 +2,14 @@
 <title>Внешние зависимости — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
-<script src="../shared-nav.js"></script><script>renderSidebar();
+<script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   mountFreshness('freshness', d.refreshedAt, d.updated);
 }).catch(()=>{});</script>
 <div class="main">
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🔗 Внешние зависимости</span></div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
@@ -24,7 +24,7 @@ document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">
     const cls=Object.entries(SCLS).find(([k])=>dep.status&&dep.status.includes(k))?.[1]||'blue';
     return `<tr>
       <td><span class="badge badge-blue">${dep.id}</span></td>
-      <td style="font-weight:600;color:#fff">${dep.system}</td>
+      <td style="font-weight:600;color:var(--text)">${dep.system}</td>
       <td style="font-size:11px;color:var(--mute)">${dep.desc}</td>
       <td style="font-size:11px">${dep.owner}</td>
       <td><span class="badge badge-${cls}">${dep.status}</span></td>
