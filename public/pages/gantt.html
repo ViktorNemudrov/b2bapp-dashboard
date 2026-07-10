@@ -159,8 +159,11 @@ function adaptFlatGanttV2(rows, data){
       status:allDone?'Завершено':anyWip?'В работе':'Бэклог', onCriticalPath:false, deps:[]
     });
     rs.forEach(r=>{
+      // ВАЖНО: r.summary у скилла дублирует название эпика (не описывает роль/работу) —
+      // строим осмысленную подпись из роли, иначе все дочерние строки выглядят одинаково.
+      const roleLabel=r.roleName && r.roleName!==r.role ? `${r.role} · ${r.roleName}` : (r.role||r.summary||'');
       items.push({
-        key:r.key, type:'task', parent:ek, epic:ek, summary:r.summary, role:r.role,
+        key:r.key, type:'task', parent:ek, epic:ek, summary:roleLabel, role:r.role,
         estimateH:r.h||0, spentH:r.spentH||0, status:r.status, category:r.status||r.category||'planned',
         start:r.start, end:r.end, resource:r.roleName||r.role, onCriticalPath:false, deps:[]
       });
@@ -182,7 +185,13 @@ function renderGanttV2(){
   $('ganttEmpty').innerHTML='';
   $('ganttApp').style.display='block';
   if(gv._flatAdapted){
-    $('ganttEmpty').innerHTML=`<div class="note-banner" style="background:rgba(255,200,3,.08);border:1px solid rgba(255,200,3,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mute);margin-bottom:14px">⚠ Скилл ещё не даёт story/task-уровень в ganttV2 — показан агрегат по ролям внутри эпика вместо полной иерархии Эпик▸Стори▸Задача.</div>`;
+    $('ganttEmpty').innerHTML=`<div class="note-banner" style="background:rgba(255,200,3,.08);border:1px solid rgba(255,200,3,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mute);margin-bottom:14px">⚠ Скилл ещё не даёт story/task-уровень в ganttV2 — показан агрегат по ролям внутри эпика (кружок = роль, наведи на бар — детали). Разверни ⌄ эпик, чтобы увидеть роли.</div>`;
+  }
+  // При первой загрузке разворачиваем все эпики — иначе дерево показывает только
+  // верхний уровень и не очевидно, что вообще есть что разворачивать.
+  if(!GS._initialized){
+    GS._initialized=true;
+    gv.items.filter(i=>i.type==='epic').forEach(e=>GS.expanded.add(e.key));
   }
 
   const items=gv.items;
@@ -210,13 +219,15 @@ function renderGanttV2(){
   }
   tree.forEach(e=>walk(e,0));
 
-  $('ganttTree').innerHTML=`<div class="gantt2-row gantt2-header-row"><div class="gantt2-label">Эпик / Стори / Задача</div></div>`+
+  $('ganttTree').innerHTML=`<div class="gantt2-row gantt2-header-row"><div class="gantt2-label">Эпик / Стори / Задача (роль)</div></div>`+
     rows.map(({node,depth})=>{
       const hasChildren=node.children && node.children.length>0;
       const isExpanded=GS.expanded.has(node.key);
       const toggle=hasChildren?`<span class="gantt2-toggle" data-key="${node.key}">${isExpanded?'▾':'▸'}</span>`:'<span class="gantt2-toggle-spacer"></span>';
       const icon=node.type==='epic'?'📦':node.type==='story'?'📄':'▫';
-      return `<div class="gantt2-row"><div class="gantt2-label" title="${(node.summary||'').replace(/"/g,'&quot;')}" style="padding-left:${depth*16+8}px">${toggle}${icon} ${jiraLink(node.key)} ${(node.summary||'').slice(0,42)}</div></div>`;
+      const roleDot=node.role?`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${ROLE_COLOR[node.role]||'#7f8fa6'};margin-right:4px;flex-shrink:0"></span>`:'';
+      const hoursNote=node.type!=='epic'&&node.estimateH?` <span style="color:var(--mute);font-size:9px">(${node.spentH||0}/${node.estimateH}ч)</span>`:'';
+      return `<div class="gantt2-row"><div class="gantt2-label" title="${(node.summary||'').replace(/"/g,'&quot;')}" style="padding-left:${depth*16+8}px;display:flex;align-items:center">${toggle}${icon} ${roleDot}${jiraLink(node.key)} ${(node.summary||'').slice(0,32)}${hoursNote}</div></div>`;
     }).join('');
   $('ganttTree').querySelectorAll('.gantt2-toggle[data-key]').forEach(t=>{
     t.onclick=()=>{ const k=t.dataset.key; GS.expanded.has(k)?GS.expanded.delete(k):GS.expanded.add(k); renderGanttV2(); };
