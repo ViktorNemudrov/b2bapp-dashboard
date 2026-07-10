@@ -1,4 +1,17 @@
-import urllib.request, os, base64, json, sys
+import urllib.request, os, base64, json, sys, time
+
+def urlopen_retry(req, tries=5, delay=2):
+    """This network drops SSL handshakes constantly -- retry transient failures
+    per-request instead of letting one flaky call blow up a whole batch."""
+    last_err = None
+    for i in range(tries):
+        try:
+            return urllib.request.urlopen(req)
+        except Exception as e:
+            last_err = e
+            if i < tries - 1:
+                time.sleep(delay)
+    raise last_err
 
 def load_env(path=".env"):
     if os.path.exists(path):
@@ -27,7 +40,7 @@ def push(gh_path, local_path, msg):
     url = f"{BASE}/contents/{gh_path}"
     req = urllib.request.Request(url, headers=HDR)
     try:
-        with urllib.request.urlopen(req) as r:
+        with urlopen_retry(req) as r:
             sha = json.loads(r.read()).get("sha")
     except: sha = None
     body = {"message": msg, "content": b64}
@@ -35,7 +48,7 @@ def push(gh_path, local_path, msg):
     req2 = urllib.request.Request(url, headers=HDR, method="PUT")
     req2.data = json.dumps(body).encode()
     try:
-        with urllib.request.urlopen(req2) as r:
+        with urlopen_retry(req2) as r:
             res = json.loads(r.read())
         print(f"OK  {gh_path} -> {res['content']['sha'][:8]}")
     except Exception as e:
@@ -101,11 +114,11 @@ def push_all(msg, root="public"):
     files = collect_files(root)
 
     ref_req = urllib.request.Request(f"{BASE}/git/ref/heads/main", headers=HDR)
-    with urllib.request.urlopen(ref_req) as r:
+    with urlopen_retry(ref_req) as r:
         base_commit_sha = json.loads(r.read())["object"]["sha"]
 
     commit_req = urllib.request.Request(f"{BASE}/git/commits/{base_commit_sha}", headers=HDR)
-    with urllib.request.urlopen(commit_req) as r:
+    with urlopen_retry(commit_req) as r:
         base_tree_sha = json.loads(r.read())["tree"]["sha"]
 
     tree_entries = []
@@ -116,23 +129,24 @@ def push_all(msg, root="public"):
             b64 = base64.b64encode(f.read()).decode()
         blob_req = urllib.request.Request(f"{BASE}/git/blobs", headers=HDR, method="POST")
         blob_req.data = json.dumps({"content": b64, "encoding": "base64"}).encode()
-        with urllib.request.urlopen(blob_req) as r:
+        with urlopen_retry(blob_req) as r:
             blob_sha = json.loads(r.read())["sha"]
         tree_entries.append({"path": gh, "mode": "100644", "type": "blob", "sha": blob_sha})
+        print(f"blob {gh} -> {blob_sha[:8]}")
 
     tree_req = urllib.request.Request(f"{BASE}/git/trees", headers=HDR, method="POST")
     tree_req.data = json.dumps({"base_tree": base_tree_sha, "tree": tree_entries}).encode()
-    with urllib.request.urlopen(tree_req) as r:
+    with urlopen_retry(tree_req) as r:
         new_tree_sha = json.loads(r.read())["sha"]
 
     new_commit_req = urllib.request.Request(f"{BASE}/git/commits", headers=HDR, method="POST")
     new_commit_req.data = json.dumps({"message": msg, "tree": new_tree_sha, "parents": [base_commit_sha]}).encode()
-    with urllib.request.urlopen(new_commit_req) as r:
+    with urlopen_retry(new_commit_req) as r:
         new_commit_sha = json.loads(r.read())["sha"]
 
     ref_update_req = urllib.request.Request(f"{BASE}/git/refs/heads/main", headers=HDR, method="PATCH")
     ref_update_req.data = json.dumps({"sha": new_commit_sha}).encode()
-    with urllib.request.urlopen(ref_update_req) as r:
+    with urlopen_retry(ref_update_req) as r:
         r.read()
 
     print(f"OK single commit {new_commit_sha[:8]} with {len(tree_entries)} files -> one Vercel deploy")
