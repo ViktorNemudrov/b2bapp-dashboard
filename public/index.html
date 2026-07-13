@@ -139,8 +139,6 @@ body.light-theme .b-gray{background:rgba(0,0,0,.08);color:#556080}
 body.light-theme .footer{border-top-color:#d0d8e8;color:#8899bb}
 /* Scrollbar in light */
 body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
-/* Manual note */
-body.light-theme .manual-note{background:rgba(255,200,3,.08);border-color:rgba(255,200,3,.3);color:#8a6500}
 
 /* ── STICKY SIDEBAR (п.3) ── */
 .layout{display:flex;min-height:100vh}
@@ -483,9 +481,6 @@ body.light-theme .manual-note{background:rgba(255,200,3,.08);border-color:rgba(2
 .budget-total{display:flex;justify-content:space-between;padding-top:10px;margin-top:6px;border-top:1px solid var(--line);font-size:11px}
 .budget-total span{color:var(--mute)}
 .budget-total strong{color:var(--yel)}
-
-/* ── MANUAL NOTE ── */
-.manual-note{font-size:10px;color:var(--mute);padding:3px 8px;background:rgba(255,200,3,.05);border-radius:4px;border:1px solid rgba(255,200,3,.15);display:inline-flex;align-items:center;gap:4px;margin-bottom:10px}
 
 /* ── FOOTER ── */
 .footer{text-align:center;padding:16px;font-size:10px;color:#3d5068;border-top:1px solid var(--line)}
@@ -1289,12 +1284,6 @@ function renderScopeGrowth(data){
     <div class="creep-legend" style="margin-top:8px">${SERIES.map(s=>`<div class="creep-leg"><div class="creep-leg-sq" style="background:${s.color}"></div>${s.label}</div>`).join('')}</div>`;
 }
 
-// ── LOAD MANUAL JSON ──────────────────────────────────────────
-async function loadManual(){
-  try{const r=await fetch('./data/manual.json?t='+Date.now());return await r.json();}
-  catch{return null;}
-}
-
 function validateData(data){
   const errs=[];
   if(!data.gantt||!data.gantt.length)errs.push('gantt пуст');
@@ -1433,9 +1422,9 @@ async function loadData(){
 }
 async function refreshData(){
   const data=await loadData();
-  if(data)init(data,await loadManual());
+  if(data)init(data);
 }
-function init(data, manual){
+function init(data){
   validateData(data);
   showChangedBadge(data);
   buildSearchIndex(data);
@@ -1459,8 +1448,8 @@ function init(data, manual){
 }
 // Entry point — auth first, then load
 checkAuth().then(()=>{
-  Promise.all([loadData(),loadManual()]).then(([data,manual])=>{
-    if(data)init(data,manual);
+  loadData().then(data=>{
+    if(data)init(data);
     else $('updTime').textContent='Ошибка загрузки данных';
   });
 });
