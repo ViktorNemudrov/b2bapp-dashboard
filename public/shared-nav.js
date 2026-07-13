@@ -23,7 +23,6 @@ const NAV = [
     {label:'Стейкхолдеры', icon:'🤝', href:'/pages/stakeholders.html'},
     {label:'Критерии приёмки', icon:'✅', href:'/pages/acceptance.html'},
     {label:'Глоссарий', icon:'📖', href:'/pages/glossary.html'},
-    {label:'Груминг', icon:'🧹', href:'/pages/grooming.html'},
     {label:'ОКР', icon:'🎯', href:'/pages/okr.html'},
   ]},
 ];

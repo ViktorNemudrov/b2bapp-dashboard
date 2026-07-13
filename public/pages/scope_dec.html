@@ -58,25 +58,9 @@ const detailHtml = sc.length ? `<table class="tbl" id="tbl">
       <td><span class="badge badge-${cls}">${s.status}</span></td>
     </tr>`;}).join('')}</tbody></table>` : '';
 
-// Справочно — ручные заметки manual.json (не источник основного блока, см. §3.8)
-fetch('../data/manual.json?t='+Date.now()).then(r=>r.json()).then(manual=>{
-  const inM=manual?.scope_in||[], outM=manual?.scope_out||[], defM=manual?.scope_deferred||[];
-  const manualHtml = (inM.length||outM.length||defM.length) ? `<details style="margin-top:24px">
-    <summary class="sec-title" style="cursor:pointer;display:inline-flex">📝 Справочно (ручные заметки, manual.json)</summary>
-    <div class="scope-grid" style="grid-template-columns:1fr 1fr 1fr;margin-top:10px">
-      <div class="scope-col in-col"><h4>✅ Входит</h4>${inM.map(s=>`<div class="scope-item">${s}</div>`).join('')||'—'}</div>
-      <div class="scope-col out-col"><h4>❌ Не входит</h4>${outM.map(s=>`<div class="scope-item">${s}</div>`).join('')||'—'}</div>
-      <div class="scope-col def-col"><h4>⏸ Отложено</h4>${defM.map(s=>`<div class="scope-item">${s}</div>`).join('')||'—'}</div>
-    </div>
-  </details>` : '';
-  document.getElementById('root').innerHTML = primaryHtml +
-    (detailHtml?`<div class="sec-title" style="margin-top:24px">Детализация по эпикам</div>${detailHtml}`:'') +
-    manualHtml;
-  makeSortable(document.getElementById('tbl'));
-}).catch(()=>{
-  document.getElementById('root').innerHTML = primaryHtml + (detailHtml?`<div class="sec-title" style="margin-top:24px">Детализация по эпикам</div>${detailHtml}`:'');
-  makeSortable(document.getElementById('tbl'));
-});
+document.getElementById('root').innerHTML = primaryHtml +
+  (detailHtml?`<div class="sec-title" style="margin-top:24px">Детализация по эпикам</div>${detailHtml}`:'');
+makeSortable(document.getElementById('tbl'));
 });
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>
