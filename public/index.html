@@ -1176,13 +1176,37 @@ function initGlossaryTooltips(glossary){
   if(!glossary?.length)return;
   glsTip=document.createElement('div');glsTip.className='gls-tip';document.body.appendChild(glsTip);
   const map={};glossary.forEach(g=>map[g.term.toLowerCase()]=g);
-  // Apply to exec-summary and other text blocks
+  // Apply to exec-summary and other text blocks.
+  // ВАЖНО: работаем только с текстовыми узлами, не с el.innerHTML целиком —
+  // раньше el.innerHTML.replace(re,...) совпадал и внутри HTML-атрибутов
+  // (например href="...browse/B2BAPP-522" у jiraLink()), потому что термин
+  // глоссария "B2BAPP" — это подстрока ЛЮБОГО ключа задачи и самого URL.
+  // Из-за этого regex ломал структуру тега <a>, и на экране вместо ссылки
+  // показывался кусок сырой разметки (`B2BAPP-522" target="_blank" ...`).
   document.querySelectorAll('.exec-item,.blocker-title,.scope-item,.win-title').forEach(el=>{
     glossary.forEach(g=>{
       const re=new RegExp(`\\b(${g.term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})\\b`,'gi');
-      if(re.test(el.textContent)){
-        el.innerHTML=el.innerHTML.replace(re,`<span class="gls-term" data-term="${g.term.toLowerCase()}">$1</span>`);
-      }
+      const walker=document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      const textNodes=[]; let n;
+      while(n=walker.nextNode()) textNodes.push(n);
+      textNodes.forEach(node=>{
+        if(node.parentElement?.closest('.gls-term')) return;
+        re.lastIndex=0;
+        if(!re.test(node.textContent)) return;
+        re.lastIndex=0;
+        const frag=document.createDocumentFragment();
+        let lastIdx=0, m;
+        while((m=re.exec(node.textContent))){
+          frag.appendChild(document.createTextNode(node.textContent.slice(lastIdx,m.index)));
+          const span=document.createElement('span');
+          span.className='gls-term'; span.dataset.term=g.term.toLowerCase();
+          span.textContent=m[1];
+          frag.appendChild(span);
+          lastIdx=m.index+m[1].length;
+        }
+        frag.appendChild(document.createTextNode(node.textContent.slice(lastIdx)));
+        node.replaceWith(frag);
+      });
     });
   });
   document.addEventListener('mouseover',e=>{

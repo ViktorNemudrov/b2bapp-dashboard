@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;scrollbar-width:thin;scrollbar-color:#253850 #0a1520}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#0a1520}
+::-webkit-scrollbar-thumb{background:#253850;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#4472C4}
 /* Палитра сверена с дизайном мобильного приложения (модуль "Счета/Платежи", 13.07.2026):
    тёплый оранжевый акцент вместо жёлтого, крупные скругления, мягкие карточки без явных бордеров.
    --yel сохранено как имя переменной (используется по всему коду) — семантика теперь "акцент", не буквально жёлтый. */
@@ -137,7 +141,9 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
 body.light-theme .gls-tip{background:#fff;border-color:#FF6B3D;color:#1a2940}
 
 /* ── LIGHT THEME (подстраницы) ───────────────────────────────── */
-body.light-theme{--dark:#f0f2f5;--card:#ffffff;--text:#1a2940;--mute:#6b7a99;--line:#d0d8e8;--ok:#1a7a45;--warn:#b35e00;--err:#c0392b;--blue:#2c5fad}
+body.light-theme{--dark:#f0f2f5;--card:#ffffff;--text:#1a2940;--mute:#6b7a99;--line:#d0d8e8;--ok:#1a7a45;--warn:#b35e00;--err:#c0392b;--blue:#2c5fad;scrollbar-color:#c0cce0 #e8ecf5}
+body.light-theme::-webkit-scrollbar-track{background:#e8ecf5}
+body.light-theme::-webkit-scrollbar-thumb{background:#c0cce0}
 body.light-theme .sidebar{background:#e8ecf5;border-right-color:#d0d8e8}
 body.light-theme .sidebar-logo-text{color:#1a2940}
 body.light-theme .nav-section{color:#8899bb}
