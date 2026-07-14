@@ -25,7 +25,7 @@
 .gantt2-label{padding:0 8px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:340px;box-sizing:border-box;display:flex;align-items:center;gap:4px}
 .gantt2-toggle{cursor:pointer;display:inline-block;width:14px;color:var(--mute);flex-shrink:0}
 .gantt2-toggle-spacer{display:inline-block;width:14px;flex-shrink:0}
-.gantt2-ruler{height:26px;background:#1e2d3d;z-index:3;border-bottom:1px solid var(--line);box-sizing:border-box}
+.gantt2-ruler{height:26px;position:relative;background:#1e2d3d;z-index:3;border-bottom:1px solid var(--line);box-sizing:border-box;overflow:hidden}
 .gantt2-ruler-mark{position:absolute;top:0;bottom:0;border-left:1px solid var(--line);padding-left:4px;font-size:9px;color:var(--mute);display:flex;align-items:center;white-space:nowrap}
 .gantt2-bar{position:absolute;top:3px;height:20px;border-radius:3px;overflow:hidden;cursor:pointer}
 .gantt2-bar-fill{position:absolute;left:0;top:0;bottom:0}
@@ -37,8 +37,8 @@
 .gantt2-bar.g2-overspent{box-shadow:0 0 0 2px var(--err) inset}
 .gantt2-bar.g2-overspent::after{content:'⚠';position:absolute;right:2px;top:50%;transform:translateY(-50%);font-size:10px;z-index:2}
 .gantt2-bar-ghost{position:absolute;top:3px;height:20px;border-radius:3px;background:rgba(255,255,255,.12);border:1px dashed rgba(255,255,255,.3)}
-.gantt2-today-line{position:absolute;top:0;width:2px;background:var(--err);z-index:2;pointer-events:none}
-.gantt2-milestone-line{position:absolute;top:0;width:2px;background:var(--yel);z-index:2;pointer-events:none}
+.gantt2-today-line{position:absolute;top:0;width:2px;background:#00d4ff;z-index:2;pointer-events:none}
+.gantt2-milestone-line{position:absolute;top:0;width:2px;background:#9b59b6;z-index:2;pointer-events:none}
 .gantt2-hire-line{position:absolute;top:0;width:1px;background:var(--blue);z-index:2;opacity:.6;pointer-events:none}
 .g2-type-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;flex-shrink:0}
 .g2-type-icon svg{display:block}
@@ -262,6 +262,7 @@ function renderGanttV2(){
   if(!dates.length){$('ganttEmpty').innerHTML=renderEmptyState('Нет корректных дат в ganttV2');$('ganttApp').style.display='none';return;}
   const minD=new Date(Math.min(...dates)); minD.setDate(minD.getDate()-3);
   const maxD=new Date(Math.max(...dates)); maxD.setDate(maxD.getDate()+3);
+  GS._minD=minD; // используется zoomAroundAnchor(), чтобы пересчитывать scrollLeft при смене масштаба
   const totalDays=Math.max(1,Math.round((maxD-minD)/86400000));
   const totalPx=totalDays*GS.pxPerDay;
   const xOf=ds=>{const t=new Date(ds); return isNaN(t)?0:Math.round((t-minD)/86400000*GS.pxPerDay);};
@@ -371,7 +372,8 @@ function renderGanttV2(){
     `<span><span class="g2-type-icon">${TYPE_ICON.task}</span> Задача</span>`+
     Object.entries(ROLE_COLOR).map(([r,c])=>`<span><span class="sw" style="background:${c}"></span>${r}</span>`).join('')+
     `<span style="margin-left:12px"><span class="sw" style="background:var(--err)"></span>критический путь (обводка)</span>`+
-    `<span><span class="sw" style="background:var(--yel)"></span>веха 10.12.2026</span>`+
+    `<span><span class="sw" style="background:#00d4ff"></span>сегодня</span>`+
+    `<span><span class="sw" style="background:#9b59b6"></span>веха 10.12.2026</span>`+
     `<span><span class="sw" style="background:#2ecc71"></span>идёт списание времени</span>`+
     `<span><span class="sw" style="background:#e74c3c"></span>⚠ списано больше оценки</span>`;
 
@@ -401,16 +403,42 @@ function renderGanttV2(){
   }
 }
 
+// Возвращает дату-якорь для зума: если "сегодня" сейчас видно в области
+// прокрутки — якорь это "сегодня" (она должна остаться по центру после зума).
+// Если "сегодня" не видно — якорь это дата, которая сейчас в центре экрана
+// (то, что видел пользователь, должно остаться в центре и после зума).
+function zoomAnchorDate(){
+  if(!GS._minD) return null;
+  const scroller=$('ganttScroll');
+  const pxPerDayNow=GS.pxPerDay;
+  const todayX=Math.round((new Date()-GS._minD)/86400000*pxPerDayNow);
+  const viewLeft=scroller.scrollLeft, viewRight=scroller.scrollLeft+scroller.clientWidth;
+  if(todayX>=viewLeft && todayX<=viewRight) return new Date();
+  const centerX=scroller.scrollLeft+scroller.clientWidth/2;
+  const d=new Date(GS._minD); d.setDate(d.getDate()+centerX/pxPerDayNow);
+  return d;
+}
+function zoomTo(newPxPerDay){
+  const anchor=zoomAnchorDate();
+  GS.pxPerDay=Math.max(1,Math.min(60,newPxPerDay));
+  renderGanttV2();
+  if(anchor && GS._minD){
+    const scroller=$('ganttScroll');
+    const x=Math.round((anchor-GS._minD)/86400000*GS.pxPerDay);
+    scroller.scrollLeft=Math.max(0, x-scroller.clientWidth/2);
+  }
+}
+
 document.querySelectorAll('.gantt2-toolbar-group button[data-scale]').forEach(btn=>{
   btn.onclick=()=>{
     document.querySelectorAll('.gantt2-toolbar-group button[data-scale]').forEach(b=>b.classList.remove('on'));
     btn.classList.add('on');
-    GS.scale=btn.dataset.scale; GS.pxPerDay=SCALE_PX[GS.scale];
-    renderGanttV2();
+    GS.scale=btn.dataset.scale;
+    zoomTo(SCALE_PX[GS.scale]);
   };
 });
-$('zoomIn').onclick=()=>{ GS.pxPerDay=Math.min(60,GS.pxPerDay+2); renderGanttV2(); };
-$('zoomOut').onclick=()=>{ GS.pxPerDay=Math.max(1,GS.pxPerDay-2); renderGanttV2(); };
+$('zoomIn').onclick=()=>zoomTo(GS.pxPerDay+2);
+$('zoomOut').onclick=()=>zoomTo(GS.pxPerDay-2);
 $('levelFilter').onchange=e=>{ GS.level=e.target.value; renderGanttV2(); };
 $('expandAllBtn').onclick=()=>{ allExpandableKeys(LAST_ITEMS).forEach(k=>GS.expanded.add(k)); renderGanttV2(); };
 $('collapseAllBtn').onclick=()=>{ GS.expanded.clear(); renderGanttV2(); };
@@ -421,8 +449,7 @@ $('todayBtn').onclick=()=>{ GS._scrolledToToday=false; renderGanttV2(); };
 $('ganttScroll').addEventListener('wheel', e=>{
   if(!e.ctrlKey) return;
   e.preventDefault();
-  GS.pxPerDay=Math.max(1,Math.min(60,GS.pxPerDay+(e.deltaY>0?-2:2)));
-  renderGanttV2();
+  zoomTo(GS.pxPerDay+(e.deltaY>0?-2:2));
 }, {passive:false});
 
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
