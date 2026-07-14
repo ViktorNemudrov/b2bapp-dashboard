@@ -14,7 +14,7 @@
 .gantt2-legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
 .gantt2-body{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
 .gantt2-tree{width:340px;flex-shrink:0;border-right:1px solid var(--line)}
-.gantt2-tree-header{height:26px;display:flex;align-items:center;padding:0 8px;font-weight:700;font-size:11px;background:#1e2d3d;position:sticky;top:52px;z-index:4;border-bottom:1px solid var(--line);box-sizing:border-box}
+.gantt2-tree-header{height:26px;display:flex;align-items:center;padding:0 8px;font-weight:700;font-size:11px;background:#1e2d3d;z-index:4;border-bottom:1px solid var(--line);box-sizing:border-box}
 .gantt2-timeline-scroll{overflow-x:auto;flex:1;scrollbar-width:thin;scrollbar-color:#253850 #0d1b2a}
 .gantt2-timeline-scroll::-webkit-scrollbar{height:9px}
 .gantt2-timeline-scroll::-webkit-scrollbar-track{background:#0d1b2a}
@@ -25,7 +25,7 @@
 .gantt2-label{padding:0 8px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:340px;box-sizing:border-box;display:flex;align-items:center;gap:4px}
 .gantt2-toggle{cursor:pointer;display:inline-block;width:14px;color:var(--mute);flex-shrink:0}
 .gantt2-toggle-spacer{display:inline-block;width:14px;flex-shrink:0}
-.gantt2-ruler{height:26px;position:sticky;top:52px;background:#1e2d3d;z-index:3;border-bottom:1px solid var(--line);box-sizing:border-box}
+.gantt2-ruler{height:26px;background:#1e2d3d;z-index:3;border-bottom:1px solid var(--line);box-sizing:border-box}
 .gantt2-ruler-mark{position:absolute;top:0;bottom:0;border-left:1px solid var(--line);padding-left:4px;font-size:9px;color:var(--mute);display:flex;align-items:center;white-space:nowrap}
 .gantt2-bar{position:absolute;top:3px;height:20px;border-radius:3px;overflow:hidden;cursor:pointer}
 .gantt2-bar-fill{position:absolute;left:0;top:0;bottom:0}
@@ -40,7 +40,8 @@
 .gantt2-today-line{position:absolute;top:0;width:2px;background:var(--err);z-index:2;pointer-events:none}
 .gantt2-milestone-line{position:absolute;top:0;width:2px;background:var(--yel);z-index:2;pointer-events:none}
 .gantt2-hire-line{position:absolute;top:0;width:1px;background:var(--blue);z-index:2;opacity:.6;pointer-events:none}
-.g2-type-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:4px;font-size:10px;color:#fff;flex-shrink:0}
+.g2-type-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;flex-shrink:0}
+.g2-type-icon svg{display:block}
 .g2-role-chip{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:15px;padding:0 3px;border-radius:4px;font-size:8px;font-weight:800;color:#fff;flex-shrink:0}
 body.light-theme .gantt2-tree-header{background:#e8ecf5}
 body.light-theme .gantt2-ruler{background:#e8ecf5}
@@ -115,7 +116,13 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 <script>
 const $ = id => document.getElementById(id);
 const ROLE_COLOR={BE:'#FF4444',FE:'#4472C4',BA:'#70AD47',DS:'#FFC803',QA:'#ED7D31',DVO:'#7030A0',ARC:'#00B0F0',ORG:'#A5A5A5'};
-const TYPE_ICON={epic:{bg:'#8B46FF',glyph:'⚡'},story:{bg:'#63BA3C',glyph:'▤'},task:{bg:'#4BADE8',glyph:'✓'}};
+// SVG-иконки в стиле Jira (закруглённый квадрат + пиктограмма), не эмодзи/юникод-глиф —
+// чёткая отрисовка на любой платформе, ближе к реальным иконкам типов задач в Jira.
+const TYPE_ICON={
+  epic:'<svg viewBox="0 0 16 16" width="16" height="16"><rect width="16" height="16" rx="3" fill="#8B46FF"/><path d="M9 2L4 9h3l-1 5 6-8H9z" fill="#fff"/></svg>',
+  story:'<svg viewBox="0 0 16 16" width="16" height="16"><rect width="16" height="16" rx="3" fill="#63BA3C"/><path d="M5 3h6v10l-3-2-3 2V3z" fill="#fff"/></svg>',
+  task:'<svg viewBox="0 0 16 16" width="16" height="16"><rect width="16" height="16" rx="3" fill="#4BADE8"/><path d="M4 8l2.5 2.5L12 5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+};
 const SCALE_PX={week:26,month:6,quarter:2};
 const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',resourceFilter:'',_scrolledToToday:false};
 
@@ -284,8 +291,7 @@ function renderGanttV2(){
       const hasChildren=node.children && node.children.length>0;
       const isExpanded=forceExpand || GS.expanded.has(node.key);
       const toggle=hasChildren?`<span class="gantt2-toggle" data-key="${node.key}">${isExpanded?'▾':'▸'}</span>`:'<span class="gantt2-toggle-spacer"></span>';
-      const ti=TYPE_ICON[node.type]||TYPE_ICON.task;
-      const typeIcon=`<span class="g2-type-icon" style="background:${ti.bg}">${ti.glyph}</span>`;
+      const typeIcon=`<span class="g2-type-icon">${TYPE_ICON[node.type]||TYPE_ICON.task}</span>`;
       const roleChip=node.role?`<span class="g2-role-chip" style="background:${ROLE_COLOR[node.role]||'#7f8fa6'}">${node.role}</span>`:'';
       const label=spaceify(node.summary||'');
       const hoursNote=node.type!=='epic'&&node.estimateH?` <span style="color:var(--mute);font-size:9px">(${node.spentH||0}/${node.estimateH}ч)</span>`:'';
@@ -360,9 +366,9 @@ function renderGanttV2(){
   }
 
   $('ganttLegend').innerHTML=
-    `<span><span class="g2-type-icon" style="background:${TYPE_ICON.epic.bg}">${TYPE_ICON.epic.glyph}</span> Эпик</span>`+
-    `<span><span class="g2-type-icon" style="background:${TYPE_ICON.story.bg}">${TYPE_ICON.story.glyph}</span> Стори</span>`+
-    `<span><span class="g2-type-icon" style="background:${TYPE_ICON.task.bg}">${TYPE_ICON.task.glyph}</span> Задача</span>`+
+    `<span><span class="g2-type-icon">${TYPE_ICON.epic}</span> Эпик</span>`+
+    `<span><span class="g2-type-icon">${TYPE_ICON.story}</span> Стори</span>`+
+    `<span><span class="g2-type-icon">${TYPE_ICON.task}</span> Задача</span>`+
     Object.entries(ROLE_COLOR).map(([r,c])=>`<span><span class="sw" style="background:${c}"></span>${r}</span>`).join('')+
     `<span style="margin-left:12px"><span class="sw" style="background:var(--err)"></span>критический путь (обводка)</span>`+
     `<span><span class="sw" style="background:var(--yel)"></span>веха 10.12.2026</span>`+
