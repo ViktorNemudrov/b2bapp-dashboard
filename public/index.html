@@ -215,6 +215,11 @@ body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
 /* ── COUNTDOWN ── */
 .countdown{background:var(--card);border:1px solid rgba(255,255,255,.06);box-shadow:var(--shadow-card);border-radius:var(--r-lg);padding:14px 18px;min-width:180px;max-width:260px;flex:1;text-align:center}
 .cd-label{font-size:9px;color:var(--mute);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.cd-units{display:flex;gap:8px;justify-content:center;align-items:flex-end}
+.cd-unit{text-align:center}
+.cd-n{font-size:28px;font-weight:800;color:var(--yel);line-height:1;font-variant-numeric:tabular-nums}
+.cd-u{font-size:8px;color:var(--mute);margin-top:1px;text-transform:uppercase}
+.cd-sep{font-size:20px;color:var(--line);padding-bottom:4px}
 .cd-date{font-size:9px;color:var(--mute);margin-top:8px}
 
 /* ── EXECUTIVE SUMMARY (п.15) ── */
@@ -527,7 +532,6 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
 .demo-links{margin-top:6px;font-size:10px}
 .demo-links a{color:var(--mute)}
 .demo-links a:hover{color:var(--yel)}
-.cd-workdays-big{font-size:34px;font-weight:800;color:var(--yel);line-height:1;margin-bottom:6px}
 .hero-tech-label{font-size:9px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
 .week-picker{display:flex;align-items:center;gap:8px}
 .week-picker select{flex:1;max-width:260px}
@@ -598,10 +602,16 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
       <div class="demo-links">Демо-стенды: <a href="https://b2b-telecom-prototype-ai.vercel.app/" target="_blank" rel="noopener">AI-версия</a> · <a href="https://b2b-telecom-prototype-classic.vercel.app/" target="_blank" rel="noopener">Классическая версия</a> · <a href="https://b2b-ai-app.vercel.app/" target="_blank" rel="noopener">B2B AI App</a></div>
     </div>
 
-    <!-- COUNTDOWN: рабочие дни — главный, отсчитываемый показатель; календарные — мелким текстом справочно -->
+    <!-- COUNTDOWN: тикающий отсчёт по рабочему времени (дни/часы/минуты); календарные дни — мелким текстом справочно -->
     <div class="countdown">
-      <div class="cd-label">⏱ До вехи 10.12.2026</div>
-      <div class="cd-workdays-big" id="cdWorkdaysBig">— рабочих дней</div>
+      <div class="cd-label">⏱ До вехи 10.12.2026 (рабочее время)</div>
+      <div class="cd-units">
+        <div class="cd-unit"><div class="cd-n" id="cdWD">—</div><div class="cd-u">раб. дней</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-n" id="cdWH">—</div><div class="cd-u">часов</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-n" id="cdWM">—</div><div class="cd-u">минут</div></div>
+      </div>
       <div class="cd-date" id="cdCalDays">—</div>
     </div>
   </div>
@@ -803,25 +813,55 @@ const $ = id => document.getElementById(id);
 // известные переносы выходных дней (Мар.8 вс → Мар.9, Май.9 сб → Май.11).
 // Уточнить при публикации официального постановления Правительства РФ на 2026 год.
 const RF_HOLIDAYS_2026 = ['2026-01-01','2026-01-02','2026-01-05','2026-01-06','2026-01-07','2026-01-08','2026-02-23','2026-03-09','2026-05-01','2026-05-11','2026-06-12','2026-11-04'];
+function isWorkday(d){
+  const dow=d.getDay();
+  return dow!==0 && dow!==6 && !RF_HOLIDAYS_2026.includes(d.toISOString().slice(0,10));
+}
 function countWorkdaysBetween(from, to){
   const d=new Date(from); d.setHours(0,0,0,0);
   const end=new Date(to); end.setHours(0,0,0,0);
   let count=0;
   while(d<end){
     d.setDate(d.getDate()+1);
-    const dow=d.getDay();
-    if(dow!==0 && dow!==6 && !RF_HOLIDAYS_2026.includes(d.toISOString().slice(0,10))) count++;
+    if(isWorkday(d)) count++;
   }
   return count;
+}
+// Рабочий день 09:00–17:00 (8ч), синхронно с ganttV2.workCalendar.hoursPerDay=8.
+// Суммирует рабочее время в секундах между from и to, а не календарное —
+// то, что реально тикает на экране, это остаток рабочего времени до вехи.
+const WORK_START_H=9, WORK_END_H=17;
+function workSecondsBetween(from, to){
+  if(to<=from) return 0;
+  let total=0;
+  const cur=new Date(from); cur.setHours(0,0,0,0);
+  const toDay=new Date(to); toDay.setHours(0,0,0,0);
+  while(cur<=toDay){
+    if(isWorkday(cur)){
+      const dayStart=new Date(cur); dayStart.setHours(WORK_START_H,0,0,0);
+      const dayEnd=new Date(cur); dayEnd.setHours(WORK_END_H,0,0,0);
+      const segStart=from>dayStart?from:dayStart;
+      const segEnd=to<dayEnd?to:dayEnd;
+      if(segEnd>segStart) total+=(segEnd-segStart)/1000;
+    }
+    cur.setDate(cur.getDate()+1);
+  }
+  return total;
 }
 function updateCountdown(){
   const now=new Date();
   const diff = DEADLINE - now;
-  if(diff<=0){$('cdWorkdaysBig').textContent='Веха наступила';$('cdCalDays').textContent='';return;}
-  const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
-  const wd=countWorkdaysBetween(now, DEADLINE);
-  $('cdWorkdaysBig').textContent=`${wd} рабочих дней`;
-  $('cdCalDays').textContent=`справочно: ${d} календарных дней (${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')})`;
+  if(diff<=0){$('cdWD').textContent='0';$('cdWH').textContent='00';$('cdWM').textContent='00';$('cdCalDays').textContent='Веха наступила';return;}
+  const calDays=Math.floor(diff/86400000);
+  const workSecs=workSecondsBetween(now, DEADLINE);
+  const workDayLen=(WORK_END_H-WORK_START_H)*3600;
+  const wd=Math.floor(workSecs/workDayLen);
+  const wh=Math.floor((workSecs%workDayLen)/3600);
+  const wm=Math.floor((workSecs%3600)/60);
+  $('cdWD').textContent=wd;
+  $('cdWH').textContent=String(wh).padStart(2,'0');
+  $('cdWM').textContent=String(wm).padStart(2,'0');
+  $('cdCalDays').textContent=`справочно: ${calDays} календарных дней`;
 }
 updateCountdown(); setInterval(updateCountdown,1000);
 
