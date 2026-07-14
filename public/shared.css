@@ -93,7 +93,9 @@ body.light-theme .theme-dark-only{display:none}
   .nav-link{justify-content:center;padding:9px 0}
 }
 
-.sidebar-burger{display:none;position:fixed;top:10px;left:10px;z-index:300;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:6px;width:34px;height:34px;font-size:16px;cursor:pointer}
+body.sidebar-hidden .sidebar{width:0;min-width:0;border:none;overflow:hidden}
+
+.sidebar-burger{display:none;position:fixed;top:10px;left:10px;z-index:300;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:var(--r-sm);width:34px;height:34px;font-size:16px;cursor:pointer}
 @media(max-width:768px){
   .sidebar-burger{display:block}
   .sidebar{position:fixed;left:-260px;top:0;width:240px;transition:left .2s;box-shadow:0 8px 32px rgba(0,0,0,.5)}
@@ -101,8 +103,13 @@ body.light-theme .theme-dark-only{display:none}
   .content{padding-top:52px}
 }
 
+/* ── THEME TOGGLE / PDF BUTTON (не было в shared.css — рендерился нативной белой кнопкой браузера) ── */
+.pdf-btn{background:rgba(68,114,196,.15);border:1px solid rgba(68,114,196,.4);color:#6a9ee8;border-radius:var(--r-pill);padding:5px 14px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:5px}
+.pdf-btn:hover{background:rgba(68,114,196,.25)}
+body.light-theme .pdf-btn{background:rgba(68,114,196,.12);border-color:rgba(68,114,196,.35);color:#2c5fad}
+
 /* ── FRESHNESS INDICATOR (U7) ────────────────────────────────── */
-.freshness{font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;white-space:nowrap}
+.freshness{font-size:10px;font-weight:600;padding:2px 9px;border-radius:var(--r-pill);white-space:nowrap}
 .freshness-ok{background:rgba(39,174,96,.18);color:#2ecc71}
 .freshness-warn{background:rgba(230,126,34,.18);color:var(--warn)}
 .freshness-err{background:rgba(231,76,60,.18);color:var(--err)}
