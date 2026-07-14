@@ -50,7 +50,6 @@ body.light-theme .rag-item{background:#f0f2f5;border-color:#d0d8e8}
 body.light-theme .rag-label{color:#6b7a99}
 body.light-theme .countdown{background:#fff;border-color:#d0d8e8}
 body.light-theme .cd-label{color:#6b7a99}
-body.light-theme .cd-sep{color:#d0d8e8}
 body.light-theme .cd-date{color:#6b7a99}
 /* KPI */
 body.light-theme .kpi{background:#fff;border-color:#d0d8e8}
@@ -216,11 +215,6 @@ body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
 /* ── COUNTDOWN ── */
 .countdown{background:var(--card);border:1px solid rgba(255,255,255,.06);box-shadow:var(--shadow-card);border-radius:var(--r-lg);padding:14px 18px;min-width:180px;max-width:260px;flex:1;text-align:center}
 .cd-label{font-size:9px;color:var(--mute);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
-.cd-units{display:flex;gap:10px;justify-content:center;align-items:flex-end}
-.cd-unit{text-align:center}
-.cd-n{font-size:26px;font-weight:800;color:var(--yel);line-height:1;font-variant-numeric:tabular-nums}
-.cd-u{font-size:8px;color:var(--mute);margin-top:1px;text-transform:uppercase}
-.cd-sep{font-size:20px;color:var(--line);padding-bottom:4px}
 .cd-date{font-size:9px;color:var(--mute);margin-top:8px}
 
 /* ── EXECUTIVE SUMMARY (п.15) ── */
@@ -533,7 +527,8 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
 .demo-links{margin-top:6px;font-size:10px}
 .demo-links a{color:var(--mute)}
 .demo-links a:hover{color:var(--yel)}
-.cd-workdays-big{font-size:22px;font-weight:800;color:var(--yel);line-height:1;margin-bottom:10px}
+.cd-workdays-big{font-size:34px;font-weight:800;color:var(--yel);line-height:1;margin-bottom:6px}
+.hero-tech-label{font-size:9px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
 .week-picker{display:flex;align-items:center;gap:8px}
 .week-picker select{flex:1;max-width:260px}
 .risk-cell{position:relative;border-radius:4px;height:44px}
@@ -598,22 +593,15 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
   <!-- HERO -->
   <div class="hero" id="s-hero">
     <div class="hero-left">
+      <div class="hero-tech-label">Используемые технологии</div>
       <div class="hero-sub">React / Capacitor (iOS + Android) · AI-ассистент как главный интерфейс</div>
+      <div class="demo-links">Демо-стенды: <a href="https://b2b-telecom-prototype-ai.vercel.app/" target="_blank" rel="noopener">AI-версия</a> · <a href="https://b2b-telecom-prototype-classic.vercel.app/" target="_blank" rel="noopener">Классическая версия</a> · <a href="https://b2b-ai-app.vercel.app/" target="_blank" rel="noopener">B2B AI App</a></div>
     </div>
 
-    <!-- COUNTDOWN (§3.1: рабочие дни, потом таймер, потом календарные дни мелким текстом) -->
+    <!-- COUNTDOWN: рабочие дни — главный, отсчитываемый показатель; календарные — мелким текстом справочно -->
     <div class="countdown">
       <div class="cd-label">⏱ До вехи 10.12.2026</div>
       <div class="cd-workdays-big" id="cdWorkdaysBig">— рабочих дней</div>
-      <div class="cd-units">
-        <div class="cd-unit"><div class="cd-n" id="cdD">—</div><div class="cd-u">дней</div></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><div class="cd-n" id="cdH">—</div><div class="cd-u">часов</div></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><div class="cd-n" id="cdM">—</div><div class="cd-u">минут</div></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><div class="cd-n" id="cdS">—</div><div class="cd-u">сек</div></div>
-      </div>
       <div class="cd-date" id="cdCalDays">—</div>
     </div>
   </div>
@@ -829,12 +817,11 @@ function countWorkdaysBetween(from, to){
 function updateCountdown(){
   const now=new Date();
   const diff = DEADLINE - now;
-  if(diff<=0){$('cdD').textContent='0';$('cdH').textContent='00';$('cdM').textContent='00';$('cdS').textContent='00';$('cdWorkdaysBig').textContent='Веха наступила';$('cdCalDays').textContent='';return;}
+  if(diff<=0){$('cdWorkdaysBig').textContent='Веха наступила';$('cdCalDays').textContent='';return;}
   const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
-  $('cdD').textContent=d; $('cdH').textContent=String(h).padStart(2,'0'); $('cdM').textContent=String(m).padStart(2,'0'); $('cdS').textContent=String(s).padStart(2,'0');
   const wd=countWorkdaysBetween(now, DEADLINE);
   $('cdWorkdaysBig').textContent=`${wd} рабочих дней`;
-  $('cdCalDays').textContent=`(${d} календарных дней)`;
+  $('cdCalDays').textContent=`справочно: ${d} календарных дней (${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')})`;
 }
 updateCountdown(); setInterval(updateCountdown,1000);
 

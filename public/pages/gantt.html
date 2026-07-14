@@ -7,36 +7,48 @@
 
 .gantt2-toolbar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:14px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
 .gantt2-toolbar-group{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mute)}
-.gantt2-toolbar-group select{background:#1e2d3d;border:1px solid var(--line);color:var(--text);border-radius:5px;padding:3px 8px;font-size:11px}
+.gantt2-toolbar-group select{background:#1e2d3d;border:1px solid var(--line);color:var(--text);border-radius:5px;padding:3px 8px;font-size:11px;max-width:180px}
 .gantt2-toolbar-group button{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--mute);border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer}
-.gantt2-toolbar-group button.on{background:rgba(255,200,3,.15);border-color:var(--yel);color:var(--yel)}
+.gantt2-toolbar-group button.on{background:rgba(255,107,61,.15);border-color:var(--yel);color:var(--yel)}
+.gantt2-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;font-size:10px;color:var(--mute)}
+.gantt2-legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
 .gantt2-body{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
-.gantt2-tree{width:340px;flex-shrink:0;border-right:1px solid var(--line);overflow:hidden}
-.gantt2-timeline-scroll{overflow-x:auto;flex:1}
+.gantt2-tree{width:340px;flex-shrink:0;border-right:1px solid var(--line)}
+.gantt2-tree-header{height:26px;display:flex;align-items:center;padding:0 8px;font-weight:700;font-size:11px;background:#1e2d3d;position:sticky;top:52px;z-index:4;border-bottom:1px solid var(--line);box-sizing:border-box}
+.gantt2-timeline-scroll{overflow-x:auto;flex:1;scrollbar-width:thin;scrollbar-color:#253850 #0d1b2a}
+.gantt2-timeline-scroll::-webkit-scrollbar{height:9px}
+.gantt2-timeline-scroll::-webkit-scrollbar-track{background:#0d1b2a}
+.gantt2-timeline-scroll::-webkit-scrollbar-thumb{background:#253850;border-radius:5px}
+.gantt2-timeline-scroll::-webkit-scrollbar-thumb:hover{background:#354a68}
 .gantt2-timeline-inner{position:relative}
-.gantt2-row{height:26px;display:flex;align-items:center;border-bottom:1px solid #1a2535;position:relative}
-.gantt2-header-row{font-weight:700;background:#1e2d3d;position:sticky;top:52px;z-index:4}
-.gantt2-label{padding:0 8px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:340px;box-sizing:border-box}
-.gantt2-toggle{cursor:pointer;display:inline-block;width:14px;color:var(--mute)}
-.gantt2-toggle-spacer{display:inline-block;width:14px}
-.gantt2-ruler{height:26px;position:sticky;top:52px;background:#1e2d3d;z-index:3}
+.gantt2-row{height:26px;display:flex;align-items:center;border-bottom:1px solid #1a2535;position:relative;box-sizing:border-box}
+.gantt2-label{padding:0 8px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:340px;box-sizing:border-box;display:flex;align-items:center;gap:4px}
+.gantt2-toggle{cursor:pointer;display:inline-block;width:14px;color:var(--mute);flex-shrink:0}
+.gantt2-toggle-spacer{display:inline-block;width:14px;flex-shrink:0}
+.gantt2-ruler{height:26px;position:sticky;top:52px;background:#1e2d3d;z-index:3;border-bottom:1px solid var(--line);box-sizing:border-box}
 .gantt2-ruler-mark{position:absolute;top:0;bottom:0;border-left:1px solid var(--line);padding-left:4px;font-size:9px;color:var(--mute);display:flex;align-items:center;white-space:nowrap}
 .gantt2-bar{position:absolute;top:3px;height:20px;border-radius:3px;overflow:hidden;cursor:pointer}
-.gantt2-bar-fill{position:absolute;left:0;top:0;bottom:0;background:rgba(0,0,0,.35)}
+.gantt2-bar-fill{position:absolute;left:0;top:0;bottom:0}
+.gantt2-bar-name{position:absolute;left:4px;top:0;bottom:0;display:flex;align-items:center;font-size:9px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7);white-space:nowrap;pointer-events:none;z-index:1;max-width:100%;overflow:hidden}
 .gantt2-bar.g2-planned{opacity:.55}
 .gantt2-bar.g2-inprogress{outline:1px dashed rgba(255,255,255,.6);animation:g2pulse 2s infinite}
 @keyframes g2pulse{0%,100%{outline-color:rgba(255,255,255,.25)}50%{outline-color:rgba(255,255,255,.85)}}
 .gantt2-bar.g2-crit{outline:2px solid var(--err)}
+.gantt2-bar.g2-overspent{box-shadow:0 0 0 2px var(--err) inset}
+.gantt2-bar.g2-overspent::after{content:'⚠';position:absolute;right:2px;top:50%;transform:translateY(-50%);font-size:10px;z-index:2}
 .gantt2-bar-ghost{position:absolute;top:3px;height:20px;border-radius:3px;background:rgba(255,255,255,.12);border:1px dashed rgba(255,255,255,.3)}
 .gantt2-today-line{position:absolute;top:0;width:2px;background:var(--err);z-index:2;pointer-events:none}
 .gantt2-milestone-line{position:absolute;top:0;width:2px;background:var(--yel);z-index:2;pointer-events:none}
 .gantt2-hire-line{position:absolute;top:0;width:1px;background:var(--blue);z-index:2;opacity:.6;pointer-events:none}
-.gantt2-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:10px;color:var(--mute)}
-.gantt2-legend .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
-body.light-theme .gantt2-header-row{background:#e8ecf5}
+.g2-type-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:4px;font-size:10px;color:#fff;flex-shrink:0}
+.g2-role-chip{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:15px;padding:0 3px;border-radius:4px;font-size:8px;font-weight:800;color:#fff;flex-shrink:0}
+body.light-theme .gantt2-tree-header{background:#e8ecf5}
 body.light-theme .gantt2-ruler{background:#e8ecf5}
 body.light-theme .gantt2-toolbar-group select{background:#fff;border-color:#c0cce0;color:#1a2940}
 body.light-theme .gantt2-ruler-mark{border-left-color:#d0d8e8}
+body.light-theme .gantt2-timeline-scroll{scrollbar-color:#c0cce0 #e8ecf5}
+body.light-theme .gantt2-timeline-scroll::-webkit-scrollbar-track{background:#e8ecf5}
+body.light-theme .gantt2-timeline-scroll::-webkit-scrollbar-thumb{background:#c0cce0}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -47,7 +59,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 <div class="main">
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📊 План и диаграмма Ганта</span></div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleSidebarHidden()" id="sidebarToggleBtn" title="Скрыть/показать меню" style="margin-left:8px">☰ Меню</button><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
 <div class="content" id="root">
   <div id="ganttEmpty"></div>
@@ -63,19 +75,33 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
       </div>
       <div class="gantt2-toolbar-group">
         <label>Масштаб:</label>
-        <button data-scale="week">Недели</button><button data-scale="month" class="on">Месяцы</button><button data-scale="quarter">Кварталы</button>
+        <button data-scale="week" class="on">Недели</button><button data-scale="month">Месяцы</button><button data-scale="quarter">Кварталы</button>
       </div>
       <div class="gantt2-toolbar-group">
-        <label>Зум:</label>
+        <label>Зум (или Ctrl+колесо / тачпад):</label>
         <button id="zoomOut">−</button><button id="zoomIn">+</button>
+      </div>
+      <div class="gantt2-toolbar-group">
+        <button id="expandAllBtn">Развернуть всё</button><button id="collapseAllBtn">Свернуть всё</button>
+      </div>
+      <div class="gantt2-toolbar-group">
+        <label>Исполнитель:</label>
+        <select id="resourceFilter"><option value="">Все</option></select>
       </div>
       <div class="gantt2-toolbar-group">
         <label>Сравнить с baseline:</label>
         <select id="baselineSelect"><option value="">—</option></select>
       </div>
+      <div class="gantt2-toolbar-group">
+        <button id="todayBtn" title="Прокрутить к сегодняшней дате">⦿ Сегодня</button>
+      </div>
     </div>
+    <div class="gantt2-legend" id="ganttLegend"></div>
     <div class="gantt2-body">
-      <div class="gantt2-tree" id="ganttTree"></div>
+      <div class="gantt2-tree">
+        <div class="gantt2-tree-header">Эпик / Стори / Задача (роль)</div>
+        <div id="ganttTree"></div>
+      </div>
       <div class="gantt2-timeline-scroll" id="ganttScroll">
         <div class="gantt2-timeline-inner">
           <div class="gantt2-ruler" id="ganttRuler"></div>
@@ -83,20 +109,47 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
         </div>
       </div>
     </div>
-    <div class="gantt2-legend" id="ganttLegend"></div>
     <div class="assum-box" id="ganttAssumptions"></div>
   </div>
 </div>
 <script>
 const $ = id => document.getElementById(id);
 const ROLE_COLOR={BE:'#FF4444',FE:'#4472C4',BA:'#70AD47',DS:'#FFC803',QA:'#ED7D31',DVO:'#7030A0',ARC:'#00B0F0',ORG:'#A5A5A5'};
+const TYPE_ICON={epic:{bg:'#8B46FF',glyph:'⚡'},story:{bg:'#63BA3C',glyph:'▤'},task:{bg:'#4BADE8',glyph:'✓'}};
 const SCALE_PX={week:26,month:6,quarter:2};
-const GS={pxPerDay:6,scale:'month',level:'all',expanded:new Set(),baseline:''};
+const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',resourceFilter:'',_scrolledToToday:false};
+
+function toggleSidebarHidden(){ document.body.classList.toggle('sidebar-hidden'); }
+window.toggleSidebarHidden = toggleSidebarHidden;
+
+function spaceify(s){
+  if(!s) return s;
+  return s.replace(/^(\d+)([.:)])(?=\S)/,'$1$2 ').replace(/\]([^\s\]])/,'] $1');
+}
 
 function buildTree(items){
   const byParent={};
   items.forEach(i=>{ if(i.parent){ (byParent[i.parent]=byParent[i.parent]||[]).push(i); } });
   return items.filter(i=>i.type==='epic').map(e=>({...e, children:(byParent[e.key]||[]).map(s=>({...s, children:byParent[s.key]||[]}))}));
+}
+
+function allExpandableKeys(items){
+  const s=new Set();
+  items.forEach(i=>{ if(i.parent) s.add(i.parent); });
+  return [...s];
+}
+
+// Оставляет только эпики/стори/задачи, относящиеся к рабочему пути одного исполнителя
+// (чтобы увидеть, например, весь путь Аналитика 1 — задачи + их родительские стори/эпики для контекста).
+function filterItemsByResource(items, resId){
+  if(!resId) return items;
+  const matchTasks=items.filter(i=>i.type==='task' && i.resource===resId);
+  const keepStoryKeys=new Set(matchTasks.map(t=>t.parent));
+  const stories=items.filter(i=>i.type==='story' && keepStoryKeys.has(i.key));
+  const keepEpicKeys=new Set(stories.map(s=>s.parent));
+  matchTasks.forEach(t=>keepEpicKeys.add(t.epic));
+  const epics=items.filter(i=>i.type==='epic' && keepEpicKeys.has(i.key));
+  return [...epics, ...stories, ...matchTasks];
 }
 
 function buildRulerMarks(minD,maxD,scale,pxPerDay){
@@ -172,7 +225,7 @@ function adaptFlatGanttV2(rows, data){
   return {generatedAt:null, workCalendar:{holidays:[],hoursPerDay:8}, resources:[], items, _flatAdapted:true};
 }
 
-let CURRENT_DATA=null;
+let CURRENT_DATA=null, LAST_ITEMS=[];
 function renderGanttV2(){
   const data=CURRENT_DATA;
   let gv=data.ganttV2;
@@ -185,18 +238,20 @@ function renderGanttV2(){
   $('ganttEmpty').innerHTML='';
   $('ganttApp').style.display='block';
   if(gv._flatAdapted){
-    $('ganttEmpty').innerHTML=`<div class="note-banner" style="background:rgba(255,200,3,.08);border:1px solid rgba(255,200,3,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mute);margin-bottom:14px">⚠ Скилл ещё не даёт story/task-уровень в ganttV2 — показан агрегат по ролям внутри эпика (кружок = роль, наведи на бар — детали). Разверни ⌄ эпик, чтобы увидеть роли.</div>`;
-  }
-  // При первой загрузке разворачиваем все эпики — иначе дерево показывает только
-  // верхний уровень и не очевидно, что вообще есть что разворачивать.
-  if(!GS._initialized){
-    GS._initialized=true;
-    gv.items.filter(i=>i.type==='epic').forEach(e=>GS.expanded.add(e.key));
+    $('ganttEmpty').innerHTML=`<div class="note-banner" style="background:rgba(255,107,61,.08);border:1px solid rgba(255,107,61,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mute);margin-bottom:14px">⚠ Скилл ещё не даёт story/task-уровень в ganttV2 — показан агрегат по ролям внутри эпика (наведи на бар — детали). Разверни ⌄ эпик, чтобы увидеть роли.</div>`;
   }
 
-  const items=gv.items;
+  const resourceFilteredItems = filterItemsByResource(gv.items, GS.resourceFilter);
+  LAST_ITEMS = gv.items;
+  const RESOURCE_NAME={}; (gv.resources||[]).forEach(r=>{RESOURCE_NAME[r.id]=(r.name||'').split(' ')[0];});
+
+  const items=resourceFilteredItems;
   const tree=buildTree(items);
-  const dates=items.flatMap(i=>[new Date(i.start),new Date(i.end)]).filter(d=>!isNaN(d));
+  // new Date(null) не даёт NaN (превращается в эпоху 1970-01-01), поэтому пустые
+  // start/end (стори без дочерних задач — у скилла такое бывает) сначала
+  // отсеиваются явной проверкой, иначе одна такая запись растягивает всю шкалу
+  // на десятки лишних лет.
+  const dates=items.filter(i=>i.start && i.end).flatMap(i=>[new Date(i.start),new Date(i.end)]).filter(d=>!isNaN(d));
   if(!dates.length){$('ganttEmpty').innerHTML=renderEmptyState('Нет корректных дат в ganttV2');$('ganttApp').style.display='none';return;}
   const minD=new Date(Math.min(...dates)); minD.setDate(minD.getDate()-3);
   const maxD=new Date(Math.max(...dates)); maxD.setDate(maxD.getDate()+3);
@@ -205,10 +260,11 @@ function renderGanttV2(){
   const xOf=ds=>{const t=new Date(ds); return isNaN(t)?0:Math.round((t-minD)/86400000*GS.pxPerDay);};
   const widthOf=(s,e)=>Math.max(3,xOf(e)-xOf(s));
 
+  const forceExpand = !!GS.resourceFilter;
   const rows=[];
   function walk(node,depth){
     rows.push({node,depth});
-    const isExpanded=GS.expanded.has(node.key);
+    const isExpanded = forceExpand || GS.expanded.has(node.key);
     if(node.type==='epic' && GS.level==='epic')return;
     if(node.children && node.children.length && isExpanded){
       node.children.forEach(c=>{
@@ -219,15 +275,22 @@ function renderGanttV2(){
   }
   tree.forEach(e=>walk(e,0));
 
-  $('ganttTree').innerHTML=`<div class="gantt2-row gantt2-header-row"><div class="gantt2-label">Эпик / Стори / Задача (роль)</div></div>`+
-    rows.map(({node,depth})=>{
+  // Отступ строится по ТИПУ узла (эпик/стори/задача), а не по глубине рекурсии —
+  // задачи, привязанные напрямую к эпику (без стори), иначе оказывались бы на
+  // уровне отступа "стори" и визуально не выстраивались в один столбец с
+  // остальными задачами ("пляшущие" строки).
+  const TYPE_INDENT={epic:0,story:1,task:2};
+  $('ganttTree').innerHTML=rows.map(({node})=>{
       const hasChildren=node.children && node.children.length>0;
-      const isExpanded=GS.expanded.has(node.key);
+      const isExpanded=forceExpand || GS.expanded.has(node.key);
       const toggle=hasChildren?`<span class="gantt2-toggle" data-key="${node.key}">${isExpanded?'▾':'▸'}</span>`:'<span class="gantt2-toggle-spacer"></span>';
-      const icon=node.type==='epic'?'📦':node.type==='story'?'📄':'▫';
-      const roleDot=node.role?`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${ROLE_COLOR[node.role]||'#7f8fa6'};margin-right:4px;flex-shrink:0"></span>`:'';
+      const ti=TYPE_ICON[node.type]||TYPE_ICON.task;
+      const typeIcon=`<span class="g2-type-icon" style="background:${ti.bg}">${ti.glyph}</span>`;
+      const roleChip=node.role?`<span class="g2-role-chip" style="background:${ROLE_COLOR[node.role]||'#7f8fa6'}">${node.role}</span>`:'';
+      const label=spaceify(node.summary||'');
       const hoursNote=node.type!=='epic'&&node.estimateH?` <span style="color:var(--mute);font-size:9px">(${node.spentH||0}/${node.estimateH}ч)</span>`:'';
-      return `<div class="gantt2-row"><div class="gantt2-label" title="${(node.summary||'').replace(/"/g,'&quot;')}" style="padding-left:${depth*16+8}px;display:flex;align-items:center">${toggle}${icon} ${roleDot}${jiraLink(node.key)} ${(node.summary||'').slice(0,32)}${hoursNote}</div></div>`;
+      const indentPx=TYPE_INDENT[node.type]*18+8;
+      return `<div class="gantt2-row"><div class="gantt2-label" title="${label.replace(/"/g,'&quot;')}" style="padding-left:${indentPx}px">${toggle}${typeIcon}${roleChip}${jiraLink(node.key)} ${label.slice(0,32)}${hoursNote}</div></div>`;
     }).join('');
   $('ganttTree').querySelectorAll('.gantt2-toggle[data-key]').forEach(t=>{
     t.onclick=()=>{ const k=t.dataset.key; GS.expanded.has(k)?GS.expanded.delete(k):GS.expanded.add(k); renderGanttV2(); };
@@ -244,19 +307,30 @@ function renderGanttV2(){
   }
 
   const rowsHtml=rows.map(({node})=>{
+    if(!node.start || !node.end){
+      // Нет дат (стори без дочерних задач и т.п.) — показываем пустую строку
+      // без бара, а не рисуем мусорную позицию на эпохе 1970 года.
+      return `<div class="gantt2-row" style="color:var(--mute);font-size:9px;padding-left:8px">нет дат</div>`;
+    }
     const color=ROLE_COLOR[node.role]||'#7f8fa6';
     const x=xOf(node.start), w=widthOf(node.start,node.end);
-    const progress=node.estimateH?Math.min(100,Math.round((node.spentH||0)/node.estimateH*100)):0;
-    const catClass=node.category==='done'?'g2-done':node.category==='in_progress'?'g2-inprogress':'g2-planned';
+    const est=node.estimateH||0, spent=node.spentH||0;
+    const progress=est?Math.min(100,Math.round(spent/est*100)):0;
+    const overspent=est>0 && spent>est;
+    const activeSpend=spent>0 && !overspent;
+    const fillColor=overspent?'rgba(231,76,60,.65)':activeSpend?'rgba(46,204,113,.6)':'rgba(0,0,0,.35)';
+    const catClass=(node.category==='done'?'g2-done':node.category==='in_progress'?'g2-inprogress':'g2-planned')+(overspent?' g2-overspent':'');
+    const assigneeName=node.type==='task' && node.resource ? (RESOURCE_NAME[node.resource]||'') : '';
     let ghost='';
     if(baselineItems && baselineItems[node.key]){
       const b=baselineItems[node.key];
       ghost=`<div class="gantt2-bar-ghost" style="left:${xOf(b.start)}px;width:${widthOf(b.start,b.end)}px"></div>`;
     }
     return `<div class="gantt2-row">${ghost}<div class="gantt2-bar ${catClass}${node.onCriticalPath?' g2-crit':''}" style="left:${x}px;width:${w}px;background:${color}"
-      data-tip-key="${node.key}" data-tip-summary="${(node.summary||'').replace(/"/g,'&quot;')}" data-tip-resource="${node.resource||''}"
-      data-tip-est="${node.estimateH||0}" data-tip-spent="${node.spentH||0}" data-tip-start="${node.start||''}" data-tip-end="${node.end||''}" data-tip-status="${node.status||''}">
-      <div class="gantt2-bar-fill" style="width:${progress}%"></div>
+      data-tip-key="${node.key}" data-tip-summary="${spaceify(node.summary||'').replace(/"/g,'&quot;')}" data-tip-resource="${node.resource||''}"
+      data-tip-est="${est}" data-tip-spent="${spent}" data-tip-start="${node.start||''}" data-tip-end="${node.end||''}" data-tip-status="${node.status||''}">
+      <div class="gantt2-bar-fill" style="width:${progress}%;background:${fillColor}"></div>
+      ${assigneeName?`<div class="gantt2-bar-name">${assigneeName}</div>`:''}
     </div></div>`;
   }).join('');
   $('ganttRows').style.width=totalPx+'px';
@@ -274,9 +348,26 @@ function renderGanttV2(){
     if(hx>=0 && hx<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-hire-line" style="left:${hx}px;height:${overlayH}px" title="Выход: ${r.name||r.role} (${r.from})"></div>`);
   });
 
-  $('ganttLegend').innerHTML=Object.entries(ROLE_COLOR).map(([r,c])=>`<span><span class="sw" style="background:${c}"></span>${r}</span>`).join('')+
+  // Первая отрисовка после загрузки данных — прокручиваем таймлайн так, чтобы
+  // линия "сегодня" сразу была в видимой области (не за краем экрана).
+  // Синхронно, без requestAnimationFrame: браузер уже применил style.width к
+  // #ganttRuler/#ganttRows выше, так что scrollWidth/clientWidth корректны
+  // сразу (rAF на фоновой/неактивной вкладке может не сработать вовремя).
+  if(!GS._scrolledToToday && todayX>=0 && todayX<=totalPx){
+    GS._scrolledToToday=true;
+    const scroller=$('ganttScroll');
+    scroller.scrollLeft=Math.max(0, todayX - scroller.clientWidth/2);
+  }
+
+  $('ganttLegend').innerHTML=
+    `<span><span class="g2-type-icon" style="background:${TYPE_ICON.epic.bg}">${TYPE_ICON.epic.glyph}</span> Эпик</span>`+
+    `<span><span class="g2-type-icon" style="background:${TYPE_ICON.story.bg}">${TYPE_ICON.story.glyph}</span> Стори</span>`+
+    `<span><span class="g2-type-icon" style="background:${TYPE_ICON.task.bg}">${TYPE_ICON.task.glyph}</span> Задача</span>`+
+    Object.entries(ROLE_COLOR).map(([r,c])=>`<span><span class="sw" style="background:${c}"></span>${r}</span>`).join('')+
     `<span style="margin-left:12px"><span class="sw" style="background:var(--err)"></span>критический путь (обводка)</span>`+
-    `<span><span class="sw" style="background:var(--yel)"></span>веха 10.12.2026</span>`;
+    `<span><span class="sw" style="background:var(--yel)"></span>веха 10.12.2026</span>`+
+    `<span><span class="sw" style="background:#2ecc71"></span>идёт списание времени</span>`+
+    `<span><span class="sw" style="background:#e74c3c"></span>⚠ списано больше оценки</span>`;
 
   initGanttTooltip();
 
@@ -295,6 +386,13 @@ function renderGanttV2(){
     blSel.dataset.populated='1';
     blSel.onchange=()=>{ GS.baseline=blSel.value; renderGanttV2(); };
   }
+
+  const resSel=$('resourceFilter');
+  if(resSel.dataset.populated!=='1'){
+    resSel.innerHTML='<option value="">Все</option>'+(gv.resources||[]).map(r=>`<option value="${r.id}">${r.name||r.id} (${r.role})</option>`).join('');
+    resSel.dataset.populated='1';
+    resSel.onchange=()=>{ GS.resourceFilter=resSel.value; renderGanttV2(); };
+  }
 }
 
 document.querySelectorAll('.gantt2-toolbar-group button[data-scale]').forEach(btn=>{
@@ -308,6 +406,18 @@ document.querySelectorAll('.gantt2-toolbar-group button[data-scale]').forEach(bt
 $('zoomIn').onclick=()=>{ GS.pxPerDay=Math.min(60,GS.pxPerDay+2); renderGanttV2(); };
 $('zoomOut').onclick=()=>{ GS.pxPerDay=Math.max(1,GS.pxPerDay-2); renderGanttV2(); };
 $('levelFilter').onchange=e=>{ GS.level=e.target.value; renderGanttV2(); };
+$('expandAllBtn').onclick=()=>{ allExpandableKeys(LAST_ITEMS).forEach(k=>GS.expanded.add(k)); renderGanttV2(); };
+$('collapseAllBtn').onclick=()=>{ GS.expanded.clear(); renderGanttV2(); };
+$('todayBtn').onclick=()=>{ GS._scrolledToToday=false; renderGanttV2(); };
+
+// Зум колёсиком мыши с Ctrl, либо жестом pinch на тачпаде (Chrome/Firefox шлют
+// такие жесты как wheel-событие с ctrlKey=true).
+$('ganttScroll').addEventListener('wheel', e=>{
+  if(!e.ctrlKey) return;
+  e.preventDefault();
+  GS.pxPerDay=Math.max(1,Math.min(60,GS.pxPerDay+(e.deltaY>0?-2:2)));
+  renderGanttV2();
+}, {passive:false});
 
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
