@@ -154,6 +154,7 @@ function quarterDotStatus(qStr){
 }
 const DOT_BADGE={done:'🟢 Завершён',current:'🟡 В работе',future:'⚪ Планируется'};
 
+AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent = d.updated||'—';
   const milestone = d.okrMilestone||null;
@@ -224,6 +225,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   }).join('') : renderEmptyState('Нет данных по квартальным ОКР — запустите обновление');
 
 }).catch(showFetchError);
+});
 </script>
 </div><!-- /main --></div><!-- /layout -->
 </body>

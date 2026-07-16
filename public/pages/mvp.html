@@ -13,9 +13,10 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
+AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
-  
+
 // §6.3: производная от ganttV2 — стори группируются по кварталу расчётной даты окончания
 const gv = d.ganttV2;
 const stories = (gv && gv.items || []).filter(i=>i.type==='story' && i.end);
@@ -44,5 +45,6 @@ if(!stories.length){
     </div>`).join('');
 }
 }).catch(showFetchError);
+});
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>

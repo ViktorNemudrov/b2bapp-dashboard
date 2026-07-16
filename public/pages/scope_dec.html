@@ -13,9 +13,10 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
+AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
-  
+
 // §3.8/§6.3: основной блок — mvpScope (расчёт из ganttV2)
 const ms = d.mvpScope;
 const prio=s=>parseInt((typeof s==='string'?s:(s.name||s.summary||'')).match(/^(\d+)/)?.[1]||999);
@@ -62,5 +63,6 @@ document.getElementById('root').innerHTML = primaryHtml +
   (detailHtml?`<div class="sec-title" style="margin-top:24px">Детализация по эпикам</div>${detailHtml}`:'');
 makeSortable(document.getElementById('tbl'));
 }).catch(showFetchError);
+});
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>

@@ -13,9 +13,10 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
+AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
-  
+
 const items = d.assumptions || [];
 document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">
   <thead><tr><th>ID</th><th>Допущение</th><th>Последствие нарушения</th><th>Ответственный</th><th>Источник</th></tr></thead>
@@ -28,5 +29,6 @@ document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">
   </tr>`).join('')}</tbody></table>`;
 makeSortable(document.getElementById('tbl'));
 }).catch(showFetchError);
+});
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>

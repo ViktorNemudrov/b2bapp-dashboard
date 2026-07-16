@@ -13,9 +13,10 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
+AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
-  
+
 const items = d.glossary || [];
 document.getElementById('root').innerHTML=`
 <div style="margin-bottom:12px"><input id="gs" class="search-input" placeholder="Поиск..." oninput="gf()"></div>
@@ -31,5 +32,6 @@ window.gf=function(){
 };
 
 }).catch(showFetchError);
+});
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>

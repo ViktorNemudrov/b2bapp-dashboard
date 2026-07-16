@@ -452,11 +452,13 @@ $('ganttScroll').addEventListener('wheel', e=>{
   zoomTo(GS.pxPerDay+(e.deltaY>0?-2:2));
 }, {passive:false});
 
+AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
   CURRENT_DATA=d;
   renderGanttV2();
 }).catch(showFetchError);
+});
 </script>
 </div><!-- /main --></div><!-- /layout -->
 </body></html>

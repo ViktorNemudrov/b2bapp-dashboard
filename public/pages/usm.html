@@ -80,6 +80,7 @@ function staleBadge(item){
   return ` <span class="badge badge-warn" title="${(s.link||'').replace(/"/g,'&quot;')}">⚠ есть новая информация от ${s.since||'—'}${s.link?' (см. источник)':''}</span>`;
 }
 
+AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
   const u=d.usm;
@@ -158,5 +159,6 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     </div>
   `;
 }).catch(showFetchError);
+});
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>

@@ -7,7 +7,6 @@
 - public/index.html — главная страница дашборда
 - public/pages/ — страницы разделов
 - public/data/data.json — данные из Jira (обновляются отдельно)
-- public/data/manual.json — ручной контент (победы, блокеры, решения)
 - update.py — скрипт публикации в GitHub → Vercel
 
 ## Как вносить изменения
