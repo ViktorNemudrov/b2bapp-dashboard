@@ -37,6 +37,6 @@ document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">
       <td style="font-size:10px;color:var(--mute)">${q.link?`<a href="${q.link}" target="_blank" rel="noopener">${q.source||'источник'}</a>`:(q.source||'—')}</td>
     </tr>`;}).join('')}</tbody></table>`;
 makeSortable(document.getElementById('tbl'));
-});
+}).catch(showFetchError);
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>

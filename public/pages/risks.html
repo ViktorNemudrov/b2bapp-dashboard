@@ -33,7 +33,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
   render(DATA);
   makeSortable(document.getElementById('tbl'));
-});
+}).catch(showFetchError);
 function render(rows){
   const tb=document.getElementById('tbody');
   tb.innerHTML=rows.map(r=>{
