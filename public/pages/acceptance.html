@@ -13,9 +13,10 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
+AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
-  
+
 const items = d.acceptance || [];
 const SCLS={'✅':'ok','🟡':'warn','⬜':'gray','❌':'err'};
 document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">
@@ -30,5 +31,6 @@ document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">
     </tr>`;}).join('')}</tbody></table>`;
 makeSortable(document.getElementById('tbl'));
 }).catch(showFetchError);
+});
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>

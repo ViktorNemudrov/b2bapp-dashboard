@@ -545,6 +545,16 @@ th.sorted-desc::after{content:' ▼';font-size:9px}
 .risk-cell{position:relative;border-radius:4px;height:44px}
 .risk-marker{position:absolute;transform:translate(-50%,-50%);font-size:9px;font-weight:700;color:#fff;cursor:pointer;background:rgba(0,0,0,.25);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center}
 .risk-marker:hover{background:rgba(0,0,0,.55)}
+/* ── AUTH GATE ────────────────────────────────────────────────── */
+body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
+.auth-gate-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--dark)}
+.auth-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-card);padding:32px 28px;width:280px;text-align:center}
+.auth-title{font-size:18px;font-weight:800;margin-bottom:6px;color:var(--text)}
+.auth-sub{font-size:12px;color:var(--mute);margin-bottom:16px}
+.auth-input{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:var(--r-md);border:1px solid var(--line);background:var(--dark);color:var(--text);font-size:14px;margin-bottom:10px;outline:none}
+.auth-input:focus{border-color:var(--yel)}
+.auth-btn{width:100%;padding:10px;border-radius:var(--r-pill);border:none;background:var(--yel);color:#151515;font-weight:800;cursor:pointer;font-size:14px}
+.auth-err{font-size:12px;color:var(--err);margin-top:8px;min-height:14px}
 </style>
 </head>
 <body>
@@ -1437,20 +1447,6 @@ function toggleTheme(){
   });
 })();
 
-// ── PASSWORD PROTECTION ───────────────────────────────────────
-// Hash of "10122026" — SHA-256 stored, not plain text
-const PASS_HASH = 'b2923ea2a38d0dae65ce2975b473add6aa82'; // sha256("10122026").slice(0,36)
-async function hashPass(p){
-  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(p));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,36);
-}
-// ── PASSWORD AUTH (временно отключена) ───────────────────────
-async function checkAuth(){
-  // TODO: включить обратно когда будем готовы
-  // sessionStorage.setItem('b2bapp_auth','1');
-  return true;
-}
-
 // ── SCROLL POSITION RESTORE ───────────────────────────────────
 window.addEventListener('pageshow',()=>{
   const key='b2bapp_scroll_'+location.pathname;
@@ -1520,7 +1516,7 @@ function init(data){
   setTimeout(()=>{initGlossaryTooltips(data.glossary);restoreAccordions();restoreAudience();},100);
 }
 // Entry point — auth first, then load
-checkAuth().then(()=>{
+AUTH_READY.then(()=>{
   loadData().then(data=>{
     if(data)init(data);
     else $('updTime').textContent='Ошибка загрузки данных';

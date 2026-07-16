@@ -197,4 +197,51 @@ function initTheme(){
 }
 window.initTheme = initTheme;
 
+// ── AUTH GATE ─────────────────────────────────────────────────────
+// Client-side password gate: hides page content behind a full-screen prompt
+// until the correct password is entered (once per browser tab session).
+// NOTE: this does not protect data.json itself — the file is still fetchable
+// directly by URL. Real protection would need Vercel-level access control.
+const AUTH_HASH = 'b2923ea2a38d0dae65ce2975b473add6aa82'; // sha256("10122026").slice(0,36)
+async function hashPass(p){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,36);
+}
+function checkAuth(){
+  return new Promise(resolve=>{
+    if(sessionStorage.getItem('b2bapp_auth')==='1'){ resolve(); return; }
+    document.body.classList.add('auth-locked');
+    const overlay = document.createElement('div');
+    overlay.className = 'auth-gate-overlay';
+    overlay.innerHTML = `<div class="auth-card">
+      <div class="auth-title">B2BAPP Dashboard</div>
+      <div class="auth-sub">Введите пароль для доступа</div>
+      <input type="password" class="auth-input" id="authPassInput" placeholder="Пароль">
+      <button class="auth-btn" id="authSubmitBtn">Войти</button>
+      <div class="auth-err" id="authErr"></div>
+    </div>`;
+    document.body.appendChild(overlay);
+    const input = document.getElementById('authPassInput');
+    const err = document.getElementById('authErr');
+    async function tryLogin(){
+      const h = await hashPass(input.value);
+      if(h===AUTH_HASH){
+        sessionStorage.setItem('b2bapp_auth','1');
+        overlay.remove();
+        document.body.classList.remove('auth-locked');
+        resolve();
+      } else {
+        err.textContent = 'Неверный пароль';
+        input.value='';
+        input.focus();
+      }
+    }
+    document.getElementById('authSubmitBtn').onclick = tryLogin;
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter') tryLogin(); });
+    setTimeout(()=>input.focus(), 0);
+  });
+}
+window.checkAuth = checkAuth;
+window.AUTH_READY = checkAuth();
+
 })();

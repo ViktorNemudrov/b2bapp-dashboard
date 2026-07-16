@@ -13,9 +13,10 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
+AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
-  
+
 const rp = d.resourcePlan || [];
 if(!rp.length){
   document.getElementById('root').innerHTML=renderEmptyState('Нет данных, запустите обновление');
@@ -48,5 +49,6 @@ if(!rp.length){
   makeSortable(document.getElementById('tbl'));
 }
 }).catch(showFetchError);
+});
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>
