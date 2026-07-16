@@ -47,7 +47,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
   render(DATA);
   makeSortable(document.getElementById('tbl'));
-});
+}).catch(showFetchError);
 function raciBadge(r){return r.split('').map(c=>`<span class="badge r-${c}" style="margin-right:3px">${c}</span>`).join('');}
 function render(rows){
   document.getElementById('tbody').innerHTML=rows.map(s=>`<tr>

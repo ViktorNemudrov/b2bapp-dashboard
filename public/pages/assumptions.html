@@ -27,6 +27,6 @@ document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">
     <td style="font-size:10px;color:var(--mute)">${a.link?`<a href="${a.link}" target="_blank" rel="noopener">${a.source||'источник'}</a>`:(a.source||'—')}</td>
   </tr>`).join('')}</tbody></table>`;
 makeSortable(document.getElementById('tbl'));
-});
+}).catch(showFetchError);
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>

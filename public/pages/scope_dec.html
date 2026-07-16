@@ -61,6 +61,6 @@ const detailHtml = sc.length ? `<table class="tbl" id="tbl">
 document.getElementById('root').innerHTML = primaryHtml +
   (detailHtml?`<div class="sec-title" style="margin-top:24px">Детализация по эпикам</div>${detailHtml}`:'');
 makeSortable(document.getElementById('tbl'));
-});
+}).catch(showFetchError);
 </script></div><!-- /main --></div><!-- /layout -->
 </body></html>

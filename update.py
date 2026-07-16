@@ -100,13 +100,6 @@ def delete(gh_path, msg):
     except Exception as e:
         print(f"ERR delete {gh_path}: {e}")
 
-def prune_removed(root="public", msg="chore: remove files deleted locally"):
-    """Delete files that exist on GitHub under public/ but no longer exist locally."""
-    local = {gh for gh, _ in collect_files(root)}
-    remote = set(list_remote(root))
-    for gh_path in sorted(remote - local):
-        delete(gh_path, msg)
-
 def push_all(msg, root="public"):
     """Push every file under root in a SINGLE commit (Git Data API), so Vercel
     triggers exactly one deployment instead of one per file (push() does one
@@ -133,6 +126,15 @@ def push_all(msg, root="public"):
             blob_sha = json.loads(r.read())["sha"]
         tree_entries.append({"path": gh, "mode": "100644", "type": "blob", "sha": blob_sha})
         print(f"blob {gh} -> {blob_sha[:8]}")
+
+    # Files that exist on GitHub under root but no longer exist locally must be
+    # explicitly removed from the tree (sha: None), otherwise base_tree carries
+    # them forward forever -- push_all() would silently never delete anything.
+    local_paths = {gh for gh, _ in files}
+    remote_paths = set(list_remote(root))
+    for gone in sorted(remote_paths - local_paths):
+        tree_entries.append({"path": gone, "mode": "100644", "type": "blob", "sha": None})
+        print(f"del  {gone} (removed locally)")
 
     tree_req = urllib.request.Request(f"{BASE}/git/trees", headers=HDR, method="POST")
     tree_req.data = json.dumps({"base_tree": base_tree_sha, "tree": tree_entries}).encode()
@@ -161,7 +163,3 @@ if __name__ == "__main__":
         for gh, loc in collect_files():
             push(gh, loc, msg)
     print("Done! Vercel deploys automatically.")
-    # Note: prune_removed(msg=msg) is available but NOT run automatically —
-    # it deletes files from GitHub/Vercel that no longer exist locally under public/.
-    # Run it manually and deliberately (python -c "import update; update.prune_removed()")
-    # when a file was intentionally removed, after reviewing what it would delete.

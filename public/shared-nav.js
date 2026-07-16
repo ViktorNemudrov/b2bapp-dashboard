@@ -156,6 +156,20 @@ function renderEmptyState(msg){
 }
 window.renderEmptyState = renderEmptyState;
 
+// ── showFetchError: главный fetch data.json на странице не отвечает.catch() —
+// без этого страница молча зависает на "Загрузка..." без объяснения причины ──
+function showFetchError(err){
+  console.error('data.json fetch failed:', err);
+  const content = document.querySelector('.content');
+  if(!content) return;
+  const banner = document.createElement('div');
+  banner.className = 'empty';
+  banner.style.cssText = 'margin-bottom:14px;border-color:#e74c3c;color:#e74c3c';
+  banner.textContent = 'Не удалось загрузить данные. Проверьте соединение и обновите страницу.';
+  content.prepend(banner);
+}
+window.showFetchError = showFetchError;
+
 // ── Theme (для подстраниц, у которых своего JS темы нет) ─────────
 function applyTheme(theme){
   if(theme==='light') document.body.classList.add('light-theme');

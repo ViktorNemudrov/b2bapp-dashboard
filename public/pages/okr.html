@@ -223,7 +223,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     </div>`;
   }).join('') : renderEmptyState('Нет данных по квартальным ОКР — запустите обновление');
 
-});
+}).catch(showFetchError);
 </script>
 </div><!-- /main --></div><!-- /layout -->
 </body>
