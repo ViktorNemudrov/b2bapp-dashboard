@@ -23,17 +23,31 @@ if(!rp.length){
 } else {
   // Каждый ресурс приводим к единому виду {person, role, monthly:{YYYY-MM: %}},
   // т.к. схема resourcePlan менялась между обновлениями данных (см. CLAUDE.md):
-  // сейчас months приходит массивом [{month,hoursPlanned}], а не объектом monthly с %.
-  const FTE_HOURS_PER_MONTH=8*21; // WORK_START_H..WORK_END_H (index.html) = 8ч/день × ~21 рабочий день
+  // сейчас months приходит массивом [{month,hoursPlanned}] в часах, без имени/fte —
+  // имя и реальный fte ресурса берём из ganttV2.resources[] по id===resourceId.
+  const WORK_DAYS_PER_MONTH=21; // ~21 рабочий день/мес (WORK_START_H..WORK_END_H в index.html = 8ч/день)
+  const resourceById={};
+  (d.ganttV2&&d.ganttV2.resources||[]).forEach(gr=>{resourceById[gr.id]=gr;});
   const norm = rp.map(r=>{
+    const gr = resourceById[r.resourceId];
+    // fte может меняться по ходу проекта (напр. выход на полную ставку) —
+    // gr.fteFull/gr.fromFull, если есть, переопределяют gr.fte с этого месяца.
+    function fteForMonth(month){
+      if(gr && gr.fteFull!=null && gr.fromFull && month>=gr.fromFull.slice(0,7)) return gr.fteFull;
+      return r.fte!=null?r.fte:(gr?gr.fte:1)||1;
+    }
     let monthly=r.monthly;
     if(!monthly && Array.isArray(r.months)){
       monthly={};
-      r.months.forEach(m=>{monthly[m.month]=Math.round(m.hoursPlanned/FTE_HOURS_PER_MONTH*100);});
+      r.months.forEach(m=>{const cap=8*WORK_DAYS_PER_MONTH*fteForMonth(m.month);monthly[m.month]=Math.round(m.hoursPlanned/cap*100);});
     } else if(!monthly && r.months && typeof r.months==='object'){
       monthly=r.months;
     }
-    return {person:r.person||r.name||r.resourceId, role:r.role||(r.resourceId||'').replace(/-\d+$/,''), monthly:monthly||{}};
+    return {
+      person:r.person||r.name||(gr&&gr.name)||r.resourceId,
+      role:r.role||(gr&&gr.role)||(r.resourceId||'').replace(/-\d+$/,''),
+      monthly:monthly||{}
+    };
   });
   const allMonths=new Set();
   norm.forEach(r=>Object.keys(r.monthly).forEach(m=>allMonths.add(m)));
