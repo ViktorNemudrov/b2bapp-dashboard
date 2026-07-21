@@ -21,8 +21,22 @@ const rp = d.resourcePlan || [];
 if(!rp.length){
   document.getElementById('root').innerHTML=renderEmptyState('Нет данных, запустите обновление');
 } else {
+  // Каждый ресурс приводим к единому виду {person, role, monthly:{YYYY-MM: %}},
+  // т.к. схема resourcePlan менялась между обновлениями данных (см. CLAUDE.md):
+  // сейчас months приходит массивом [{month,hoursPlanned}], а не объектом monthly с %.
+  const FTE_HOURS_PER_MONTH=8*21; // WORK_START_H..WORK_END_H (index.html) = 8ч/день × ~21 рабочий день
+  const norm = rp.map(r=>{
+    let monthly=r.monthly;
+    if(!monthly && Array.isArray(r.months)){
+      monthly={};
+      r.months.forEach(m=>{monthly[m.month]=Math.round(m.hoursPlanned/FTE_HOURS_PER_MONTH*100);});
+    } else if(!monthly && r.months && typeof r.months==='object'){
+      monthly=r.months;
+    }
+    return {person:r.person||r.name||r.resourceId, role:r.role||(r.resourceId||'').replace(/-\d+$/,''), monthly:monthly||{}};
+  });
   const allMonths=new Set();
-  rp.forEach(r=>Object.keys(r.monthly||{}).forEach(m=>allMonths.add(m)));
+  norm.forEach(r=>Object.keys(r.monthly).forEach(m=>allMonths.add(m)));
   const months=[...allMonths].sort(); // "YYYY-MM" ключи — с января 2026, лексикографическая сортировка = хронологическая
   function heatClass(v){
     if(v==null||v==='') return 'heat-0';
@@ -34,7 +48,7 @@ if(!rp.length){
   }
   const html = `<table class="tbl heatmap-table" id="tbl">
     <thead><tr><th>Человек</th><th>Роль</th>${months.map(m=>`<th>${m}</th>`).join('')}</tr></thead>
-    <tbody>${rp.map(r=>`<tr>
+    <tbody>${norm.map(r=>`<tr>
       <td style="font-weight:600;color:var(--text)">${r.person}</td>
       <td style="color:var(--mute)">${r.role}</td>
       ${months.map(m=>{const v=r.monthly[m];return `<td class="${heatClass(v)}">${v!=null?v+'%':'·'}</td>`;}).join('')}
