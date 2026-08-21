@@ -6,7 +6,6 @@
 const NAV = [
   {group:'Обзор', items:[
     {label:'Главная', icon:'🏠', href:'/index.html'},
-    {label:'Executive Summary', icon:'📋', href:'/index.html#s-exec'},
   ]},
   {group:'План', items:[
     {label:'Диаграмма Ганта', icon:'📊', href:'/pages/gantt.html'},

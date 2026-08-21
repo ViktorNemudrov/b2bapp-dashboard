@@ -647,32 +647,6 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
     </div>
   </div>
 
-  <!-- EXECUTIVE SUMMARY (п.15) -->
-  <div class="section" id="s-exec" data-aud="exec,pm,all">
-    <div class="sec-title">📋 Executive Summary</div>
-    <div class="exec-card">
-      <div class="week-picker" id="execWeekPicker"></div>
-      <div class="exec-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;margin-top:12px">
-        <div class="exec-col">
-          <h4 class="ok">✅ Сделано за период</h4>
-          <div id="execDone"></div>
-        </div>
-        <div class="exec-col">
-          <h4 style="color:var(--blue)">📅 План на 2 недели</h4>
-          <div id="execPlanned"></div>
-        </div>
-        <div class="exec-col">
-          <h4 class="warn">⚠️ Блокеры</h4>
-          <div id="execBlocks"></div>
-        </div>
-        <div class="exec-col">
-          <h4 class="err">🙋 Нужно от руководства</h4>
-          <div id="execNeeds"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- FORECAST (п.18) -->
   <div class="section" id="s-forecast" data-aud="exec,pm,all">
     <div class="sec-title">🔮 Прогноз завершения</div>
@@ -698,20 +672,6 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
     </div>
     <div class="acc-body" style="max-height:999px">
       <div class="blockers-list" id="blockersList"></div>
-    </div>
-  </div>
-
-  <!-- BURNDOWN (п.16) -->
-  <!-- SCOPE MVP (§3.8: mvpScope из ganttV2) -->
-  <div class="section" id="s-scope">
-    <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>📅 Скоуп вехи 10.12.2026 — по расчёту Ганта</span><span class="acc-chevron">▼</span>
-    </div>
-    <div class="acc-body" style="max-height:999px">
-      <div class="scope-grid" style="grid-template-columns:1fr 1fr">
-        <div class="scope-col in-col"><h4>✅ Входит в веху</h4><div id="mvpScopeIn"></div></div>
-        <div class="scope-col out-col"><h4>❌ Не входит (расчётная дата готовности)</h4><div id="mvpScopeOut"></div></div>
-      </div>
     </div>
   </div>
 
@@ -754,22 +714,6 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
     </div>
   </div>
 
-  <!-- DECISION LOG понедельно (§3.9) -->
-  <div class="section" id="s-decisions">
-    <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>📝 Ключевые решения — понедельно</span><span class="acc-chevron">▼</span>
-    </div>
-    <div class="acc-body" style="max-height:999px">
-      <div class="week-picker" id="decWeekPicker"></div>
-      <div style="overflow-x:auto">
-        <table class="dec-table">
-          <thead><tr><th>Дата</th><th>Решение</th><th>Источник</th></tr></thead>
-          <tbody id="decisionBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
   <!-- ACCEPTANCE CHECKLIST (п.25) -->
   <div class="section" id="s-acceptance">
     <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
@@ -782,21 +726,6 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
         <span style="font-size:11px;color:var(--ok);font-weight:700" id="checklistPct">—</span>
       </div>
       <div class="checklist" id="checklistBody"></div>
-    </div>
-  </div>
-
-  <!-- QUESTIONS + SLA (п.28) -->
-  <div class="section" id="s-qsla">
-    <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>❓ Открытые вопросы + SLA</span><span class="acc-chevron">▼</span>
-    </div>
-    <div class="acc-body" style="max-height:999px">
-      <div style="overflow-x:auto">
-        <table class="q-table">
-          <thead><tr><th>ID</th><th>Вопрос</th><th>Ответственный</th><th>Дедлайн</th><th>Дней открыт</th><th>Статус</th></tr></thead>
-          <tbody id="qslaBody"></tbody>
-        </table>
-      </div>
     </div>
   </div>
 
@@ -934,61 +863,6 @@ function renderMetrics(data){
   $('kpiRow').innerHTML=cells.map(c=>`<a class="kpi" href="${c.href}"${c.ext?' target="_blank" rel="noopener"':''}><div class="kpi-val">${c.v}</div><div class="kpi-lbl">${c.l}</div></a>`).join('');
 }
 
-// ── ОБЩИЙ ПАТТЕРН НЕДЕЛЬНОГО ПЕРЕКЛЮЧАТЕЛЯ (§3.4 + §3.9) ──────
-function renderWeeklyPicker(pickerElId, weekly, onRender){
-  const picker=$(pickerElId);
-  if(!picker)return;
-  if(!weekly||!weekly.length){picker.innerHTML='';onRender(null);return;}
-  const sorted=[...weekly].sort((a,b)=>new Date(a.weekStart)-new Date(b.weekStart));
-  const today=new Date();
-  let idx=sorted.findIndex(w=>{
-    const start=new Date(w.weekStart);
-    const end=new Date(start);end.setDate(end.getDate()+7);
-    return today>=start && today<end;
-  });
-  if(idx===-1)idx=sorted.length-1;
-  function fmtRange(ws){
-    const s=new Date(ws), e=new Date(s); e.setDate(e.getDate()+6);
-    const f=d=>`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`;
-    return `${f(s)}–${f(e)}.${e.getFullYear()}`;
-  }
-  function paint(){
-    const w=sorted[idx];
-    picker.innerHTML=`
-      <button class="pdf-btn" id="${pickerElId}Prev" ${idx<=0?'disabled':''} style="padding:5px 10px">←</button>
-      <select class="filter-select" id="${pickerElId}Select">${sorted.map((s,i)=>`<option value="${i}" ${i===idx?'selected':''}>Неделя ${fmtRange(s.weekStart)}</option>`).join('')}</select>
-      <button class="pdf-btn" id="${pickerElId}Next" ${idx>=sorted.length-1?'disabled':''} style="padding:5px 10px">→</button>`;
-    $(pickerElId+'Prev').onclick=()=>{if(idx>0){idx--;paint();}};
-    $(pickerElId+'Next').onclick=()=>{if(idx<sorted.length-1){idx++;paint();}};
-    $(pickerElId+'Select').onchange=e=>{idx=parseInt(e.target.value);paint();};
-    onRender(w);
-  }
-  paint();
-}
-
-// ── EXECUTIVE SUMMARY понедельно (§3.4) ────────────────────────
-// Понедельные записи weekly[] — скилл кладёт элементы то строками, то объектами
-// ({text,...} / {title,key,status} / {key,title,status}) — приводим единообразно.
-function weeklyItemText(t){
-  if(typeof t==='string')return t;
-  const key=t.key||t.jira;
-  const label=t.text||t.title||t.action||'';
-  return key?`${jiraLink(key)} ${label}`.trim():label;
-}
-function renderWeeklyExec(data){
-  renderWeeklyPicker('execWeekPicker', data.weekly, w=>{
-    if(!w){
-      $('execDone').innerHTML=renderEmptyState('Нет данных, запустите обновление');
-      $('execPlanned').innerHTML='';$('execBlocks').innerHTML='';$('execNeeds').innerHTML='';
-      return;
-    }
-    $('execDone').innerHTML=(w.done&&w.done.length?w.done:['—']).map(t=>`<div class="exec-item">✅ ${weeklyItemText(t)}</div>`).join('');
-    $('execPlanned').innerHTML=(w.planned&&w.planned.length?w.planned:['—']).map(t=>`<div class="exec-item">📅 ${weeklyItemText(t)}</div>`).join('');
-    $('execBlocks').innerHTML=(w.blockers&&w.blockers.length?w.blockers:['Нет блокеров']).map(t=>`<div class="exec-item">${weeklyItemText(t)}${t.owner?` <span style="color:var(--mute)">— ${t.owner}</span>`:''}</div>`).join('');
-    $('execNeeds').innerHTML=(w.needs&&w.needs.length?w.needs:['—']).map(t=>`<div class="exec-item">🙋 ${weeklyItemText(t)}</div>`).join('');
-  });
-}
-
 // ── FORECAST (§3.5: читает criticalPathExplained, без своего расчёта) ──
 function renderForecast(data){
   const cp=data.criticalPathExplained||{};
@@ -1030,35 +904,6 @@ function renderEpicProgress(data){
     </div>`;
   }).join('');
   $('progressEpics').innerHTML=`<h3>Готовность эпиков</h3>${rows}`;
-}
-
-// ── СКОУП MVP (§3.8: mvpScope из ganttV2) ────────────────────────
-function renderMvpScope(data){
-  const ms=data.mvpScope;
-  if(!ms || (Array.isArray(ms)&&!ms.length) || (!Array.isArray(ms)&&!ms.inStories?.length&&!ms.outStories?.length)){
-    $('mvpScopeIn').innerHTML=renderEmptyState('Нет данных, запустите обновление');
-    $('mvpScopeOut').innerHTML='';
-    return;
-  }
-  // Скилл пока не всегда даёт story-уровень (нужен ganttV2.items) — тогда вместо in/out
-  // присылает плоский приоритизированный список эпиков {epic,name,priority,status}.
-  if(Array.isArray(ms)){
-    const STATUS_CLS={critical:'badge-err',high:'badge-warn',medium:'badge-yel'};
-    const sorted=[...ms].sort((a,b)=>(a.priority??999)-(b.priority??999));
-    $('mvpScopeIn').innerHTML=`<div style="font-size:10px;color:var(--mute);margin-bottom:8px">Разбивка по стори (входит/не входит) недоступна — в ganttV2 нет story-уровня. Показан приоритизированный список эпиков.</div>`+
-      sorted.map(e=>`<div class="scope-item">${e.epic?jiraLink(e.epic)+' ':''}${e.name||''} <span class="badge ${STATUS_CLS[e.status]||'badge-blue'}" style="margin-left:6px">${e.status||'—'}</span></div>`).join('');
-    $('mvpScopeOut').innerHTML='';
-    return;
-  }
-  const inS=ms.inStories||[], outS=ms.outStories||[];
-  const prio=s=>parseInt((typeof s==='string'?s:(s.name||s.summary||'')).match(/^(\d+)/)?.[1]||999);
-  const line=s=>{
-    if(typeof s==='string')return `<div class="scope-item">${s}</div>`;
-    const readyNote=s.readyDate?` <span style="color:var(--mute)">— готово ${s.readyDate}</span>`:'';
-    return `<div class="scope-item">${s.key?jiraLink(s.key)+' ':''}${s.name||s.summary||''}${readyNote}</div>`;
-  };
-  $('mvpScopeIn').innerHTML=[...inS].sort((a,b)=>prio(a)-prio(b)).map(line).join('')||renderEmptyState('Пусто');
-  $('mvpScopeOut').innerHTML=[...outS].sort((a,b)=>prio(a)-prio(b)).map(line).join('')||renderEmptyState('Пусто');
 }
 
 // ── RISK MATRIX (§3.7: умное размещение маркеров + попап) ────────
@@ -1248,20 +1093,6 @@ function showChangedBadge(data){
   if(cur)localStorage.setItem('b2bapp_prev_upd',cur);
 }
 
-// ── WINS (п.27) ───────────────────────────────────────────────
-// ── КЛЮЧЕВЫЕ РЕШЕНИЯ понедельно (§3.9: weekly[].decisions[]) ─────
-function renderWeeklyDecisions(data){
-  renderWeeklyPicker('decWeekPicker', data.weekly, w=>{
-    const decisions=(w&&w.decisions)||[];
-    if(!decisions.length){$('decisionBody').innerHTML=`<tr><td colspan="3">${renderEmptyState('Нет данных, запустите обновление')}</td></tr>`;return;}
-    $('decisionBody').innerHTML=decisions.map(d=>`<tr>
-      <td style="color:var(--mute);white-space:nowrap">${d.date||''}</td>
-      <td style="font-weight:600;color:var(--text)">${d.text||''}</td>
-      <td style="font-size:10px;color:var(--mute)">${d.link?`<a href="${d.link}" target="_blank" rel="noopener">${d.source||'источник'}</a>`:(d.source||'—')}</td>
-    </tr>`).join('');
-  });
-}
-
 // ── ACCEPTANCE CHECKLIST (п.25) ───────────────────────────────
 function renderAcceptance(data){
   const acc=data.acceptance||[];
@@ -1282,34 +1113,14 @@ function renderAcceptance(data){
     </div>`;}).join('');
 }
 
-// ── SLA QUESTIONS (п.28) ──────────────────────────────────────
-function renderQSLA(data){
-  const qs=data.questions||[];
-  const NOW=new Date();
-  $('qslaBody').innerHTML=qs.map(q=>{
-    // Дней открыт считаем только если есть честная дата создания (q.created) — иначе не выдумываем число (C11)
-    const created=q.created?new Date(q.created):null;
-    const daysOpen=created&&!isNaN(created)?Math.round((NOW-created)/86400000):null;
-    const slaCls=daysOpen==null?'sla-ok':daysOpen>21?'sla-err':daysOpen>10?'sla-warn':'sla-ok';
-    const status=q.status||'—';
-    return `<tr>
-      <td style="color:var(--mute);font-weight:700;font-size:10px">${q.id}</td>
-      <td style="min-width:280px">${q.question}</td>
-      <td style="font-size:10px;color:var(--mute)">${q.owner||'—'}</td>
-      <td style="font-size:10px;color:var(--mute);white-space:nowrap">${q.deadline||'—'}</td>
-      <td style="text-align:center"><span class="sla-days ${slaCls}">${daysOpen==null?'—':daysOpen+' дн.'}</span></td>
-      <td><span style="font-size:10px;font-weight:600;color:var(--mute)">${status}</span></td>
-    </tr>`;}).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--mute);padding:16px">Нет данных</td></tr>';
-}
-
 // ── DEVIATION labels (п.21) ───────────────────────────────────
 // Already embedded in renderProgress — deviation shown as text labels next to bars
 // ── AUDIENCE SWITCHER (п.5) ───────────────────────────────────
 const AUD_CONFIG={
   all:{label:'Показаны все разделы',hidden:[]},
-  exec:{label:'',hidden:['s-acceptance','s-qsla']},
+  exec:{label:'',hidden:['s-acceptance']},
   pm:{label:'',hidden:[]},
-  team:{label:'',hidden:['s-exec','s-forecast']},
+  team:{label:'',hidden:['s-forecast']},
 };
 function setAudience(aud,btn){
   document.querySelectorAll('.aud-btn').forEach(b=>b.classList.remove('active'));
@@ -1498,16 +1309,12 @@ function init(data){
   showChangedBadge(data);
   buildSearchIndex(data);
   renderMetrics(data);
-  renderWeeklyExec(data);
   renderForecast(data);
   renderBlockersNow(data);
   renderEpicProgress(data);
-  renderMvpScope(data);
   renderRiskMatrix(data);
   renderDeps(data);
-  renderWeeklyDecisions(data);
   renderAcceptance(data);
-  renderQSLA(data);
   renderScopeGrowth(data);
   renderChangelogList(data);
   mountFreshness('freshness', data.refreshedAt, data.updated);

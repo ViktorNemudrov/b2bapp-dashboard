@@ -13,16 +13,21 @@
 .gantt2-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;font-size:10px;color:var(--mute)}
 .gantt2-legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
 .gantt2-body{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
-.gantt2-tree{width:340px;flex-shrink:0;border-right:1px solid var(--line)}
+.gantt2-tree{width:var(--g2-tree-w,340px);flex-shrink:0;border-right:1px solid var(--line)}
+.gantt2-body.g2-tree-collapsed .gantt2-tree,.gantt2-body.g2-tree-collapsed .gantt2-resizer{display:none}
+.gantt2-resizer{width:6px;flex-shrink:0;cursor:col-resize;background:transparent;position:relative}
+.gantt2-resizer::after{content:'';position:absolute;top:0;bottom:0;left:2px;width:2px;background:var(--line)}
+.gantt2-resizer:hover::after,.gantt2-resizer.g2-dragging::after{background:var(--yel)}
 .gantt2-tree-header{height:26px;display:flex;align-items:center;padding:0 8px;font-weight:700;font-size:11px;background:#1e2d3d;z-index:4;border-bottom:1px solid var(--line);box-sizing:border-box}
-.gantt2-timeline-scroll{overflow-x:auto;flex:1;scrollbar-width:thin;scrollbar-color:#253850 #0d1b2a}
+.gantt2-timeline-scroll{overflow-x:auto;flex:1;scrollbar-width:thin;scrollbar-color:#253850 #0d1b2a;cursor:grab}
+.gantt2-timeline-scroll.g2-panning{cursor:grabbing;user-select:none}
 .gantt2-timeline-scroll::-webkit-scrollbar{height:9px}
 .gantt2-timeline-scroll::-webkit-scrollbar-track{background:#0d1b2a}
 .gantt2-timeline-scroll::-webkit-scrollbar-thumb{background:#253850;border-radius:5px}
 .gantt2-timeline-scroll::-webkit-scrollbar-thumb:hover{background:#354a68}
 .gantt2-timeline-inner{position:relative}
 .gantt2-row{height:26px;display:flex;align-items:center;border-bottom:1px solid #1a2535;position:relative;box-sizing:border-box}
-.gantt2-label{padding:0 8px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:340px;box-sizing:border-box;display:flex;align-items:center;gap:4px}
+.gantt2-label{padding:0 8px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:var(--g2-tree-w,340px);box-sizing:border-box;display:flex;align-items:center;gap:4px}
 .gantt2-toggle{cursor:pointer;display:inline-block;width:14px;color:var(--mute);flex-shrink:0}
 .gantt2-toggle-spacer{display:inline-block;width:14px;flex-shrink:0}
 .gantt2-ruler{height:26px;position:relative;background:#1e2d3d;z-index:3;border-bottom:1px solid var(--line);box-sizing:border-box;overflow:hidden}
@@ -50,6 +55,10 @@ body.light-theme .gantt2-ruler-mark{border-left-color:#d0d8e8}
 body.light-theme .gantt2-timeline-scroll{scrollbar-color:#c0cce0 #e8ecf5}
 body.light-theme .gantt2-timeline-scroll::-webkit-scrollbar-track{background:#e8ecf5}
 body.light-theme .gantt2-timeline-scroll::-webkit-scrollbar-thumb{background:#c0cce0}
+body.g2-fullscreen{overflow:hidden}
+body.g2-fullscreen .sidebar,body.g2-fullscreen .hdr{display:none}
+body.g2-fullscreen #ganttApp{position:fixed;inset:0;z-index:9999;background:var(--dark);padding:14px;overflow-y:auto;box-sizing:border-box}
+.gantt2-line-toggle{display:flex;align-items:center;gap:3px;cursor:pointer}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -72,6 +81,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
           <option value="all">Эпики ▸ Стори ▸ Задачи</option>
           <option value="story">Эпики ▸ Стори</option>
           <option value="epic">Только эпики</option>
+          <option value="task">Только задачи</option>
         </select>
       </div>
       <div class="gantt2-toolbar-group">
@@ -83,7 +93,13 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
         <button id="zoomOut">−</button><button id="zoomIn">+</button>
       </div>
       <div class="gantt2-toolbar-group">
-        <button id="expandAllBtn">Развернуть всё</button><button id="collapseAllBtn">Свернуть всё</button>
+        <label>Дерево:</label>
+        <select id="expandSelect">
+          <option value="" disabled selected>Развернуть/свернуть…</option>
+          <option value="all">Развернуть всё (эпики, стори, задачи)</option>
+          <option value="epics">Развернуть только эпики</option>
+          <option value="collapse">Свернуть всё</option>
+        </select>
       </div>
       <div class="gantt2-toolbar-group">
         <label>Исполнитель:</label>
@@ -96,6 +112,16 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
       <div class="gantt2-toolbar-group">
         <button id="todayBtn" title="Прокрутить к сегодняшней дате">⦿ Сегодня</button>
       </div>
+      <div class="gantt2-toolbar-group">
+        <label>Линии:</label>
+        <label class="gantt2-line-toggle"><input type="checkbox" id="lineToday" checked> Сегодня</label>
+        <label class="gantt2-line-toggle"><input type="checkbox" id="lineMilestone" checked> Веха MVP</label>
+        <label class="gantt2-line-toggle"><input type="checkbox" id="lineHires" checked> Выход сотрудников</label>
+      </div>
+      <div class="gantt2-toolbar-group">
+        <button id="treeCollapseBtn" title="Скрыть/показать колонку с названиями">◂ Панель</button>
+        <button id="fullscreenBtn" title="Развернуть/свернуть гант на весь экран">⛶ На весь экран</button>
+      </div>
     </div>
     <div class="gantt2-legend" id="ganttLegend"></div>
     <div class="gantt2-body">
@@ -103,6 +129,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
         <div class="gantt2-tree-header">Эпик / Стори / Задача (роль)</div>
         <div id="ganttTree"></div>
       </div>
+      <div class="gantt2-resizer" id="ganttResizer" title="Потяни, чтобы изменить ширину панели"></div>
       <div class="gantt2-timeline-scroll" id="ganttScroll">
         <div class="gantt2-timeline-inner">
           <div class="gantt2-ruler" id="ganttRuler"></div>
@@ -124,10 +151,77 @@ const TYPE_ICON={
   task:'<svg viewBox="0 0 16 16" width="16" height="16"><rect width="16" height="16" rx="3" fill="#4BADE8"/><path d="M4 8l2.5 2.5L12 5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 };
 const SCALE_PX={week:26,month:6,quarter:2};
-const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',resourceFilter:'',_scrolledToToday:false};
+const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',resourceFilter:'',_scrolledToToday:false,
+  treeWidth:340,treeCollapsed:false,showToday:true,showMilestone:true,showHires:true};
 
 function toggleSidebarHidden(){ document.body.classList.toggle('sidebar-hidden'); }
 window.toggleSidebarHidden = toggleSidebarHidden;
+
+function setTreeWidth(px){
+  GS.treeWidth=Math.max(160,Math.min(700,px));
+  document.documentElement.style.setProperty('--g2-tree-w', GS.treeWidth+'px');
+}
+
+function setupTreeResizer(){
+  const resizer=$('ganttResizer');
+  resizer.addEventListener('mousedown', e=>{
+    e.preventDefault();
+    resizer.classList.add('g2-dragging');
+    document.body.style.userSelect='none';
+    const startX=e.clientX, startW=GS.treeWidth;
+    function onMove(ev){ setTreeWidth(startW + (ev.clientX-startX)); }
+    function onUp(){
+      resizer.classList.remove('g2-dragging');
+      document.body.style.userSelect='';
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+}
+
+function toggleTreeCollapsed(){
+  GS.treeCollapsed=!GS.treeCollapsed;
+  $('ganttApp').querySelector('.gantt2-body').classList.toggle('g2-tree-collapsed', GS.treeCollapsed);
+  $('treeCollapseBtn').textContent = GS.treeCollapsed ? '▸ Панель' : '◂ Панель';
+}
+
+function toggleFullscreen(){
+  document.body.classList.toggle('g2-fullscreen');
+  const on=document.body.classList.contains('g2-fullscreen');
+  $('fullscreenBtn').textContent = on ? '⤢ Свернуть' : '⛶ На весь экран';
+}
+
+// Хватать и тащить область таймлайна зажатой ЛКМ (как в Miro/Figma), а не только
+// колёсиком: тянем именно #ganttScroll по горизонтали и обёртку #ganttApp (в полноэкранном
+// режиме) или окно (в обычном) по вертикали, чтобы дерево названий и таймлайн не расходились.
+function setupGanttPan(){
+  const scroller=$('ganttScroll');
+  let dragging=false, startX=0, startY=0, startLeft=0, startTop=0, vScroller=null;
+  scroller.addEventListener('mousedown', e=>{
+    if(e.button!==0) return;
+    dragging=true;
+    scroller.classList.add('g2-panning');
+    startX=e.clientX; startY=e.clientY;
+    startLeft=scroller.scrollLeft;
+    vScroller = document.body.classList.contains('g2-fullscreen') ? $('ganttApp') : null;
+    startTop = vScroller ? vScroller.scrollTop : window.scrollY;
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e=>{
+    if(!dragging) return;
+    scroller.scrollLeft = startLeft - (e.clientX-startX);
+    const dy=e.clientY-startY;
+    if(vScroller) vScroller.scrollTop = startTop - dy;
+    else window.scrollTo(window.scrollX, startTop - dy);
+  });
+  document.addEventListener('mouseup', ()=>{
+    if(!dragging) return;
+    dragging=false;
+    scroller.classList.remove('g2-panning');
+  });
+}
 
 function spaceify(s){
   if(!s) return s;
@@ -270,25 +364,36 @@ function renderGanttV2(){
 
   const forceExpand = !!GS.resourceFilter;
   const rows=[];
-  function walk(node,depth){
-    rows.push({node,depth});
-    const isExpanded = forceExpand || GS.expanded.has(node.key);
-    if(node.type==='epic' && GS.level==='epic')return;
-    if(node.children && node.children.length && isExpanded){
-      node.children.forEach(c=>{
-        if(node.type==='story' && GS.level==='story')return;
-        walk(c,depth+1);
-      });
+  if(GS.resourceFilter){
+    // «Лесенка»: для выбранного исполнителя показываем только его задачи, в
+    // хронологическом порядке выполнения (по дате начала) — не в порядке
+    // эпик→стори из дерева, — чтобы видеть, как одна задача идёт за другой.
+    const EPIC_NAME={}; items.forEach(i=>{ if(i.type==='epic') EPIC_NAME[i.key]=spaceify(i.summary||''); });
+    items.filter(i=>i.type==='task' && i.resource===GS.resourceFilter && i.start)
+      .sort((a,b)=>new Date(a.start)-new Date(b.start))
+      .forEach(node=>rows.push({node,depth:0,ladder:true,epicName:EPIC_NAME[node.epic]||''}));
+  } else {
+    const taskOnly = GS.level==='task';
+    function walk(node,depth){
+      if(!taskOnly || node.type==='task') rows.push({node,depth});
+      const isExpanded = taskOnly || GS.expanded.has(node.key);
+      if(node.type==='epic' && GS.level==='epic')return;
+      if(node.children && node.children.length && isExpanded){
+        node.children.forEach(c=>{
+          if(node.type==='story' && GS.level==='story')return;
+          walk(c,depth+1);
+        });
+      }
     }
+    tree.forEach(e=>walk(e,0));
   }
-  tree.forEach(e=>walk(e,0));
 
   // Отступ строится по ТИПУ узла (эпик/стори/задача), а не по глубине рекурсии —
   // задачи, привязанные напрямую к эпику (без стори), иначе оказывались бы на
   // уровне отступа "стори" и визуально не выстраивались в один столбец с
   // остальными задачами ("пляшущие" строки).
   const TYPE_INDENT={epic:0,story:1,task:2};
-  $('ganttTree').innerHTML=rows.map(({node})=>{
+  $('ganttTree').innerHTML=rows.map(({node,epicName,ladder})=>{
       const hasChildren=node.children && node.children.length>0;
       const isExpanded=forceExpand || GS.expanded.has(node.key);
       const toggle=hasChildren?`<span class="gantt2-toggle" data-key="${node.key}">${isExpanded?'▾':'▸'}</span>`:'<span class="gantt2-toggle-spacer"></span>';
@@ -296,8 +401,9 @@ function renderGanttV2(){
       const roleChip=node.role?`<span class="g2-role-chip" style="background:${ROLE_COLOR[node.role]||'#7f8fa6'}">${node.role}</span>`:'';
       const label=spaceify(node.summary||'');
       const hoursNote=node.type!=='epic'&&node.estimateH?` <span style="color:var(--mute);font-size:9px">(${node.spentH||0}/${node.estimateH}ч)</span>`:'';
-      const indentPx=TYPE_INDENT[node.type]*18+8;
-      return `<div class="gantt2-row"><div class="gantt2-label" title="${label.replace(/"/g,'&quot;')}" style="padding-left:${indentPx}px">${toggle}${typeIcon}${roleChip}${jiraLink(node.key)} ${label.slice(0,32)}${hoursNote}</div></div>`;
+      const epicNote=epicName?` <span style="color:var(--mute);font-size:9px">· ${epicName.slice(0,28)}</span>`:'';
+      const indentPx=ladder ? 8 : TYPE_INDENT[node.type]*18+8;
+      return `<div class="gantt2-row"><div class="gantt2-label" title="${label.replace(/"/g,'&quot;')}" style="padding-left:${indentPx}px">${toggle}${typeIcon}${roleChip}${jiraLink(node.key)} ${label.slice(0,32)}${hoursNote}${epicNote}</div></div>`;
     }).join('');
   $('ganttTree').querySelectorAll('.gantt2-toggle[data-key]').forEach(t=>{
     t.onclick=()=>{ const k=t.dataset.key; GS.expanded.has(k)?GS.expanded.delete(k):GS.expanded.add(k); renderGanttV2(); };
@@ -346,10 +452,10 @@ function renderGanttV2(){
 
   const overlayH=rows.length*26;
   const today=new Date(), todayX=xOf(today.toISOString().slice(0,10));
-  if(todayX>=0 && todayX<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-today-line" style="left:${todayX}px;height:${overlayH}px" title="Сегодня"></div>`);
+  if(GS.showToday && todayX>=0 && todayX<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-today-line" style="left:${todayX}px;height:${overlayH}px" title="Сегодня"></div>`);
   const mvpX=xOf('2026-12-10');
-  if(mvpX>=0 && mvpX<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-milestone-line" style="left:${mvpX}px;height:${overlayH}px" title="Веха MVP 10.12.2026"></div>`);
-  (gv.resources||[]).forEach(r=>{
+  if(GS.showMilestone && mvpX>=0 && mvpX<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-milestone-line" style="left:${mvpX}px;height:${overlayH}px" title="Веха MVP 10.12.2026"></div>`);
+  if(GS.showHires) (gv.resources||[]).forEach(r=>{
     if(!r.from)return;
     const hx=xOf(r.from);
     if(hx>=0 && hx<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-hire-line" style="left:${hx}px;height:${overlayH}px" title="Выход: ${r.name||r.role} (${r.from})"></div>`);
@@ -374,6 +480,7 @@ function renderGanttV2(){
     `<span style="margin-left:12px"><span class="sw" style="background:var(--err)"></span>критический путь (обводка)</span>`+
     `<span><span class="sw" style="background:#00d4ff"></span>сегодня</span>`+
     `<span><span class="sw" style="background:#9b59b6"></span>веха 10.12.2026</span>`+
+    `<span><span class="sw" style="background:var(--blue)"></span>выход сотрудника (наём/старт)</span>`+
     `<span><span class="sw" style="background:#2ecc71"></span>идёт списание времени</span>`+
     `<span><span class="sw" style="background:#e74c3c"></span>⚠ списано больше оценки</span>`;
 
@@ -440,9 +547,30 @@ document.querySelectorAll('.gantt2-toolbar-group button[data-scale]').forEach(bt
 $('zoomIn').onclick=()=>zoomTo(GS.pxPerDay+2);
 $('zoomOut').onclick=()=>zoomTo(GS.pxPerDay-2);
 $('levelFilter').onchange=e=>{ GS.level=e.target.value; renderGanttV2(); };
-$('expandAllBtn').onclick=()=>{ allExpandableKeys(LAST_ITEMS).forEach(k=>GS.expanded.add(k)); renderGanttV2(); };
-$('collapseAllBtn').onclick=()=>{ GS.expanded.clear(); renderGanttV2(); };
+$('expandSelect').onchange=e=>{
+  const v=e.target.value;
+  if(v==='all') allExpandableKeys(LAST_ITEMS).forEach(k=>GS.expanded.add(k));
+  else if(v==='epics'){
+    GS.expanded.clear();
+    const epicKeys=new Set(LAST_ITEMS.filter(i=>i.type==='epic').map(i=>i.key));
+    allExpandableKeys(LAST_ITEMS).forEach(k=>{ if(epicKeys.has(k)) GS.expanded.add(k); });
+  }
+  else if(v==='collapse') GS.expanded.clear();
+  e.target.selectedIndex=0;
+  renderGanttV2();
+};
 $('todayBtn').onclick=()=>{ GS._scrolledToToday=false; renderGanttV2(); };
+$('lineToday').onchange=e=>{ GS.showToday=e.target.checked; renderGanttV2(); };
+$('lineMilestone').onchange=e=>{ GS.showMilestone=e.target.checked; renderGanttV2(); };
+$('lineHires').onchange=e=>{ GS.showHires=e.target.checked; renderGanttV2(); };
+$('treeCollapseBtn').onclick=toggleTreeCollapsed;
+$('fullscreenBtn').onclick=toggleFullscreen;
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && document.body.classList.contains('g2-fullscreen')) toggleFullscreen();
+});
+setTreeWidth(GS.treeWidth);
+setupTreeResizer();
+setupGanttPan();
 
 // Зум колёсиком мыши с Ctrl, либо жестом pinch на тачпаде (Chrome/Firefox шлют
 // такие жесты как wheel-событие с ctrlKey=true).
