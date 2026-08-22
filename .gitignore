@@ -1,1 +1,10 @@
 .env
+
+# Сырые дампы для build_dashboard.py — транзитные входные файлы, не история репо.
+jira_dump.json
+team_dump.json
+confluence_dump.json
+usm_patch.json
+
+__pycache__/
+*.pyc
