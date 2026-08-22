@@ -435,10 +435,14 @@ def plan_gantt(issues, resources):
         })
 
     # ── Критический путь: цепочка задач до max(end) ────────────────────────────
-    end_date = max((it["end"] for it in items if it["type"] == "task"), default=None)
+    # end_date держим как date (не ISO-строку!), иначе сравнение с DEADLINE и
+    # .isoformat() падают. Баг найден Claude Code 22.08.2026, синхронизирован сюда.
+    task_ends = [date.fromisoformat(it["end"]) for it in items if it["type"] == "task"]
+    end_date = max(task_ends) if task_ends else None
     crit_res = None
     if end_date:
-        tail = [it for it in items if it["type"] == "task" and it["end"] == end_date]
+        end_iso = end_date.isoformat()
+        tail = [it for it in items if it["type"] == "task" and it["end"] == end_iso]
         if tail:
             crit_res = tail[0]["resource"]
         # пометить критпуть: задачи ресурса-хвоста + их стори/эпики
@@ -612,7 +616,7 @@ def run_gantt(args):
     stories_done = sum(1 for it in mvp_stories if it["category"] == "done")
     tasks_done = sum(1 for it in mvp_tasks_it if it["category"] == "done")
     completion = round(hours_spent / hours_total * 100, 1) if hours_total else 0
-    crit_end_iso = end_date if end_date else None  # end_date уже ISO-строка (см. plan_gantt)
+    crit_end_iso = end_date.isoformat() if end_date else None
     days_to_deadline = (DEADLINE - today).days
 
     # Счётчики по ВСЕМ задачам проекта (не MVP)
@@ -629,7 +633,7 @@ def run_gantt(args):
             "method": "Критический путь = цепочка задач до max(end) по ресурсу-хвосту.",
             "endDate": crit_end_iso,
             "resource": crit_res,
-            "conclusion": ("Успеваем к 10.12.2026" if end_date and end_date <= DEADLINE.isoformat()
+            "conclusion": ("Успеваем к 10.12.2026" if end_date and end_date <= DEADLINE
                            else f"НЕ успеваем: критпуть до {crit_end_iso}, дедлайн 10.12.2026"),
             "steps": [
                 "Только MVP-стори (метка mvp); postMVP и Вакантные исключены",
@@ -673,7 +677,7 @@ def run_gantt(args):
         "totalEpics": len(mvp_epics), "hoursTotal": hours_total, "hoursSpent": hours_spent,
         "completionPct": completion, "daysToDeadline": days_to_deadline,
         "criticalEnd": crit_end_iso,
-        "mvpReachable": bool(end_date and end_date <= DEADLINE.isoformat()),
+        "mvpReachable": bool(end_date and end_date <= DEADLINE),
     }
     new["metrics"] = {
         "epicsTotal": len(mvp_epics), "storiesTotal": len(mvp_stories),
