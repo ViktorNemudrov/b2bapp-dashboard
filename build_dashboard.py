@@ -701,9 +701,13 @@ def run_gantt(args):
     new["scopeGrowth"] = sg
 
     # baselines: добавить новый, старые не трогать
-    bl = list(old.get("baselines", []))
+    # baselines: один снимок на дату. Дедуп по id (как scopeGrowth),
+    # иначе повторный прогон за день плодит дубль bl-ДД.ММ.ГГГГ.
+    # Замечание Claude Code 22.08.2026.
+    bl_id = f"bl-{today.isoformat()}"
+    bl = [b for b in old.get("baselines", []) if b.get("id") != bl_id]
     bl.append({
-        "id": f"bl-{today.isoformat()}",
+        "id": bl_id,
         "ts": now_iso,
         "label": f"Refresh {today.strftime('%d.%m.%Y')} (MVP-only)",
         "criticalEnd": crit_end_iso,
