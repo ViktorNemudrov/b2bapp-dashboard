@@ -59,6 +59,15 @@ body.g2-fullscreen{overflow:hidden}
 body.g2-fullscreen .sidebar,body.g2-fullscreen .hdr{display:none}
 body.g2-fullscreen #ganttApp{position:fixed;inset:0;z-index:9999;background:var(--dark);padding:14px;overflow-y:auto;box-sizing:border-box}
 .gantt2-line-toggle{display:flex;align-items:center;gap:3px;cursor:pointer}
+.pri-controls{display:none;gap:8px;align-items:center;margin-bottom:10px;background:rgba(255,107,61,.08);border:1px solid var(--yel);border-radius:8px;padding:8px 12px;font-size:11px;flex-wrap:wrap}
+.pri-controls button{background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--text);border-radius:5px;padding:4px 10px;font-size:11px;cursor:pointer}
+.pri-controls button:hover{border-color:var(--yel)}
+.pri-msg{color:var(--err);font-weight:600}
+.gantt2-tree.pri-active .gantt2-row{cursor:grab}
+.gantt2-tree.pri-active .gantt2-row.pri-dragging{opacity:.4}
+.gantt2-tree.pri-active .gantt2-row.pri-dragover{background:rgba(255,107,61,.18);box-shadow:inset 0 0 0 1px var(--yel)}
+.pri-handle{display:none;flex-shrink:0;width:10px;height:16px}
+.gantt2-tree.pri-active .pri-handle{display:inline-flex}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -122,6 +131,15 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
         <button id="treeCollapseBtn" title="Скрыть/показать колонку с названиями">◂ Панель</button>
         <button id="fullscreenBtn" title="Развернуть/свернуть гант на весь экран">⛶ На весь экран</button>
       </div>
+      <div class="gantt2-toolbar-group">
+        <button id="priModeBtn" title="Перетаскивай эпики/стори/задачи, чтобы менять приоритет — даты и критпуть пересчитываются на лету">🔀 Приоритеты (drag&amp;drop)</button>
+      </div>
+    </div>
+    <div class="pri-controls" id="priControls">
+      <span>Режим приоритетов: тащи строки в дереве слева, чтобы поменять порядок — даты пересчитаются. Эпики меняются местами со всеми, стори — только внутри своего эпика, задачи — только внутри своей стори.</span>
+      <button id="priResetBtn">↺ По умолчанию</button>
+      <button id="priExportBtn">⭳ Выгрузить приоритет в файл</button>
+      <span class="pri-msg" id="priMsg"></span>
     </div>
     <div class="gantt2-legend" id="ganttLegend"></div>
     <div class="gantt2-body">
@@ -327,6 +345,291 @@ function adaptFlatGanttV2(rows, data){
 }
 
 let CURRENT_DATA=null, LAST_ITEMS=[];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// РЕЖИМ ПРИОРИТЕТОВ: drag&drop-переупорядочивание эпиков/стори/задач с живым
+// пересчётом дат в браузере. Планировщик ниже — умышленный порт plan_gantt()
+// из build_dashboard.py (очереди ресурсов без простоя + фазовая зависимость
+// ролей внутри стори). Если меняется алгоритм в build_dashboard.py (ROLE_PHASE,
+// календарь, формула критпути) — синхронизировать и здесь, иначе предпросмотр
+// разъедется с тем, что на самом деле посчитает билдер при следующем прогоне.
+// ═══════════════════════════════════════════════════════════════════════════
+const PRI_ROLE_PHASE={ARC:0, BA:1, DS:2, BE:3, FE:4, QA:5}; // держать = ROLE_PHASE в build_dashboard.py
+let PRI_MODE=false, PRI=null, PRI_ITEMS=null, PRI_CRIT=null;
+
+// Все даты держим и сравниваем строго в UTC-компонентах (getUTCDate/setUTCDate/
+// getUTCDay), а не local-time getDate/setDate — иначе 'YYYY-MM-DD' (парсится
+// как UTC-полночь) и new Date(y,m,d) (local-полночь) плывут друг относительно
+// друга на просмотрщиках с отрицательным смещением от UTC.
+function priUTC(y,m,d){ return new Date(Date.UTC(y,m,d)); }
+function priIsWorkday(d, holidays){
+  const day=d.getUTCDay();
+  if(day===0||day===6) return false;
+  return !holidays.has(d.toISOString().slice(0,10));
+}
+function priNextWorkday(d, holidays){
+  d=new Date(d.getTime());
+  while(!priIsWorkday(d,holidays)) d.setUTCDate(d.getUTCDate()+1);
+  return d;
+}
+function priAddWorkHours(start, hours, fte, holidays, hoursPerDay){
+  if(hours<=0) return priNextWorkday(start,holidays);
+  const cap=Math.max(hoursPerDay*fte, 0.1);
+  const daysNeeded=Math.max(1, Math.ceil(Math.round(hours)/Math.round(cap)));
+  let d=priNextWorkday(start,holidays), used=1;
+  while(used<daysNeeded){
+    const nd=new Date(d.getTime()); nd.setUTCDate(nd.getUTCDate()+1);
+    d=priNextWorkday(nd, holidays); used++;
+  }
+  return d;
+}
+
+// Начальный порядок — из уже посчитанных приоритетов эпика/стори (server-side
+// epicPriority/priority) и фиксированной цепочки ролей, тот же порядок, что
+// build_dashboard.py применил при последней сборке. Дальше пользователь может
+// перетаскиванием его поменять.
+function buildInitialPriorityOrder(items){
+  const epics=items.filter(i=>i.type==='epic').slice()
+    .sort((a,b)=>(a.priority??9999)-(b.priority??9999) || a.key.localeCompare(b.key));
+  const storiesByEpic={}, tasksByStory={};
+  items.filter(i=>i.type==='story').forEach(s=>{ (storiesByEpic[s.parent]=storiesByEpic[s.parent]||[]).push(s); });
+  Object.keys(storiesByEpic).forEach(ek=>{
+    storiesByEpic[ek]=storiesByEpic[ek]
+      .sort((a,b)=>(a.priority??9999)-(b.priority??9999) || a.key.localeCompare(b.key))
+      .map(s=>s.key);
+  });
+  items.filter(i=>i.type==='task').forEach(t=>{ (tasksByStory[t.parent]=tasksByStory[t.parent]||[]).push(t); });
+  Object.keys(tasksByStory).forEach(sk=>{
+    tasksByStory[sk]=tasksByStory[sk]
+      .sort((a,b)=>(PRI_ROLE_PHASE[a.role]??99)-(PRI_ROLE_PHASE[b.role]??99) || (a.priority??9999)-(b.priority??9999) || a.key.localeCompare(b.key))
+      .map(t=>t.key);
+  });
+  return {epics: epics.map(e=>e.key), storiesByEpic, tasksByStory};
+}
+
+// Пересчёт: done-задачи — факт, не трогаем. in_progress/backlog — заново через
+// очереди ресурсов в НОВОМ порядке (epicOrder → storyOrder внутри эпика → фаза
+// роли → taskOrder внутри стори, как tie-break).
+function recomputeSchedule(items, resources, workCalendar, order){
+  const holidays=new Set((workCalendar&&workCalendar.holidays)||[]);
+  const hoursPerDay=(workCalendar&&workCalendar.hoursPerDay)||8;
+  const tasks=items.filter(i=>i.type==='task');
+  const liveTasks=tasks.filter(t=>t.category!=='done');
+
+  const resFree={}; resources.forEach(r=>{ resFree[r.id]=r.from?new Date(r.from):priUTC(2026,0,1); });
+  const resByRole={}; resources.forEach(r=>{ (resByRole[r.role]=resByRole[r.role]||[]).push(r); });
+  function pickResource(role, earliest){
+    const pool=resByRole[role]||resByRole.OTHER||resources;
+    let best=null, bestT=null;
+    pool.forEach(r=>{
+      const rf=r.from?new Date(r.from):earliest;
+      const t=new Date(Math.max(resFree[r.id].getTime(), rf.getTime(), earliest.getTime()));
+      if(!best||t<bestT){best=r; bestT=t;}
+    });
+    return best;
+  }
+
+  function taskSortKey(t){
+    const epicIdx=order.epics.indexOf(t.epic);
+    const storyIdx=(order.storiesByEpic[t.epic]||[]).indexOf(t.parent);
+    const phase=PRI_ROLE_PHASE[t.role]??99;
+    const taskIdx=(order.tasksByStory[t.parent]||[]).indexOf(t.key);
+    return [epicIdx<0?9999:epicIdx, storyIdx<0?9999:storyIdx, phase, taskIdx<0?9999:taskIdx, t.key];
+  }
+  function cmpKey(a,b){ for(let i=0;i<a.length;i++){ if(a[i]<b[i])return -1; if(a[i]>b[i])return 1; } return 0; }
+  const ordered=liveTasks.slice().sort((a,b)=>cmpKey(taskSortKey(a),taskSortKey(b)));
+
+  const storyPhaseEnd={}, planned={};
+  ordered.forEach(t=>{
+    const role=t.role, storyKey=t.parent, phase=PRI_ROLE_PHASE[role];
+    let depEnd=null;
+    if(phase!==undefined && phase>0){
+      const se=storyPhaseEnd[storyKey]||{};
+      for(let ph=0; ph<phase; ph++){ if(se[ph] && (!depEnd||se[ph]>depEnd)) depEnd=se[ph]; }
+    }
+    (t.deps||[]).forEach(dk=>{ const dp=planned[dk]; if(dp && (!depEnd||dp.end>depEnd)) depEnd=dp.end; });
+    const res=pickResource(role, depEnd || priUTC(2026,0,1));
+    const fte=res.fte||1;
+    const earliest=new Date(Math.max(resFree[res.id].getTime(), (res.from?new Date(res.from):priUTC(2026,0,1)).getTime(), (depEnd||priUTC(2026,0,1)).getTime()));
+    const remaining=Math.max(t.category==='in_progress' ? (t.estimateH-t.spentH) : t.estimateH, 0);
+    const start=priNextWorkday(earliest, holidays);
+    const end=priAddWorkHours(start, remaining, fte, holidays, hoursPerDay);
+    const nf=new Date(end.getTime()); nf.setDate(nf.getDate()+1);
+    resFree[res.id]=priNextWorkday(nf, holidays);
+    if(phase!==undefined){
+      storyPhaseEnd[storyKey]=storyPhaseEnd[storyKey]||{};
+      if(!storyPhaseEnd[storyKey][phase] || end>storyPhaseEnd[storyKey][phase]) storyPhaseEnd[storyKey][phase]=end;
+    }
+    planned[t.key]={start, end, resource:res.id};
+  });
+
+  const byKey={}; tasks.forEach(t=>{ byKey[t.key]=t; });
+  const byEpicMap={}; items.filter(i=>i.type==='epic').forEach(e=>{ byEpicMap[e.key]=e; });
+  const byStoryMap={}; items.filter(i=>i.type==='story').forEach(s=>{ byStoryMap[s.key]=s; });
+
+  function buildTaskRow(t){
+    if(t.category==='done') return {...t};
+    const p=planned[t.key];
+    if(!p) return {...t};
+    return {...t, start:p.start.toISOString().slice(0,10), end:p.end.toISOString().slice(0,10), resource:p.resource, onCriticalPath:false};
+  }
+  function aggCategory(kids){ return kids.every(k=>k.category==='done')?'done':(kids.some(k=>k.category!=='backlog')?'in_progress':'backlog'); }
+
+  // Строим НЕ по исходному порядку items[] (он произвольный — из Python-set),
+  // а строго по order.epics/storiesByEpic/tasksByStory, чтобы дерево в UI
+  // визуально шло в том порядке, который сейчас выставлен приоритетом —
+  // иначе даты пересчитались бы верно, а строки в дереве не переехали бы.
+  const newTasks=[], newStories=[], newEpics=[];
+  order.epics.forEach(ek=>{
+    const e=byEpicMap[ek];
+    if(!e) return;
+    const epicKids=[];
+    (order.storiesByEpic[ek]||[]).forEach(sk=>{
+      const s=byStoryMap[sk];
+      if(!s) return;
+      const storyKids=[];
+      (order.tasksByStory[sk]||[]).forEach(tk=>{
+        const t=byKey[tk];
+        if(!t) return;
+        const row=buildTaskRow(t);
+        newTasks.push(row); storyKids.push(row);
+      });
+      if(storyKids.length){
+        newStories.push({...s, start:storyKids.map(k=>k.start).sort()[0], end:storyKids.map(k=>k.end).sort().slice(-1)[0],
+          category:aggCategory(storyKids), onCriticalPath:false});
+        epicKids.push(...storyKids);
+      } else {
+        newStories.push({...s, onCriticalPath:false});
+      }
+    });
+    if(epicKids.length){
+      newEpics.push({...e, start:epicKids.map(k=>k.start).sort()[0], end:epicKids.map(k=>k.end).sort().slice(-1)[0],
+        category:aggCategory(epicKids), onCriticalPath:false});
+    } else {
+      newEpics.push({...e, onCriticalPath:false});
+    }
+  });
+
+  let critRes=null, critEnd=null;
+  const withDates=newTasks.filter(t=>t.start&&t.end);
+  if(withDates.length){
+    critEnd=withDates.map(t=>t.end).sort().slice(-1)[0];
+    critRes=withDates.find(t=>t.end===critEnd).resource;
+    const critTaskKeys=new Set(newTasks.filter(t=>t.resource===critRes).map(t=>t.key));
+    const critStoryKeys=new Set(newTasks.filter(t=>critTaskKeys.has(t.key)).map(t=>t.parent));
+    const critEpicKeys=new Set(newStories.filter(s=>critStoryKeys.has(s.key)).map(s=>s.epic));
+    newTasks.forEach(t=>{ if(critTaskKeys.has(t.key)) t.onCriticalPath=true; });
+    newStories.forEach(s=>{ if(critStoryKeys.has(s.key)) s.onCriticalPath=true; });
+    newEpics.forEach(e=>{ if(critEpicKeys.has(e.key)) e.onCriticalPath=true; });
+  }
+  return {items:[...newTasks, ...newStories, ...newEpics], criticalEnd:critEnd, criticalResource:critRes};
+}
+
+function recomputeAndRender(){
+  const gv=CURRENT_DATA.ganttV2;
+  const result=recomputeSchedule(gv.items, gv.resources||[], gv.workCalendar||{}, PRI);
+  PRI_ITEMS=result.items;
+  PRI_CRIT={end:result.criticalEnd, resource:result.criticalResource};
+  renderGanttV2();
+}
+
+function priFlash(msg){
+  $('priMsg').textContent=msg;
+  clearTimeout(priFlash._t);
+  priFlash._t=setTimeout(()=>{ $('priMsg').textContent=''; }, 4000);
+}
+
+function togglePriorityMode(){
+  PRI_MODE=!PRI_MODE;
+  $('priModeBtn').classList.toggle('on', PRI_MODE);
+  $('priControls').style.display=PRI_MODE?'flex':'none';
+  if(PRI_MODE){
+    GS.resourceFilter=''; if($('resourceFilter'))$('resourceFilter').value='';
+    GS.baseline=''; if($('baselineSelect'))$('baselineSelect').value='';
+    if(!PRI) PRI=buildInitialPriorityOrder(CURRENT_DATA.ganttV2.items);
+    recomputeAndRender();
+  } else {
+    renderGanttV2();
+  }
+}
+
+function resetPriorityOrder(){
+  PRI=buildInitialPriorityOrder(CURRENT_DATA.ganttV2.items);
+  recomputeAndRender();
+  priFlash('Порядок сброшен к исходному расчёту.');
+}
+
+function exportPriorityOrder(){
+  const items=PRI_ITEMS||CURRENT_DATA.ganttV2.items;
+  const tasks=items.filter(i=>i.type==='task').map(t=>({
+    key:t.key, summary:t.summary, epic:t.epic, story:t.parent, role:t.role,
+    epicOrder: PRI.epics.indexOf(t.epic)+1,
+    storyOrderInEpic: (PRI.storiesByEpic[t.epic]||[]).indexOf(t.parent)+1,
+    taskOrderInStory: (PRI.tasksByStory[t.parent]||[]).indexOf(t.key)+1,
+    start:t.start, end:t.end, resource:t.resource, status:t.status, category:t.category,
+  })).sort((a,b)=>a.epicOrder-b.epicOrder || a.storyOrderInEpic-b.storyOrderInEpic
+    || (PRI_ROLE_PHASE[a.role]??99)-(PRI_ROLE_PHASE[b.role]??99) || a.taskOrderInStory-b.taskOrderInStory);
+  const payload={
+    exportedAt: new Date().toISOString(),
+    note: "Приоритеты и даты, пересчитанные вручную (drag&drop) на странице Гант B2BAPP. epicOrder/storyOrderInEpic/taskOrderInStory — порядковые номера приоритета для переноса в Jira (например, числовым префиксом summary или отдельным полем ранга). start/end — расчётные даты начала/конца по новому порядку.",
+    criticalEnd: PRI_CRIT?PRI_CRIT.end:null,
+    criticalResource: PRI_CRIT?PRI_CRIT.resource:null,
+    tasks,
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`b2bapp-gantt-priorities-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  priFlash('Файл выгружен.');
+}
+
+function findLastItem(key){ return LAST_ITEMS.find(i=>i.key===key); }
+
+function handleReorder(draggedKey, targetKey){
+  if(draggedKey===targetKey) return;
+  const dragged=findLastItem(draggedKey), target=findLastItem(targetKey);
+  if(!dragged || !target) return;
+  if(dragged.type!==target.type){ priFlash('Можно менять местами только элементы одного уровня.'); return; }
+  if(dragged.type==='epic'){
+    const arr=PRI.epics, from=arr.indexOf(draggedKey), to=arr.indexOf(targetKey);
+    if(from<0||to<0) return;
+    arr.splice(from,1); arr.splice(to,0,draggedKey);
+  } else if(dragged.type==='story'){
+    if(dragged.parent!==target.parent){ priFlash('Стори можно переставлять только внутри одного эпика.'); return; }
+    const arr=PRI.storiesByEpic[dragged.parent]||[], from=arr.indexOf(draggedKey), to=arr.indexOf(targetKey);
+    if(from<0||to<0) return;
+    arr.splice(from,1); arr.splice(to,0,draggedKey);
+  } else if(dragged.type==='task'){
+    if(dragged.parent!==target.parent){ priFlash('Задачи можно переставлять только внутри одной стори.'); return; }
+    const arr=PRI.tasksByStory[dragged.parent]||[], from=arr.indexOf(draggedKey), to=arr.indexOf(targetKey);
+    if(from<0||to<0) return;
+    arr.splice(from,1); arr.splice(to,0,draggedKey);
+  } else return;
+  recomputeAndRender();
+}
+
+function attachDragHandlers(){
+  $('ganttTree').querySelectorAll('.gantt2-row[data-key]').forEach(rowEl=>{
+    rowEl.addEventListener('dragstart', e=>{
+      e.dataTransfer.setData('text/plain', rowEl.dataset.key);
+      e.dataTransfer.effectAllowed='move';
+      rowEl.classList.add('pri-dragging');
+    });
+    rowEl.addEventListener('dragend', ()=>rowEl.classList.remove('pri-dragging'));
+    rowEl.addEventListener('dragover', e=>{ e.preventDefault(); rowEl.classList.add('pri-dragover'); });
+    rowEl.addEventListener('dragleave', ()=>rowEl.classList.remove('pri-dragover'));
+    rowEl.addEventListener('drop', e=>{
+      e.preventDefault();
+      rowEl.classList.remove('pri-dragover');
+      const draggedKey=e.dataTransfer.getData('text/plain');
+      handleReorder(draggedKey, rowEl.dataset.key);
+    });
+    rowEl.setAttribute('draggable','true');
+  });
+}
+
 function renderGanttV2(){
   const data=CURRENT_DATA;
   let gv=data.ganttV2;
@@ -342,8 +645,9 @@ function renderGanttV2(){
     $('ganttEmpty').innerHTML=`<div class="note-banner" style="background:rgba(255,107,61,.08);border:1px solid rgba(255,107,61,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mute);margin-bottom:14px">⚠ Скилл ещё не даёт story/task-уровень в ganttV2 — показан агрегат по ролям внутри эпика (наведи на бар — детали). Разверни ⌄ эпик, чтобы увидеть роли.</div>`;
   }
 
-  const resourceFilteredItems = filterItemsByResource(gv.items, GS.resourceFilter);
-  LAST_ITEMS = gv.items;
+  const effectiveItems = (PRI_MODE && PRI_ITEMS) ? PRI_ITEMS : gv.items;
+  const resourceFilteredItems = filterItemsByResource(effectiveItems, GS.resourceFilter);
+  LAST_ITEMS = effectiveItems;
   const RESOURCE_NAME={}; (gv.resources||[]).forEach(r=>{RESOURCE_NAME[r.id]=(r.name||'').split(' ')[0];});
 
   const items=resourceFilteredItems;
@@ -403,11 +707,14 @@ function renderGanttV2(){
       const hoursNote=node.type!=='epic'&&node.estimateH?` <span style="color:var(--mute);font-size:9px">(${node.spentH||0}/${node.estimateH}ч)</span>`:'';
       const epicNote=epicName?` <span style="color:var(--mute);font-size:9px">· ${epicName.slice(0,28)}</span>`:'';
       const indentPx=ladder ? 8 : TYPE_INDENT[node.type]*18+8;
-      return `<div class="gantt2-row"><div class="gantt2-label" title="${label.replace(/"/g,'&quot;')}" style="padding-left:${indentPx}px">${toggle}${typeIcon}${roleChip}${jiraLink(node.key)} ${label.slice(0,32)}${hoursNote}${epicNote}</div></div>`;
+      const priHandle='<svg class="pri-handle" viewBox="0 0 10 16"><circle cx="3" cy="3" r="1.4" fill="currentColor" opacity=".6"/><circle cx="7" cy="3" r="1.4" fill="currentColor" opacity=".6"/><circle cx="3" cy="8" r="1.4" fill="currentColor" opacity=".6"/><circle cx="7" cy="8" r="1.4" fill="currentColor" opacity=".6"/><circle cx="3" cy="13" r="1.4" fill="currentColor" opacity=".6"/><circle cx="7" cy="13" r="1.4" fill="currentColor" opacity=".6"/></svg>';
+      return `<div class="gantt2-row" data-key="${node.key}" data-type="${node.type}" data-parent="${node.parent||''}" data-epic="${node.epic||''}"><div class="gantt2-label" title="${label.replace(/"/g,'&quot;')}" style="padding-left:${indentPx}px">${priHandle}${toggle}${typeIcon}${roleChip}${jiraLink(node.key)} ${label.slice(0,32)}${hoursNote}${epicNote}</div></div>`;
     }).join('');
   $('ganttTree').querySelectorAll('.gantt2-toggle[data-key]').forEach(t=>{
     t.onclick=()=>{ const k=t.dataset.key; GS.expanded.has(k)?GS.expanded.delete(k):GS.expanded.add(k); renderGanttV2(); };
   });
+  $('ganttTree').classList.toggle('pri-active', PRI_MODE);
+  if(PRI_MODE) attachDragHandlers();
 
   const marks=buildRulerMarks(minD,maxD,GS.scale,GS.pxPerDay);
   $('ganttRuler').style.width=totalPx+'px';
@@ -487,7 +794,12 @@ function renderGanttV2(){
   initGanttTooltip();
 
   const assum=data.ganttAssumptions||{};
-  const cpe=data.criticalPathExplained||{};
+  let cpe=data.criticalPathExplained||{};
+  if(PRI_MODE && PRI_CRIT){
+    const okDeadline = PRI_CRIT.end && PRI_CRIT.end<='2026-12-10';
+    cpe={...cpe, endDate:PRI_CRIT.end, resource:PRI_CRIT.resource,
+      conclusion: `[Пересчитано вручную] ${okDeadline?'Успеваем к 10.12.2026':'НЕ успеваем'}: критпуть до ${PRI_CRIT.end||'—'} (ресурс ${PRI_CRIT.resource||'—'})`};
+  }
   $('ganttAssumptions').innerHTML=`
     <div>🔴 <b>Критический путь:</b> ${cpe.conclusion||'—'}</div>
     ${(cpe.steps&&cpe.steps.length)?`<div style="margin-top:8px"><b>Шаги:</b></div><ul class="assum-list">${cpe.steps.map(s=>`<li>${s}</li>`).join('')}</ul>`:''}
@@ -565,6 +877,9 @@ $('lineMilestone').onchange=e=>{ GS.showMilestone=e.target.checked; renderGanttV
 $('lineHires').onchange=e=>{ GS.showHires=e.target.checked; renderGanttV2(); };
 $('treeCollapseBtn').onclick=toggleTreeCollapsed;
 $('fullscreenBtn').onclick=toggleFullscreen;
+$('priModeBtn').onclick=togglePriorityMode;
+$('priResetBtn').onclick=resetPriorityOrder;
+$('priExportBtn').onclick=exportPriorityOrder;
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape' && document.body.classList.contains('g2-fullscreen')) toggleFullscreen();
 });
