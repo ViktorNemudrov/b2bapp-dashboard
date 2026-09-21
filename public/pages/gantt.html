@@ -815,6 +815,7 @@ function renderGanttV2(){
     <div>🔴 <b>Критический путь:</b> ${cpe.conclusion||'—'}</div>
     ${(cpe.steps&&cpe.steps.length)?`<div style="margin-top:8px"><b>Шаги:</b></div><ul class="assum-list">${cpe.steps.map(s=>`<li>${s}</li>`).join('')}</ul>`:''}
     ${assum.roleAssumptions?`<div style="margin-top:10px"><b>Допущения по ролям:</b></div><ul class="assum-list">${Object.entries(assum.roleAssumptions).map(([r,a])=>`<li><b>${r}</b>: ${a}</li>`).join('')}</ul>`:''}
+    ${(assum.excludedScenarios&&assum.excludedScenarios.length)?`<div style="margin-top:10px">⚠️ <b>Посчитано БЕЗ следующих сценариев</b> <span style="color:var(--mute);font-weight:400">(нет в этом гант-плане совсем)</span>:</div><ul class="assum-list">${assum.excludedScenarios.map(s=>`<li><b>${s.code}</b> «${s.name}» <span style="color:var(--mute)">(${s.group})</span> — ${s.reason}</li>`).join('')}</ul>`:''}
     <div style="margin-top:8px;color:var(--mute);font-size:11px">Часов в дне: ${gv.workCalendar?.hoursPerDay||8} · праздников учтено: ${(gv.workCalendar?.holidays||[]).length} · сгенерировано: ${gv.generatedAt||'—'}</div>
   `;
 
