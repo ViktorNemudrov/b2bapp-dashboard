@@ -298,13 +298,16 @@ def resolve_epic_priority(e):
         return 9999
     return e["epicPriorityRaw"] if e.get("epicPriorityRaw") is not None else e["priority"]
 
-def plan_gantt(issues, resources):
+def plan_gantt(issues, resources, today=None):
     """
     Возвращает items[] (epic+story+task) с датами, ресурсами, критпутём.
-    Планируем ТОЛЬКО MVP (метка mvp у стори) + их задачи. Вакантные исключены.
-    Завершённые — факт. В работе — факт-старт + остаток. Бэклог — жадное
-    назначение по очередям ресурсов без простоя, приоритет = префикс стори.
+    Планируем ТОЛЬКО MVP (метка mvp у стори) + их задачи. Вакантные (issue и
+    ресурсы) исключены. Завершённые — факт. В работе — факт-старт + остаток.
+    Бэклог — жадное назначение по очередям ресурсов без простоя, приоритет =
+    приоритет эпика/стори.
     """
+    if today is None:
+        today = date.today()
     issues = [i for i in issues if not i["vacant"]]
     by_key = {i["key"]: i for i in issues}
 
@@ -316,15 +319,25 @@ def plan_gantt(issues, resources):
     mvp_story_keys = {k for k, s in stories.items() if "mvp" in [l.lower() for l in s["labels"]]}
     mvp_tasks = [t for t in tasks if t["partParent"] in mvp_story_keys]
 
-    # Очереди ресурсов: следующая свободная дата по каждому ресурсу.
-    res_free = {r["id"]: parse_dt(r["from"]) or date(2026, 1, 1) for r in resources}
+    # Реальные (не вакантные) ресурсы — вакантные ставки-гипотезы НЕ участвуют
+    # в назначении задач вообще (Виктор 21.09.2026: "считаем, что их не будет").
+    real_resources = [r for r in resources if not r.get("vacant")]
+
+    # Очереди ресурсов: следующая свободная дата по каждому ресурсу — не раньше
+    # today, иначе бэклог-задача может "начаться" в прошлом (см. баг
+    # 21.09.2026: без этого пола BA/DS/ARC планировались от даты найма
+    # ресурса, а не от текущей даты, и жадный алгоритм в первую очередь
+    # выбирал того, кто "свободен раньше" в прошлом — второй ресурс роли
+    # (например, Шевченко) вообще не получал задач, потому что коллега,
+    # нанятый раньше, был вечно "свободнее" на всём этом ложном отрезке).
+    res_free = {r["id"]: max(parse_dt(r["from"]) or today, today) for r in real_resources}
     res_by_role = defaultdict(list)
-    for r in resources:
+    for r in real_resources:
         res_by_role[r["role"]].append(r)
 
     def pick_resource(role, earliest):
-        """Ресурс нужной роли, который освободится раньше всех (но не раньше выхода)."""
-        pool = res_by_role.get(role) or res_by_role.get("OTHER") or resources
+        """Ресурс нужной роли (реальный, не вакантный), который освободится раньше всех."""
+        pool = res_by_role.get(role) or res_by_role.get("OTHER") or real_resources
         best = min(pool, key=lambda r: max(res_free[r["id"]], parse_dt(r["from"]) or earliest, earliest))
         return best
 
@@ -371,11 +384,12 @@ def plan_gantt(issues, resources):
                 if dk in planned and (dep_end is None or planned[dk]["end"] > dep_end):
                     dep_end = planned[dk]["end"]
 
-            res = pick_resource(role, dep_end or date(2026, 1, 1))
+            res = pick_resource(role, dep_end or today)
             fte = res["fte"]
             earliest = max(res_free[res["id"]],
-                           parse_dt(res["from"]) or date(2026, 1, 1),
-                           dep_end or date(2026, 1, 1))
+                           parse_dt(res["from"]) or today,
+                           dep_end or today,
+                           today)
             remaining = t["estimateH"] - t["spentH"] if cat == "in_progress" else t["estimateH"]
             remaining = max(remaining, 0)
             start = next_workday(earliest)
@@ -617,8 +631,10 @@ def run_gantt(args):
     team = team.get("team", team) if isinstance(team, dict) else team
     old = json.load(open(args.data, encoding="utf-8"))
 
-    resources = build_resources(team, issues)
-    items, end_date, crit_res, mvp_story_keys = plan_gantt(issues, resources)
+    # Вакантные ставки-гипотезы (FE-2/BE-1/QA-2 и т.п.) больше не показываем и
+    # не назначаем на них задачи (Виктор 21.09.2026: считаем, что их не будет).
+    resources = [r for r in build_resources(team, issues) if not r.get("vacant")]
+    items, end_date, crit_res, mvp_story_keys = plan_gantt(issues, resources, today)
 
     mvp_scope = calc_mvp_scope(items)
     resource_plan = calc_resource_plan(items, resources)
