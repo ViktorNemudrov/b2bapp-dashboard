@@ -77,10 +77,11 @@ HOURS_PER_DAY = 8
 VACANCY_HIRE_MIN = date(2026, 9, 1)   # вакансии-гипотезы найма не раньше этой даты
 DEADLINE = date(2026, 12, 10)          # веха MVP
 
-# Зависимости ролей ВНУТРИ стори (порядок фаз). Роли в одной группе — параллельны.
-# (BA ∥ ARC) → (DS ∥ BE) → FE ; ORG и DVO — параллельно всему (не в цепочке).
-ROLE_PHASE = {"BA": 0, "ARC": 0, "DS": 1, "BE": 1, "FE": 2}
-PARALLEL_ROLES = {"ORG", "DVO", "QA", "OTHER"}  # не встраиваются в фазовую цепочку
+# Зависимости ролей ВНУТРИ стори (порядок фаз). Строго последовательная цепочка,
+# без параллельных пар (правка Виктора 21.09.2026): ARC→BA→DS→BE→FE→QA.
+# ORG и DVO — параллельно всему (не в цепочке).
+ROLE_PHASE = {"ARC": 0, "BA": 1, "DS": 2, "BE": 3, "FE": 4, "QA": 5}
+PARALLEL_ROLES = {"ORG", "DVO", "OTHER"}  # не встраиваются в фазовую цепочку
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Календарные помощники
@@ -220,6 +221,7 @@ def normalize_issue(raw):
         "blocksDeps": blocks_deps,
         "role": role_from_summary(summary) if itype == "task" else None,
         "priority": prio_from_summary(summary),
+        "epicPriorityRaw": f.get("epicPriority"),  # явное поле эпика, если прислано выгрузкой
         "vacant": is_vacant(summary),
     }
 
@@ -321,10 +323,23 @@ def plan_gantt(issues, resources):
 
     planned = {}   # key → {start,end,resource,...}
 
-    # Сортировка задач: по приоритету стори, затем фаза роли, затем ключ.
+    # Сортировка задач: по приоритету ЭПИКА (числовой префикс в summary самого
+    # эпика, а не дата создания и не префикс стори), затем приоритет стори
+    # внутри эпика, затем фаза роли, затем ключ. Правка Виктора 21.09.2026 —
+    # раньше сортировка шла только по префиксу стори, который локальный на
+    # каждый эпик (снова начинается с "1." в каждом эпике), из-за чего порядок
+    # эпиков получался произвольным (фактически — по порядку в jira_dump.json).
     def story_prio(t):
         s = stories.get(t["partParent"])
-        return s["priority"] if s else 9999
+        if not s:
+            return (9999, 9999)
+        e = epics.get(s.get("epicLink"))
+        # epicPriority из выгрузки — приоритетнее текстового префикса эпика
+        # (у него бывают устаревшие каталожные номера, см. кейс "5. Онбординг").
+        epic_prio = 9999
+        if e:
+            epic_prio = e["epicPriorityRaw"] if e.get("epicPriorityRaw") is not None else e["priority"]
+        return (epic_prio, s["priority"])
     ordered = sorted(mvp_tasks, key=lambda t: (story_prio(t),
                                                ROLE_PHASE.get(t["role"], 1),
                                                t["priority"], t["key"]))
