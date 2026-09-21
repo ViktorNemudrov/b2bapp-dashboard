@@ -713,7 +713,7 @@ function renderGanttV2(){
   $('ganttTree').querySelectorAll('.gantt2-toggle[data-key]').forEach(t=>{
     t.onclick=()=>{ const k=t.dataset.key; GS.expanded.has(k)?GS.expanded.delete(k):GS.expanded.add(k); renderGanttV2(); };
   });
-  $('ganttTree').classList.toggle('pri-active', PRI_MODE);
+  $('ganttTree').closest('.gantt2-tree').classList.toggle('pri-active', PRI_MODE);
   if(PRI_MODE) attachDragHandlers();
 
   const marks=buildRulerMarks(minD,maxD,GS.scale,GS.pxPerDay);
