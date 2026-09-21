@@ -125,7 +125,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
         <label>Линии:</label>
         <label class="gantt2-line-toggle"><input type="checkbox" id="lineToday" checked> Сегодня</label>
         <label class="gantt2-line-toggle"><input type="checkbox" id="lineMilestone" checked> Веха MVP</label>
-        <label class="gantt2-line-toggle"><input type="checkbox" id="lineHires" checked> Выход сотрудников</label>
+        <label class="gantt2-line-toggle"><input type="checkbox" id="lineHires"> Выход сотрудников</label>
       </div>
       <div class="gantt2-toolbar-group">
         <button id="treeCollapseBtn" title="Скрыть/показать колонку с названиями">◂ Панель</button>
@@ -170,7 +170,7 @@ const TYPE_ICON={
 };
 const SCALE_PX={week:26,month:6,quarter:2};
 const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',resourceFilter:'',_scrolledToToday:false,
-  treeWidth:340,treeCollapsed:false,showToday:true,showMilestone:true,showHires:true};
+  treeWidth:340,treeCollapsed:false,showToday:true,showMilestone:true,showHires:false};
 
 function setTreeWidth(px){
   GS.treeWidth=Math.max(160,Math.min(700,px));
@@ -243,10 +243,24 @@ function spaceify(s){
   return s.replace(/^(\d+)([.:)])(?=\S)/,'$1$2 ').replace(/\]([^\s\]])/,'] $1');
 }
 
+// Порядок эпиков/стори/задач в дереве — ВСЕГДА по приоритету (то же
+// правило, что в build_dashboard.py: epicPriority эпика → priority стори
+// внутри эпика → фаза роли → priority задачи), а не как они лежат в
+// исходном items[] (там порядок произвольный — из Python-set). Раньше это
+// применялось только в режиме "Приоритеты", из-за чего обычный вид дерева
+// выглядел "как попало" (жалоба Виктора 21.09.2026).
+function sortByPriority(nodes){
+  return nodes.slice().sort((a,b)=>
+    (a.priority??9999)-(b.priority??9999)
+    || (PRI_ROLE_PHASE[a.role]??99)-(PRI_ROLE_PHASE[b.role]??99)
+    || a.key.localeCompare(b.key)
+  );
+}
 function buildTree(items){
   const byParent={};
   items.forEach(i=>{ if(i.parent){ (byParent[i.parent]=byParent[i.parent]||[]).push(i); } });
-  return items.filter(i=>i.type==='epic').map(e=>({...e, children:(byParent[e.key]||[]).map(s=>({...s, children:byParent[s.key]||[]}))}));
+  const epics=sortByPriority(items.filter(i=>i.type==='epic'));
+  return epics.map(e=>({...e, children:sortByPriority(byParent[e.key]||[]).map(s=>({...s, children:sortByPriority(byParent[s.key]||[])}))}));
 }
 
 function allExpandableKeys(items){

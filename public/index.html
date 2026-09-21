@@ -1080,12 +1080,40 @@ function renderScopeGrowth(data){
     const {path}=line(s.key);
     return `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2"/>`;
   }).join('');
+
+  // Календарные вехи по неделям (понедельники) — раньше были только две
+  // подписи по краям графика, и было не понять, когда именно случился
+  // рост/спад (жалоба Виктора 21.09.2026). Сетку рисуем каждую неделю,
+  // подписи — реже (иначе наезжают друг на друга при длинном периоде).
+  const weekTicks=[];
+  {
+    const d=new Date(minD);
+    d.setHours(0,0,0,0);
+    while(d.getDay()!==1) d.setDate(d.getDate()+1);
+    const totalDays=(maxD-minD)/86400000;
+    const labelEvery = totalDays>240?6 : totalDays>120?4 : totalDays>56?2 : 1;
+    let i=0;
+    while(d.getTime()<=maxD){
+      weekTicks.push({t:d.getTime(), label:i%labelEvery===0});
+      d.setDate(d.getDate()+7);
+      i++;
+    }
+  }
+  const gridLines=weekTicks.map(tk=>{
+    const x=xScale(tk.t).toFixed(1);
+    return `<line x1="${x}" y1="${PAD.top}" x2="${x}" y2="${H-PAD.bottom}" stroke="var(--line)" stroke-width="1" opacity=".35"/>`;
+  }).join('');
+  const weekLabels=weekTicks.filter(tk=>tk.label).map(tk=>{
+    const x=xScale(tk.t);
+    const d=new Date(tk.t);
+    return `<text x="${x.toFixed(1)}" y="${H-6}" font-size="8" fill="var(--mute)" text-anchor="middle">${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}</text>`;
+  }).join('');
   const xLabels=[sorted[0],sorted[sorted.length-1]].map((p,i)=>{
     const d=new Date(p.date);
     const x=i===0?PAD.left:W-PAD.right;
-    return `<text x="${x}" y="${H-6}" font-size="9" fill="var(--mute)" text-anchor="${i===0?'start':'end'}">${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}</text>`;
+    return `<text x="${x}" y="${PAD.top-4}" font-size="9" font-weight="700" fill="var(--yel)" text-anchor="${i===0?'start':'end'}">${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}</text>`;
   }).join('');
-  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${svgLines}${xLabels}</svg>
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${gridLines}${svgLines}${weekLabels}${xLabels}</svg>
     <div class="creep-legend" style="margin-top:8px">${SERIES.map(s=>`<div class="creep-leg"><div class="creep-leg-sq" style="background:${s.color}"></div>${s.label}</div>`).join('')}</div>`;
 }
 
