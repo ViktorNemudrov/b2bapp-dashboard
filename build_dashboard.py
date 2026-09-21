@@ -361,12 +361,12 @@ def plan_gantt(issues, resources, today=None):
 
     planned = {}   # key → {start,end,resource,...}
 
-    # Сортировка задач: по приоритету ЭПИКА (числовой префикс в summary самого
-    # эпика, а не дата создания и не префикс стори), затем приоритет стори
-    # внутри эпика, затем фаза роли, затем ключ. Правка Виктора 21.09.2026 —
-    # раньше сортировка шла только по префиксу стори, который локальный на
-    # каждый эпик (снова начинается с "1." в каждом эпике), из-за чего порядок
-    # эпиков получался произвольным (фактически — по порядку в jira_dump.json).
+    # Приоритет: ЭПИК (числовой префикс в summary самого эпика, а не дата
+    # создания и не префикс стори) → приоритет стори внутри эпика → приоритет
+    # самой задачи → ключ. Правка Виктора 21.09.2026 — раньше сортировка шла
+    # только по префиксу стори, который локальный на каждый эпик (снова
+    # начинается с "1." в каждом эпике), из-за чего порядок эпиков получался
+    # произвольным (фактически — по порядку в jira_dump.json).
     def story_prio(t):
         s = stories.get(t["partParent"])
         if s:
@@ -375,47 +375,44 @@ def plan_gantt(issues, resources, today=None):
         # "приоритета стори" нет — используем приоритет самой задачи как
         # tie-break (обычно 9999, т.е. после обычных стори этого эпика).
         return (resolve_epic_priority(epics.get(t.get("epicLink"))), t["priority"])
-    ordered = sorted(all_tasks, key=lambda t: (story_prio(t),
-                                               ROLE_PHASE.get(t["role"], 1),
-                                               t["priority"], t["key"]))
+    def prio_key(t):
+        return (story_prio(t), t["priority"], t["key"])
 
     # Хранит окончание последней фазы внутри стори (для зависимости фаз).
     story_phase_end = defaultdict(lambda: defaultdict(lambda: None))  # story→phase→date
 
-    for t in ordered:
-        role = t["role"]
-        cat = status_category(t["status"])
+    def st_key_of(t):
         # None у "сирот" (нет реальной стори) — НЕ используем partParent
         # напрямую как ключ: несколько разных сирот иначе синхронизировались
         # бы на один и тот же ключ None в story_phase_end и ложно гейтили
         # бы друг друга фазами. У сирот дальше просто нет фазовой зависимости.
-        st_key = t["partParent"] if t["partParent"] in stories else None
+        return t["partParent"] if t["partParent"] in stories else None
 
+    def ready_time(t, phase, st_key):
+        """Не раньше чего задача МОЖЕТ начаться — фазовая зависимость внутри
+        стори + явные Blocks. Не путать с тем, КОГДА она реально начнётся
+        (это ещё и от занятости ресурса зависит) — см. run_role_queue."""
+        dep_end = None
+        if st_key is not None and phase is not None and phase > 0:
+            for ph in range(phase):
+                e = story_phase_end[st_key][ph]
+                if e and (dep_end is None or e > dep_end):
+                    dep_end = e
+        for dk in t["blocksDeps"]:
+            if dk in planned and (dep_end is None or planned[dk]["end"] > dep_end):
+                dep_end = planned[dk]["end"]
+        return dep_end or today
+
+    def schedule_one(t, role, cat, st_key, phase):
         if cat == "done":
             start = t["created"] or date(2026, 1, 1)
             end = t["resolutiondate"] or t["updated"] or start
             res = pick_resource(role, start)
         else:
-            # Зависимость фаз внутри стори: не раньше конца предыдущей фазы.
-            # У задач-сирот (st_key=None) стори-контекста нет — не гейтим.
-            phase = ROLE_PHASE.get(role, None)
-            dep_end = None
-            if st_key is not None and phase is not None and phase > 0:
-                for ph in range(phase):
-                    e = story_phase_end[st_key][ph]
-                    if e and (dep_end is None or e > dep_end):
-                        dep_end = e
-            # Явные Blocks
-            for dk in t["blocksDeps"]:
-                if dk in planned and (dep_end is None or planned[dk]["end"] > dep_end):
-                    dep_end = planned[dk]["end"]
-
-            res = pick_resource(role, dep_end or today)
+            dep_end = ready_time(t, phase, st_key)
+            res = pick_resource(role, dep_end)
             fte = res["fte"]
-            earliest = max(res_free[res["id"]],
-                           parse_dt(res["from"]) or today,
-                           dep_end or today,
-                           today)
+            earliest = max(res_free[res["id"]], parse_dt(res["from"]) or today, dep_end, today)
             remaining = t["estimateH"] - t["spentH"] if cat == "in_progress" else t["estimateH"]
             remaining = max(remaining, 0)
             start = next_workday(earliest)
@@ -425,10 +422,44 @@ def plan_gantt(issues, resources, today=None):
                 prev = story_phase_end[st_key][phase]
                 if prev is None or end > prev:
                     story_phase_end[st_key][phase] = end
+        planned[t["key"]] = {"start": start, "end": end, "resource": res["id"], "category": cat}
 
-        planned[t["key"]] = {
-            "start": start, "end": end, "resource": res["id"], "category": cat,
-        }
+    # done — факт, порядок обработки не важен (не трогает очереди ресурсов).
+    nondone_by_role = defaultdict(list)
+    for t in all_tasks:
+        cat = status_category(t["status"])
+        if cat == "done":
+            schedule_one(t, t["role"], cat, st_key_of(t), ROLE_PHASE.get(t["role"]))
+        else:
+            nondone_by_role[t["role"]].append((t, cat))
+
+    # Незавершённые — ready-queue по каждой роли: среди задач, чья зависимость
+    # УЖЕ разрешена к моменту освобождения ресурса, берём самую приоритетную,
+    # а не идём строго фиксированным списком. Иначе высокоприоритетная, но
+    # ещё не готовая (ждёт предыдущую фазу) задача держит ресурс в
+    # искусственном простое, хотя есть готовая менее приоритетная работа —
+    # жалоба Виктора 22.09.2026: "построй бэклог так, чтобы не было простоя".
+    # Роли-цепочка (ARC→BA→DS→BE→FE→QA) — строго по номеру фазы, иначе
+    # dep_end следующей фазы ещё не известен. ORG/DVO/OTHER — вне цепочки,
+    # ready_time = today, порядок обработки между собой не важен.
+    phases_present = sorted({ROLE_PHASE[r] for r in nondone_by_role if r in ROLE_PHASE})
+    role_order = [r for r in nondone_by_role if r not in ROLE_PHASE] + \
+                 [r for ph in phases_present for r in nondone_by_role if ROLE_PHASE.get(r) == ph]
+
+    for role in role_order:
+        phase = ROLE_PHASE.get(role)
+        pending = list(nondone_by_role[role])   # [(task, cat), ...]
+        rt = {t["key"]: ready_time(t, phase, st_key_of(t)) for t, _ in pending}
+        pool = res_by_role.get(role) or res_by_role.get("OTHER") or real_resources
+        while pending:
+            current_time = min(res_free[r["id"]] for r in pool)
+            ready = [p for p in pending if rt[p[0]["key"]] <= current_time]
+            if not ready:
+                current_time = min(rt[p[0]["key"]] for p in pending)
+                ready = [p for p in pending if rt[p[0]["key"]] <= current_time]
+            t, cat = min(ready, key=lambda p: prio_key(p[0]))
+            pending.remove((t, cat))
+            schedule_one(t, role, cat, st_key_of(t), phase)
 
     # ── Сборка items[] ────────────────────────────────────────────────────────
     items = []
