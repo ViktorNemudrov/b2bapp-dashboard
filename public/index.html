@@ -200,8 +200,7 @@ body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
 
 /* ── HERO ── */
 .hero{padding:24px 24px 16px;background:linear-gradient(180deg,#162235 0%,transparent 100%);display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;width:100%}
-.hero.forecast-row{padding-top:0;background:none}
-.hero.forecast-row #s-forecast{flex:1;min-width:280px;width:auto;padding:0}
+.hero #s-forecast{flex:1;min-width:260px;width:auto;padding:0}
 .hero-left{flex:1;min-width:200px;max-width:100%}
 .hero-left h1{font-size:24px;font-weight:800;line-height:1.2;margin-bottom:6px}
 .hero-left h1 em{color:var(--yel);font-style:normal}
@@ -623,7 +622,8 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
     <div id="changedBadge" style="display:none;flex-shrink:0"></div>
   </div>
 
-  <!-- HERO -->
+  <!-- HERO: технологии/демо-стенды + прогноз завершения + счётчик до вехи —
+       все три в одну строку (3 колонки), правка Виктора 21.09.2026. -->
   <div class="hero" id="s-hero">
     <div class="hero-left">
       <div class="hero-tech-label">Используемые технологии</div>
@@ -644,11 +644,7 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
         </a>
       </div>
     </div>
-  </div>
 
-  <!-- FORECAST (п.18) + COUNTDOWN на одной строке: обе про сроки/дедлайн, логичнее рядом,
-       чем счётчик рядом с блоком технологий/демо-стендов (правка Виктора 21.09.2026). -->
-  <div class="hero forecast-row">
     <div class="section" id="s-forecast" data-aud="exec,pm,all">
       <div class="sec-title">🔮 Прогноз завершения</div>
       <div class="fc-card" id="fcConclusion" style="max-width:600px"></div>
