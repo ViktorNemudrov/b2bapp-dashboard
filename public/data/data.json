@@ -1,6 +1,6 @@
 {
   "updated": "21.09.2026",
-  "refreshedAt": "2026-09-21T09:53:18+03:00",
+  "refreshedAt": "2026-09-21T19:15:21+03:00",
   "project": "B2BAPP",
   "totalIssues": 99,
   "summary": {
@@ -82,8 +82,8 @@
     "hoursSpent": 183,
     "completionPct": 7.5,
     "daysToDeadline": 80,
-    "criticalEnd": "2026-11-06",
-    "mvpReachable": true
+    "criticalEnd": "2027-02-18",
+    "mvpReachable": false
   },
   "epics": [
     {
@@ -264,7 +264,7 @@
     {
       "date": "2026-12-10",
       "label": "MVP / Дедлайн",
-      "status": "done"
+      "status": "at_risk"
     }
   ],
   "risks": [
@@ -392,7 +392,7 @@
     }
   ],
   "ganttV2": {
-    "generatedAt": "2026-09-21T09:53:18+03:00",
+    "generatedAt": "2026-09-21T19:15:21+03:00",
     "workCalendar": {
       "holidays": [
         "2026-01-01",
@@ -505,22 +505,6 @@
         "fte": 1.0,
         "from": "2026-07-22",
         "vacant": false
-      },
-      {
-        "id": "FE-2",
-        "role": "FE",
-        "name": "Вакантно FE-2",
-        "fte": 1,
-        "from": "2026-09-01",
-        "vacant": true
-      },
-      {
-        "id": "QA-2",
-        "role": "QA",
-        "name": "Вакантно QA-2",
-        "fte": 1,
-        "from": "2026-09-01",
-        "vacant": true
       }
     ],
     "items": [
@@ -590,8 +574,8 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-07-24",
-        "end": "2026-07-28",
+        "start": "2026-09-21",
+        "end": "2026-09-23",
         "resource": "BE-1",
         "onCriticalPath": false,
         "deps": []
@@ -626,8 +610,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-07-28",
-        "end": "2026-07-29",
+        "start": "2026-09-23",
+        "end": "2026-09-24",
         "resource": "QA-1",
         "onCriticalPath": false,
         "deps": []
@@ -644,8 +628,8 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-03-27",
-        "end": "2026-04-08",
+        "start": "2026-09-21",
+        "end": "2026-10-01",
         "resource": "ARC-1",
         "onCriticalPath": false,
         "deps": []
@@ -662,8 +646,8 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-04-28",
-        "end": "2026-04-30",
+        "start": "2026-10-07",
+        "end": "2026-10-09",
         "resource": "DS-1",
         "onCriticalPath": false,
         "deps": []
@@ -680,8 +664,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-08-05",
-        "end": "2026-08-10",
+        "start": "2026-10-16",
+        "end": "2026-10-21",
         "resource": "FE-1",
         "onCriticalPath": true,
         "deps": []
@@ -698,8 +682,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-07-29",
-        "end": "2026-08-05",
+        "start": "2026-10-09",
+        "end": "2026-10-16",
         "resource": "BE-1",
         "onCriticalPath": false,
         "deps": []
@@ -716,8 +700,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-08-10",
-        "end": "2026-08-12",
+        "start": "2026-10-21",
+        "end": "2026-10-23",
         "resource": "QA-1",
         "onCriticalPath": false,
         "deps": []
@@ -734,8 +718,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-08-11",
-        "end": "2026-08-11",
+        "start": "2026-10-22",
+        "end": "2026-10-22",
         "resource": "FE-1",
         "onCriticalPath": true,
         "deps": []
@@ -752,9 +736,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-08-06",
-        "end": "2026-08-06",
-        "resource": "BE-1",
+        "start": "2026-09-21",
+        "end": "2026-09-21",
+        "resource": "BE-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -770,8 +754,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-05-04",
-        "end": "2026-05-06",
+        "start": "2026-10-12",
+        "end": "2026-10-14",
         "resource": "DS-1",
         "onCriticalPath": false,
         "deps": []
@@ -788,8 +772,8 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-04-09",
-        "end": "2026-04-20",
+        "start": "2026-10-02",
+        "end": "2026-10-13",
         "resource": "ARC-1",
         "onCriticalPath": false,
         "deps": []
@@ -806,9 +790,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-08-19",
-        "end": "2026-09-01",
-        "resource": "BE-1",
+        "start": "2026-10-19",
+        "end": "2026-10-30",
+        "resource": "BE-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -824,9 +808,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-02",
-        "end": "2026-09-11",
-        "resource": "BE-1",
+        "start": "2026-11-02",
+        "end": "2026-11-12",
+        "resource": "BE-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -842,9 +826,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-03",
-        "end": "2026-09-10",
-        "resource": "BE-2",
+        "start": "2026-11-03",
+        "end": "2026-11-11",
+        "resource": "BE-1",
         "onCriticalPath": false,
         "deps": []
       },
@@ -860,9 +844,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-11",
-        "end": "2026-09-16",
-        "resource": "BE-2",
+        "start": "2026-11-12",
+        "end": "2026-11-17",
+        "resource": "BE-1",
         "onCriticalPath": false,
         "deps": []
       },
@@ -878,8 +862,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-01",
-        "end": "2026-09-08",
+        "start": "2026-11-17",
+        "end": "2026-11-24",
         "resource": "FE-1",
         "onCriticalPath": true,
         "deps": []
@@ -896,10 +880,10 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-01",
-        "end": "2026-09-07",
-        "resource": "FE-2",
-        "onCriticalPath": false,
+        "start": "2026-11-25",
+        "end": "2026-12-01",
+        "resource": "FE-1",
+        "onCriticalPath": true,
         "deps": []
       },
       {
@@ -914,8 +898,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-08",
-        "end": "2026-09-14",
+        "start": "2026-12-01",
+        "end": "2026-12-07",
         "resource": "QA-1",
         "onCriticalPath": false,
         "deps": []
@@ -932,9 +916,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-21",
-        "end": "2026-09-23",
-        "resource": "BE-1",
+        "start": "2026-11-20",
+        "end": "2026-11-24",
+        "resource": "BE-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -950,8 +934,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-28",
-        "end": "2026-09-30",
+        "start": "2026-12-16",
+        "end": "2026-12-18",
         "resource": "FE-1",
         "onCriticalPath": true,
         "deps": []
@@ -968,8 +952,8 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-05-07",
-        "end": "2026-05-15",
+        "start": "2026-10-15",
+        "end": "2026-10-22",
         "resource": "DS-1",
         "onCriticalPath": false,
         "deps": []
@@ -986,8 +970,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-08-18",
-        "end": "2026-08-31",
+        "start": "2026-11-02",
+        "end": "2026-11-16",
         "resource": "FE-1",
         "onCriticalPath": true,
         "deps": []
@@ -1004,8 +988,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-08-07",
-        "end": "2026-08-18",
+        "start": "2026-10-22",
+        "end": "2026-11-02",
         "resource": "BE-1",
         "onCriticalPath": false,
         "deps": []
@@ -1022,8 +1006,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-08-31",
-        "end": "2026-09-03",
+        "start": "2026-11-16",
+        "end": "2026-11-19",
         "resource": "QA-1",
         "onCriticalPath": false,
         "deps": []
@@ -1040,8 +1024,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-18",
-        "end": "2026-09-25",
+        "start": "2026-12-02",
+        "end": "2026-12-09",
         "resource": "FE-1",
         "onCriticalPath": true,
         "deps": []
@@ -1058,9 +1042,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-14",
-        "end": "2026-09-18",
-        "resource": "BE-1",
+        "start": "2026-11-13",
+        "end": "2026-11-19",
+        "resource": "BE-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1076,10 +1060,10 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-23",
-        "end": "2026-09-28",
-        "resource": "FE-2",
-        "onCriticalPath": false,
+        "start": "2026-12-10",
+        "end": "2026-12-15",
+        "resource": "FE-1",
+        "onCriticalPath": true,
         "deps": []
       },
       {
@@ -1094,9 +1078,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-17",
-        "end": "2026-09-23",
-        "resource": "BE-2",
+        "start": "2026-11-18",
+        "end": "2026-11-24",
+        "resource": "BE-1",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1112,8 +1096,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-28",
-        "end": "2026-10-05",
+        "start": "2026-12-15",
+        "end": "2026-12-22",
         "resource": "QA-1",
         "onCriticalPath": false,
         "deps": []
@@ -1130,8 +1114,8 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-05-29",
-        "end": "2026-06-02",
+        "start": "2026-10-23",
+        "end": "2026-10-27",
         "resource": "DS-1",
         "onCriticalPath": false,
         "deps": []
@@ -1148,10 +1132,10 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-30",
-        "end": "2026-10-07",
-        "resource": "FE-2",
-        "onCriticalPath": false,
+        "start": "2026-12-21",
+        "end": "2026-12-28",
+        "resource": "FE-1",
+        "onCriticalPath": true,
         "deps": []
       },
       {
@@ -1166,8 +1150,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-24",
-        "end": "2026-09-30",
+        "start": "2026-11-25",
+        "end": "2026-12-01",
         "resource": "BE-1",
         "onCriticalPath": false,
         "deps": []
@@ -1184,8 +1168,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-07",
-        "end": "2026-10-09",
+        "start": "2026-12-28",
+        "end": "2026-12-30",
         "resource": "QA-1",
         "onCriticalPath": false,
         "deps": []
@@ -1202,8 +1186,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-01",
-        "end": "2026-10-06",
+        "start": "2026-12-29",
+        "end": "2027-01-11",
         "resource": "FE-1",
         "onCriticalPath": true,
         "deps": []
@@ -1220,8 +1204,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-09-24",
-        "end": "2026-09-30",
+        "start": "2026-11-25",
+        "end": "2026-12-01",
         "resource": "BE-2",
         "onCriticalPath": false,
         "deps": []
@@ -1238,9 +1222,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-06",
-        "end": "2026-10-08",
-        "resource": "QA-2",
+        "start": "2027-01-11",
+        "end": "2027-01-13",
+        "resource": "QA-1",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1256,8 +1240,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-04-21",
-        "end": "2026-04-24",
+        "start": "2026-10-14",
+        "end": "2026-10-19",
         "resource": "ARC-1",
         "onCriticalPath": false,
         "deps": []
@@ -1274,8 +1258,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-01",
-        "end": "2026-10-14",
+        "start": "2026-12-02",
+        "end": "2026-12-15",
         "resource": "BE-1",
         "onCriticalPath": false,
         "deps": []
@@ -1292,8 +1276,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-14",
-        "end": "2026-10-23",
+        "start": "2027-01-12",
+        "end": "2027-01-21",
         "resource": "FE-1",
         "onCriticalPath": true,
         "deps": []
@@ -1310,8 +1294,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-23",
-        "end": "2026-10-28",
+        "start": "2027-01-21",
+        "end": "2027-01-26",
         "resource": "QA-1",
         "onCriticalPath": false,
         "deps": []
@@ -1328,8 +1312,8 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-04-27",
-        "end": "2026-05-05",
+        "start": "2026-10-20",
+        "end": "2026-10-27",
         "resource": "ARC-1",
         "onCriticalPath": false,
         "deps": []
@@ -1346,8 +1330,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-01",
-        "end": "2026-10-14",
+        "start": "2026-12-02",
+        "end": "2026-12-15",
         "resource": "BE-2",
         "onCriticalPath": false,
         "deps": []
@@ -1364,10 +1348,10 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-14",
-        "end": "2026-10-21",
-        "resource": "FE-2",
-        "onCriticalPath": false,
+        "start": "2027-01-22",
+        "end": "2027-01-29",
+        "resource": "FE-1",
+        "onCriticalPath": true,
         "deps": []
       },
       {
@@ -1382,8 +1366,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-06-11",
-        "end": "2026-06-17",
+        "start": "2026-10-28",
+        "end": "2026-11-02",
         "resource": "DS-1",
         "onCriticalPath": false,
         "deps": []
@@ -1400,10 +1384,10 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-22",
-        "end": "2026-10-28",
-        "resource": "FE-2",
-        "onCriticalPath": false,
+        "start": "2027-02-01",
+        "end": "2027-02-05",
+        "resource": "FE-1",
+        "onCriticalPath": true,
         "deps": []
       },
       {
@@ -1418,9 +1402,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-28",
-        "end": "2026-11-05",
-        "resource": "QA-2",
+        "start": "2027-02-05",
+        "end": "2027-02-12",
+        "resource": "QA-1",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1436,8 +1420,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-26",
-        "end": "2026-10-28",
+        "start": "2027-02-08",
+        "end": "2027-02-10",
         "resource": "FE-1",
         "onCriticalPath": true,
         "deps": []
@@ -1454,8 +1438,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-29",
-        "end": "2026-11-06",
+        "start": "2027-02-11",
+        "end": "2027-02-18",
         "resource": "FE-1",
         "onCriticalPath": true,
         "deps": []
@@ -1472,8 +1456,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-06-23",
-        "end": "2026-06-25",
+        "start": "2026-11-03",
+        "end": "2026-11-06",
         "resource": "DS-1",
         "onCriticalPath": false,
         "deps": []
@@ -1490,8 +1474,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-15",
-        "end": "2026-10-19",
+        "start": "2026-12-16",
+        "end": "2026-12-18",
         "resource": "BE-2",
         "onCriticalPath": false,
         "deps": []
@@ -1508,8 +1492,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-29",
-        "end": "2026-10-30",
+        "start": "2027-02-15",
+        "end": "2027-02-16",
         "resource": "QA-1",
         "onCriticalPath": false,
         "deps": []
@@ -1526,8 +1510,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-06-26",
-        "end": "2026-06-29",
+        "start": "2026-11-09",
+        "end": "2026-11-10",
         "resource": "DS-1",
         "onCriticalPath": false,
         "deps": []
@@ -1544,8 +1528,8 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-05-08",
-        "end": "2026-05-15",
+        "start": "2026-10-13",
+        "end": "2026-10-19",
         "resource": "BA-1",
         "onCriticalPath": false,
         "deps": []
@@ -1562,9 +1546,9 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-04-29",
-        "end": "2026-05-04",
-        "resource": "BA-1",
+        "start": "2026-09-21",
+        "end": "2026-09-23",
+        "resource": "BA-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1580,9 +1564,9 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-05-05",
-        "end": "2026-05-07",
-        "resource": "BA-1",
+        "start": "2026-09-24",
+        "end": "2026-09-28",
+        "resource": "BA-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1598,9 +1582,9 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-05-26",
-        "end": "2026-05-29",
-        "resource": "BA-1",
+        "start": "2026-10-07",
+        "end": "2026-10-12",
+        "resource": "BA-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1616,9 +1600,9 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-06-04",
-        "end": "2026-06-09",
-        "resource": "BA-1",
+        "start": "2026-10-19",
+        "end": "2026-10-22",
+        "resource": "BA-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1634,8 +1618,8 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-06-10",
-        "end": "2026-06-11",
+        "start": "2026-10-27",
+        "end": "2026-10-28",
         "resource": "BA-1",
         "onCriticalPath": false,
         "deps": []
@@ -1652,9 +1636,9 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-06-18",
-        "end": "2026-06-23",
-        "resource": "BA-1",
+        "start": "2026-10-28",
+        "end": "2026-11-02",
+        "resource": "BA-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1670,8 +1654,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-06-24",
-        "end": "2026-06-24",
+        "start": "2026-10-29",
+        "end": "2026-10-29",
         "resource": "BA-1",
         "onCriticalPath": false,
         "deps": []
@@ -1688,9 +1672,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-05-18",
-        "end": "2026-05-20",
-        "resource": "BA-1",
+        "start": "2026-09-29",
+        "end": "2026-10-01",
+        "resource": "BA-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1706,9 +1690,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-06-01",
-        "end": "2026-06-03",
-        "resource": "BA-1",
+        "start": "2026-10-13",
+        "end": "2026-10-15",
+        "resource": "BA-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1724,9 +1708,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-06-15",
-        "end": "2026-06-17",
-        "resource": "BA-1",
+        "start": "2026-10-23",
+        "end": "2026-10-27",
+        "resource": "BA-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1742,9 +1726,9 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-05-21",
-        "end": "2026-05-25",
-        "resource": "BA-1",
+        "start": "2026-10-02",
+        "end": "2026-10-06",
+        "resource": "BA-2",
         "onCriticalPath": false,
         "deps": []
       },
@@ -1760,8 +1744,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-10-15",
-        "end": "2026-10-21",
+        "start": "2026-12-16",
+        "end": "2026-12-22",
         "resource": "BE-1",
         "onCriticalPath": false,
         "deps": []
@@ -1778,23 +1762,53 @@
         "spentH": 0,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-04-22",
-        "end": "2026-04-28",
+        "start": "2026-10-01",
+        "end": "2026-10-07",
         "resource": "BA-1",
         "onCriticalPath": false,
         "deps": []
       },
       {
-        "key": "B2BAPP-48",
+        "key": "B2BAPP-349",
         "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "1. AI-оркестратор, интенты и RAG",
-        "priority": 1,
-        "estimateH": 289,
+        "parent": "B2BAPP-21",
+        "epic": "B2BAPP-21",
+        "summary": "2. Биометрическая авторизация (Face ID / Touch ID)",
+        "priority": 2,
+        "estimateH": 11,
         "spentH": 0,
-        "start": "2026-04-09",
-        "end": "2026-09-16",
+        "start": "2026-09-21",
+        "end": "2026-10-22",
+        "category": "backlog",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-1200",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "3. Напоминания и задачи из звонков",
+        "priority": 3,
+        "estimateH": 64,
+        "spentH": 0,
+        "start": "2026-12-16",
+        "end": "2027-02-10",
+        "category": "backlog",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-703",
+        "type": "story",
+        "parent": "B2BAPP-491",
+        "epic": "B2BAPP-491",
+        "summary": "1. Первое касание клиента (экран и онбординг)",
+        "priority": 1,
+        "estimateH": 42,
+        "spentH": 0,
+        "start": "2026-09-21",
+        "end": "2026-10-14",
         "category": "in_progress",
         "onCriticalPath": false,
         "deps": []
@@ -1808,115 +1822,55 @@
         "priority": 1,
         "estimateH": 200,
         "spentH": 0,
-        "start": "2026-03-27",
-        "end": "2026-08-12",
-        "category": "in_progress",
-        "onCriticalPath": true,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1200",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "3. Напоминания и задачи из звонков",
-        "priority": 3,
-        "estimateH": 64,
-        "spentH": 0,
-        "start": "2026-10-15",
-        "end": "2026-10-28",
-        "category": "backlog",
-        "onCriticalPath": true,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1217",
-        "type": "story",
-        "parent": "B2BAPP-1241",
-        "epic": "B2BAPP-1241",
-        "summary": "1. Онбординг и активация клиента",
-        "priority": 1,
-        "estimateH": 20,
-        "spentH": 0,
-        "start": "2026-06-24",
-        "end": "2026-06-29",
-        "category": "backlog",
-        "onCriticalPath": false,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-800",
-        "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "3. Push-уведомления от AI-ассистента",
-        "priority": 3,
-        "estimateH": 48,
-        "spentH": 0,
         "start": "2026-09-21",
-        "end": "2026-09-30",
+        "end": "2026-10-23",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-400",
+        "type": "story",
+        "parent": "B2BAPP-484",
+        "epic": "B2BAPP-484",
+        "summary": "1. AI-аналитика бизнеса",
+        "priority": 1,
+        "estimateH": 220,
+        "spentH": 0,
+        "start": "2026-10-14",
+        "end": "2027-01-26",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-850",
+        "type": "story",
+        "parent": "B2BAPP-1242",
+        "epic": "B2BAPP-1242",
+        "summary": "2. Управление сессиями и устройствами",
+        "priority": 2,
+        "estimateH": 110,
+        "spentH": 0,
+        "start": "2026-10-13",
+        "end": "2027-01-13",
         "category": "backlog",
         "onCriticalPath": true,
         "deps": []
       },
       {
-        "key": "B2BAPP-1154",
+        "key": "B2BAPP-198",
         "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "2. Транскрипция и саммари звонков (AI)",
-        "priority": 2,
-        "estimateH": 88,
+        "parent": "B2BAPP-1242",
+        "epic": "B2BAPP-1242",
+        "summary": "1. Профиль пользователя (просмотр и редактирование)",
+        "priority": 1,
+        "estimateH": 164,
         "spentH": 0,
-        "start": "2026-10-22",
-        "end": "2026-11-05",
-        "category": "backlog",
-        "onCriticalPath": false,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-700",
-        "type": "story",
-        "parent": "B2BAPP-22",
-        "epic": "B2BAPP-22",
-        "summary": "2. Мой день — топ задач и событий",
-        "priority": 2,
-        "estimateH": 109,
-        "spentH": 0,
-        "start": "2026-05-18",
-        "end": "2026-09-25",
-        "category": "backlog",
+        "start": "2026-10-07",
+        "end": "2026-12-30",
+        "category": "in_progress",
         "onCriticalPath": true,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1120",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "1. История звонков (список, фильтры, карточка)",
-        "priority": 1,
-        "estimateH": 200,
-        "spentH": 0,
-        "start": "2026-04-27",
-        "end": "2026-10-21",
-        "category": "in_progress",
-        "onCriticalPath": false,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-703",
-        "type": "story",
-        "parent": "B2BAPP-491",
-        "epic": "B2BAPP-491",
-        "summary": "1. Первое касание клиента (экран и онбординг)",
-        "priority": 1,
-        "estimateH": 42,
-        "spentH": 0,
-        "start": "2026-04-29",
-        "end": "2026-05-06",
-        "category": "in_progress",
-        "onCriticalPath": false,
         "deps": []
       },
       {
@@ -1929,37 +1883,37 @@
         "estimateH": 220,
         "spentH": 183,
         "start": "2026-02-09",
-        "end": "2026-09-01",
+        "end": "2026-09-24",
         "category": "in_progress",
         "onCriticalPath": false,
         "deps": []
       },
       {
-        "key": "B2BAPP-400",
+        "key": "B2BAPP-348",
         "type": "story",
-        "parent": "B2BAPP-484",
-        "epic": "B2BAPP-484",
-        "summary": "1. AI-аналитика бизнеса",
+        "parent": "B2BAPP-22",
+        "epic": "B2BAPP-22",
+        "summary": "1. Главный экран и смарт-карточки",
         "priority": 1,
-        "estimateH": 220,
+        "estimateH": 241,
         "spentH": 0,
-        "start": "2026-04-21",
-        "end": "2026-10-28",
+        "start": "2026-09-24",
+        "end": "2026-11-19",
         "category": "in_progress",
         "onCriticalPath": true,
         "deps": []
       },
       {
-        "key": "B2BAPP-349",
+        "key": "B2BAPP-1154",
         "type": "story",
-        "parent": "B2BAPP-21",
-        "epic": "B2BAPP-21",
-        "summary": "2. Биометрическая авторизация (Face ID / Touch ID)",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "2. Транскрипция и саммари звонков (AI)",
         "priority": 2,
-        "estimateH": 11,
+        "estimateH": 88,
         "spentH": 0,
-        "start": "2026-08-06",
-        "end": "2026-08-11",
+        "start": "2027-02-01",
+        "end": "2027-02-12",
         "category": "backlog",
         "onCriticalPath": true,
         "deps": []
@@ -1973,39 +1927,9 @@
         "priority": 3,
         "estimateH": 139,
         "spentH": 0,
-        "start": "2026-05-21",
-        "end": "2026-10-05",
+        "start": "2026-10-02",
+        "end": "2026-12-22",
         "category": "backlog",
-        "onCriticalPath": false,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-850",
-        "type": "story",
-        "parent": "B2BAPP-1242",
-        "epic": "B2BAPP-1242",
-        "summary": "2. Управление сессиями и устройствами",
-        "priority": 2,
-        "estimateH": 110,
-        "spentH": 0,
-        "start": "2026-06-01",
-        "end": "2026-10-08",
-        "category": "backlog",
-        "onCriticalPath": true,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-348",
-        "type": "story",
-        "parent": "B2BAPP-22",
-        "epic": "B2BAPP-22",
-        "summary": "1. Главный экран и смарт-карточки",
-        "priority": 1,
-        "estimateH": 241,
-        "spentH": 0,
-        "start": "2026-05-05",
-        "end": "2026-09-03",
-        "category": "in_progress",
         "onCriticalPath": true,
         "deps": []
       },
@@ -2018,38 +1942,53 @@
         "priority": 1,
         "estimateH": 87,
         "spentH": 0,
-        "start": "2026-06-18",
-        "end": "2026-10-30",
+        "start": "2026-10-28",
+        "end": "2027-02-16",
         "category": "in_progress",
         "onCriticalPath": false,
         "deps": []
       },
       {
-        "key": "B2BAPP-198",
+        "key": "B2BAPP-1120",
         "type": "story",
-        "parent": "B2BAPP-1242",
-        "epic": "B2BAPP-1242",
-        "summary": "1. Профиль пользователя (просмотр и редактирование)",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "1. История звонков (список, фильтры, карточка)",
         "priority": 1,
-        "estimateH": 164,
+        "estimateH": 200,
         "spentH": 0,
-        "start": "2026-05-26",
-        "end": "2026-10-09",
+        "start": "2026-10-20",
+        "end": "2027-01-29",
         "category": "in_progress",
-        "onCriticalPath": false,
+        "onCriticalPath": true,
         "deps": []
       },
       {
-        "key": "B2BAPP-57",
+        "key": "B2BAPP-800",
         "type": "story",
         "parent": "B2BAPP-27",
         "epic": "B2BAPP-27",
-        "summary": "2. Чат-интерфейс AI-ассистента и AG-UI виджеты",
-        "priority": 2,
-        "estimateH": 128,
+        "summary": "3. Push-уведомления от AI-ассистента",
+        "priority": 3,
+        "estimateH": 48,
         "spentH": 0,
-        "start": "2026-09-01",
-        "end": "2026-09-14",
+        "start": "2026-11-20",
+        "end": "2026-12-18",
+        "category": "backlog",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-700",
+        "type": "story",
+        "parent": "B2BAPP-22",
+        "epic": "B2BAPP-22",
+        "summary": "2. Мой день — топ задач и событий",
+        "priority": 2,
+        "estimateH": 109,
+        "spentH": 0,
+        "start": "2026-09-29",
+        "end": "2026-12-09",
         "category": "backlog",
         "onCriticalPath": true,
         "deps": []
@@ -2063,77 +2002,88 @@
         "priority": 4,
         "estimateH": 69,
         "spentH": 0,
-        "start": "2026-06-15",
-        "end": "2026-11-06",
+        "start": "2026-10-23",
+        "end": "2027-02-18",
         "category": "backlog",
         "onCriticalPath": true,
         "deps": []
       },
       {
-        "key": "B2BAPP-21",
-        "type": "epic",
-        "parent": null,
-        "epic": "B2BAPP-21",
-        "summary": "3. Вход и выход из приложения (Аутентификация)",
+        "key": "B2BAPP-57",
+        "type": "story",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "2. Чат-интерфейс AI-ассистента и AG-UI виджеты",
         "priority": 2,
-        "estimateH": 211,
+        "estimateH": 128,
         "spentH": 0,
-        "start": "2026-03-27",
-        "end": "2026-08-12",
+        "start": "2026-11-17",
+        "end": "2026-12-07",
+        "category": "backlog",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-48",
+        "type": "story",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "1. AI-оркестратор, интенты и RAG",
+        "priority": 1,
+        "estimateH": 289,
+        "spentH": 0,
+        "start": "2026-10-02",
+        "end": "2026-11-17",
+        "category": "in_progress",
+        "onCriticalPath": false,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-1217",
+        "type": "story",
+        "parent": "B2BAPP-1241",
+        "epic": "B2BAPP-1241",
+        "summary": "1. Онбординг и активация клиента",
+        "priority": 1,
+        "estimateH": 20,
+        "spentH": 0,
+        "start": "2026-10-29",
+        "end": "2026-11-10",
+        "category": "backlog",
+        "onCriticalPath": false,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-22",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-22",
+        "summary": "6. Главная страница",
+        "priority": 4,
+        "estimateH": 489,
+        "spentH": 0,
+        "start": "2026-09-24",
+        "end": "2026-12-22",
         "category": "in_progress",
         "onCriticalPath": true,
-        "storiesTotal": 2,
+        "storiesTotal": 3,
         "storiesDone": 0,
         "deps": []
       },
       {
-        "key": "B2BAPP-484",
+        "key": "B2BAPP-1241",
         "type": "epic",
         "parent": null,
-        "epic": "B2BAPP-484",
-        "summary": "9. AI-отчёты и аналитика",
-        "priority": 6,
-        "estimateH": 220,
+        "epic": "B2BAPP-1241",
+        "summary": "5. Онбординг",
+        "priority": 9,
+        "estimateH": 20,
         "spentH": 0,
-        "start": "2026-04-21",
-        "end": "2026-10-28",
-        "category": "in_progress",
-        "onCriticalPath": true,
+        "start": "2026-10-29",
+        "end": "2026-11-10",
+        "category": "backlog",
+        "onCriticalPath": false,
         "storiesTotal": 1,
-        "storiesDone": 0,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1242",
-        "type": "epic",
-        "parent": null,
-        "epic": "B2BAPP-1242",
-        "summary": "8. Профиль",
-        "priority": 5,
-        "estimateH": 274,
-        "spentH": 0,
-        "start": "2026-05-26",
-        "end": "2026-10-09",
-        "category": "in_progress",
-        "onCriticalPath": true,
-        "storiesTotal": 2,
-        "storiesDone": 0,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-465",
-        "type": "epic",
-        "parent": null,
-        "epic": "B2BAPP-465",
-        "summary": "10. Общение и звонки",
-        "priority": 7,
-        "estimateH": 421,
-        "spentH": 0,
-        "start": "2026-04-27",
-        "end": "2026-11-06",
-        "category": "in_progress",
-        "onCriticalPath": true,
-        "storiesTotal": 4,
         "storiesDone": 0,
         "deps": []
       },
@@ -2146,11 +2096,28 @@
         "priority": 3,
         "estimateH": 42,
         "spentH": 0,
-        "start": "2026-04-29",
-        "end": "2026-05-06",
+        "start": "2026-09-21",
+        "end": "2026-10-14",
         "category": "in_progress",
         "onCriticalPath": false,
         "storiesTotal": 1,
+        "storiesDone": 0,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-21",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-21",
+        "summary": "3. Вход и выход из приложения (Аутентификация)",
+        "priority": 2,
+        "estimateH": 211,
+        "spentH": 0,
+        "start": "2026-09-21",
+        "end": "2026-10-23",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "storiesTotal": 2,
         "storiesDone": 0,
         "deps": []
       },
@@ -2163,8 +2130,8 @@
         "priority": 4,
         "estimateH": 465,
         "spentH": 0,
-        "start": "2026-04-09",
-        "end": "2026-09-30",
+        "start": "2026-10-02",
+        "end": "2026-12-18",
         "category": "in_progress",
         "onCriticalPath": true,
         "storiesTotal": 3,
@@ -2181,42 +2148,8 @@
         "estimateH": 220,
         "spentH": 183,
         "start": "2026-02-09",
-        "end": "2026-09-01",
+        "end": "2026-09-24",
         "category": "in_progress",
-        "onCriticalPath": false,
-        "storiesTotal": 1,
-        "storiesDone": 0,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-22",
-        "type": "epic",
-        "parent": null,
-        "epic": "B2BAPP-22",
-        "summary": "6. Главная страница",
-        "priority": 4,
-        "estimateH": 489,
-        "spentH": 0,
-        "start": "2026-05-05",
-        "end": "2026-10-05",
-        "category": "in_progress",
-        "onCriticalPath": true,
-        "storiesTotal": 3,
-        "storiesDone": 0,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1241",
-        "type": "epic",
-        "parent": null,
-        "epic": "B2BAPP-1241",
-        "summary": "5. Онбординг",
-        "priority": 9,
-        "estimateH": 20,
-        "spentH": 0,
-        "start": "2026-06-24",
-        "end": "2026-06-29",
-        "category": "backlog",
         "onCriticalPath": false,
         "storiesTotal": 1,
         "storiesDone": 0,
@@ -2231,11 +2164,62 @@
         "priority": 8,
         "estimateH": 87,
         "spentH": 0,
-        "start": "2026-06-18",
-        "end": "2026-10-30",
+        "start": "2026-10-28",
+        "end": "2027-02-16",
         "category": "in_progress",
         "onCriticalPath": false,
         "storiesTotal": 1,
+        "storiesDone": 0,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-465",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-465",
+        "summary": "10. Общение и звонки",
+        "priority": 7,
+        "estimateH": 421,
+        "spentH": 0,
+        "start": "2026-10-20",
+        "end": "2027-02-18",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "storiesTotal": 4,
+        "storiesDone": 0,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-484",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-484",
+        "summary": "9. AI-отчёты и аналитика",
+        "priority": 6,
+        "estimateH": 220,
+        "spentH": 0,
+        "start": "2026-10-14",
+        "end": "2027-01-26",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "storiesTotal": 1,
+        "storiesDone": 0,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-1242",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-1242",
+        "summary": "8. Профиль",
+        "priority": 5,
+        "estimateH": 274,
+        "spentH": 0,
+        "start": "2026-10-07",
+        "end": "2027-01-13",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "storiesTotal": 2,
         "storiesDone": 0,
         "deps": []
       }
@@ -2243,118 +2227,119 @@
     "mvpScope": {
       "inStories": [
         {
-          "key": "B2BAPP-48",
-          "name": "1. AI-оркестратор, интенты и RAG",
-          "readyDate": "2026-09-16"
-        },
-        {
-          "key": "B2BAPP-60",
-          "name": "1. Авторизация через ЕСВ/IDP (вход/выход, сессии)",
-          "readyDate": "2026-08-12"
-        },
-        {
-          "key": "B2BAPP-1200",
-          "name": "3. Напоминания и задачи из звонков",
-          "readyDate": "2026-10-28"
-        },
-        {
-          "key": "B2BAPP-1217",
-          "name": "1. Онбординг и активация клиента",
-          "readyDate": "2026-06-29"
-        },
-        {
-          "key": "B2BAPP-800",
-          "name": "3. Push-уведомления от AI-ассистента",
-          "readyDate": "2026-09-30"
-        },
-        {
-          "key": "B2BAPP-1154",
-          "name": "2. Транскрипция и саммари звонков (AI)",
-          "readyDate": "2026-11-05"
-        },
-        {
-          "key": "B2BAPP-700",
-          "name": "2. Мой день — топ задач и событий",
-          "readyDate": "2026-09-25"
-        },
-        {
-          "key": "B2BAPP-1120",
-          "name": "1. История звонков (список, фильтры, карточка)",
-          "readyDate": "2026-10-21"
+          "key": "B2BAPP-349",
+          "name": "2. Биометрическая авторизация (Face ID / Touch ID)",
+          "readyDate": "2026-10-22"
         },
         {
           "key": "B2BAPP-703",
           "name": "1. Первое касание клиента (экран и онбординг)",
-          "readyDate": "2026-05-06"
+          "readyDate": "2026-10-14"
+        },
+        {
+          "key": "B2BAPP-60",
+          "name": "1. Авторизация через ЕСВ/IDP (вход/выход, сессии)",
+          "readyDate": "2026-10-23"
         },
         {
           "key": "B2BAPP-2",
           "name": "2. Инфраструктура и вычислительные среды (Prod/E2E), IDP-доступы",
-          "readyDate": "2026-09-01"
-        },
-        {
-          "key": "B2BAPP-400",
-          "name": "1. AI-аналитика бизнеса",
-          "readyDate": "2026-10-28"
-        },
-        {
-          "key": "B2BAPP-349",
-          "name": "2. Биометрическая авторизация (Face ID / Touch ID)",
-          "readyDate": "2026-08-11"
-        },
-        {
-          "key": "B2BAPP-705",
-          "name": "3. Сводка дня по бизнесу",
-          "readyDate": "2026-10-05"
-        },
-        {
-          "key": "B2BAPP-850",
-          "name": "2. Управление сессиями и устройствами",
-          "readyDate": "2026-10-08"
+          "readyDate": "2026-09-24"
         },
         {
           "key": "B2BAPP-348",
           "name": "1. Главный экран и смарт-карточки",
-          "readyDate": "2026-09-03"
+          "readyDate": "2026-11-19"
         },
         {
-          "key": "B2BAPP-366s",
-          "name": "1. Взаимодействие с поддержкой (обращения, статус)",
-          "readyDate": "2026-10-30"
-        },
-        {
-          "key": "B2BAPP-198",
-          "name": "1. Профиль пользователя (просмотр и редактирование)",
-          "readyDate": "2026-10-09"
+          "key": "B2BAPP-700",
+          "name": "2. Мой день — топ задач и событий",
+          "readyDate": "2026-12-09"
         },
         {
           "key": "B2BAPP-57",
           "name": "2. Чат-интерфейс AI-ассистента и AG-UI виджеты",
-          "readyDate": "2026-09-14"
+          "readyDate": "2026-12-07"
+        },
+        {
+          "key": "B2BAPP-48",
+          "name": "1. AI-оркестратор, интенты и RAG",
+          "readyDate": "2026-11-17"
+        },
+        {
+          "key": "B2BAPP-1217",
+          "name": "1. Онбординг и активация клиента",
+          "readyDate": "2026-11-10"
+        }
+      ],
+      "outStories": [
+        {
+          "key": "B2BAPP-1200",
+          "name": "3. Напоминания и задачи из звонков",
+          "readyDate": "2027-02-10"
+        },
+        {
+          "key": "B2BAPP-400",
+          "name": "1. AI-аналитика бизнеса",
+          "readyDate": "2027-01-26"
+        },
+        {
+          "key": "B2BAPP-850",
+          "name": "2. Управление сессиями и устройствами",
+          "readyDate": "2027-01-13"
+        },
+        {
+          "key": "B2BAPP-198",
+          "name": "1. Профиль пользователя (просмотр и редактирование)",
+          "readyDate": "2026-12-30"
+        },
+        {
+          "key": "B2BAPP-1154",
+          "name": "2. Транскрипция и саммари звонков (AI)",
+          "readyDate": "2027-02-12"
+        },
+        {
+          "key": "B2BAPP-705",
+          "name": "3. Сводка дня по бизнесу",
+          "readyDate": "2026-12-22"
+        },
+        {
+          "key": "B2BAPP-366s",
+          "name": "1. Взаимодействие с поддержкой (обращения, статус)",
+          "readyDate": "2027-02-16"
+        },
+        {
+          "key": "B2BAPP-1120",
+          "name": "1. История звонков (список, фильтры, карточка)",
+          "readyDate": "2027-01-29"
+        },
+        {
+          "key": "B2BAPP-800",
+          "name": "3. Push-уведомления от AI-ассистента",
+          "readyDate": "2026-12-18"
         },
         {
           "key": "B2BAPP-1202",
           "name": "4. Работа с календарём",
-          "readyDate": "2026-11-06"
+          "readyDate": "2027-02-18"
         }
       ],
-      "outStories": [],
       "rationale": "Отсечка 10.12.2026. Только MVP-стори."
     },
     "criticalPathExplained": {
       "method": "Критический путь = цепочка задач до max(end) по ресурсу-хвосту.",
-      "endDate": "2026-11-06",
+      "endDate": "2027-02-18",
       "resource": "FE-1",
-      "conclusion": "Успеваем к 10.12.2026",
+      "conclusion": "НЕ успеваем: критпуть до 2027-02-18, дедлайн 10.12.2026",
       "steps": [
         "Только MVP-стори (метка mvp); postMVP и Вакантные исключены",
         "Завершённые — факт; в работе — старт+остаток; бэклог — жадное назначение",
         "Зависимости фаз (BA∥ARC)→(DS∥BE)→FE внутри стори + явные Blocks",
-        "Хвост критпути: ресурс FE-1, окончание 2026-11-06"
+        "Хвост критпути: ресурс FE-1, окончание 2027-02-18"
       ]
     },
     "ganttAssumptions": {
-      "dataSource": "Jira B2BAPP 2026-09-21T09:53:18+03:00 (динамически)",
+      "dataSource": "Jira B2BAPP 2026-09-21T19:15:21+03:00 (динамически)",
       "teamSource": "Confluence 1562745210 + сверка Jira assignee",
       "ganttType": "per_task_v3_mvp_only",
       "calendar": "Производственный календарь РФ",
@@ -2363,44 +2348,24 @@
     },
     "epicProgress": [
       {
-        "epicKey": "B2BAPP-21",
-        "epicName": "3. Вход и выход из приложения (Аутентификация)",
-        "hoursTotal": 211,
+        "epicKey": "B2BAPP-22",
+        "epicName": "6. Главная страница",
+        "hoursTotal": 489,
         "hoursSpent": 0,
-        "storiesTotal": 2,
+        "storiesTotal": 3,
         "storiesDone": 0,
-        "start": "2026-03-27",
-        "end": "2026-08-12"
+        "start": "2026-09-24",
+        "end": "2026-12-22"
       },
       {
-        "epicKey": "B2BAPP-484",
-        "epicName": "9. AI-отчёты и аналитика",
-        "hoursTotal": 220,
+        "epicKey": "B2BAPP-1241",
+        "epicName": "5. Онбординг",
+        "hoursTotal": 20,
         "hoursSpent": 0,
         "storiesTotal": 1,
         "storiesDone": 0,
-        "start": "2026-04-21",
-        "end": "2026-10-28"
-      },
-      {
-        "epicKey": "B2BAPP-1242",
-        "epicName": "8. Профиль",
-        "hoursTotal": 274,
-        "hoursSpent": 0,
-        "storiesTotal": 2,
-        "storiesDone": 0,
-        "start": "2026-05-26",
-        "end": "2026-10-09"
-      },
-      {
-        "epicKey": "B2BAPP-465",
-        "epicName": "10. Общение и звонки",
-        "hoursTotal": 421,
-        "hoursSpent": 0,
-        "storiesTotal": 4,
-        "storiesDone": 0,
-        "start": "2026-04-27",
-        "end": "2026-11-06"
+        "start": "2026-10-29",
+        "end": "2026-11-10"
       },
       {
         "epicKey": "B2BAPP-491",
@@ -2409,8 +2374,18 @@
         "hoursSpent": 0,
         "storiesTotal": 1,
         "storiesDone": 0,
-        "start": "2026-04-29",
-        "end": "2026-05-06"
+        "start": "2026-09-21",
+        "end": "2026-10-14"
+      },
+      {
+        "epicKey": "B2BAPP-21",
+        "epicName": "3. Вход и выход из приложения (Аутентификация)",
+        "hoursTotal": 211,
+        "hoursSpent": 0,
+        "storiesTotal": 2,
+        "storiesDone": 0,
+        "start": "2026-09-21",
+        "end": "2026-10-23"
       },
       {
         "epicKey": "B2BAPP-27",
@@ -2419,8 +2394,8 @@
         "hoursSpent": 0,
         "storiesTotal": 3,
         "storiesDone": 0,
-        "start": "2026-04-09",
-        "end": "2026-09-30"
+        "start": "2026-10-02",
+        "end": "2026-12-18"
       },
       {
         "epicKey": "B2BAPP-134",
@@ -2430,27 +2405,7 @@
         "storiesTotal": 1,
         "storiesDone": 0,
         "start": "2026-02-09",
-        "end": "2026-09-01"
-      },
-      {
-        "epicKey": "B2BAPP-22",
-        "epicName": "6. Главная страница",
-        "hoursTotal": 489,
-        "hoursSpent": 0,
-        "storiesTotal": 3,
-        "storiesDone": 0,
-        "start": "2026-05-05",
-        "end": "2026-10-05"
-      },
-      {
-        "epicKey": "B2BAPP-1241",
-        "epicName": "5. Онбординг",
-        "hoursTotal": 20,
-        "hoursSpent": 0,
-        "storiesTotal": 1,
-        "storiesDone": 0,
-        "start": "2026-06-24",
-        "end": "2026-06-29"
+        "end": "2026-09-24"
       },
       {
         "epicKey": "B2BAPP-25",
@@ -2459,8 +2414,38 @@
         "hoursSpent": 0,
         "storiesTotal": 1,
         "storiesDone": 0,
-        "start": "2026-06-18",
-        "end": "2026-10-30"
+        "start": "2026-10-28",
+        "end": "2027-02-16"
+      },
+      {
+        "epicKey": "B2BAPP-465",
+        "epicName": "10. Общение и звонки",
+        "hoursTotal": 421,
+        "hoursSpent": 0,
+        "storiesTotal": 4,
+        "storiesDone": 0,
+        "start": "2026-10-20",
+        "end": "2027-02-18"
+      },
+      {
+        "epicKey": "B2BAPP-484",
+        "epicName": "9. AI-отчёты и аналитика",
+        "hoursTotal": 220,
+        "hoursSpent": 0,
+        "storiesTotal": 1,
+        "storiesDone": 0,
+        "start": "2026-10-14",
+        "end": "2027-01-26"
+      },
+      {
+        "epicKey": "B2BAPP-1242",
+        "epicName": "8. Профиль",
+        "hoursTotal": 274,
+        "hoursSpent": 0,
+        "storiesTotal": 2,
+        "storiesDone": 0,
+        "start": "2026-10-07",
+        "end": "2027-01-13"
       }
     ],
     "resourcePlan": [
@@ -2517,22 +2502,16 @@
         "hoursTotal": 108,
         "months": [
           {
-            "month": "2026-03",
-            "hoursPlanned": 12,
-            "normHours": 168,
-            "loadPct": 14
-          },
-          {
-            "month": "2026-04",
-            "hoursPlanned": 88,
+            "month": "2026-09",
+            "hoursPlanned": 32,
             "normHours": 176,
-            "loadPct": 100
+            "loadPct": 36
           },
           {
-            "month": "2026-05",
-            "hoursPlanned": 8,
-            "normHours": 152,
-            "loadPct": 11
+            "month": "2026-10",
+            "hoursPlanned": 76,
+            "normHours": 176,
+            "loadPct": 86
           }
         ]
       },
@@ -2547,22 +2526,16 @@
         "hoursTotal": 183,
         "months": [
           {
-            "month": "2026-04",
-            "hoursPlanned": 24,
+            "month": "2026-10",
+            "hoursPlanned": 138,
             "normHours": 176,
-            "loadPct": 14
+            "loadPct": 78
           },
           {
-            "month": "2026-05",
-            "hoursPlanned": 76,
-            "normHours": 152,
-            "loadPct": 50
-          },
-          {
-            "month": "2026-06",
-            "hoursPlanned": 83,
-            "normHours": 168,
-            "loadPct": 49
+            "month": "2026-11",
+            "hoursPlanned": 45,
+            "normHours": 160,
+            "loadPct": 28
           }
         ]
       },
@@ -2573,26 +2546,44 @@
         "fte": 1.0,
         "from": "2026-04-22",
         "vacant": false,
-        "taskCount": 13,
-        "hoursTotal": 311,
+        "taskCount": 4,
+        "hoursTotal": 93,
         "months": [
           {
-            "month": "2026-04",
-            "hoursPlanned": 50,
+            "month": "2026-10",
+            "hoursPlanned": 93,
             "normHours": 176,
-            "loadPct": 28
+            "loadPct": 53
+          }
+        ]
+      },
+      {
+        "resourceId": "BA-2",
+        "role": "BA",
+        "name": "Шевченко Константин Сергеевич",
+        "fte": 1.0,
+        "from": "2026-09-01",
+        "vacant": false,
+        "taskCount": 9,
+        "hoursTotal": 218,
+        "months": [
+          {
+            "month": "2026-09",
+            "hoursPlanned": 56,
+            "normHours": 176,
+            "loadPct": 32
           },
           {
-            "month": "2026-05",
-            "hoursPlanned": 138,
-            "normHours": 152,
-            "loadPct": 91
+            "month": "2026-10",
+            "hoursPlanned": 155,
+            "normHours": 176,
+            "loadPct": 88
           },
           {
-            "month": "2026-06",
-            "hoursPlanned": 123,
-            "normHours": 168,
-            "loadPct": 73
+            "month": "2026-11",
+            "hoursPlanned": 7,
+            "normHours": 160,
+            "loadPct": 4
           }
         ]
       },
@@ -2603,32 +2594,38 @@
         "fte": 1.0,
         "from": "2026-08-01",
         "vacant": false,
-        "taskCount": 10,
-        "hoursTotal": 404,
+        "taskCount": 15,
+        "hoursTotal": 612,
         "months": [
           {
-            "month": "2026-08",
-            "hoursPlanned": 120,
-            "normHours": 168,
-            "loadPct": 71
-          },
-          {
-            "month": "2026-09",
-            "hoursPlanned": 120,
-            "normHours": 176,
-            "loadPct": 68
-          },
-          {
             "month": "2026-10",
-            "hoursPlanned": 132,
+            "hoursPlanned": 40,
             "normHours": 176,
-            "loadPct": 75
+            "loadPct": 23
           },
           {
             "month": "2026-11",
-            "hoursPlanned": 32,
+            "hoursPlanned": 160,
             "normHours": 160,
-            "loadPct": 20
+            "loadPct": 100
+          },
+          {
+            "month": "2026-12",
+            "hoursPlanned": 184,
+            "normHours": 184,
+            "loadPct": 100
+          },
+          {
+            "month": "2027-01",
+            "hoursPlanned": 116,
+            "normHours": 120,
+            "loadPct": 97
+          },
+          {
+            "month": "2027-02",
+            "hoursPlanned": 112,
+            "normHours": 152,
+            "loadPct": 74
           }
         ]
       },
@@ -2639,32 +2636,32 @@
         "fte": 1.0,
         "from": "2026-07-24",
         "vacant": false,
-        "taskCount": 11,
-        "hoursTotal": 496,
+        "taskCount": 9,
+        "hoursTotal": 409,
         "months": [
           {
-            "month": "2026-07",
-            "hoursPlanned": 45,
-            "normHours": 184,
-            "loadPct": 24
-          },
-          {
-            "month": "2026-08",
-            "hoursPlanned": 159,
-            "normHours": 168,
-            "loadPct": 95
-          },
-          {
             "month": "2026-09",
-            "hoursPlanned": 172,
+            "hoursPlanned": 21,
             "normHours": 176,
-            "loadPct": 98
+            "loadPct": 12
           },
           {
             "month": "2026-10",
-            "hoursPlanned": 120,
+            "hoursPlanned": 100,
             "normHours": 176,
-            "loadPct": 68
+            "loadPct": 57
+          },
+          {
+            "month": "2026-11",
+            "hoursPlanned": 160,
+            "normHours": 160,
+            "loadPct": 100
+          },
+          {
+            "month": "2026-12",
+            "hoursPlanned": 128,
+            "normHours": 184,
+            "loadPct": 70
           }
         ]
       },
@@ -2675,20 +2672,32 @@
         "fte": 1.0,
         "from": "2026-09-03",
         "vacant": false,
-        "taskCount": 6,
-        "hoursTotal": 264,
+        "taskCount": 8,
+        "hoursTotal": 351,
         "months": [
           {
             "month": "2026-09",
-            "hoursPlanned": 160,
+            "hoursPlanned": 3,
             "normHours": 176,
-            "loadPct": 91
+            "loadPct": 2
           },
           {
             "month": "2026-10",
-            "hoursPlanned": 104,
+            "hoursPlanned": 80,
             "normHours": 176,
-            "loadPct": 59
+            "loadPct": 45
+          },
+          {
+            "month": "2026-11",
+            "hoursPlanned": 156,
+            "normHours": 160,
+            "loadPct": 98
+          },
+          {
+            "month": "2026-12",
+            "hoursPlanned": 112,
+            "normHours": 184,
+            "loadPct": 61
           }
         ]
       },
@@ -2699,80 +2708,50 @@
         "fte": 1.0,
         "from": "2026-07-22",
         "vacant": false,
-        "taskCount": 9,
-        "hoursTotal": 267,
+        "taskCount": 11,
+        "hoursTotal": 332,
         "months": [
-          {
-            "month": "2026-07",
-            "hoursPlanned": 16,
-            "normHours": 184,
-            "loadPct": 9
-          },
           {
             "month": "2026-08",
-            "hoursPlanned": 70,
+            "hoursPlanned": 38,
             "normHours": 168,
-            "loadPct": 42
-          },
-          {
-            "month": "2026-09",
-            "hoursPlanned": 89,
-            "normHours": 176,
-            "loadPct": 51
-          },
-          {
-            "month": "2026-10",
-            "hoursPlanned": 92,
-            "normHours": 176,
-            "loadPct": 52
-          }
-        ]
-      },
-      {
-        "resourceId": "FE-2",
-        "role": "FE",
-        "name": "Вакантно FE-2",
-        "fte": 1,
-        "from": "2026-09-01",
-        "vacant": true,
-        "taskCount": 5,
-        "hoursTotal": 208,
-        "months": [
-          {
-            "month": "2026-09",
-            "hoursPlanned": 80,
-            "normHours": 176,
-            "loadPct": 45
-          },
-          {
-            "month": "2026-10",
-            "hoursPlanned": 128,
-            "normHours": 176,
-            "loadPct": 73
-          }
-        ]
-      },
-      {
-        "resourceId": "QA-2",
-        "role": "QA",
-        "name": "Вакантно QA-2",
-        "fte": 1,
-        "from": "2026-09-01",
-        "vacant": true,
-        "taskCount": 2,
-        "hoursTotal": 65,
-        "months": [
-          {
-            "month": "2026-10",
-            "hoursPlanned": 41,
-            "normHours": 176,
             "loadPct": 23
           },
           {
-            "month": "2026-11",
+            "month": "2026-09",
+            "hoursPlanned": 18,
+            "normHours": 176,
+            "loadPct": 10
+          },
+          {
+            "month": "2026-10",
             "hoursPlanned": 24,
+            "normHours": 176,
+            "loadPct": 14
+          },
+          {
+            "month": "2026-11",
+            "hoursPlanned": 32,
             "normHours": 160,
-            "loadPct": 15
+            "loadPct": 20
+          },
+          {
+            "month": "2026-12",
+            "hoursPlanned": 110,
+            "normHours": 184,
+            "loadPct": 60
+          },
+          {
+            "month": "2027-01",
+            "hoursPlanned": 49,
+            "normHours": 120,
+            "loadPct": 41
+          },
+          {
+            "month": "2027-02",
+            "hoursPlanned": 61,
+            "normHours": 152,
+            "loadPct": 40
           }
         ]
       }
@@ -2780,18 +2759,18 @@
   },
   "criticalPathExplained": {
     "method": "Критический путь = цепочка задач до max(end) по ресурсу-хвосту.",
-    "endDate": "2026-11-06",
+    "endDate": "2027-02-18",
     "resource": "FE-1",
-    "conclusion": "Успеваем к 10.12.2026",
+    "conclusion": "НЕ успеваем: критпуть до 2027-02-18, дедлайн 10.12.2026",
     "steps": [
       "Только MVP-стори (метка mvp); postMVP и Вакантные исключены",
       "Завершённые — факт; в работе — старт+остаток; бэклог — жадное назначение",
       "Зависимости фаз (BA∥ARC)→(DS∥BE)→FE внутри стори + явные Blocks",
-      "Хвост критпути: ресурс FE-1, окончание 2026-11-06"
+      "Хвост критпути: ресурс FE-1, окончание 2027-02-18"
     ]
   },
   "ganttAssumptions": {
-    "dataSource": "Jira B2BAPP 2026-09-21T09:53:18+03:00 (динамически)",
+    "dataSource": "Jira B2BAPP 2026-09-21T19:15:21+03:00 (динамически)",
     "teamSource": "Confluence 1562745210 + сверка Jira assignee",
     "ganttType": "per_task_v3_mvp_only",
     "calendar": "Производственный календарь РФ",
@@ -3342,6 +3321,11 @@
       "ts": "2026-09-21T09:53:18+03:00",
       "area": "gantt",
       "text": "gantt-прогон: Jira 99 issue, 70 MVP-задач, критпуть до 2026-11-06"
+    },
+    {
+      "ts": "2026-09-21T19:15:21+03:00",
+      "area": "gantt",
+      "text": "gantt-прогон: Jira 99 issue, 70 MVP-задач, критпуть до 2027-02-18"
     }
   ],
   "baselines": [
@@ -25607,9 +25591,9 @@
     },
     {
       "id": "bl-2026-09-21",
-      "ts": "2026-09-21T09:53:18+03:00",
+      "ts": "2026-09-21T19:15:21+03:00",
       "label": "Refresh 21.09.2026 (MVP-only)",
-      "criticalEnd": "2026-11-06",
+      "criticalEnd": "2027-02-18",
       "items": [
         {
           "key": "B2BAPP-3",
@@ -25628,8 +25612,8 @@
         },
         {
           "key": "B2BAPP-1122",
-          "start": "2026-07-24",
-          "end": "2026-07-28"
+          "start": "2026-09-21",
+          "end": "2026-09-23"
         },
         {
           "key": "B2BAPP-1197",
@@ -25638,328 +25622,328 @@
         },
         {
           "key": "B2BAPP-1257",
-          "start": "2026-07-28",
-          "end": "2026-07-29"
+          "start": "2026-09-23",
+          "end": "2026-09-24"
         },
         {
           "key": "B2BAPP-132",
-          "start": "2026-03-27",
-          "end": "2026-04-08"
+          "start": "2026-09-21",
+          "end": "2026-10-01"
         },
         {
           "key": "B2BAPP-177",
-          "start": "2026-04-28",
-          "end": "2026-04-30"
-        },
-        {
-          "key": "B2BAPP-178",
-          "start": "2026-08-05",
-          "end": "2026-08-10"
-        },
-        {
-          "key": "B2BAPP-179",
-          "start": "2026-07-29",
-          "end": "2026-08-05"
-        },
-        {
-          "key": "B2BAPP-180",
-          "start": "2026-08-10",
-          "end": "2026-08-12"
-        },
-        {
-          "key": "B2BAPP-1069",
-          "start": "2026-08-11",
-          "end": "2026-08-11"
-        },
-        {
-          "key": "B2BAPP-1070",
-          "start": "2026-08-06",
-          "end": "2026-08-06"
-        },
-        {
-          "key": "B2BAPP-1209",
-          "start": "2026-05-04",
-          "end": "2026-05-06"
-        },
-        {
-          "key": "B2BAPP-50",
-          "start": "2026-04-09",
-          "end": "2026-04-20"
-        },
-        {
-          "key": "B2BAPP-51",
-          "start": "2026-08-19",
-          "end": "2026-09-01"
-        },
-        {
-          "key": "B2BAPP-52",
-          "start": "2026-09-02",
-          "end": "2026-09-11"
-        },
-        {
-          "key": "B2BAPP-53",
-          "start": "2026-09-03",
-          "end": "2026-09-10"
-        },
-        {
-          "key": "B2BAPP-54",
-          "start": "2026-09-11",
-          "end": "2026-09-16"
-        },
-        {
-          "key": "B2BAPP-55",
-          "start": "2026-09-01",
-          "end": "2026-09-08"
-        },
-        {
-          "key": "B2BAPP-56",
-          "start": "2026-09-01",
-          "end": "2026-09-07"
-        },
-        {
-          "key": "B2BAPP-58",
-          "start": "2026-09-08",
-          "end": "2026-09-14"
-        },
-        {
-          "key": "B2BAPP-801",
-          "start": "2026-09-21",
-          "end": "2026-09-23"
-        },
-        {
-          "key": "B2BAPP-802",
-          "start": "2026-09-28",
-          "end": "2026-09-30"
-        },
-        {
-          "key": "B2BAPP-365",
-          "start": "2026-05-07",
-          "end": "2026-05-15"
-        },
-        {
-          "key": "B2BAPP-366",
-          "start": "2026-08-18",
-          "end": "2026-08-31"
-        },
-        {
-          "key": "B2BAPP-367",
-          "start": "2026-08-07",
-          "end": "2026-08-18"
-        },
-        {
-          "key": "B2BAPP-368",
-          "start": "2026-08-31",
-          "end": "2026-09-03"
-        },
-        {
-          "key": "B2BAPP-701",
-          "start": "2026-09-18",
-          "end": "2026-09-25"
-        },
-        {
-          "key": "B2BAPP-702",
-          "start": "2026-09-14",
-          "end": "2026-09-18"
-        },
-        {
-          "key": "B2BAPP-706",
-          "start": "2026-09-23",
-          "end": "2026-09-28"
-        },
-        {
-          "key": "B2BAPP-707",
-          "start": "2026-09-17",
-          "end": "2026-09-23"
-        },
-        {
-          "key": "B2BAPP-708",
-          "start": "2026-09-28",
-          "end": "2026-10-05"
-        },
-        {
-          "key": "B2BAPP-201",
-          "start": "2026-05-29",
-          "end": "2026-06-02"
-        },
-        {
-          "key": "B2BAPP-204",
-          "start": "2026-09-30",
-          "end": "2026-10-07"
-        },
-        {
-          "key": "B2BAPP-207",
-          "start": "2026-09-24",
-          "end": "2026-09-30"
-        },
-        {
-          "key": "B2BAPP-210",
           "start": "2026-10-07",
           "end": "2026-10-09"
         },
         {
-          "key": "B2BAPP-851",
-          "start": "2026-10-01",
-          "end": "2026-10-06"
+          "key": "B2BAPP-178",
+          "start": "2026-10-16",
+          "end": "2026-10-21"
         },
         {
-          "key": "B2BAPP-852",
-          "start": "2026-09-24",
-          "end": "2026-09-30"
+          "key": "B2BAPP-179",
+          "start": "2026-10-09",
+          "end": "2026-10-16"
         },
         {
-          "key": "B2BAPP-853",
-          "start": "2026-10-06",
-          "end": "2026-10-08"
-        },
-        {
-          "key": "B2BAPP-401",
-          "start": "2026-04-21",
-          "end": "2026-04-24"
-        },
-        {
-          "key": "B2BAPP-402",
-          "start": "2026-10-01",
-          "end": "2026-10-14"
-        },
-        {
-          "key": "B2BAPP-403",
-          "start": "2026-10-14",
+          "key": "B2BAPP-180",
+          "start": "2026-10-21",
           "end": "2026-10-23"
         },
         {
-          "key": "B2BAPP-404",
-          "start": "2026-10-23",
-          "end": "2026-10-28"
+          "key": "B2BAPP-1069",
+          "start": "2026-10-22",
+          "end": "2026-10-22"
         },
         {
-          "key": "B2BAPP-1150",
-          "start": "2026-04-27",
-          "end": "2026-05-05"
+          "key": "B2BAPP-1070",
+          "start": "2026-09-21",
+          "end": "2026-09-21"
         },
         {
-          "key": "B2BAPP-1151",
-          "start": "2026-10-01",
+          "key": "B2BAPP-1209",
+          "start": "2026-10-12",
           "end": "2026-10-14"
         },
         {
-          "key": "B2BAPP-1152",
-          "start": "2026-10-14",
-          "end": "2026-10-21"
+          "key": "B2BAPP-50",
+          "start": "2026-10-02",
+          "end": "2026-10-13"
         },
         {
-          "key": "B2BAPP-1153",
-          "start": "2026-06-11",
-          "end": "2026-06-17"
-        },
-        {
-          "key": "B2BAPP-1155",
-          "start": "2026-10-22",
-          "end": "2026-10-28"
-        },
-        {
-          "key": "B2BAPP-1156",
-          "start": "2026-10-28",
-          "end": "2026-11-05"
-        },
-        {
-          "key": "B2BAPP-1201",
-          "start": "2026-10-26",
-          "end": "2026-10-28"
-        },
-        {
-          "key": "B2BAPP-1203",
-          "start": "2026-10-29",
-          "end": "2026-11-06"
-        },
-        {
-          "key": "B2BAPP-1075",
-          "start": "2026-06-23",
-          "end": "2026-06-25"
-        },
-        {
-          "key": "B2BAPP-1076",
-          "start": "2026-10-15",
-          "end": "2026-10-19"
-        },
-        {
-          "key": "B2BAPP-1077",
-          "start": "2026-10-29",
+          "key": "B2BAPP-51",
+          "start": "2026-10-19",
           "end": "2026-10-30"
         },
         {
+          "key": "B2BAPP-52",
+          "start": "2026-11-02",
+          "end": "2026-11-12"
+        },
+        {
+          "key": "B2BAPP-53",
+          "start": "2026-11-03",
+          "end": "2026-11-11"
+        },
+        {
+          "key": "B2BAPP-54",
+          "start": "2026-11-12",
+          "end": "2026-11-17"
+        },
+        {
+          "key": "B2BAPP-55",
+          "start": "2026-11-17",
+          "end": "2026-11-24"
+        },
+        {
+          "key": "B2BAPP-56",
+          "start": "2026-11-25",
+          "end": "2026-12-01"
+        },
+        {
+          "key": "B2BAPP-58",
+          "start": "2026-12-01",
+          "end": "2026-12-07"
+        },
+        {
+          "key": "B2BAPP-801",
+          "start": "2026-11-20",
+          "end": "2026-11-24"
+        },
+        {
+          "key": "B2BAPP-802",
+          "start": "2026-12-16",
+          "end": "2026-12-18"
+        },
+        {
+          "key": "B2BAPP-365",
+          "start": "2026-10-15",
+          "end": "2026-10-22"
+        },
+        {
+          "key": "B2BAPP-366",
+          "start": "2026-11-02",
+          "end": "2026-11-16"
+        },
+        {
+          "key": "B2BAPP-367",
+          "start": "2026-10-22",
+          "end": "2026-11-02"
+        },
+        {
+          "key": "B2BAPP-368",
+          "start": "2026-11-16",
+          "end": "2026-11-19"
+        },
+        {
+          "key": "B2BAPP-701",
+          "start": "2026-12-02",
+          "end": "2026-12-09"
+        },
+        {
+          "key": "B2BAPP-702",
+          "start": "2026-11-13",
+          "end": "2026-11-19"
+        },
+        {
+          "key": "B2BAPP-706",
+          "start": "2026-12-10",
+          "end": "2026-12-15"
+        },
+        {
+          "key": "B2BAPP-707",
+          "start": "2026-11-18",
+          "end": "2026-11-24"
+        },
+        {
+          "key": "B2BAPP-708",
+          "start": "2026-12-15",
+          "end": "2026-12-22"
+        },
+        {
+          "key": "B2BAPP-201",
+          "start": "2026-10-23",
+          "end": "2026-10-27"
+        },
+        {
+          "key": "B2BAPP-204",
+          "start": "2026-12-21",
+          "end": "2026-12-28"
+        },
+        {
+          "key": "B2BAPP-207",
+          "start": "2026-11-25",
+          "end": "2026-12-01"
+        },
+        {
+          "key": "B2BAPP-210",
+          "start": "2026-12-28",
+          "end": "2026-12-30"
+        },
+        {
+          "key": "B2BAPP-851",
+          "start": "2026-12-29",
+          "end": "2027-01-11"
+        },
+        {
+          "key": "B2BAPP-852",
+          "start": "2026-11-25",
+          "end": "2026-12-01"
+        },
+        {
+          "key": "B2BAPP-853",
+          "start": "2027-01-11",
+          "end": "2027-01-13"
+        },
+        {
+          "key": "B2BAPP-401",
+          "start": "2026-10-14",
+          "end": "2026-10-19"
+        },
+        {
+          "key": "B2BAPP-402",
+          "start": "2026-12-02",
+          "end": "2026-12-15"
+        },
+        {
+          "key": "B2BAPP-403",
+          "start": "2027-01-12",
+          "end": "2027-01-21"
+        },
+        {
+          "key": "B2BAPP-404",
+          "start": "2027-01-21",
+          "end": "2027-01-26"
+        },
+        {
+          "key": "B2BAPP-1150",
+          "start": "2026-10-20",
+          "end": "2026-10-27"
+        },
+        {
+          "key": "B2BAPP-1151",
+          "start": "2026-12-02",
+          "end": "2026-12-15"
+        },
+        {
+          "key": "B2BAPP-1152",
+          "start": "2027-01-22",
+          "end": "2027-01-29"
+        },
+        {
+          "key": "B2BAPP-1153",
+          "start": "2026-10-28",
+          "end": "2026-11-02"
+        },
+        {
+          "key": "B2BAPP-1155",
+          "start": "2027-02-01",
+          "end": "2027-02-05"
+        },
+        {
+          "key": "B2BAPP-1156",
+          "start": "2027-02-05",
+          "end": "2027-02-12"
+        },
+        {
+          "key": "B2BAPP-1201",
+          "start": "2027-02-08",
+          "end": "2027-02-10"
+        },
+        {
+          "key": "B2BAPP-1203",
+          "start": "2027-02-11",
+          "end": "2027-02-18"
+        },
+        {
+          "key": "B2BAPP-1075",
+          "start": "2026-11-03",
+          "end": "2026-11-06"
+        },
+        {
+          "key": "B2BAPP-1076",
+          "start": "2026-12-16",
+          "end": "2026-12-18"
+        },
+        {
+          "key": "B2BAPP-1077",
+          "start": "2027-02-15",
+          "end": "2027-02-16"
+        },
+        {
           "key": "B2BAPP-1332",
-          "start": "2026-06-26",
-          "end": "2026-06-29"
+          "start": "2026-11-09",
+          "end": "2026-11-10"
         },
         {
           "key": "B2BAPP-48",
-          "start": "2026-05-08",
-          "end": "2026-05-15"
+          "start": "2026-10-13",
+          "end": "2026-10-19"
         },
         {
           "key": "B2BAPP-703s",
-          "start": "2026-04-29",
-          "end": "2026-05-04"
+          "start": "2026-09-21",
+          "end": "2026-09-23"
         },
         {
           "key": "B2BAPP-348s",
-          "start": "2026-05-05",
-          "end": "2026-05-07"
+          "start": "2026-09-24",
+          "end": "2026-09-28"
         },
         {
           "key": "B2BAPP-198s",
-          "start": "2026-05-26",
-          "end": "2026-05-29"
+          "start": "2026-10-07",
+          "end": "2026-10-12"
         },
         {
           "key": "B2BAPP-400s",
-          "start": "2026-06-04",
-          "end": "2026-06-09"
+          "start": "2026-10-19",
+          "end": "2026-10-22"
         },
         {
           "key": "B2BAPP-1120s",
-          "start": "2026-06-10",
-          "end": "2026-06-11"
+          "start": "2026-10-27",
+          "end": "2026-10-28"
         },
         {
           "key": "B2BAPP-366ss",
-          "start": "2026-06-18",
-          "end": "2026-06-23"
+          "start": "2026-10-28",
+          "end": "2026-11-02"
         },
         {
           "key": "B2BAPP-1217s",
-          "start": "2026-06-24",
-          "end": "2026-06-24"
+          "start": "2026-10-29",
+          "end": "2026-10-29"
         },
         {
           "key": "B2BAPP-700s",
-          "start": "2026-05-18",
-          "end": "2026-05-20"
+          "start": "2026-09-29",
+          "end": "2026-10-01"
         },
         {
           "key": "B2BAPP-850s",
-          "start": "2026-06-01",
-          "end": "2026-06-03"
+          "start": "2026-10-13",
+          "end": "2026-10-15"
         },
         {
           "key": "B2BAPP-1202s",
-          "start": "2026-06-15",
-          "end": "2026-06-17"
+          "start": "2026-10-23",
+          "end": "2026-10-27"
         },
         {
           "key": "B2BAPP-705s",
-          "start": "2026-05-21",
-          "end": "2026-05-25"
+          "start": "2026-10-02",
+          "end": "2026-10-06"
         },
         {
           "key": "B2BAPP-1200s",
-          "start": "2026-10-15",
-          "end": "2026-10-21"
+          "start": "2026-12-16",
+          "end": "2026-12-22"
         },
         {
           "key": "B2BAPP-60s",
-          "start": "2026-04-22",
-          "end": "2026-04-28"
+          "start": "2026-10-01",
+          "end": "2026-10-07"
         }
       ]
     }
@@ -25972,110 +25956,111 @@
     "tasksDone": 4,
     "hoursTotal": 2449,
     "hoursSpent": 183,
-    "mvpStoriesIn": 19,
-    "mvpStoriesOut": 0,
-    "criticalPathEnd": "2026-11-06",
+    "mvpStoriesIn": 9,
+    "mvpStoriesOut": 10,
+    "criticalPathEnd": "2027-02-18",
     "openQuestions": 4
   },
   "mvpScope": {
     "inStories": [
       {
-        "key": "B2BAPP-48",
-        "name": "1. AI-оркестратор, интенты и RAG",
-        "readyDate": "2026-09-16"
-      },
-      {
-        "key": "B2BAPP-60",
-        "name": "1. Авторизация через ЕСВ/IDP (вход/выход, сессии)",
-        "readyDate": "2026-08-12"
-      },
-      {
-        "key": "B2BAPP-1200",
-        "name": "3. Напоминания и задачи из звонков",
-        "readyDate": "2026-10-28"
-      },
-      {
-        "key": "B2BAPP-1217",
-        "name": "1. Онбординг и активация клиента",
-        "readyDate": "2026-06-29"
-      },
-      {
-        "key": "B2BAPP-800",
-        "name": "3. Push-уведомления от AI-ассистента",
-        "readyDate": "2026-09-30"
-      },
-      {
-        "key": "B2BAPP-1154",
-        "name": "2. Транскрипция и саммари звонков (AI)",
-        "readyDate": "2026-11-05"
-      },
-      {
-        "key": "B2BAPP-700",
-        "name": "2. Мой день — топ задач и событий",
-        "readyDate": "2026-09-25"
-      },
-      {
-        "key": "B2BAPP-1120",
-        "name": "1. История звонков (список, фильтры, карточка)",
-        "readyDate": "2026-10-21"
+        "key": "B2BAPP-349",
+        "name": "2. Биометрическая авторизация (Face ID / Touch ID)",
+        "readyDate": "2026-10-22"
       },
       {
         "key": "B2BAPP-703",
         "name": "1. Первое касание клиента (экран и онбординг)",
-        "readyDate": "2026-05-06"
+        "readyDate": "2026-10-14"
+      },
+      {
+        "key": "B2BAPP-60",
+        "name": "1. Авторизация через ЕСВ/IDP (вход/выход, сессии)",
+        "readyDate": "2026-10-23"
       },
       {
         "key": "B2BAPP-2",
         "name": "2. Инфраструктура и вычислительные среды (Prod/E2E), IDP-доступы",
-        "readyDate": "2026-09-01"
-      },
-      {
-        "key": "B2BAPP-400",
-        "name": "1. AI-аналитика бизнеса",
-        "readyDate": "2026-10-28"
-      },
-      {
-        "key": "B2BAPP-349",
-        "name": "2. Биометрическая авторизация (Face ID / Touch ID)",
-        "readyDate": "2026-08-11"
-      },
-      {
-        "key": "B2BAPP-705",
-        "name": "3. Сводка дня по бизнесу",
-        "readyDate": "2026-10-05"
-      },
-      {
-        "key": "B2BAPP-850",
-        "name": "2. Управление сессиями и устройствами",
-        "readyDate": "2026-10-08"
+        "readyDate": "2026-09-24"
       },
       {
         "key": "B2BAPP-348",
         "name": "1. Главный экран и смарт-карточки",
-        "readyDate": "2026-09-03"
+        "readyDate": "2026-11-19"
       },
       {
-        "key": "B2BAPP-366s",
-        "name": "1. Взаимодействие с поддержкой (обращения, статус)",
-        "readyDate": "2026-10-30"
-      },
-      {
-        "key": "B2BAPP-198",
-        "name": "1. Профиль пользователя (просмотр и редактирование)",
-        "readyDate": "2026-10-09"
+        "key": "B2BAPP-700",
+        "name": "2. Мой день — топ задач и событий",
+        "readyDate": "2026-12-09"
       },
       {
         "key": "B2BAPP-57",
         "name": "2. Чат-интерфейс AI-ассистента и AG-UI виджеты",
-        "readyDate": "2026-09-14"
+        "readyDate": "2026-12-07"
+      },
+      {
+        "key": "B2BAPP-48",
+        "name": "1. AI-оркестратор, интенты и RAG",
+        "readyDate": "2026-11-17"
+      },
+      {
+        "key": "B2BAPP-1217",
+        "name": "1. Онбординг и активация клиента",
+        "readyDate": "2026-11-10"
+      }
+    ],
+    "outStories": [
+      {
+        "key": "B2BAPP-1200",
+        "name": "3. Напоминания и задачи из звонков",
+        "readyDate": "2027-02-10"
+      },
+      {
+        "key": "B2BAPP-400",
+        "name": "1. AI-аналитика бизнеса",
+        "readyDate": "2027-01-26"
+      },
+      {
+        "key": "B2BAPP-850",
+        "name": "2. Управление сессиями и устройствами",
+        "readyDate": "2027-01-13"
+      },
+      {
+        "key": "B2BAPP-198",
+        "name": "1. Профиль пользователя (просмотр и редактирование)",
+        "readyDate": "2026-12-30"
+      },
+      {
+        "key": "B2BAPP-1154",
+        "name": "2. Транскрипция и саммари звонков (AI)",
+        "readyDate": "2027-02-12"
+      },
+      {
+        "key": "B2BAPP-705",
+        "name": "3. Сводка дня по бизнесу",
+        "readyDate": "2026-12-22"
+      },
+      {
+        "key": "B2BAPP-366s",
+        "name": "1. Взаимодействие с поддержкой (обращения, статус)",
+        "readyDate": "2027-02-16"
+      },
+      {
+        "key": "B2BAPP-1120",
+        "name": "1. История звонков (список, фильтры, карточка)",
+        "readyDate": "2027-01-29"
+      },
+      {
+        "key": "B2BAPP-800",
+        "name": "3. Push-уведомления от AI-ассистента",
+        "readyDate": "2026-12-18"
       },
       {
         "key": "B2BAPP-1202",
         "name": "4. Работа с календарём",
-        "readyDate": "2026-11-06"
+        "readyDate": "2027-02-18"
       }
     ],
-    "outStories": [],
     "rationale": "Отсечка 10.12.2026. Только MVP-стори."
   },
   "usm": {
@@ -30566,44 +30551,24 @@
   ],
   "epicProgress": [
     {
-      "epicKey": "B2BAPP-21",
-      "epicName": "3. Вход и выход из приложения (Аутентификация)",
-      "hoursTotal": 211,
+      "epicKey": "B2BAPP-22",
+      "epicName": "6. Главная страница",
+      "hoursTotal": 489,
       "hoursSpent": 0,
-      "storiesTotal": 2,
+      "storiesTotal": 3,
       "storiesDone": 0,
-      "start": "2026-03-27",
-      "end": "2026-08-12"
+      "start": "2026-09-24",
+      "end": "2026-12-22"
     },
     {
-      "epicKey": "B2BAPP-484",
-      "epicName": "9. AI-отчёты и аналитика",
-      "hoursTotal": 220,
+      "epicKey": "B2BAPP-1241",
+      "epicName": "5. Онбординг",
+      "hoursTotal": 20,
       "hoursSpent": 0,
       "storiesTotal": 1,
       "storiesDone": 0,
-      "start": "2026-04-21",
-      "end": "2026-10-28"
-    },
-    {
-      "epicKey": "B2BAPP-1242",
-      "epicName": "8. Профиль",
-      "hoursTotal": 274,
-      "hoursSpent": 0,
-      "storiesTotal": 2,
-      "storiesDone": 0,
-      "start": "2026-05-26",
-      "end": "2026-10-09"
-    },
-    {
-      "epicKey": "B2BAPP-465",
-      "epicName": "10. Общение и звонки",
-      "hoursTotal": 421,
-      "hoursSpent": 0,
-      "storiesTotal": 4,
-      "storiesDone": 0,
-      "start": "2026-04-27",
-      "end": "2026-11-06"
+      "start": "2026-10-29",
+      "end": "2026-11-10"
     },
     {
       "epicKey": "B2BAPP-491",
@@ -30612,8 +30577,18 @@
       "hoursSpent": 0,
       "storiesTotal": 1,
       "storiesDone": 0,
-      "start": "2026-04-29",
-      "end": "2026-05-06"
+      "start": "2026-09-21",
+      "end": "2026-10-14"
+    },
+    {
+      "epicKey": "B2BAPP-21",
+      "epicName": "3. Вход и выход из приложения (Аутентификация)",
+      "hoursTotal": 211,
+      "hoursSpent": 0,
+      "storiesTotal": 2,
+      "storiesDone": 0,
+      "start": "2026-09-21",
+      "end": "2026-10-23"
     },
     {
       "epicKey": "B2BAPP-27",
@@ -30622,8 +30597,8 @@
       "hoursSpent": 0,
       "storiesTotal": 3,
       "storiesDone": 0,
-      "start": "2026-04-09",
-      "end": "2026-09-30"
+      "start": "2026-10-02",
+      "end": "2026-12-18"
     },
     {
       "epicKey": "B2BAPP-134",
@@ -30633,27 +30608,7 @@
       "storiesTotal": 1,
       "storiesDone": 0,
       "start": "2026-02-09",
-      "end": "2026-09-01"
-    },
-    {
-      "epicKey": "B2BAPP-22",
-      "epicName": "6. Главная страница",
-      "hoursTotal": 489,
-      "hoursSpent": 0,
-      "storiesTotal": 3,
-      "storiesDone": 0,
-      "start": "2026-05-05",
-      "end": "2026-10-05"
-    },
-    {
-      "epicKey": "B2BAPP-1241",
-      "epicName": "5. Онбординг",
-      "hoursTotal": 20,
-      "hoursSpent": 0,
-      "storiesTotal": 1,
-      "storiesDone": 0,
-      "start": "2026-06-24",
-      "end": "2026-06-29"
+      "end": "2026-09-24"
     },
     {
       "epicKey": "B2BAPP-25",
@@ -30662,8 +30617,38 @@
       "hoursSpent": 0,
       "storiesTotal": 1,
       "storiesDone": 0,
-      "start": "2026-06-18",
-      "end": "2026-10-30"
+      "start": "2026-10-28",
+      "end": "2027-02-16"
+    },
+    {
+      "epicKey": "B2BAPP-465",
+      "epicName": "10. Общение и звонки",
+      "hoursTotal": 421,
+      "hoursSpent": 0,
+      "storiesTotal": 4,
+      "storiesDone": 0,
+      "start": "2026-10-20",
+      "end": "2027-02-18"
+    },
+    {
+      "epicKey": "B2BAPP-484",
+      "epicName": "9. AI-отчёты и аналитика",
+      "hoursTotal": 220,
+      "hoursSpent": 0,
+      "storiesTotal": 1,
+      "storiesDone": 0,
+      "start": "2026-10-14",
+      "end": "2027-01-26"
+    },
+    {
+      "epicKey": "B2BAPP-1242",
+      "epicName": "8. Профиль",
+      "hoursTotal": 274,
+      "hoursSpent": 0,
+      "storiesTotal": 2,
+      "storiesDone": 0,
+      "start": "2026-10-07",
+      "end": "2027-01-13"
     }
   ],
   "resourcePlan": [
@@ -30720,22 +30705,16 @@
       "hoursTotal": 108,
       "months": [
         {
-          "month": "2026-03",
-          "hoursPlanned": 12,
-          "normHours": 168,
-          "loadPct": 14
-        },
-        {
-          "month": "2026-04",
-          "hoursPlanned": 88,
+          "month": "2026-09",
+          "hoursPlanned": 32,
           "normHours": 176,
-          "loadPct": 100
+          "loadPct": 36
         },
         {
-          "month": "2026-05",
-          "hoursPlanned": 8,
-          "normHours": 152,
-          "loadPct": 11
+          "month": "2026-10",
+          "hoursPlanned": 76,
+          "normHours": 176,
+          "loadPct": 86
         }
       ]
     },
@@ -30750,22 +30729,16 @@
       "hoursTotal": 183,
       "months": [
         {
-          "month": "2026-04",
-          "hoursPlanned": 24,
+          "month": "2026-10",
+          "hoursPlanned": 138,
           "normHours": 176,
-          "loadPct": 14
+          "loadPct": 78
         },
         {
-          "month": "2026-05",
-          "hoursPlanned": 76,
-          "normHours": 152,
-          "loadPct": 50
-        },
-        {
-          "month": "2026-06",
-          "hoursPlanned": 83,
-          "normHours": 168,
-          "loadPct": 49
+          "month": "2026-11",
+          "hoursPlanned": 45,
+          "normHours": 160,
+          "loadPct": 28
         }
       ]
     },
@@ -30776,26 +30749,44 @@
       "fte": 1.0,
       "from": "2026-04-22",
       "vacant": false,
-      "taskCount": 13,
-      "hoursTotal": 311,
+      "taskCount": 4,
+      "hoursTotal": 93,
       "months": [
         {
-          "month": "2026-04",
-          "hoursPlanned": 50,
+          "month": "2026-10",
+          "hoursPlanned": 93,
           "normHours": 176,
-          "loadPct": 28
+          "loadPct": 53
+        }
+      ]
+    },
+    {
+      "resourceId": "BA-2",
+      "role": "BA",
+      "name": "Шевченко Константин Сергеевич",
+      "fte": 1.0,
+      "from": "2026-09-01",
+      "vacant": false,
+      "taskCount": 9,
+      "hoursTotal": 218,
+      "months": [
+        {
+          "month": "2026-09",
+          "hoursPlanned": 56,
+          "normHours": 176,
+          "loadPct": 32
         },
         {
-          "month": "2026-05",
-          "hoursPlanned": 138,
-          "normHours": 152,
-          "loadPct": 91
+          "month": "2026-10",
+          "hoursPlanned": 155,
+          "normHours": 176,
+          "loadPct": 88
         },
         {
-          "month": "2026-06",
-          "hoursPlanned": 123,
-          "normHours": 168,
-          "loadPct": 73
+          "month": "2026-11",
+          "hoursPlanned": 7,
+          "normHours": 160,
+          "loadPct": 4
         }
       ]
     },
@@ -30806,32 +30797,38 @@
       "fte": 1.0,
       "from": "2026-08-01",
       "vacant": false,
-      "taskCount": 10,
-      "hoursTotal": 404,
+      "taskCount": 15,
+      "hoursTotal": 612,
       "months": [
         {
-          "month": "2026-08",
-          "hoursPlanned": 120,
-          "normHours": 168,
-          "loadPct": 71
-        },
-        {
-          "month": "2026-09",
-          "hoursPlanned": 120,
-          "normHours": 176,
-          "loadPct": 68
-        },
-        {
           "month": "2026-10",
-          "hoursPlanned": 132,
+          "hoursPlanned": 40,
           "normHours": 176,
-          "loadPct": 75
+          "loadPct": 23
         },
         {
           "month": "2026-11",
-          "hoursPlanned": 32,
+          "hoursPlanned": 160,
           "normHours": 160,
-          "loadPct": 20
+          "loadPct": 100
+        },
+        {
+          "month": "2026-12",
+          "hoursPlanned": 184,
+          "normHours": 184,
+          "loadPct": 100
+        },
+        {
+          "month": "2027-01",
+          "hoursPlanned": 116,
+          "normHours": 120,
+          "loadPct": 97
+        },
+        {
+          "month": "2027-02",
+          "hoursPlanned": 112,
+          "normHours": 152,
+          "loadPct": 74
         }
       ]
     },
@@ -30842,32 +30839,32 @@
       "fte": 1.0,
       "from": "2026-07-24",
       "vacant": false,
-      "taskCount": 11,
-      "hoursTotal": 496,
+      "taskCount": 9,
+      "hoursTotal": 409,
       "months": [
         {
-          "month": "2026-07",
-          "hoursPlanned": 45,
-          "normHours": 184,
-          "loadPct": 24
-        },
-        {
-          "month": "2026-08",
-          "hoursPlanned": 159,
-          "normHours": 168,
-          "loadPct": 95
-        },
-        {
           "month": "2026-09",
-          "hoursPlanned": 172,
+          "hoursPlanned": 21,
           "normHours": 176,
-          "loadPct": 98
+          "loadPct": 12
         },
         {
           "month": "2026-10",
-          "hoursPlanned": 120,
+          "hoursPlanned": 100,
           "normHours": 176,
-          "loadPct": 68
+          "loadPct": 57
+        },
+        {
+          "month": "2026-11",
+          "hoursPlanned": 160,
+          "normHours": 160,
+          "loadPct": 100
+        },
+        {
+          "month": "2026-12",
+          "hoursPlanned": 128,
+          "normHours": 184,
+          "loadPct": 70
         }
       ]
     },
@@ -30878,20 +30875,32 @@
       "fte": 1.0,
       "from": "2026-09-03",
       "vacant": false,
-      "taskCount": 6,
-      "hoursTotal": 264,
+      "taskCount": 8,
+      "hoursTotal": 351,
       "months": [
         {
           "month": "2026-09",
-          "hoursPlanned": 160,
+          "hoursPlanned": 3,
           "normHours": 176,
-          "loadPct": 91
+          "loadPct": 2
         },
         {
           "month": "2026-10",
-          "hoursPlanned": 104,
+          "hoursPlanned": 80,
           "normHours": 176,
-          "loadPct": 59
+          "loadPct": 45
+        },
+        {
+          "month": "2026-11",
+          "hoursPlanned": 156,
+          "normHours": 160,
+          "loadPct": 98
+        },
+        {
+          "month": "2026-12",
+          "hoursPlanned": 112,
+          "normHours": 184,
+          "loadPct": 61
         }
       ]
     },
@@ -30902,87 +30911,57 @@
       "fte": 1.0,
       "from": "2026-07-22",
       "vacant": false,
-      "taskCount": 9,
-      "hoursTotal": 267,
+      "taskCount": 11,
+      "hoursTotal": 332,
       "months": [
-        {
-          "month": "2026-07",
-          "hoursPlanned": 16,
-          "normHours": 184,
-          "loadPct": 9
-        },
         {
           "month": "2026-08",
-          "hoursPlanned": 70,
+          "hoursPlanned": 38,
           "normHours": 168,
-          "loadPct": 42
-        },
-        {
-          "month": "2026-09",
-          "hoursPlanned": 89,
-          "normHours": 176,
-          "loadPct": 51
-        },
-        {
-          "month": "2026-10",
-          "hoursPlanned": 92,
-          "normHours": 176,
-          "loadPct": 52
-        }
-      ]
-    },
-    {
-      "resourceId": "FE-2",
-      "role": "FE",
-      "name": "Вакантно FE-2",
-      "fte": 1,
-      "from": "2026-09-01",
-      "vacant": true,
-      "taskCount": 5,
-      "hoursTotal": 208,
-      "months": [
-        {
-          "month": "2026-09",
-          "hoursPlanned": 80,
-          "normHours": 176,
-          "loadPct": 45
-        },
-        {
-          "month": "2026-10",
-          "hoursPlanned": 128,
-          "normHours": 176,
-          "loadPct": 73
-        }
-      ]
-    },
-    {
-      "resourceId": "QA-2",
-      "role": "QA",
-      "name": "Вакантно QA-2",
-      "fte": 1,
-      "from": "2026-09-01",
-      "vacant": true,
-      "taskCount": 2,
-      "hoursTotal": 65,
-      "months": [
-        {
-          "month": "2026-10",
-          "hoursPlanned": 41,
-          "normHours": 176,
           "loadPct": 23
         },
         {
-          "month": "2026-11",
+          "month": "2026-09",
+          "hoursPlanned": 18,
+          "normHours": 176,
+          "loadPct": 10
+        },
+        {
+          "month": "2026-10",
           "hoursPlanned": 24,
+          "normHours": 176,
+          "loadPct": 14
+        },
+        {
+          "month": "2026-11",
+          "hoursPlanned": 32,
           "normHours": 160,
-          "loadPct": 15
+          "loadPct": 20
+        },
+        {
+          "month": "2026-12",
+          "hoursPlanned": 110,
+          "normHours": 184,
+          "loadPct": 60
+        },
+        {
+          "month": "2027-01",
+          "hoursPlanned": 49,
+          "normHours": 120,
+          "loadPct": 41
+        },
+        {
+          "month": "2027-02",
+          "hoursPlanned": 61,
+          "normHours": 152,
+          "loadPct": 40
         }
       ]
     }
   ],
   "okrMilestone": null,
   "okrQuarterly": [],
-  "generatedAt": "2026-09-21T09:53:18+03:00",
+  "generatedAt": "2026-09-21T19:15:21+03:00",
   "gantt": [
     {
       "key": "B2BAPP-5",
