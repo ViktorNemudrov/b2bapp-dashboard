@@ -59,8 +59,79 @@ const detailHtml = sc.length ? `<table class="tbl" id="tbl">
       <td><span class="badge badge-${cls}">${s.status}</span></td>
     </tr>`;}).join('')}</tbody></table>` : '';
 
+// ── СОСТАВ MVP: 35 сценариев по 4 контурам (каталог Леонида, перенесён и
+// сверен с нашими данными 22.09.2026) — коды/названия фиксированы (не из
+// Jira, там сценариев как отдельных issue нет), группа→наш эпик — по смыслу,
+// статус "нет оценки/исключён" — динамически из data.ganttAssumptions.excludedScenarios.
+const SCENARIO_GROUPS = [
+  {title:'1. Мой день', epic:'наш эпик «6. Главная страница»', items:[
+    ['MD1','Топ актуальных задач и событий по всему бизнесу'],
+    ['MD2','Сводка дня по бизнесу'],
+  ]},
+  {title:'2. Обращения и клиенты', epic:'наши эпики «10. Общение и звонки» + «11. Взаимодействие с поддержкой»', items:[
+    ['OB1','История звонков (список, фильтры)'],
+    ['OB2','Карточка звонка и повторный звонок («Перезвонить»)'],
+    ['OB3','Прослушивание, расшифровка и саммари звонка'],
+    ['OB4','То же для звонков, принятых секретарём'],
+    ['OB5','Выявление задач и следующих шагов по звонку'],
+    ['OB6','Аналитический запрос по звонкам (в чате)'],
+    ['OB7','Проактивный анализ и инсайты по звонкам (push)'],
+    ['OB8','Карточка контакта на базе номера телефона'],
+    ['OB10','Напоминания (авто из звонка + вручную)'],
+    ['OB11','Работа с календарём'],
+  ]},
+  {title:'3. Развитие бизнеса', epic:'вне наших 10 согласованных эпиков — discovery/growth-слой, не в трекинге', items:[
+    ['RB1','Анализ отрасли из открытых источников'],
+    ['RB2','«N пользователей искали ваши услуги» / сайт vs конкуренты'],
+    ['RB3','Трафик мимо (физической точки бизнеса)'],
+    ['RB4','Индекс цифровой зрелости'],
+    ['RB5','Звонки по часам'],
+  ]},
+  {title:'4. Платформа/Ядро', epic:'наш эпик «2. Инфраструктура и платформа» (+ «3. Аутентификация» для PL9–PL14)', items:[
+    ['PL1','Единый ИИ-движок и модель взаимодействия'],
+    ['PL2','Память бизнеса (состав данных и использование)'],
+    ['PL3','Чат с поддержкой (эскалация к оператору)'],
+    ['PL4','Сценарии-редиректы + замоканные'],
+    ['PL5','ИИ-гигиена (запретные темы, tone of voice, лимиты)'],
+    ['PL6','Хранение истории диалогов'],
+    ['PL7','Продуктовая аналитика'],
+    ['PL8','Логирование'],
+    ['PL9','Первичная аутентификация'],
+    ['PL10','Вторичная аутентификация (биометрия, код-пароль)'],
+    ['PL11','Бесшовная аутентификация (переход во встроенный маркетплейс/веб-ЛК)'],
+    ['PL12','Авторизация'],
+    ['PL13','Запрос системных разрешений (биометрия, пуши...)'],
+    ['PL14','Онбординг'],
+    ['PL15','Просмотр профиля'],
+    ['PL16','Управление настройками в Профиле (тема, пуши, безопасность)'],
+    ['PL17','Отправка пуш-уведомлений'],
+    ['PL18','Анализ запросов и самоулучшение приложения'],
+  ]},
+];
+const excludedByCode = {};
+(d.ganttAssumptions?.excludedScenarios||[]).forEach(s=>{ excludedByCode[s.code]=s; });
+const totalScenarios = SCENARIO_GROUPS.reduce((n,g)=>n+g.items.length,0);
+const totalExcluded = Object.keys(excludedByCode).length;
+const scenarioHtml = `
+  <div style="font-size:11px;color:var(--mute);margin-bottom:10px">
+    ${totalScenarios} сценариев по ${SCENARIO_GROUPS.length} продуктовым контурам (каталог из беклога Леонида, коды сверены с текущими эпиками) —
+    <span style="color:var(--err)">${totalExcluded} без оценки/вне расчёта</span>, остальные покрыты гант-планом по указанному эпику.
+  </div>
+  <div class="scope-grid" style="grid-template-columns:1fr 1fr;gap:14px">
+  ${SCENARIO_GROUPS.map(g=>`
+    <div class="scope-col">
+      <h4>${g.title} <span style="color:var(--mute);font-weight:400;font-size:10px">(${g.items.length} сцен.)</span></h4>
+      <div style="font-size:10px;color:var(--mute);margin-bottom:6px">${g.epic}</div>
+      ${g.items.map(([code,name])=>{
+        const ex=excludedByCode[code];
+        return `<div class="scope-item"><b style="color:var(--blue);font-size:10px">${code}</b> ${name}${ex?` <span class="badge badge-err" style="margin-left:4px" title="${ex.reason}">без оценки</span>`:''}</div>`;
+      }).join('')}
+    </div>`).join('')}
+  </div>`;
+
 document.getElementById('root').innerHTML = primaryHtml +
-  (detailHtml?`<div class="sec-title" style="margin-top:24px">Детализация по эпикам</div>${detailHtml}`:'');
+  (detailHtml?`<div class="sec-title" style="margin-top:24px">Детализация по эпикам</div>${detailHtml}`:'') +
+  `<div class="sec-title" style="margin-top:24px">Состав MVP — сценарии</div>${scenarioHtml}`;
 makeSortable(document.getElementById('tbl'));
 }).catch(showFetchError);
 });

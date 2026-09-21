@@ -622,6 +622,17 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
     <div id="changedBadge" style="display:none;flex-shrink:0"></div>
   </div>
 
+  <!-- ОБЗОР ПРОЕКТА (п.22.09.2026, по мотивам вкладки "Обзор" у Леонида) —
+       только реальные цифры. "Фокус ближайшего спринта"/"итоги встречи" из
+       его версии сюда сознательно не перенесены — это текст от людей, а не
+       расчёт, взяться ему самостоятельно неоткуда. -->
+  <div class="section" id="s-overview">
+    <div class="sec-title">📋 Обзор проекта</div>
+    <div class="kpi-row" id="overviewRow">
+      <div class="kpi"><div class="kpi-val">—</div><div class="kpi-lbl">Загрузка...</div></div>
+    </div>
+  </div>
+
   <!-- HERO: технологии/демо-стенды + прогноз завершения + счётчик до вехи —
        все три в одну строку (3 колонки), правка Виктора 21.09.2026. -->
   <div class="hero" id="s-hero">
@@ -803,6 +814,22 @@ function doSearch(q){
 }
 function closeSearch(){$('srchResults').classList.remove('open');}
 
+
+// ── ОБЗОР ПРОЕКТА (только реальные цифры, см. HTML-комментарий выше) ──────
+function renderOverview(data){
+  const a1=(data.assumptions||[]).find(a=>a.id==='A1');
+  const startDate=a1?(a1.desc.match(/(\d{2}\.\d{2}\.\d{4})/)||[])[1]:null;
+  const res=(data.ganttV2&&data.ganttV2.resources)||[];
+  const roles=new Set(res.map(r=>r.role));
+  const kpi=data.kpi||{};
+  const cells=[
+    {v: startDate||'—', l:'Старт разработки'},
+    {v: res.length||'—', l:`Команда (${roles.size||0} ролей)`},
+    {v:'10.12.2026', l:'Дедлайн MVP'},
+    {v: kpi.mvpReachable?'✅ Успеваем':'⚠️ Не успеваем', l:`Критпуть: ${kpi.criticalEnd||'—'}`},
+  ];
+  $('overviewRow').innerHTML=cells.map(c=>`<div class="kpi"><div class="kpi-val" style="font-size:20px">${c.v}</div><div class="kpi-lbl">${c.l}</div></div>`).join('');
+}
 
 // ── KPI ───────────────────────────────────────────────────────
 function renderMetrics(data){
@@ -1217,6 +1244,7 @@ function init(data){
   validateData(data);
   showChangedBadge(data);
   buildSearchIndex(data);
+  renderOverview(data);
   renderMetrics(data);
   renderForecast(data);
   renderEpicProgress(data);
