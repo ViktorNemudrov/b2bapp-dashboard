@@ -291,6 +291,13 @@ def build_resources(team, issues):
 # ─────────────────────────────────────────────────────────────────────────────
 #  Планировщик ганта (per-task, MVP-only)
 # ─────────────────────────────────────────────────────────────────────────────
+def resolve_epic_priority(e):
+    """epicPriority из выгрузки приоритетнее текстового префикса эпика
+    (у него бывают устаревшие каталожные номера, см. кейс "5. Онбординг")."""
+    if not e:
+        return 9999
+    return e["epicPriorityRaw"] if e.get("epicPriorityRaw") is not None else e["priority"]
+
 def plan_gantt(issues, resources):
     """
     Возвращает items[] (epic+story+task) с датами, ресурсами, критпутём.
@@ -333,13 +340,7 @@ def plan_gantt(issues, resources):
         s = stories.get(t["partParent"])
         if not s:
             return (9999, 9999)
-        e = epics.get(s.get("epicLink"))
-        # epicPriority из выгрузки — приоритетнее текстового префикса эпика
-        # (у него бывают устаревшие каталожные номера, см. кейс "5. Онбординг").
-        epic_prio = 9999
-        if e:
-            epic_prio = e["epicPriorityRaw"] if e.get("epicPriorityRaw") is not None else e["priority"]
-        return (epic_prio, s["priority"])
+        return (resolve_epic_priority(epics.get(s.get("epicLink"))), s["priority"])
     ordered = sorted(mvp_tasks, key=lambda t: (story_prio(t),
                                                ROLE_PHASE.get(t["role"], 1),
                                                t["priority"], t["key"]))
@@ -440,6 +441,7 @@ def plan_gantt(issues, resources):
         items.append({
             "key": ek, "type": "epic", "parent": None, "epic": ek,
             "summary": (e or {}).get("summary", ek),
+            "priority": resolve_epic_priority(e),
             "estimateH": sum(it["estimateH"] for it in kids),
             "spentH": sum(it["spentH"] for it in kids),
             "start": start, "end": end, "category": cat,
