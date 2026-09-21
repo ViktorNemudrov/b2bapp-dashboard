@@ -161,9 +161,13 @@ def prio_from_summary(summary: str):
 
 def status_category(status_name: str) -> str:
     s = (status_name or "").lower()
-    if s in ("завершена", "готово", "done", "closed", "resolved"):
+    # "waiting for release" — реальный статус из Jira (не было в тестовых
+    # дампах): разработка и тестирование завершены (remainingEstimate=0),
+    # ждёт только релиза — по сути done, а не непочатый бэклог.
+    if s in ("завершена", "готово", "done", "closed", "resolved", "waiting for release"):
         return "done"
-    if s in ("в работе", "разработка", "review", "анализ", "in progress"):
+    if s in ("в работе", "разработка", "review", "анализ", "in progress",
+              "ready for testing", "тестирование", "review ready"):
         return "in_progress"
     return "backlog"
 
@@ -315,9 +319,23 @@ def plan_gantt(issues, resources, today=None):
     stories = {i["key"]: i for i in issues if i["type"] == "story"}
     tasks = [i for i in issues if i["type"] == "task"]
 
-    # MVP-фильтр: стори с меткой mvp; их задачи — по Part-связи.
-    mvp_story_keys = {k for k, s in stories.items() if "mvp" in [l.lower() for l in s["labels"]]}
+    # Метки "mvp" в Jira больше нет (Виктор 21.09.2026) — сам бэклог теперь
+    # заранее прескоуплен: выгрузка берёт только задачи с оценкой под 10
+    # согласованными эпиками (после чистки Леонида), так что скоуп = все
+    # стори, которые реально пришли в дампе, без отдельного лейбл-фильтра.
+    mvp_story_keys = set(stories.keys())
     mvp_tasks = [t for t in tasks if t["partParent"] in mvp_story_keys]
+
+    # "Сироты": задача без Part-связи на стори вообще (или связанной со стори
+    # вне скоупа) — реальный пробел в Jira (обнаружено 21.09.2026: 30 задач,
+    # ~1257ч). Не выбрасываем — планируем НАПРЯМУЮ под эпик по customfield_10901
+    # задачи (без стори-контекста, поэтому без фазовой зависимости внутри
+    # стори — гейтить не по чему). Виктор попросит собрать список для
+    # проставления Part-связей в Jira отдельно (значит "epicLink" у задачи
+    # обязателен, иначе она и правда потеряна — таких на 21.09.2026 не было).
+    orphan_tasks = [t for t in tasks
+                    if t["partParent"] not in mvp_story_keys and t.get("epicLink") in epics]
+    all_tasks = mvp_tasks + orphan_tasks
 
     # Реальные (не вакантные) ресурсы — вакантные ставки-гипотезы НЕ участвуют
     # в назначении задач вообще (Виктор 21.09.2026: "считаем, что их не будет").
@@ -351,10 +369,13 @@ def plan_gantt(issues, resources, today=None):
     # эпиков получался произвольным (фактически — по порядку в jira_dump.json).
     def story_prio(t):
         s = stories.get(t["partParent"])
-        if not s:
-            return (9999, 9999)
-        return (resolve_epic_priority(epics.get(s.get("epicLink"))), s["priority"])
-    ordered = sorted(mvp_tasks, key=lambda t: (story_prio(t),
+        if s:
+            return (resolve_epic_priority(epics.get(s.get("epicLink"))), s["priority"])
+        # Сирота: приоритет эпика напрямую по epicLink задачи; своего
+        # "приоритета стори" нет — используем приоритет самой задачи как
+        # tie-break (обычно 9999, т.е. после обычных стори этого эпика).
+        return (resolve_epic_priority(epics.get(t.get("epicLink"))), t["priority"])
+    ordered = sorted(all_tasks, key=lambda t: (story_prio(t),
                                                ROLE_PHASE.get(t["role"], 1),
                                                t["priority"], t["key"]))
 
@@ -364,7 +385,11 @@ def plan_gantt(issues, resources, today=None):
     for t in ordered:
         role = t["role"]
         cat = status_category(t["status"])
-        st_key = t["partParent"]
+        # None у "сирот" (нет реальной стори) — НЕ используем partParent
+        # напрямую как ключ: несколько разных сирот иначе синхронизировались
+        # бы на один и тот же ключ None в story_phase_end и ложно гейтили
+        # бы друг друга фазами. У сирот дальше просто нет фазовой зависимости.
+        st_key = t["partParent"] if t["partParent"] in stories else None
 
         if cat == "done":
             start = t["created"] or date(2026, 1, 1)
@@ -372,9 +397,10 @@ def plan_gantt(issues, resources, today=None):
             res = pick_resource(role, start)
         else:
             # Зависимость фаз внутри стори: не раньше конца предыдущей фазы.
+            # У задач-сирот (st_key=None) стори-контекста нет — не гейтим.
             phase = ROLE_PHASE.get(role, None)
             dep_end = None
-            if phase is not None and phase > 0:
+            if st_key is not None and phase is not None and phase > 0:
                 for ph in range(phase):
                     e = story_phase_end[st_key][ph]
                     if e and (dep_end is None or e > dep_end):
@@ -395,7 +421,7 @@ def plan_gantt(issues, resources, today=None):
             start = next_workday(earliest)
             end = add_work_hours(start, remaining, fte)
             res_free[res["id"]] = next_workday(end + timedelta(days=1))
-            if phase is not None:
+            if st_key is not None and phase is not None:
                 prev = story_phase_end[st_key][phase]
                 if prev is None or end > prev:
                     story_phase_end[st_key][phase] = end
@@ -406,7 +432,7 @@ def plan_gantt(issues, resources, today=None):
 
     # ── Сборка items[] ────────────────────────────────────────────────────────
     items = []
-    # задачи
+    # задачи, привязанные к стори
     for t in mvp_tasks:
         p = planned.get(t["key"])
         if not p:
@@ -420,6 +446,24 @@ def plan_gantt(issues, resources, today=None):
             "start": p["start"].isoformat(), "end": p["end"].isoformat(),
             "resource": p["resource"], "onCriticalPath": False,
             "deps": t["blocksDeps"],
+        })
+    # задачи-сироты — нет Part-связи на стори в Jira, планируем напрямую
+    # под эпик (parent=epic), чтобы часы/сроки не терялись молча (см. правку
+    # 21.09.2026 про orphan_tasks). Список для проставления связей в Jira —
+    # выводится self_checks-предупреждением ниже, не падает сборка.
+    for t in orphan_tasks:
+        p = planned.get(t["key"])
+        if not p:
+            continue
+        items.append({
+            "key": t["key"], "type": "task", "parent": t["epicLink"],
+            "epic": t["epicLink"],
+            "summary": t["summary"], "role": t["role"], "priority": t["priority"],
+            "estimateH": t["estimateH"], "spentH": t["spentH"],
+            "status": t["status"], "category": p["category"],
+            "start": p["start"].isoformat(), "end": p["end"].isoformat(),
+            "resource": p["resource"], "onCriticalPath": False,
+            "deps": t["blocksDeps"], "orphan": True,
         })
     # стори (агрегат из их задач)
     for sk in mvp_story_keys:
@@ -441,11 +485,14 @@ def plan_gantt(issues, resources, today=None):
             "start": start, "end": end, "category": cat,
             "onCriticalPath": False, "deps": [],
         })
-    # эпики (агрегат из их стори)
-    epic_keys = {s["epicLink"] for s in [stories[k] for k in mvp_story_keys] if s.get("epicLink")}
+    # эпики (агрегат из их стори + прямых задач-сирот под эпиком, у которых
+    # нет стори — иначе их часы/сроки не попали бы в итог эпика вообще).
+    epic_keys = ({s["epicLink"] for s in [stories[k] for k in mvp_story_keys] if s.get("epicLink")}
+                 | {t["epicLink"] for t in orphan_tasks if t.get("epicLink")})
     for ek in epic_keys:
         e = epics.get(ek)
-        kids = [it for it in items if it["type"] == "story" and it["epic"] == ek]
+        kids = [it for it in items if it["epic"] == ek
+                and (it["type"] == "story" or (it["type"] == "task" and it.get("orphan")))]
         if not kids:
             continue
         start = min(it["start"] for it in kids)
@@ -487,7 +534,9 @@ def plan_gantt(issues, resources, today=None):
             if it["key"] in crit_tasks or it["key"] in crit_parents or it["key"] in crit_epics:
                 it["onCriticalPath"] = True
 
-    return items, end_date, crit_res, mvp_story_keys
+    orphan_report = [{"key": t["key"], "epic": t["epicLink"], "summary": t["summary"],
+                       "estimateH": t["estimateH"]} for t in orphan_tasks]
+    return items, end_date, crit_res, mvp_story_keys, orphan_report
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Производные секции из items[]
@@ -634,7 +683,7 @@ def run_gantt(args):
     # Вакантные ставки-гипотезы (FE-2/BE-1/QA-2 и т.п.) больше не показываем и
     # не назначаем на них задачи (Виктор 21.09.2026: считаем, что их не будет).
     resources = [r for r in build_resources(team, issues) if not r.get("vacant")]
-    items, end_date, crit_res, mvp_story_keys = plan_gantt(issues, resources, today)
+    items, end_date, crit_res, mvp_story_keys, orphan_report = plan_gantt(issues, resources, today)
 
     mvp_scope = calc_mvp_scope(items)
     resource_plan = calc_resource_plan(items, resources)
@@ -767,6 +816,12 @@ def run_gantt(args):
                        f"критпуть до {crit_end_iso}"})
     new["changelog"] = cl
 
+    # Сироты — задачи без Part-связи на стори в Jira (или связанные со стори
+    # вне 10 согласованных эпиков), запланированы напрямую под эпик как
+    # fallback. Список — чтобы можно было проставить Part-связи в Jira и
+    # больше в нём не нуждаться.
+    new["orphanTasks"] = orphan_report
+
     # ── Ассерты ────────────────────────────────────────────────────────────────
     errs = self_checks(items, ganttV2, mvp_scope, resource_plan, epic_progress)
     # накопление: счётчики не должны обрушиться против старого
@@ -790,6 +845,10 @@ def run_gantt(args):
     print(f"  Ресурсов: {len(resources)} (реальных {sum(1 for r in resources if not r['vacant'])}, "
           f"вакансий {sum(1 for r in resources if r['vacant'])})")
     print(f"  scopeGrowth точек: {len(sg)}, baselines: {len(bl)}")
+    if orphan_report:
+        orphan_h = sum(o["estimateH"] for o in orphan_report)
+        print(f"  ⚠ Задач-сирот (без Part-связи на стори, запланированы напрямую под эпик): "
+              f"{len(orphan_report)}, {orphan_h}ч — {', '.join(o['key'] for o in orphan_report)}")
 
 
 def main():
