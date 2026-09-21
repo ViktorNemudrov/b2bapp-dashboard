@@ -78,7 +78,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 <div class="main">
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">📊 План и диаграмма Ганта</span></div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleSidebarHidden()" id="sidebarToggleBtn" title="Скрыть/показать меню" style="margin-left:8px">☰ Меню</button><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
 <div class="content" id="root">
   <div id="ganttEmpty"></div>
@@ -171,9 +171,6 @@ const TYPE_ICON={
 const SCALE_PX={week:26,month:6,quarter:2};
 const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',resourceFilter:'',_scrolledToToday:false,
   treeWidth:340,treeCollapsed:false,showToday:true,showMilestone:true,showHires:true};
-
-function toggleSidebarHidden(){ document.body.classList.toggle('sidebar-hidden'); }
-window.toggleSidebarHidden = toggleSidebarHidden;
 
 function setTreeWidth(px){
   GS.treeWidth=Math.max(160,Math.min(700,px));

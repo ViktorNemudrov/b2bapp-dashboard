@@ -86,7 +86,9 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
 .layout{display:flex;min-height:100vh}
 .main{flex:1;overflow-x:hidden;min-width:0;display:flex;flex-direction:column}
 .sidebar{width:200px;flex-shrink:0;background:#0a1520;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:150}
-.sidebar-logo{padding:14px 16px;border-bottom:2px solid var(--yel);display:flex;align-items:center;gap:9px;flex-shrink:0;text-decoration:none;cursor:pointer}
+/* height:52px = .hdr height ровно, чтобы жёлтая линия под логотипом и под
+   хедером не расходилась по высоте на стыке сайдбара и основной части. */
+.sidebar-logo{height:52px;padding:0 16px;border-bottom:2px solid var(--yel);display:flex;align-items:center;gap:9px;flex-shrink:0;text-decoration:none;cursor:pointer}
 .sidebar-logo-img{width:28px;height:28px;flex-shrink:0;object-fit:contain}
 .sidebar-logo-text{font-size:12px;font-weight:800;color:#fff;line-height:1.2}
 .sidebar-nav{padding:10px 0;flex:1}
@@ -109,6 +111,16 @@ body.light-theme .theme-dark-only{display:none}
 }
 
 body.sidebar-hidden .sidebar{width:0;min-width:0;border:none;overflow:hidden}
+
+/* Персистентная кнопка сворачивания/разворачивания сайдбара (десктоп/планшет,
+   не мобильный бургер — тот остаётся для узких экранов ниже). Сидит на стыке
+   сайдбара и контента, сдвигается вместе с краем сайдбара. */
+.sidebar-collapse-btn{position:fixed;top:64px;left:200px;transform:translateX(-50%);z-index:160;width:18px;height:34px;background:var(--card);border:1px solid var(--line);border-radius:0 6px 6px 0;color:var(--mute);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:left .15s}
+.sidebar-collapse-btn:hover{color:var(--yel);border-color:var(--yel)}
+body.sidebar-hidden .sidebar-collapse-btn{left:0}
+@media(max-width:1100px) and (min-width:769px){ .sidebar-collapse-btn{left:56px} body.sidebar-hidden .sidebar-collapse-btn{left:0} }
+@media(max-width:768px){ .sidebar-collapse-btn{display:none} }
+body.light-theme .sidebar-collapse-btn{background:#fff;border-color:#d0d8e8;color:#5a6b85}
 
 .sidebar-burger{display:none;position:fixed;top:10px;left:10px;z-index:300;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:var(--r-sm);width:34px;height:34px;font-size:16px;cursor:pointer}
 @media(max-width:768px){

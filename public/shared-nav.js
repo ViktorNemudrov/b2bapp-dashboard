@@ -17,15 +17,17 @@ const NAV = [
     {label:'USM', icon:'🗺️', href:'/pages/usm.html'},
     {label:'Реестр рисков', icon:'⚠️', href:'/pages/risks.html'},
     {label:'Реестр допущений', icon:'📌', href:'/pages/assumptions.html'},
-    {label:'Открытые вопросы', icon:'❓', href:'/pages/questions.html'},
-    {label:'Внешние зависимости', icon:'🔗', href:'/pages/dependencies.html'},
-    {label:'Стейкхолдеры', icon:'🤝', href:'/pages/stakeholders.html'},
-    {label:'Критерии приёмки', icon:'✅', href:'/pages/acceptance.html'},
-    {label:'Глоссарий', icon:'📖', href:'/pages/glossary.html'},
-    {label:'ОКР', icon:'🎯', href:'/pages/okr.html'},
   ]},
 ];
 window.NAV = NAV;
+
+// Применяем сохранённое состояние сворачивания СРАЗУ при загрузке скрипта
+// (не дожидаясь renderSidebar/DOMContentLoaded), чтобы не было мигания
+// развёрнутого сайдбара перед тем, как он схлопнется на уже свёрнутых страницах.
+const SIDEBAR_COLLAPSE_KEY = 'b2bapp_sidebar_collapsed';
+if(localStorage.getItem(SIDEBAR_COLLAPSE_KEY) === '1'){
+  document.body.classList.add('sidebar-hidden');
+}
 
 function currentPath(){
   let p = location.pathname;
@@ -76,13 +78,38 @@ function renderSidebar(){
     if(sb.contains(e.target) || e.target===burger) return;
     sb.classList.remove('open');
   });
+
+  let collapseBtn = document.getElementById('sidebarCollapseBtn');
+  if(!collapseBtn){
+    collapseBtn = document.createElement('button');
+    collapseBtn.id = 'sidebarCollapseBtn';
+    collapseBtn.className = 'sidebar-collapse-btn';
+    collapseBtn.type = 'button';
+    document.body.appendChild(collapseBtn);
+  }
+  const syncCollapseBtn = ()=>{
+    const hidden = document.body.classList.contains('sidebar-hidden');
+    collapseBtn.textContent = hidden ? '▸' : '◂';
+    collapseBtn.setAttribute('aria-label', hidden ? 'Развернуть меню' : 'Свернуть меню');
+    collapseBtn.title = hidden ? 'Развернуть меню' : 'Свернуть меню';
+  };
+  syncCollapseBtn();
+  collapseBtn.onclick = ()=>{
+    document.body.classList.toggle('sidebar-hidden');
+    localStorage.setItem(SIDEBAR_COLLAPSE_KEY, document.body.classList.contains('sidebar-hidden') ? '1' : '0');
+    syncCollapseBtn();
+  };
 }
 window.renderSidebar = renderSidebar;
 
 // ── jiraLink (C19) ──────────────────────────────────────────────
 function jiraLink(key){
   if(!key) return '';
-  return `<a href="https://btask.beeline.ru/browse/${key}" target="_blank" rel="noopener">${key}</a>`;
+  // draggable="false": браузеры по умолчанию делают <a> перетаскиваемым
+  // (drag ссылки/URL) даже без атрибута draggable — это перехватывало
+  // кастомный drag&drop строк на странице Гант (если курсор мыши стартовал
+  // прямо на этом тексте ключа), не давая сработать dragstart родительской строки.
+  return `<a href="https://btask.beeline.ru/browse/${key}" target="_blank" rel="noopener" draggable="false">${key}</a>`;
 }
 window.jiraLink = jiraLink;
 

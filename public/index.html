@@ -143,7 +143,9 @@ body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
 /* ── STICKY SIDEBAR (п.3) ── */
 .layout{display:flex;min-height:100vh}
 .sidebar{width:200px;flex-shrink:0;background:#0a1520;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:150}
-.sidebar-logo{padding:14px 16px;border-bottom:2px solid var(--yel);display:flex;align-items:center;gap:9px;flex-shrink:0}
+/* height:52px = .hdr height ровно, чтобы жёлтая линия под логотипом и под
+   хедером не расходилась по высоте на стыке сайдбара и основной части. */
+.sidebar-logo{height:52px;padding:0 16px;border-bottom:2px solid var(--yel);display:flex;align-items:center;gap:9px;flex-shrink:0}
 .sidebar-logo svg{width:28px;height:28px;flex-shrink:0}
 .sidebar-logo-text{font-size:12px;font-weight:800;color:#fff;line-height:1.2}
 .sidebar-logo-sub{font-size:9px;color:var(--mute)}
@@ -519,6 +521,14 @@ body.light-theme .theme-dark-only{display:none}
   .sidebar-logo{justify-content:center}
   .nav-link{justify-content:center;padding:9px 0}
 }
+body.sidebar-hidden .sidebar{width:0;min-width:0;border:none;overflow:hidden}
+.sidebar-collapse-btn{position:fixed;top:64px;left:200px;transform:translateX(-50%);z-index:160;width:18px;height:34px;background:var(--card);border:1px solid var(--line);border-radius:0 6px 6px 0;color:var(--mute);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:left .15s}
+.sidebar-collapse-btn:hover{color:var(--yel);border-color:var(--yel)}
+body.sidebar-hidden .sidebar-collapse-btn{left:0}
+@media(max-width:1100px) and (min-width:769px){ .sidebar-collapse-btn{left:56px} body.sidebar-hidden .sidebar-collapse-btn{left:0} }
+@media(max-width:768px){ .sidebar-collapse-btn{display:none} }
+body.light-theme .sidebar-collapse-btn{background:#fff;border-color:#d0d8e8;color:#5a6b85}
+
 .sidebar-burger{display:none;position:fixed;top:10px;left:10px;z-index:300;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:var(--r-sm);width:34px;height:34px;font-size:16px;cursor:pointer}
 @media(max-width:768px){.sidebar-burger{display:block}}
 body.light-theme .sidebar-burger{background:#fff;border-color:#d0d8e8;color:#1a2940}
@@ -665,16 +675,6 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
     </div>
   </div>
 
-  <!-- TOP BLOCKERS (п.17) -->
-  <div class="section" id="s-blockers">
-    <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>🚧 Блокеры прямо сейчас</span><span class="acc-chevron">▼</span>
-    </div>
-    <div class="acc-body" style="max-height:999px">
-      <div class="blockers-list" id="blockersList"></div>
-    </div>
-  </div>
-
   <!-- PROGRESS (§3.6: epicProgress) -->
   <div class="section" id="s-progress">
     <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
@@ -701,34 +701,6 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
     </div>
   </div>
 
-  <!-- DEPENDENCIES (п.23) -->
-  <div class="section" id="s-deps">
-    <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>🔗 Критические зависимости</span><span class="acc-chevron">▼</span>
-    </div>
-    <div class="acc-body" style="max-height:999px">
-      <div class="dep-graph">
-        <h3>Критический путь к вехе 10.12.2026 <span style="font-size:10px;font-weight:400;color:var(--mute)">— красным выделены блокеры</span></h3>
-        <div class="dep-chain" id="depChain"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ACCEPTANCE CHECKLIST (п.25) -->
-  <div class="section" id="s-acceptance">
-    <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>✅ Критерии приёмки MVP</span><span class="acc-chevron">▼</span>
-    </div>
-    <div class="acc-body" style="max-height:999px">
-      <div class="checklist-prog">
-        <span style="font-size:11px;color:var(--mute)">Выполнено:</span>
-        <div class="checklist-prog-bar"><div class="checklist-prog-fill" id="checklistFill"></div></div>
-        <span style="font-size:11px;color:var(--ok);font-weight:700" id="checklistPct">—</span>
-      </div>
-      <div class="checklist" id="checklistBody"></div>
-    </div>
-  </div>
-
   <!-- SCOPE GROWTH (§3.10, из scopeGrowth[]) -->
   <div class="section" id="s-scopegrowth" data-aud="exec,pm,all">
     <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
@@ -740,21 +712,6 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
         <div id="scopeGrowthChart"></div>
       </div>
     </div>
-  </div>
-
-  <!-- CHANGELOG -->
-  <div class="section" id="s-changelog">
-    <details id="changelogDetails">
-      <summary class="sec-title" style="cursor:pointer;display:inline-flex">📜 Changelog — история изменений</summary>
-      <div class="cl-filters" style="display:flex;gap:6px;margin:10px 0" id="clFilters">
-        <button class="f-btn on" data-area="all">Все</button>
-        <button class="f-btn" data-area="gantt">Гант</button>
-        <button class="f-btn" data-area="usm">USM</button>
-        <button class="f-btn" data-area="data">Данные</button>
-        <button class="f-btn" data-area="ui">UI</button>
-      </div>
-      <div class="changelog-list" id="changelogList"></div>
-    </details>
   </div>
 
   <footer class="footer">
@@ -830,10 +787,6 @@ let SEARCH_IDX=[];
 function buildSearchIndex(data){
   SEARCH_IDX=[];
   (data.risks||[]).forEach(r=>SEARCH_IDX.push({tag:'Риск',key:r.id,text:r.desc,sub:r.owner,url:'pages/risks.html'}));
-  (data.questions||[]).forEach(q=>SEARCH_IDX.push({tag:'Вопрос',key:q.id,text:q.question,sub:q.owner,url:'pages/questions.html'}));
-  (data.dependencies||[]).forEach(d=>SEARCH_IDX.push({tag:'Зависимость',key:d.id,text:d.system+': '+d.desc,sub:d.owner,url:'pages/dependencies.html'}));
-  (data.stakeholders||[]).forEach(s=>SEARCH_IDX.push({tag:'Стейкх.',key:s.name,text:s.role,sub:s.team,url:'pages/stakeholders.html'}));
-  (data.glossary||[]).forEach(g=>SEARCH_IDX.push({tag:'Глоссарий',key:g.term,text:g.definition,sub:'',url:'pages/glossary.html'}));
   (data.assumptions||[]).forEach(a=>SEARCH_IDX.push({tag:'Допущение',key:a.id,text:a.desc,sub:'',url:'pages/assumptions.html'}));
 }
 function doSearch(q){
@@ -858,7 +811,6 @@ function renderMetrics(data){
     {v:m.epicsTotal ?? '—', l:'Всего эпиков', href:'pages/gantt.html', ext:false},
     {v:`${m.storiesDone ?? 0}<span style="font-size:13px;color:var(--mute)">/${m.storiesTotal ?? 0}</span>`, l:'Стори: сделано/всего', href:jql('Story'), ext:true},
     {v:`${m.tasksDone ?? 0}<span style="font-size:13px;color:var(--mute)">/${m.tasksTotal ?? 0}</span>`, l:'Задач: сделано/всего', href:jql('Task'), ext:true},
-    {v:m.openQuestions ?? '—', l:'Открытых вопросов', href:'pages/questions.html', ext:false},
   ];
   $('kpiRow').innerHTML=cells.map(c=>`<a class="kpi" href="${c.href}"${c.ext?' target="_blank" rel="noopener"':''}><div class="kpi-val">${c.v}</div><div class="kpi-lbl">${c.l}</div></a>`).join('');
 }
@@ -874,24 +826,11 @@ function renderForecast(data){
   $('fcConclusion').innerHTML=`<div class="fc-date" style="color:var(--yel)">${endDate}</div><div class="fc-note" style="margin-top:8px;font-size:12px">${cp.conclusion}</div>`;
 }
 
-// ── БЛОКЕРЫ ПРЯМО СЕЙЧАС (§3.3: blockersNow[]) ──────────────────
-function renderBlockersNow(data){
-  const items=data.blockersNow||[];
-  if(!items.length){$('blockersList').innerHTML=renderEmptyState('Нет данных, запустите обновление');return;}
-  $('blockersList').innerHTML=items.map((b,i)=>`
-    <div class="blocker-item">
-      <div class="blocker-num">${i+1}</div>
-      <div class="blocker-body">
-        <div class="blocker-title">${b.text}</div>
-        <div class="blocker-meta"><span>Владелец: ${b.owner||'—'} · висит с ${b.since||'—'}</span>${b.link?` <a href="${b.link}" target="_blank" rel="noopener">источник →</a>`:''}</div>
-      </div>
-    </div>`).join('');
-}
-
 // ── PROGRESS + DEVIATION (п.20) ───────────────────────────────
-// ── ГОТОВНОСТЬ ЭПИКОВ (§3.6: epicProgress[], две шкалы на эпик) ──
+// ── ГОТОВНОСТЬ ЭПИКОВ (§3.6: epicProgress[], две шкалы на эпик, по приоритету эпика) ──
 function renderEpicProgress(data){
-  const items=data.epicProgress||[];
+  const prioByEpic={}; (data.ganttV2?.items||[]).forEach(it=>{ if(it.type==='epic') prioByEpic[it.key]=it.priority??9999; });
+  const items=(data.epicProgress||[]).slice().sort((a,b)=>(prioByEpic[a.epicKey]??9999)-(prioByEpic[b.epicKey]??9999));
   if(!items.length){$('progressEpics').innerHTML=renderEmptyState('Нет данных, запустите обновление');return;}
   const rows=items.map(e=>{
     const hPct=e.hoursTotal?Math.round((e.hoursSpent||0)/e.hoursTotal*100):0;
@@ -976,20 +915,6 @@ function renderRiskMatrix(data){
 
   initRiskTooltip(risks);
   riskTipEl._risks=risks;
-}
-
-// ── DEPENDENCIES GRAPH (п.23) ─────────────────────────────────
-function renderDeps(data){
-  const chains=[
-    [{label:'ЕСВ/IDP аналитика',cls:'done'},{label:'→',cls:''},{label:'BE: авторизация',cls:'crit'},{label:'→',cls:'crit-arr'},{label:'FE: WebView',cls:''},{label:'→',cls:''},{label:'AI-чат UI',cls:''}],
-    [{label:'WebSocket ARC',cls:'done'},{label:'→',cls:''},{label:'BE: webSocketGate',cls:'crit'},{label:'→',cls:'crit-arr'},{label:'FE: прототип',cls:''},{label:'→',cls:''},{label:'Стриминг AI',cls:''}],
-    [{label:'ЕЛК API (Яковлев)',cls:'ext'},{label:'→',cls:'crit-arr'},{label:'MCP-сервер',cls:'crit'},{label:'→',cls:'crit-arr'},{label:'AI-инструменты',cls:''},{label:'→',cls:''},{label:'Договоры/Финансы',cls:''}],
-    [{label:'LLM (ВегА/Qwen)',cls:'ext'},{label:'→',cls:''},{label:'AI-оркестратор',cls:'crit'},{label:'→',cls:'crit-arr'},{label:'Intent/RAG',cls:''},{label:'→',cls:''},{label:'Виджеты данных',cls:''}],
-    [{label:'ИБ-аудит',cls:'ext'},{label:'→',cls:'crit-arr'},{label:'Guardrails ПДн',cls:'crit'},{label:'→',cls:'crit-arr'},{label:'Prod-деплой',cls:''}],
-  ];
-  $('depChain').innerHTML=chains.map(chain=>`
-    <div class="dep-row">${chain.map(n=>n.cls===''||n.cls==='crit-arr'?`<span class="dep-arrow ${n.cls}">${n.label}</span>`:`<span class="dep-node ${n.cls}">${n.label}</span>`).join('')}</div>
-  `).join('');
 }
 
 // ── ACCORDION (п.11) ─────────────────────────────────────────
@@ -1094,31 +1019,12 @@ function showChangedBadge(data){
 }
 
 // ── ACCEPTANCE CHECKLIST (п.25) ───────────────────────────────
-function renderAcceptance(data){
-  const acc=data.acceptance||[];
-  if(!acc.length){$('checklistBody').innerHTML='<div style="color:var(--mute);font-size:12px">Нет данных</div>';return;}
-  const STATUS={'✅':['🟢','ok'],'🟡':['🟡','warn'],'❌':['🔴','err'],'⬜':['⚪','gray']};
-  const done=acc.filter(a=>a.status?.startsWith('✅')).length;
-  const pct=Math.round(done/acc.length*100);
-  $('checklistFill').style.width=pct+'%';
-  $('checklistPct').textContent=`${done}/${acc.length} (${pct}%)`;
-  $('checklistBody').innerHTML=acc.map(a=>{
-    const [icon,cls]=STATUS[a.status?.charAt(0)]||['⚪','gray'];
-    return `<div class="check-item">
-      <div class="check-icon">${icon}</div>
-      <div class="check-body">
-        <div class="check-title">${a.criterion}<span class="check-area">${a.area}</span></div>
-        ${a.measure?`<div class="check-measure">${a.measure}</div>`:''}
-      </div>
-    </div>`;}).join('');
-}
-
 // ── DEVIATION labels (п.21) ───────────────────────────────────
 // Already embedded in renderProgress — deviation shown as text labels next to bars
 // ── AUDIENCE SWITCHER (п.5) ───────────────────────────────────
 const AUD_CONFIG={
   all:{label:'Показаны все разделы',hidden:[]},
-  exec:{label:'',hidden:['s-acceptance']},
+  exec:{label:'',hidden:[]},
   pm:{label:'',hidden:[]},
   team:{label:'',hidden:['s-forecast']},
 };
@@ -1269,32 +1175,6 @@ window.addEventListener('pagehide',()=>{
 });
 
 // ── CHANGELOG (§3.11: data-driven, <details> свёрнут по умолчанию, фильтр по area) ──
-function renderChangelogList(data){
-  const items=(data.changelog||[]).slice().sort((a,b)=>new Date(b.ts)-new Date(a.ts));
-  const list=$('changelogList');
-  if(!items.length){list.innerHTML=renderEmptyState('Нет записей в changelog');return;}
-  const AREA_LABEL={gantt:'Гант',usm:'USM',data:'Данные',ui:'UI'};
-  function paint(area){
-    const rows=area==='all'?items:items.filter(i=>i.area===area);
-    list.innerHTML=rows.length?rows.map(i=>{
-      const d=new Date(i.ts);
-      const ds=isNaN(d)?'':`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
-      return `<div class="cl-entry"><div class="cl-dot prev">${AREA_LABEL[i.area]?.[0]||'•'}</div><div class="cl-body">
-        <div class="cl-ver">${ds}<span class="badge badge-blue" style="margin-left:8px">${AREA_LABEL[i.area]||i.area||'—'}</span></div>
-        <div class="cl-changes"><div class="cl-change">${i.text||i.action||''}</div></div>
-      </div></div>`;
-    }).join(''):renderEmptyState('Нет записей для этого фильтра');
-  }
-  paint('all');
-  document.querySelectorAll('#clFilters .f-btn').forEach(btn=>{
-    btn.onclick=()=>{
-      document.querySelectorAll('#clFilters .f-btn').forEach(b=>b.classList.remove('on'));
-      btn.classList.add('on');
-      paint(btn.dataset.area);
-    };
-  });
-}
-
 // ── LOAD & RENDER ─────────────────────────────────────────────
 async function loadData(){
   try{const r=await fetch('./data/data.json?t='+Date.now());return await r.json();}
@@ -1310,13 +1190,9 @@ function init(data){
   buildSearchIndex(data);
   renderMetrics(data);
   renderForecast(data);
-  renderBlockersNow(data);
   renderEpicProgress(data);
   renderRiskMatrix(data);
-  renderDeps(data);
-  renderAcceptance(data);
   renderScopeGrowth(data);
-  renderChangelogList(data);
   mountFreshness('freshness', data.refreshedAt, data.updated);
   const upd=data.updated||'—';
   setSmartTime(upd);
