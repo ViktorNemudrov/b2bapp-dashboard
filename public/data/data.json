@@ -1,6 +1,6 @@
 {
   "updated": "21.09.2026",
-  "refreshedAt": "2026-09-21T09:31:56+03:00",
+  "refreshedAt": "2026-09-21T09:53:18+03:00",
   "project": "B2BAPP",
   "totalIssues": 99,
   "summary": {
@@ -392,7 +392,7 @@
     }
   ],
   "ganttV2": {
-    "generatedAt": "2026-09-21T09:31:56+03:00",
+    "generatedAt": "2026-09-21T09:53:18+03:00",
     "workCalendar": {
       "holidays": [
         "2026-01-01",
@@ -1785,156 +1785,6 @@
         "deps": []
       },
       {
-        "key": "B2BAPP-366s",
-        "type": "story",
-        "parent": "B2BAPP-25",
-        "epic": "B2BAPP-25",
-        "summary": "1. Взаимодействие с поддержкой (обращения, статус)",
-        "priority": 1,
-        "estimateH": 87,
-        "spentH": 0,
-        "start": "2026-06-18",
-        "end": "2026-10-30",
-        "category": "in_progress",
-        "onCriticalPath": false,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1120",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "1. История звонков (список, фильтры, карточка)",
-        "priority": 1,
-        "estimateH": 200,
-        "spentH": 0,
-        "start": "2026-04-27",
-        "end": "2026-10-21",
-        "category": "in_progress",
-        "onCriticalPath": false,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-400",
-        "type": "story",
-        "parent": "B2BAPP-484",
-        "epic": "B2BAPP-484",
-        "summary": "1. AI-аналитика бизнеса",
-        "priority": 1,
-        "estimateH": 220,
-        "spentH": 0,
-        "start": "2026-04-21",
-        "end": "2026-10-28",
-        "category": "in_progress",
-        "onCriticalPath": true,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-348",
-        "type": "story",
-        "parent": "B2BAPP-22",
-        "epic": "B2BAPP-22",
-        "summary": "1. Главный экран и смарт-карточки",
-        "priority": 1,
-        "estimateH": 241,
-        "spentH": 0,
-        "start": "2026-05-05",
-        "end": "2026-09-03",
-        "category": "in_progress",
-        "onCriticalPath": true,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1217",
-        "type": "story",
-        "parent": "B2BAPP-1241",
-        "epic": "B2BAPP-1241",
-        "summary": "1. Онбординг и активация клиента",
-        "priority": 1,
-        "estimateH": 20,
-        "spentH": 0,
-        "start": "2026-06-24",
-        "end": "2026-06-29",
-        "category": "backlog",
-        "onCriticalPath": false,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-349",
-        "type": "story",
-        "parent": "B2BAPP-21",
-        "epic": "B2BAPP-21",
-        "summary": "2. Биометрическая авторизация (Face ID / Touch ID)",
-        "priority": 2,
-        "estimateH": 11,
-        "spentH": 0,
-        "start": "2026-08-06",
-        "end": "2026-08-11",
-        "category": "backlog",
-        "onCriticalPath": true,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-700",
-        "type": "story",
-        "parent": "B2BAPP-22",
-        "epic": "B2BAPP-22",
-        "summary": "2. Мой день — топ задач и событий",
-        "priority": 2,
-        "estimateH": 109,
-        "spentH": 0,
-        "start": "2026-05-18",
-        "end": "2026-09-25",
-        "category": "backlog",
-        "onCriticalPath": true,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-57",
-        "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "2. Чат-интерфейс AI-ассистента и AG-UI виджеты",
-        "priority": 2,
-        "estimateH": 128,
-        "spentH": 0,
-        "start": "2026-09-01",
-        "end": "2026-09-14",
-        "category": "backlog",
-        "onCriticalPath": true,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1154",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "2. Транскрипция и саммари звонков (AI)",
-        "priority": 2,
-        "estimateH": 88,
-        "spentH": 0,
-        "start": "2026-10-22",
-        "end": "2026-11-05",
-        "category": "backlog",
-        "onCriticalPath": false,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1202",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "4. Работа с календарём",
-        "priority": 4,
-        "estimateH": 69,
-        "spentH": 0,
-        "start": "2026-06-15",
-        "end": "2026-11-06",
-        "category": "backlog",
-        "onCriticalPath": true,
-        "deps": []
-      },
-      {
         "key": "B2BAPP-48",
         "type": "story",
         "parent": "B2BAPP-27",
@@ -1945,36 +1795,6 @@
         "spentH": 0,
         "start": "2026-04-09",
         "end": "2026-09-16",
-        "category": "in_progress",
-        "onCriticalPath": false,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-800",
-        "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "3. Push-уведомления от AI-ассистента",
-        "priority": 3,
-        "estimateH": 48,
-        "spentH": 0,
-        "start": "2026-09-21",
-        "end": "2026-09-30",
-        "category": "backlog",
-        "onCriticalPath": true,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-703",
-        "type": "story",
-        "parent": "B2BAPP-491",
-        "epic": "B2BAPP-491",
-        "summary": "1. Первое касание клиента (экран и онбординг)",
-        "priority": 1,
-        "estimateH": 42,
-        "spentH": 0,
-        "start": "2026-04-29",
-        "end": "2026-05-06",
         "category": "in_progress",
         "onCriticalPath": false,
         "deps": []
@@ -1995,36 +1815,6 @@
         "deps": []
       },
       {
-        "key": "B2BAPP-2",
-        "type": "story",
-        "parent": "B2BAPP-134",
-        "epic": "B2BAPP-134",
-        "summary": "2. Инфраструктура и вычислительные среды (Prod/E2E), IDP-доступы",
-        "priority": 2,
-        "estimateH": 220,
-        "spentH": 183,
-        "start": "2026-02-09",
-        "end": "2026-09-01",
-        "category": "in_progress",
-        "onCriticalPath": false,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-705",
-        "type": "story",
-        "parent": "B2BAPP-22",
-        "epic": "B2BAPP-22",
-        "summary": "3. Сводка дня по бизнесу",
-        "priority": 3,
-        "estimateH": 139,
-        "spentH": 0,
-        "start": "2026-05-21",
-        "end": "2026-10-05",
-        "category": "backlog",
-        "onCriticalPath": false,
-        "deps": []
-      },
-      {
         "key": "B2BAPP-1200",
         "type": "story",
         "parent": "B2BAPP-465",
@@ -2040,17 +1830,152 @@
         "deps": []
       },
       {
-        "key": "B2BAPP-198",
+        "key": "B2BAPP-1217",
         "type": "story",
-        "parent": "B2BAPP-1242",
-        "epic": "B2BAPP-1242",
-        "summary": "1. Профиль пользователя (просмотр и редактирование)",
+        "parent": "B2BAPP-1241",
+        "epic": "B2BAPP-1241",
+        "summary": "1. Онбординг и активация клиента",
         "priority": 1,
-        "estimateH": 164,
+        "estimateH": 20,
         "spentH": 0,
-        "start": "2026-05-26",
-        "end": "2026-10-09",
+        "start": "2026-06-24",
+        "end": "2026-06-29",
+        "category": "backlog",
+        "onCriticalPath": false,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-800",
+        "type": "story",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "3. Push-уведомления от AI-ассистента",
+        "priority": 3,
+        "estimateH": 48,
+        "spentH": 0,
+        "start": "2026-09-21",
+        "end": "2026-09-30",
+        "category": "backlog",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-1154",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "2. Транскрипция и саммари звонков (AI)",
+        "priority": 2,
+        "estimateH": 88,
+        "spentH": 0,
+        "start": "2026-10-22",
+        "end": "2026-11-05",
+        "category": "backlog",
+        "onCriticalPath": false,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-700",
+        "type": "story",
+        "parent": "B2BAPP-22",
+        "epic": "B2BAPP-22",
+        "summary": "2. Мой день — топ задач и событий",
+        "priority": 2,
+        "estimateH": 109,
+        "spentH": 0,
+        "start": "2026-05-18",
+        "end": "2026-09-25",
+        "category": "backlog",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-1120",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "1. История звонков (список, фильтры, карточка)",
+        "priority": 1,
+        "estimateH": 200,
+        "spentH": 0,
+        "start": "2026-04-27",
+        "end": "2026-10-21",
         "category": "in_progress",
+        "onCriticalPath": false,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-703",
+        "type": "story",
+        "parent": "B2BAPP-491",
+        "epic": "B2BAPP-491",
+        "summary": "1. Первое касание клиента (экран и онбординг)",
+        "priority": 1,
+        "estimateH": 42,
+        "spentH": 0,
+        "start": "2026-04-29",
+        "end": "2026-05-06",
+        "category": "in_progress",
+        "onCriticalPath": false,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-2",
+        "type": "story",
+        "parent": "B2BAPP-134",
+        "epic": "B2BAPP-134",
+        "summary": "2. Инфраструктура и вычислительные среды (Prod/E2E), IDP-доступы",
+        "priority": 2,
+        "estimateH": 220,
+        "spentH": 183,
+        "start": "2026-02-09",
+        "end": "2026-09-01",
+        "category": "in_progress",
+        "onCriticalPath": false,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-400",
+        "type": "story",
+        "parent": "B2BAPP-484",
+        "epic": "B2BAPP-484",
+        "summary": "1. AI-аналитика бизнеса",
+        "priority": 1,
+        "estimateH": 220,
+        "spentH": 0,
+        "start": "2026-04-21",
+        "end": "2026-10-28",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-349",
+        "type": "story",
+        "parent": "B2BAPP-21",
+        "epic": "B2BAPP-21",
+        "summary": "2. Биометрическая авторизация (Face ID / Touch ID)",
+        "priority": 2,
+        "estimateH": 11,
+        "spentH": 0,
+        "start": "2026-08-06",
+        "end": "2026-08-11",
+        "category": "backlog",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-705",
+        "type": "story",
+        "parent": "B2BAPP-22",
+        "epic": "B2BAPP-22",
+        "summary": "3. Сводка дня по бизнесу",
+        "priority": 3,
+        "estimateH": 139,
+        "spentH": 0,
+        "start": "2026-05-21",
+        "end": "2026-10-05",
+        "category": "backlog",
         "onCriticalPath": false,
         "deps": []
       },
@@ -2070,82 +1995,94 @@
         "deps": []
       },
       {
-        "key": "B2BAPP-25",
-        "type": "epic",
-        "parent": null,
+        "key": "B2BAPP-348",
+        "type": "story",
+        "parent": "B2BAPP-22",
+        "epic": "B2BAPP-22",
+        "summary": "1. Главный экран и смарт-карточки",
+        "priority": 1,
+        "estimateH": 241,
+        "spentH": 0,
+        "start": "2026-05-05",
+        "end": "2026-09-03",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-366s",
+        "type": "story",
+        "parent": "B2BAPP-25",
         "epic": "B2BAPP-25",
-        "summary": "11. Взаимодействие с поддержкой",
+        "summary": "1. Взаимодействие с поддержкой (обращения, статус)",
+        "priority": 1,
         "estimateH": 87,
         "spentH": 0,
         "start": "2026-06-18",
         "end": "2026-10-30",
         "category": "in_progress",
         "onCriticalPath": false,
-        "storiesTotal": 1,
-        "storiesDone": 0,
         "deps": []
       },
       {
-        "key": "B2BAPP-22",
-        "type": "epic",
-        "parent": null,
-        "epic": "B2BAPP-22",
-        "summary": "6. Главная страница",
-        "estimateH": 489,
-        "spentH": 0,
-        "start": "2026-05-05",
-        "end": "2026-10-05",
-        "category": "in_progress",
-        "onCriticalPath": true,
-        "storiesTotal": 3,
-        "storiesDone": 0,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1242",
-        "type": "epic",
-        "parent": null,
+        "key": "B2BAPP-198",
+        "type": "story",
+        "parent": "B2BAPP-1242",
         "epic": "B2BAPP-1242",
-        "summary": "8. Профиль",
-        "estimateH": 274,
+        "summary": "1. Профиль пользователя (просмотр и редактирование)",
+        "priority": 1,
+        "estimateH": 164,
         "spentH": 0,
         "start": "2026-05-26",
         "end": "2026-10-09",
         "category": "in_progress",
+        "onCriticalPath": false,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-57",
+        "type": "story",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "2. Чат-интерфейс AI-ассистента и AG-UI виджеты",
+        "priority": 2,
+        "estimateH": 128,
+        "spentH": 0,
+        "start": "2026-09-01",
+        "end": "2026-09-14",
+        "category": "backlog",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-1202",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "4. Работа с календарём",
+        "priority": 4,
+        "estimateH": 69,
+        "spentH": 0,
+        "start": "2026-06-15",
+        "end": "2026-11-06",
+        "category": "backlog",
+        "onCriticalPath": true,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-21",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-21",
+        "summary": "3. Вход и выход из приложения (Аутентификация)",
+        "priority": 2,
+        "estimateH": 211,
+        "spentH": 0,
+        "start": "2026-03-27",
+        "end": "2026-08-12",
+        "category": "in_progress",
         "onCriticalPath": true,
         "storiesTotal": 2,
-        "storiesDone": 0,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-491",
-        "type": "epic",
-        "parent": null,
-        "epic": "B2BAPP-491",
-        "summary": "4. Первое касание клиента",
-        "estimateH": 42,
-        "spentH": 0,
-        "start": "2026-04-29",
-        "end": "2026-05-06",
-        "category": "in_progress",
-        "onCriticalPath": false,
-        "storiesTotal": 1,
-        "storiesDone": 0,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1241",
-        "type": "epic",
-        "parent": null,
-        "epic": "B2BAPP-1241",
-        "summary": "5. Онбординг",
-        "estimateH": 20,
-        "spentH": 0,
-        "start": "2026-06-24",
-        "end": "2026-06-29",
-        "category": "backlog",
-        "onCriticalPath": false,
-        "storiesTotal": 1,
         "storiesDone": 0,
         "deps": []
       },
@@ -2155,6 +2092,7 @@
         "parent": null,
         "epic": "B2BAPP-484",
         "summary": "9. AI-отчёты и аналитика",
+        "priority": 6,
         "estimateH": 220,
         "spentH": 0,
         "start": "2026-04-21",
@@ -2166,31 +2104,16 @@
         "deps": []
       },
       {
-        "key": "B2BAPP-27",
+        "key": "B2BAPP-1242",
         "type": "epic",
         "parent": null,
-        "epic": "B2BAPP-27",
-        "summary": "7. ИИ-движок",
-        "estimateH": 465,
+        "epic": "B2BAPP-1242",
+        "summary": "8. Профиль",
+        "priority": 5,
+        "estimateH": 274,
         "spentH": 0,
-        "start": "2026-04-09",
-        "end": "2026-09-30",
-        "category": "in_progress",
-        "onCriticalPath": true,
-        "storiesTotal": 3,
-        "storiesDone": 0,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-21",
-        "type": "epic",
-        "parent": null,
-        "epic": "B2BAPP-21",
-        "summary": "3. Вход и выход из приложения (Аутентификация)",
-        "estimateH": 211,
-        "spentH": 0,
-        "start": "2026-03-27",
-        "end": "2026-08-12",
+        "start": "2026-05-26",
+        "end": "2026-10-09",
         "category": "in_progress",
         "onCriticalPath": true,
         "storiesTotal": 2,
@@ -2203,6 +2126,7 @@
         "parent": null,
         "epic": "B2BAPP-465",
         "summary": "10. Общение и звонки",
+        "priority": 7,
         "estimateH": 421,
         "spentH": 0,
         "start": "2026-04-27",
@@ -2214,15 +2138,101 @@
         "deps": []
       },
       {
+        "key": "B2BAPP-491",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-491",
+        "summary": "4. Первое касание клиента",
+        "priority": 3,
+        "estimateH": 42,
+        "spentH": 0,
+        "start": "2026-04-29",
+        "end": "2026-05-06",
+        "category": "in_progress",
+        "onCriticalPath": false,
+        "storiesTotal": 1,
+        "storiesDone": 0,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-27",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-27",
+        "summary": "7. ИИ-движок",
+        "priority": 4,
+        "estimateH": 465,
+        "spentH": 0,
+        "start": "2026-04-09",
+        "end": "2026-09-30",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "storiesTotal": 3,
+        "storiesDone": 0,
+        "deps": []
+      },
+      {
         "key": "B2BAPP-134",
         "type": "epic",
         "parent": null,
         "epic": "B2BAPP-134",
         "summary": "2. Инфраструктура и платформа",
+        "priority": 1,
         "estimateH": 220,
         "spentH": 183,
         "start": "2026-02-09",
         "end": "2026-09-01",
+        "category": "in_progress",
+        "onCriticalPath": false,
+        "storiesTotal": 1,
+        "storiesDone": 0,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-22",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-22",
+        "summary": "6. Главная страница",
+        "priority": 4,
+        "estimateH": 489,
+        "spentH": 0,
+        "start": "2026-05-05",
+        "end": "2026-10-05",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "storiesTotal": 3,
+        "storiesDone": 0,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-1241",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-1241",
+        "summary": "5. Онбординг",
+        "priority": 9,
+        "estimateH": 20,
+        "spentH": 0,
+        "start": "2026-06-24",
+        "end": "2026-06-29",
+        "category": "backlog",
+        "onCriticalPath": false,
+        "storiesTotal": 1,
+        "storiesDone": 0,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-25",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-25",
+        "summary": "11. Взаимодействие с поддержкой",
+        "priority": 8,
+        "estimateH": 87,
+        "spentH": 0,
+        "start": "2026-06-18",
+        "end": "2026-10-30",
         "category": "in_progress",
         "onCriticalPath": false,
         "storiesTotal": 1,
@@ -2233,69 +2243,9 @@
     "mvpScope": {
       "inStories": [
         {
-          "key": "B2BAPP-366s",
-          "name": "1. Взаимодействие с поддержкой (обращения, статус)",
-          "readyDate": "2026-10-30"
-        },
-        {
-          "key": "B2BAPP-1120",
-          "name": "1. История звонков (список, фильтры, карточка)",
-          "readyDate": "2026-10-21"
-        },
-        {
-          "key": "B2BAPP-400",
-          "name": "1. AI-аналитика бизнеса",
-          "readyDate": "2026-10-28"
-        },
-        {
-          "key": "B2BAPP-348",
-          "name": "1. Главный экран и смарт-карточки",
-          "readyDate": "2026-09-03"
-        },
-        {
-          "key": "B2BAPP-1217",
-          "name": "1. Онбординг и активация клиента",
-          "readyDate": "2026-06-29"
-        },
-        {
-          "key": "B2BAPP-349",
-          "name": "2. Биометрическая авторизация (Face ID / Touch ID)",
-          "readyDate": "2026-08-11"
-        },
-        {
-          "key": "B2BAPP-700",
-          "name": "2. Мой день — топ задач и событий",
-          "readyDate": "2026-09-25"
-        },
-        {
-          "key": "B2BAPP-57",
-          "name": "2. Чат-интерфейс AI-ассистента и AG-UI виджеты",
-          "readyDate": "2026-09-14"
-        },
-        {
-          "key": "B2BAPP-1154",
-          "name": "2. Транскрипция и саммари звонков (AI)",
-          "readyDate": "2026-11-05"
-        },
-        {
-          "key": "B2BAPP-1202",
-          "name": "4. Работа с календарём",
-          "readyDate": "2026-11-06"
-        },
-        {
           "key": "B2BAPP-48",
           "name": "1. AI-оркестратор, интенты и RAG",
           "readyDate": "2026-09-16"
-        },
-        {
-          "key": "B2BAPP-800",
-          "name": "3. Push-уведомления от AI-ассистента",
-          "readyDate": "2026-09-30"
-        },
-        {
-          "key": "B2BAPP-703",
-          "name": "1. Первое касание клиента (экран и онбординг)",
-          "readyDate": "2026-05-06"
         },
         {
           "key": "B2BAPP-60",
@@ -2303,9 +2253,54 @@
           "readyDate": "2026-08-12"
         },
         {
+          "key": "B2BAPP-1200",
+          "name": "3. Напоминания и задачи из звонков",
+          "readyDate": "2026-10-28"
+        },
+        {
+          "key": "B2BAPP-1217",
+          "name": "1. Онбординг и активация клиента",
+          "readyDate": "2026-06-29"
+        },
+        {
+          "key": "B2BAPP-800",
+          "name": "3. Push-уведомления от AI-ассистента",
+          "readyDate": "2026-09-30"
+        },
+        {
+          "key": "B2BAPP-1154",
+          "name": "2. Транскрипция и саммари звонков (AI)",
+          "readyDate": "2026-11-05"
+        },
+        {
+          "key": "B2BAPP-700",
+          "name": "2. Мой день — топ задач и событий",
+          "readyDate": "2026-09-25"
+        },
+        {
+          "key": "B2BAPP-1120",
+          "name": "1. История звонков (список, фильтры, карточка)",
+          "readyDate": "2026-10-21"
+        },
+        {
+          "key": "B2BAPP-703",
+          "name": "1. Первое касание клиента (экран и онбординг)",
+          "readyDate": "2026-05-06"
+        },
+        {
           "key": "B2BAPP-2",
           "name": "2. Инфраструктура и вычислительные среды (Prod/E2E), IDP-доступы",
           "readyDate": "2026-09-01"
+        },
+        {
+          "key": "B2BAPP-400",
+          "name": "1. AI-аналитика бизнеса",
+          "readyDate": "2026-10-28"
+        },
+        {
+          "key": "B2BAPP-349",
+          "name": "2. Биометрическая авторизация (Face ID / Touch ID)",
+          "readyDate": "2026-08-11"
         },
         {
           "key": "B2BAPP-705",
@@ -2313,9 +2308,19 @@
           "readyDate": "2026-10-05"
         },
         {
-          "key": "B2BAPP-1200",
-          "name": "3. Напоминания и задачи из звонков",
-          "readyDate": "2026-10-28"
+          "key": "B2BAPP-850",
+          "name": "2. Управление сессиями и устройствами",
+          "readyDate": "2026-10-08"
+        },
+        {
+          "key": "B2BAPP-348",
+          "name": "1. Главный экран и смарт-карточки",
+          "readyDate": "2026-09-03"
+        },
+        {
+          "key": "B2BAPP-366s",
+          "name": "1. Взаимодействие с поддержкой (обращения, статус)",
+          "readyDate": "2026-10-30"
         },
         {
           "key": "B2BAPP-198",
@@ -2323,9 +2328,14 @@
           "readyDate": "2026-10-09"
         },
         {
-          "key": "B2BAPP-850",
-          "name": "2. Управление сессиями и устройствами",
-          "readyDate": "2026-10-08"
+          "key": "B2BAPP-57",
+          "name": "2. Чат-интерфейс AI-ассистента и AG-UI виджеты",
+          "readyDate": "2026-09-14"
+        },
+        {
+          "key": "B2BAPP-1202",
+          "name": "4. Работа с календарём",
+          "readyDate": "2026-11-06"
         }
       ],
       "outStories": [],
@@ -2344,7 +2354,7 @@
       ]
     },
     "ganttAssumptions": {
-      "dataSource": "Jira B2BAPP 2026-09-21T09:31:56+03:00 (динамически)",
+      "dataSource": "Jira B2BAPP 2026-09-21T09:53:18+03:00 (динамически)",
       "teamSource": "Confluence 1562745210 + сверка Jira assignee",
       "ganttType": "per_task_v3_mvp_only",
       "calendar": "Производственный календарь РФ",
@@ -2353,54 +2363,14 @@
     },
     "epicProgress": [
       {
-        "epicKey": "B2BAPP-25",
-        "epicName": "11. Взаимодействие с поддержкой",
-        "hoursTotal": 87,
-        "hoursSpent": 0,
-        "storiesTotal": 1,
-        "storiesDone": 0,
-        "start": "2026-06-18",
-        "end": "2026-10-30"
-      },
-      {
-        "epicKey": "B2BAPP-22",
-        "epicName": "6. Главная страница",
-        "hoursTotal": 489,
-        "hoursSpent": 0,
-        "storiesTotal": 3,
-        "storiesDone": 0,
-        "start": "2026-05-05",
-        "end": "2026-10-05"
-      },
-      {
-        "epicKey": "B2BAPP-1242",
-        "epicName": "8. Профиль",
-        "hoursTotal": 274,
+        "epicKey": "B2BAPP-21",
+        "epicName": "3. Вход и выход из приложения (Аутентификация)",
+        "hoursTotal": 211,
         "hoursSpent": 0,
         "storiesTotal": 2,
         "storiesDone": 0,
-        "start": "2026-05-26",
-        "end": "2026-10-09"
-      },
-      {
-        "epicKey": "B2BAPP-491",
-        "epicName": "4. Первое касание клиента",
-        "hoursTotal": 42,
-        "hoursSpent": 0,
-        "storiesTotal": 1,
-        "storiesDone": 0,
-        "start": "2026-04-29",
-        "end": "2026-05-06"
-      },
-      {
-        "epicKey": "B2BAPP-1241",
-        "epicName": "5. Онбординг",
-        "hoursTotal": 20,
-        "hoursSpent": 0,
-        "storiesTotal": 1,
-        "storiesDone": 0,
-        "start": "2026-06-24",
-        "end": "2026-06-29"
+        "start": "2026-03-27",
+        "end": "2026-08-12"
       },
       {
         "epicKey": "B2BAPP-484",
@@ -2413,24 +2383,14 @@
         "end": "2026-10-28"
       },
       {
-        "epicKey": "B2BAPP-27",
-        "epicName": "7. ИИ-движок",
-        "hoursTotal": 465,
-        "hoursSpent": 0,
-        "storiesTotal": 3,
-        "storiesDone": 0,
-        "start": "2026-04-09",
-        "end": "2026-09-30"
-      },
-      {
-        "epicKey": "B2BAPP-21",
-        "epicName": "3. Вход и выход из приложения (Аутентификация)",
-        "hoursTotal": 211,
+        "epicKey": "B2BAPP-1242",
+        "epicName": "8. Профиль",
+        "hoursTotal": 274,
         "hoursSpent": 0,
         "storiesTotal": 2,
         "storiesDone": 0,
-        "start": "2026-03-27",
-        "end": "2026-08-12"
+        "start": "2026-05-26",
+        "end": "2026-10-09"
       },
       {
         "epicKey": "B2BAPP-465",
@@ -2443,6 +2403,26 @@
         "end": "2026-11-06"
       },
       {
+        "epicKey": "B2BAPP-491",
+        "epicName": "4. Первое касание клиента",
+        "hoursTotal": 42,
+        "hoursSpent": 0,
+        "storiesTotal": 1,
+        "storiesDone": 0,
+        "start": "2026-04-29",
+        "end": "2026-05-06"
+      },
+      {
+        "epicKey": "B2BAPP-27",
+        "epicName": "7. ИИ-движок",
+        "hoursTotal": 465,
+        "hoursSpent": 0,
+        "storiesTotal": 3,
+        "storiesDone": 0,
+        "start": "2026-04-09",
+        "end": "2026-09-30"
+      },
+      {
         "epicKey": "B2BAPP-134",
         "epicName": "2. Инфраструктура и платформа",
         "hoursTotal": 220,
@@ -2451,6 +2431,36 @@
         "storiesDone": 0,
         "start": "2026-02-09",
         "end": "2026-09-01"
+      },
+      {
+        "epicKey": "B2BAPP-22",
+        "epicName": "6. Главная страница",
+        "hoursTotal": 489,
+        "hoursSpent": 0,
+        "storiesTotal": 3,
+        "storiesDone": 0,
+        "start": "2026-05-05",
+        "end": "2026-10-05"
+      },
+      {
+        "epicKey": "B2BAPP-1241",
+        "epicName": "5. Онбординг",
+        "hoursTotal": 20,
+        "hoursSpent": 0,
+        "storiesTotal": 1,
+        "storiesDone": 0,
+        "start": "2026-06-24",
+        "end": "2026-06-29"
+      },
+      {
+        "epicKey": "B2BAPP-25",
+        "epicName": "11. Взаимодействие с поддержкой",
+        "hoursTotal": 87,
+        "hoursSpent": 0,
+        "storiesTotal": 1,
+        "storiesDone": 0,
+        "start": "2026-06-18",
+        "end": "2026-10-30"
       }
     ],
     "resourcePlan": [
@@ -2781,7 +2791,7 @@
     ]
   },
   "ganttAssumptions": {
-    "dataSource": "Jira B2BAPP 2026-09-21T09:31:56+03:00 (динамически)",
+    "dataSource": "Jira B2BAPP 2026-09-21T09:53:18+03:00 (динамически)",
     "teamSource": "Confluence 1562745210 + сверка Jira assignee",
     "ganttType": "per_task_v3_mvp_only",
     "calendar": "Производственный календарь РФ",
@@ -3325,6 +3335,11 @@
     },
     {
       "ts": "2026-09-21T09:31:56+03:00",
+      "area": "gantt",
+      "text": "gantt-прогон: Jira 99 issue, 70 MVP-задач, критпуть до 2026-11-06"
+    },
+    {
+      "ts": "2026-09-21T09:53:18+03:00",
       "area": "gantt",
       "text": "gantt-прогон: Jira 99 issue, 70 MVP-задач, критпуть до 2026-11-06"
     }
@@ -25592,7 +25607,7 @@
     },
     {
       "id": "bl-2026-09-21",
-      "ts": "2026-09-21T09:31:56+03:00",
+      "ts": "2026-09-21T09:53:18+03:00",
       "label": "Refresh 21.09.2026 (MVP-only)",
       "criticalEnd": "2026-11-06",
       "items": [
@@ -25965,69 +25980,9 @@
   "mvpScope": {
     "inStories": [
       {
-        "key": "B2BAPP-366s",
-        "name": "1. Взаимодействие с поддержкой (обращения, статус)",
-        "readyDate": "2026-10-30"
-      },
-      {
-        "key": "B2BAPP-1120",
-        "name": "1. История звонков (список, фильтры, карточка)",
-        "readyDate": "2026-10-21"
-      },
-      {
-        "key": "B2BAPP-400",
-        "name": "1. AI-аналитика бизнеса",
-        "readyDate": "2026-10-28"
-      },
-      {
-        "key": "B2BAPP-348",
-        "name": "1. Главный экран и смарт-карточки",
-        "readyDate": "2026-09-03"
-      },
-      {
-        "key": "B2BAPP-1217",
-        "name": "1. Онбординг и активация клиента",
-        "readyDate": "2026-06-29"
-      },
-      {
-        "key": "B2BAPP-349",
-        "name": "2. Биометрическая авторизация (Face ID / Touch ID)",
-        "readyDate": "2026-08-11"
-      },
-      {
-        "key": "B2BAPP-700",
-        "name": "2. Мой день — топ задач и событий",
-        "readyDate": "2026-09-25"
-      },
-      {
-        "key": "B2BAPP-57",
-        "name": "2. Чат-интерфейс AI-ассистента и AG-UI виджеты",
-        "readyDate": "2026-09-14"
-      },
-      {
-        "key": "B2BAPP-1154",
-        "name": "2. Транскрипция и саммари звонков (AI)",
-        "readyDate": "2026-11-05"
-      },
-      {
-        "key": "B2BAPP-1202",
-        "name": "4. Работа с календарём",
-        "readyDate": "2026-11-06"
-      },
-      {
         "key": "B2BAPP-48",
         "name": "1. AI-оркестратор, интенты и RAG",
         "readyDate": "2026-09-16"
-      },
-      {
-        "key": "B2BAPP-800",
-        "name": "3. Push-уведомления от AI-ассистента",
-        "readyDate": "2026-09-30"
-      },
-      {
-        "key": "B2BAPP-703",
-        "name": "1. Первое касание клиента (экран и онбординг)",
-        "readyDate": "2026-05-06"
       },
       {
         "key": "B2BAPP-60",
@@ -26035,9 +25990,54 @@
         "readyDate": "2026-08-12"
       },
       {
+        "key": "B2BAPP-1200",
+        "name": "3. Напоминания и задачи из звонков",
+        "readyDate": "2026-10-28"
+      },
+      {
+        "key": "B2BAPP-1217",
+        "name": "1. Онбординг и активация клиента",
+        "readyDate": "2026-06-29"
+      },
+      {
+        "key": "B2BAPP-800",
+        "name": "3. Push-уведомления от AI-ассистента",
+        "readyDate": "2026-09-30"
+      },
+      {
+        "key": "B2BAPP-1154",
+        "name": "2. Транскрипция и саммари звонков (AI)",
+        "readyDate": "2026-11-05"
+      },
+      {
+        "key": "B2BAPP-700",
+        "name": "2. Мой день — топ задач и событий",
+        "readyDate": "2026-09-25"
+      },
+      {
+        "key": "B2BAPP-1120",
+        "name": "1. История звонков (список, фильтры, карточка)",
+        "readyDate": "2026-10-21"
+      },
+      {
+        "key": "B2BAPP-703",
+        "name": "1. Первое касание клиента (экран и онбординг)",
+        "readyDate": "2026-05-06"
+      },
+      {
         "key": "B2BAPP-2",
         "name": "2. Инфраструктура и вычислительные среды (Prod/E2E), IDP-доступы",
         "readyDate": "2026-09-01"
+      },
+      {
+        "key": "B2BAPP-400",
+        "name": "1. AI-аналитика бизнеса",
+        "readyDate": "2026-10-28"
+      },
+      {
+        "key": "B2BAPP-349",
+        "name": "2. Биометрическая авторизация (Face ID / Touch ID)",
+        "readyDate": "2026-08-11"
       },
       {
         "key": "B2BAPP-705",
@@ -26045,9 +26045,19 @@
         "readyDate": "2026-10-05"
       },
       {
-        "key": "B2BAPP-1200",
-        "name": "3. Напоминания и задачи из звонков",
-        "readyDate": "2026-10-28"
+        "key": "B2BAPP-850",
+        "name": "2. Управление сессиями и устройствами",
+        "readyDate": "2026-10-08"
+      },
+      {
+        "key": "B2BAPP-348",
+        "name": "1. Главный экран и смарт-карточки",
+        "readyDate": "2026-09-03"
+      },
+      {
+        "key": "B2BAPP-366s",
+        "name": "1. Взаимодействие с поддержкой (обращения, статус)",
+        "readyDate": "2026-10-30"
       },
       {
         "key": "B2BAPP-198",
@@ -26055,9 +26065,14 @@
         "readyDate": "2026-10-09"
       },
       {
-        "key": "B2BAPP-850",
-        "name": "2. Управление сессиями и устройствами",
-        "readyDate": "2026-10-08"
+        "key": "B2BAPP-57",
+        "name": "2. Чат-интерфейс AI-ассистента и AG-UI виджеты",
+        "readyDate": "2026-09-14"
+      },
+      {
+        "key": "B2BAPP-1202",
+        "name": "4. Работа с календарём",
+        "readyDate": "2026-11-06"
       }
     ],
     "outStories": [],
@@ -30551,54 +30566,14 @@
   ],
   "epicProgress": [
     {
-      "epicKey": "B2BAPP-25",
-      "epicName": "11. Взаимодействие с поддержкой",
-      "hoursTotal": 87,
-      "hoursSpent": 0,
-      "storiesTotal": 1,
-      "storiesDone": 0,
-      "start": "2026-06-18",
-      "end": "2026-10-30"
-    },
-    {
-      "epicKey": "B2BAPP-22",
-      "epicName": "6. Главная страница",
-      "hoursTotal": 489,
-      "hoursSpent": 0,
-      "storiesTotal": 3,
-      "storiesDone": 0,
-      "start": "2026-05-05",
-      "end": "2026-10-05"
-    },
-    {
-      "epicKey": "B2BAPP-1242",
-      "epicName": "8. Профиль",
-      "hoursTotal": 274,
+      "epicKey": "B2BAPP-21",
+      "epicName": "3. Вход и выход из приложения (Аутентификация)",
+      "hoursTotal": 211,
       "hoursSpent": 0,
       "storiesTotal": 2,
       "storiesDone": 0,
-      "start": "2026-05-26",
-      "end": "2026-10-09"
-    },
-    {
-      "epicKey": "B2BAPP-491",
-      "epicName": "4. Первое касание клиента",
-      "hoursTotal": 42,
-      "hoursSpent": 0,
-      "storiesTotal": 1,
-      "storiesDone": 0,
-      "start": "2026-04-29",
-      "end": "2026-05-06"
-    },
-    {
-      "epicKey": "B2BAPP-1241",
-      "epicName": "5. Онбординг",
-      "hoursTotal": 20,
-      "hoursSpent": 0,
-      "storiesTotal": 1,
-      "storiesDone": 0,
-      "start": "2026-06-24",
-      "end": "2026-06-29"
+      "start": "2026-03-27",
+      "end": "2026-08-12"
     },
     {
       "epicKey": "B2BAPP-484",
@@ -30611,24 +30586,14 @@
       "end": "2026-10-28"
     },
     {
-      "epicKey": "B2BAPP-27",
-      "epicName": "7. ИИ-движок",
-      "hoursTotal": 465,
-      "hoursSpent": 0,
-      "storiesTotal": 3,
-      "storiesDone": 0,
-      "start": "2026-04-09",
-      "end": "2026-09-30"
-    },
-    {
-      "epicKey": "B2BAPP-21",
-      "epicName": "3. Вход и выход из приложения (Аутентификация)",
-      "hoursTotal": 211,
+      "epicKey": "B2BAPP-1242",
+      "epicName": "8. Профиль",
+      "hoursTotal": 274,
       "hoursSpent": 0,
       "storiesTotal": 2,
       "storiesDone": 0,
-      "start": "2026-03-27",
-      "end": "2026-08-12"
+      "start": "2026-05-26",
+      "end": "2026-10-09"
     },
     {
       "epicKey": "B2BAPP-465",
@@ -30641,6 +30606,26 @@
       "end": "2026-11-06"
     },
     {
+      "epicKey": "B2BAPP-491",
+      "epicName": "4. Первое касание клиента",
+      "hoursTotal": 42,
+      "hoursSpent": 0,
+      "storiesTotal": 1,
+      "storiesDone": 0,
+      "start": "2026-04-29",
+      "end": "2026-05-06"
+    },
+    {
+      "epicKey": "B2BAPP-27",
+      "epicName": "7. ИИ-движок",
+      "hoursTotal": 465,
+      "hoursSpent": 0,
+      "storiesTotal": 3,
+      "storiesDone": 0,
+      "start": "2026-04-09",
+      "end": "2026-09-30"
+    },
+    {
       "epicKey": "B2BAPP-134",
       "epicName": "2. Инфраструктура и платформа",
       "hoursTotal": 220,
@@ -30649,6 +30634,36 @@
       "storiesDone": 0,
       "start": "2026-02-09",
       "end": "2026-09-01"
+    },
+    {
+      "epicKey": "B2BAPP-22",
+      "epicName": "6. Главная страница",
+      "hoursTotal": 489,
+      "hoursSpent": 0,
+      "storiesTotal": 3,
+      "storiesDone": 0,
+      "start": "2026-05-05",
+      "end": "2026-10-05"
+    },
+    {
+      "epicKey": "B2BAPP-1241",
+      "epicName": "5. Онбординг",
+      "hoursTotal": 20,
+      "hoursSpent": 0,
+      "storiesTotal": 1,
+      "storiesDone": 0,
+      "start": "2026-06-24",
+      "end": "2026-06-29"
+    },
+    {
+      "epicKey": "B2BAPP-25",
+      "epicName": "11. Взаимодействие с поддержкой",
+      "hoursTotal": 87,
+      "hoursSpent": 0,
+      "storiesTotal": 1,
+      "storiesDone": 0,
+      "start": "2026-06-18",
+      "end": "2026-10-30"
     }
   ],
   "resourcePlan": [
@@ -30967,7 +30982,7 @@
   ],
   "okrMilestone": null,
   "okrQuarterly": [],
-  "generatedAt": "2026-09-21T09:31:56+03:00",
+  "generatedAt": "2026-09-21T09:53:18+03:00",
   "gantt": [
     {
       "key": "B2BAPP-5",
