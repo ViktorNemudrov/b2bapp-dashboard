@@ -63,11 +63,18 @@ body.g2-fullscreen #ganttApp{position:fixed;inset:0;z-index:9999;background:var(
 .pri-controls button{background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--text);border-radius:5px;padding:4px 10px;font-size:11px;cursor:pointer}
 .pri-controls button:hover{border-color:var(--yel)}
 .pri-msg{color:var(--err);font-weight:600}
-.gantt2-tree.pri-active .gantt2-row{cursor:grab}
-.gantt2-tree.pri-active .gantt2-row.pri-dragging{opacity:.4}
-.gantt2-tree.pri-active .gantt2-row.pri-dragover{background:rgba(255,107,61,.18);box-shadow:inset 0 0 0 1px var(--yel)}
+.pri-end-date{margin-left:auto;font-weight:700;color:var(--yel);white-space:nowrap}
+/* pri-active сидит на .gantt2-body (общий предок дерева И таймлайна) —
+   бары тоже должны выглядеть перетаскиваемыми, не только строки слева
+   (жалоба Виктора 22.09.2026: тянули бар, а не подпись — не работало). */
+.gantt2-body.pri-active .gantt2-tree .gantt2-row{cursor:grab}
+.gantt2-body.pri-active .gantt2-tree .gantt2-row.pri-dragging{opacity:.4}
+.gantt2-body.pri-active .gantt2-tree .gantt2-row.pri-dragover{background:rgba(255,107,61,.18);box-shadow:inset 0 0 0 1px var(--yel)}
+.gantt2-body.pri-active .gantt2-bar{cursor:grab;outline:1px dashed rgba(255,107,61,.5)}
+.gantt2-body.pri-active .gantt2-bar.pri-dragging{opacity:.4}
+.gantt2-body.pri-active .gantt2-bar.pri-dragover{box-shadow:0 0 0 2px var(--yel)}
 .pri-handle{display:none;flex-shrink:0;width:10px;height:16px}
-.gantt2-tree.pri-active .pri-handle{display:inline-flex}
+.gantt2-body.pri-active .pri-handle{display:inline-flex}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -136,10 +143,11 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
       </div>
     </div>
     <div class="pri-controls" id="priControls">
-      <span>Режим приоритетов: тащи строки в дереве слева, чтобы поменять порядок — даты пересчитаются. Эпики меняются местами со всеми, стори — только внутри своего эпика, задачи — только внутри своей стори.</span>
+      <span>Режим приоритетов: тащи строку в дереве СЛЕВА или сам бар на таймлайне — порядок поменяется, даты пересчитаются. Эпики меняются местами со всеми, стори — только внутри своего эпика, задачи — только внутри своей стори.</span>
       <button id="priResetBtn">↺ По умолчанию</button>
       <button id="priExportBtn">⭳ Выгрузить приоритет в файл</button>
       <span class="pri-msg" id="priMsg"></span>
+      <span class="pri-end-date" id="priEndDate">Конец: —</span>
     </div>
     <div class="gantt2-legend" id="ganttLegend"></div>
     <div class="gantt2-body">
@@ -541,6 +549,12 @@ function recomputeAndRender(){
   const result=recomputeSchedule(gv.items, gv.resources||[], gv.workCalendar||{}, PRI);
   PRI_ITEMS=result.items;
   PRI_CRIT={end:result.criticalEnd, resource:result.criticalResource};
+  const okDeadline=PRI_CRIT.end && PRI_CRIT.end<='2026-12-10';
+  const endEl=$('priEndDate');
+  if(endEl){
+    endEl.textContent=`Конец: ${PRI_CRIT.end||'—'} (${PRI_CRIT.resource||'—'}) ${okDeadline?'✅':'⚠️'}`;
+    endEl.style.color=okDeadline?'#2ecc71':'var(--err)';
+  }
   renderGanttV2();
 }
 
@@ -621,23 +635,35 @@ function handleReorder(draggedKey, targetKey){
   recomputeAndRender();
 }
 
+// Делает элемент источником/целью drag&drop для реордера. keyOf(el) достаёт
+// ключ задачи/стори/эпика из атрибута конкретного элемента (у строк дерева
+// и у баров на таймлайне ключ лежит в разных атрибутах).
+function makeDragTarget(el, keyOf){
+  el.addEventListener('dragstart', e=>{
+    e.dataTransfer.setData('text/plain', keyOf(el));
+    e.dataTransfer.effectAllowed='move';
+    el.classList.add('pri-dragging');
+  });
+  el.addEventListener('dragend', ()=>el.classList.remove('pri-dragging'));
+  el.addEventListener('dragover', e=>{ e.preventDefault(); el.classList.add('pri-dragover'); });
+  el.addEventListener('dragleave', ()=>el.classList.remove('pri-dragover'));
+  el.addEventListener('drop', e=>{
+    e.preventDefault();
+    el.classList.remove('pri-dragover');
+    const draggedKey=e.dataTransfer.getData('text/plain');
+    handleReorder(draggedKey, keyOf(el));
+  });
+  el.setAttribute('draggable','true');
+}
 function attachDragHandlers(){
   $('ganttTree').querySelectorAll('.gantt2-row[data-key]').forEach(rowEl=>{
-    rowEl.addEventListener('dragstart', e=>{
-      e.dataTransfer.setData('text/plain', rowEl.dataset.key);
-      e.dataTransfer.effectAllowed='move';
-      rowEl.classList.add('pri-dragging');
-    });
-    rowEl.addEventListener('dragend', ()=>rowEl.classList.remove('pri-dragging'));
-    rowEl.addEventListener('dragover', e=>{ e.preventDefault(); rowEl.classList.add('pri-dragover'); });
-    rowEl.addEventListener('dragleave', ()=>rowEl.classList.remove('pri-dragover'));
-    rowEl.addEventListener('drop', e=>{
-      e.preventDefault();
-      rowEl.classList.remove('pri-dragover');
-      const draggedKey=e.dataTransfer.getData('text/plain');
-      handleReorder(draggedKey, rowEl.dataset.key);
-    });
-    rowEl.setAttribute('draggable','true');
+    makeDragTarget(rowEl, el=>el.dataset.key);
+  });
+  // Бары на таймлайне — самый очевидный визуальный "хват" в Ганте, люди
+  // тянут его инстинктивно, а не подпись слева (жалоба Виктора 22.09.2026:
+  // "не работает" — тянули, скорее всего, именно бар, а не строку дерева).
+  $('ganttRows').querySelectorAll('.gantt2-bar[data-tip-key]').forEach(barEl=>{
+    makeDragTarget(barEl, el=>el.dataset.tipKey);
   });
 }
 
@@ -724,8 +750,7 @@ function renderGanttV2(){
   $('ganttTree').querySelectorAll('.gantt2-toggle[data-key]').forEach(t=>{
     t.onclick=()=>{ const k=t.dataset.key; GS.expanded.has(k)?GS.expanded.delete(k):GS.expanded.add(k); renderGanttV2(); };
   });
-  $('ganttTree').closest('.gantt2-tree').classList.toggle('pri-active', PRI_MODE);
-  if(PRI_MODE) attachDragHandlers();
+  $('ganttTree').closest('.gantt2-body').classList.toggle('pri-active', PRI_MODE);
 
   const marks=buildRulerMarks(minD,maxD,GS.scale,GS.pxPerDay);
   $('ganttRuler').style.width=totalPx+'px';
@@ -767,6 +792,10 @@ function renderGanttV2(){
   $('ganttRows').style.width=totalPx+'px';
   $('ganttRows').style.position='relative';
   $('ganttRows').innerHTML=rowsHtml;
+  // Только теперь, когда и дерево, и бары реально в DOM — раньше вызывалось
+  // ДО этой строки, вешая обработчики на ещё не вставленные/старые бары
+  // (баг найден 22.09.2026: перетаскивание бара не работало вообще).
+  if(PRI_MODE) attachDragHandlers();
 
   const overlayH=rows.length*26;
   const today=new Date(), todayX=xOf(today.toISOString().slice(0,10));

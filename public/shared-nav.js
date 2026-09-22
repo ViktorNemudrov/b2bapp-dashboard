@@ -10,7 +10,7 @@ const NAV = [
   {group:'План', items:[
     {label:'Диаграмма Ганта', icon:'📊', href:'/pages/gantt.html'},
     {label:'Ресурсный план', icon:'👥', href:'/pages/resources.html'},
-    {label:'MVP по кварталам', icon:'🏆', href:'/pages/mvp.html'},
+    {label:'MVP по месяцам', icon:'🏆', href:'/pages/mvp.html'},
     {label:'Скоуп MVP', icon:'📅', href:'/pages/scope_dec.html'},
   ]},
   {group:'Аналитика', items:[

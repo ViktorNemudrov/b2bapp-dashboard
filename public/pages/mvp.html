@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MVP по кварталам — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
+<title>MVP по месяцам — B2BAPP</title><link rel="stylesheet" href="../shared.css"></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
 <script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();
@@ -8,7 +8,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 }).catch(()=>{});</script>
 <div class="main">
 <header class="hdr">
-  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🏆 MVP по кварталам</span></div>
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🏆 MVP по месяцам</span></div>
   <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
@@ -17,21 +17,23 @@ AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
 
-// §6.3: производная от ganttV2 — стори группируются по кварталу расчётной даты окончания
+// §6.3: производная от ganttV2 — стори группируются по МЕСЯЦУ расчётной даты
+// окончания (раньше было по кварталу — правка Виктора 22.09.2026).
 const gv = d.ganttV2;
 const stories = (gv && gv.items || []).filter(i=>i.type==='story' && i.end);
 if(!stories.length){
   document.getElementById('root').innerHTML=renderEmptyState('Нет данных, запустите обновление');
 } else {
-  const QC=['#4472C4','#e67e22','#2ecc71','#9b59b6','#e74c3c','#1abc9c'];
-  function quarterKey(dateStr){
+  const QC=['#4472C4','#e67e22','#2ecc71','#9b59b6','#e74c3c','#1abc9c','#FFC803','#70AD47','#ED7D31','#00B0F0','#7030A0','#A5A5A5'];
+  const MONTH_NAMES=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+  function monthKey(dateStr){
     const dt=new Date(dateStr);
-    const q=Math.floor(dt.getMonth()/3)+1;
-    return {label:`Q${q} ${dt.getFullYear()}`, sort:dt.getFullYear()*10+q};
+    const m=dt.getMonth();
+    return {label:`${MONTH_NAMES[m]} ${dt.getFullYear()}`, sort:dt.getFullYear()*100+m};
   }
   const byQ={};
   stories.forEach(s=>{
-    const {label,sort}=quarterKey(s.end);
+    const {label,sort}=monthKey(s.end);
     (byQ[label]=byQ[label]||{sort,items:[]}).items.push(s);
   });
   const entries=Object.entries(byQ).sort((a,b)=>a[1].sort-b[1].sort);
