@@ -45,6 +45,7 @@ build_dashboard.py — детерминированная сборка public/da
 
 import argparse
 import json
+import os
 import re
 import sys
 from collections import defaultdict, Counter
@@ -77,10 +78,17 @@ HOURS_PER_DAY = 8
 VACANCY_HIRE_MIN = date(2026, 9, 1)   # вакансии-гипотезы найма не раньше этой даты
 DEADLINE = date(2026, 12, 10)          # веха MVP
 
-# Зависимости ролей ВНУТРИ стори (порядок фаз). Строго последовательная цепочка,
-# без параллельных пар (правка Виктора 21.09.2026): ARC→BA→DS→BE→FE→QA.
-# ORG и DVO — параллельно всему (не в цепочке).
-ROLE_PHASE = {"ARC": 0, "BA": 1, "DS": 2, "BE": 3, "FE": 4, "QA": 5}
+# Зависимости ролей ВНУТРИ стори (правка Виктора 03.10.2026, заменила строгую
+# цепочку ARC→BA→DS→BE→FE→QA от 21.09): сначала аналитика (BA), она при
+# необходимости подключает архитектуру (ARC); затем дизайн (DS) и бэкенд (BE)
+# ПАРАЛЛЕЛЬНО; фронт (FE) — после готовности и дизайна, и бэка; QA берёт задачи
+# по факту выполнения разработки (после BE и FE стори).
+# ROLE_DEPS — от конца каких ролей стори ждёт задача роли; ROLE_PHASE — только
+# порядок обработки очередей (зависимые роли считаются после тех, от кого
+# зависят; DS и BE на одном уровне). ORG и DVO — параллельно всему.
+ROLE_DEPS = {"BA": (), "ARC": ("BA",), "DS": ("BA", "ARC"), "BE": ("BA", "ARC"),
+             "FE": ("BA", "ARC", "DS", "BE"), "QA": ("BA", "ARC", "BE", "FE")}
+ROLE_PHASE = {"BA": 0, "ARC": 1, "DS": 2, "BE": 2, "FE": 3, "QA": 4}
 PARALLEL_ROLES = {"ORG", "DVO", "OTHER"}  # не встраиваются в фазовую цепочку
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -378,8 +386,8 @@ def plan_gantt(issues, resources, today=None):
     def prio_key(t):
         return (story_prio(t), t["priority"], t["key"])
 
-    # Хранит окончание последней фазы внутри стори (для зависимости фаз).
-    story_phase_end = defaultdict(lambda: defaultdict(lambda: None))  # story→phase→date
+    # Хранит окончание работы каждой роли внутри стори (для зависимостей ролей).
+    story_phase_end = defaultdict(lambda: defaultdict(lambda: None))  # story→role→date
 
     def st_key_of(t):
         # None у "сирот" (нет реальной стори) — НЕ используем partParent
@@ -393,9 +401,9 @@ def plan_gantt(issues, resources, today=None):
         стори + явные Blocks. Не путать с тем, КОГДА она реально начнётся
         (это ещё и от занятости ресурса зависит) — см. run_role_queue."""
         dep_end = None
-        if st_key is not None and phase is not None and phase > 0:
-            for ph in range(phase):
-                e = story_phase_end[st_key][ph]
+        if st_key is not None and phase is not None:
+            for dr in ROLE_DEPS.get(t["role"], ()):
+                e = story_phase_end[st_key][dr]
                 if e and (dep_end is None or e > dep_end):
                     dep_end = e
         for dk in t["blocksDeps"]:
@@ -419,9 +427,9 @@ def plan_gantt(issues, resources, today=None):
             end = add_work_hours(start, remaining, fte)
             res_free[res["id"]] = next_workday(end + timedelta(days=1))
             if st_key is not None and phase is not None:
-                prev = story_phase_end[st_key][phase]
+                prev = story_phase_end[st_key][role]
                 if prev is None or end > prev:
-                    story_phase_end[st_key][phase] = end
+                    story_phase_end[st_key][role] = end
         planned[t["key"]] = {"start": start, "end": end, "resource": res["id"], "category": cat}
 
     # done — факт, порядок обработки не важен (не трогает очереди ресурсов).
@@ -439,8 +447,8 @@ def plan_gantt(issues, resources, today=None):
     # ещё не готовая (ждёт предыдущую фазу) задача держит ресурс в
     # искусственном простое, хотя есть готовая менее приоритетная работа —
     # жалоба Виктора 22.09.2026: "построй бэклог так, чтобы не было простоя".
-    # Роли-цепочка (ARC→BA→DS→BE→FE→QA) — строго по номеру фазы, иначе
-    # dep_end следующей фазы ещё не известен. ORG/DVO/OTHER — вне цепочки,
+    # Роли с зависимостями (BA→ARC→DS∥BE→FE→QA) — по уровню ROLE_PHASE, иначе
+    # dep_end зависимой роли ещё не известен. ORG/DVO/OTHER — вне цепочки,
     # ready_time = today, порядок обработки между собой не важен.
     phases_present = sorted({ROLE_PHASE[r] for r in nondone_by_role if r in ROLE_PHASE})
     role_order = [r for r in nondone_by_role if r not in ROLE_PHASE] + \
@@ -701,6 +709,35 @@ def self_checks(items, gv2, mvp_scope, resource_plan, epic_progress):
 # ─────────────────────────────────────────────────────────────────────────────
 #  Главный проход режима gantt
 # ─────────────────────────────────────────────────────────────────────────────
+BASELINE_FIELDS = ("key", "type", "parent", "epic", "role", "start", "end",
+                   "estimateH", "spentH", "status", "category", "resource",
+                   "deps", "onCriticalPath")
+
+
+def baseline_item(it, res_name):
+    """Снимок одного элемента ганта для baselines[] (сравнение план/факт)."""
+    b = {k: it[k] for k in BASELINE_FIELDS if it.get(k) not in (None, "", [])}
+    b["summary"] = (it.get("summary") or "")[:90]
+    if it.get("resource"):
+        b["resourceName"] = res_name.get(it["resource"], it["resource"])
+    return b
+
+
+def baselines_path(data_path):
+    """Слепки лежат отдельным файлом рядом с data.json: их читает только
+    страница Ганта (по требованию), а data.json грузит каждая страница —
+    со слепками всех уровней он раздувался 1.1 → 2 МБ (03.10.2026)."""
+    return os.path.join(os.path.dirname(os.path.abspath(data_path)), "baselines.json")
+
+
+def load_baselines(data_path, old):
+    p = baselines_path(data_path)
+    if os.path.exists(p):
+        return json.load(open(p, encoding="utf-8")).get("baselines", [])
+    # Миграция: до 03.10.2026 слепки с items лежали прямо в data.json.
+    return old.get("baselines", [])
+
+
 def run_gantt(args):
     now = datetime.now().astimezone()
     now_iso = now.replace(microsecond=0).isoformat()
@@ -751,7 +788,7 @@ def run_gantt(args):
             "steps": [
                 "Весь бэклог из выгрузки по 10 согласованным эпикам; вакантные ставки не учитываются вообще",
                 "Завершённые — факт; в работе — остаток; бэклог — ready-queue по ролям (без искусственных простоев)",
-                "Зависимости фаз ARC→BA→DS→BE→FE→QA строго последовательно внутри стори + явные Blocks",
+                "Зависимости ролей внутри стори: BA → (при необходимости) ARC → DS и BE параллельно → FE после DS и BE → QA по факту готовности BE и FE; + явные Blocks",
                 f"Хвост критпути: ресурс {crit_res}, окончание {crit_end_iso}",
             ],
         },
@@ -840,16 +877,23 @@ def run_gantt(args):
     # иначе повторный прогон за день плодит дубль bl-ДД.ММ.ГГГГ.
     # Замечание Claude Code 22.08.2026.
     bl_id = f"bl-{today.isoformat()}"
-    bl = [b for b in old.get("baselines", []) if b.get("id") != bl_id]
+    bl = [b for b in load_baselines(args.data, old) if b.get("id") != bl_id]
+    res_name = {r["id"]: r.get("name") or r["id"] for r in resources}
     bl.append({
         "id": bl_id,
         "ts": now_iso,
         "label": f"Refresh {today.strftime('%d.%m.%Y')} (MVP-only)",
         "criticalEnd": crit_end_iso,
-        "items": [{"key": it["key"], "start": it["start"], "end": it["end"]}
-                  for it in mvp_tasks_it],
+        "criticalResource": crit_res,
+        "hoursTotal": hours_total, "hoursSpent": hours_spent,
+        # Все уровни + оценка/списание/статус/исполнитель: без них страница
+        # Ганта может показать только «сдвинулось», но не «почему» (сравнение
+        # слепков, запрос Виктора 03.10.2026). Раньше тут были только задачи
+        # с start/end — у стори/эпиков на свёрнутом ганте сравнивать было нечего.
+        "items": [baseline_item(it, res_name) for it in items],
     })
-    new["baselines"] = bl
+    new["baselines"] = [{k: v for k, v in b.items() if k != "items"} | {"nItems": len(b.get("items") or [])}
+                        for b in bl]
 
     # milestones: обновить статус вехи дедлайна
     ms = list(old.get("milestones", []))
@@ -890,7 +934,9 @@ def run_gantt(args):
         sys.exit(1)
 
     json.dump(new, open(args.out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-    print(f"OK. Записан {args.out}")
+    bl_out = baselines_path(args.out)
+    json.dump({"baselines": bl}, open(bl_out, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    print(f"OK. Записан {args.out} (+ {bl_out}, слепков: {len(bl)})")
     print(f"  MVP: {len(mvp_epics)} эпиков, {len(mvp_stories)} стори, {len(mvp_tasks_it)} задач")
     print(f"  Часы: {hours_total} план / {hours_spent} списано ({completion}%)")
     print(f"  Критпуть до {crit_end_iso} (ресурс {crit_res}), "
