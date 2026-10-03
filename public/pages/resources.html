@@ -17,6 +17,43 @@ AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
 
+// Состав команды — снимок страницы Confluence «Команда проекта» (data.teamConfluence,
+// обновляется при каждом обновлении дашборда), плюс сколько работы у человека в
+// расчёте ганта. Раньше страница показывала только тепловую карту по team_dump,
+// и было не видно, кто ушёл/кто на вакансии (Виктор 03.10.2026).
+function teamHtml(d){
+  const tc=d.teamConfluence; if(!tc||!tc.members) return '';
+  const fmt=s=>s?`${s.slice(8,10)}.${s.slice(5,7)}.${s.slice(0,4)}`:'—';
+  const items=(d.ganttV2&&d.ganttV2.items)||[], res=(d.ganttV2&&d.ganttV2.resources)||[];
+  const two=n=>(n||'').split(' ').slice(0,2).join(' ');
+  const resByName={}; res.forEach(r=>resByName[two(r.name)]=r);
+  const ST={active:['в проекте','ok'],left:['ушёл','gray'],vacant:['вакансия','warn'],noplan:['в проекте, вне ганта','blue']};
+  const order={active:0,noplan:1,vacant:2,left:3};
+  const rows=tc.members.slice().sort((a,b)=>(order[a.status]??9)-(order[b.status]??9)).map(m=>{
+    const r=resByName[two(m.name)];
+    const tasks=r?items.filter(i=>i.type==='task'&&i.resource===r.id):[];
+    const open=tasks.filter(t=>t.category!=='done');
+    const rem=open.reduce((a,t)=>a+Math.max((t.estimateH||0)-(t.category==='in_progress'?(t.spentH||0):0),0),0);
+    const end=open.reduce((a,t)=>t.end>a?t.end:a,'');
+    const st=ST[m.status]||[m.status,'gray'];
+    const dim=m.status==='left'?'opacity:.55;':'';
+    return `<tr style="${dim}">
+      <td style="font-weight:600;color:var(--text)">${m.name}</td>
+      <td>${m.roleTitle} <span style="color:var(--mute);font-size:10px">${m.role}</span></td>
+      <td style="text-align:center">${m.pct}%</td>
+      <td style="text-align:center">${fmt(m.from)}</td>
+      <td><span class="badge badge-${st[1]}">${st[0]}</span></td>
+      <td style="text-align:center">${r?`${tasks.length} <span style="color:var(--mute);font-size:10px">(в работе/впереди ${open.length})</span>`:'—'}</td>
+      <td style="text-align:center">${r?Math.round(rem)+' ч':'—'}</td>
+      <td style="text-align:center">${end?fmt(end):'—'}</td>
+      <td style="font-size:11px;color:var(--mute)">${m.note||''}</td>
+    </tr>`;}).join('');
+  const nActive=tc.members.filter(m=>m.status==='active').length;
+  return `<div class="sec-title">Команда проекта</div>
+  <div style="font-size:11px;color:var(--mute);margin-bottom:8px">Источник: ${tc.source}, снято ${fmt((tc.collectedAt||'').slice(0,10))}. В расчёте ганта ${nActive} исполнителей; ушедшие и незакрытые вакансии в план не входят.</div>
+  <table class="tbl" id="teamTbl"><thead><tr><th>Сотрудник</th><th>Роль</th><th>Участие</th><th>С даты</th><th>Статус</th><th>Задач в плане</th><th>Остаток</th><th>Загружен до</th><th>Комментарий</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
 const rp = d.resourcePlan || [];
 if(!rp.length){
   document.getElementById('root').innerHTML=renderEmptyState('Нет данных, запустите обновление');
@@ -44,6 +81,7 @@ if(!rp.length){
       monthly=r.months;
     }
     return {
+      from:(gr&&gr.from)||r.from||'',
       person:r.person||r.name||(gr&&gr.name)||r.resourceId,
       role:r.role||(gr&&gr.role)||(r.resourceId||'').replace(/-\d+$/,''),
       monthly:monthly||{}
@@ -65,15 +103,20 @@ if(!rp.length){
     <tbody>${norm.map(r=>`<tr>
       <td style="font-weight:600;color:var(--text)">${r.person}</td>
       <td style="color:var(--mute)">${r.role}</td>
-      ${months.map(m=>{const v=r.monthly[m];return `<td class="${heatClass(v)}">${v!=null?v+'%':'·'}</td>`;}).join('')}
+      ${months.map(m=>{
+        // До выхода сотрудника закрытые задачи роли делал предшественник —
+        // планировщик раскладывает факт по текущим людям, поэтому такие месяцы
+        // показываем как «не в проекте», а не как его загрузку.
+        if(r.from && m<r.from.slice(0,7)) return `<td class="heat-0" title="До выхода в проект (${r.from}); работу роли выполнял предшественник">·</td>`;
+        const v=r.monthly[m];return `<td class="${heatClass(v)}">${v!=null?v+'%':'·'}</td>`;}).join('')}
     </tr>`).join('')}</tbody></table>
   <div style="margin-top:16px;display:flex;gap:12px;font-size:11px">
     <span style="color:#2ecc71">■ &lt;70% — норма</span>
     <span style="color:#e67e22">■ 70-99% — напряжённо</span>
     <span style="color:#e74c3c">■ ≥100% — перегруз</span>
-    <span style="color:var(--mute)">■ · — не в проекте</span>
+    <span style="color:var(--mute)">■ · — не в проекте (в т.ч. до даты выхода)</span>
   </div>`;
-  document.getElementById('root').innerHTML=html;
+  document.getElementById('root').innerHTML=teamHtml(d)+`<div class="sec-title" style="margin-top:24px">Загрузка по месяцам (по расчёту ганта)</div>`+html;
   makeSortable(document.getElementById('tbl'));
 }
 }).catch(showFetchError);

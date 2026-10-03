@@ -52,6 +52,12 @@ body.light-theme .sch:hover{background:#e2eaf5}
 body.light-theme .deps{background:#f0f2f5}
 body.light-theme .s-todo{background:#eef2f8}
 body.light-theme .st th{background:#e8ecf5;color:#1a2940}
+.wip-box{background:var(--card);border:1px dashed var(--yel);border-radius:12px;padding:28px 24px;text-align:center;margin-bottom:18px}
+.wip-icon{font-size:34px;line-height:1}
+.wip-title{font-size:18px;font-weight:800;margin:10px 0 6px;color:var(--text)}
+.wip-text{font-size:12.5px;color:var(--mute);line-height:1.6}
+.wip-btn{margin-top:14px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--mute);border-radius:6px;padding:5px 14px;font-size:11px;cursor:pointer}
+.wip-btn:hover{border-color:var(--yel);color:var(--text)}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -64,7 +70,26 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🗺️ User Story Map</span></div>
   <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
-<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<div class="content">
+  <!-- Раздел в разработке (Виктор 03.10.2026): карта пока не отражает актуальный
+       бэклог и сбивает с толку — по умолчанию скрыта, черновик доступен по кнопке. -->
+  <div class="wip-box">
+    <div class="wip-icon">🚧</div>
+    <div class="wip-title">Раздел в разработке</div>
+    <div class="wip-text">User Story Map сейчас перерабатывается и пока не отражает актуальный бэклог.<br>
+      Актуальный состав работ и сроки — на страницах <a href="gantt.html">Диаграмма Ганта</a> и <a href="scope_dec.html">Скоуп MVP</a>.</div>
+    <button class="wip-btn" id="wipToggle" onclick="toggleUsmDraft()">Показать черновик</button>
+  </div>
+  <div id="root" style="display:none"><div class="empty">Загрузка...</div></div>
+</div>
+<script>
+function toggleUsmDraft(){
+  const r=document.getElementById('root'), b=document.getElementById('wipToggle');
+  const show=r.style.display==='none';
+  r.style.display=show?'':'none';
+  b.textContent=show?'Скрыть черновик':'Показать черновик';
+}
+</script>
 <script>
 const STATUS_LEGEND=[
   {c:'s-todo',t:'Стори заведена (задачи в бэклоге)'},

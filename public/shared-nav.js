@@ -14,7 +14,7 @@ const NAV = [
     {label:'Скоуп MVP', icon:'📅', href:'/pages/scope_dec.html'},
   ]},
   {group:'Аналитика', items:[
-    {label:'USM', icon:'🗺️', href:'/pages/usm.html'},
+    {label:'USM', icon:'🗺️', href:'/pages/usm.html', wip:true},
     {label:'Реестр рисков', icon:'⚠️', href:'/pages/risks.html'},
     {label:'Реестр допущений', icon:'📌', href:'/pages/assumptions.html'},
   ]},
@@ -45,7 +45,7 @@ function renderSidebar(){
     ${g.items.map(it=>{
       const itPath = it.href.split('#')[0];
       const active = itPath===cur;
-      return `<a class="nav-link${active?' active':''}" href="${it.href}"><span class="nav-icon">${it.icon}</span><span class="nav-label">${it.label}</span></a>`;
+      return `<a class="nav-link${active?' active':''}" href="${it.href}"><span class="nav-icon">${it.icon}</span><span class="nav-label">${it.label}</span>${it.wip?'<span class="nav-wip" title="Раздел в разработке">в разработке</span>':''}</a>`;
     }).join('')}
   `).join('');
   const nav = document.createElement('nav');

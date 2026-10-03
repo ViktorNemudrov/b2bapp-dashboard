@@ -42,22 +42,48 @@ if(!ms || (Array.isArray(ms)&&!ms.length) || (!Array.isArray(ms)&&!ms.inStories?
   </div>${ms.rationale?`<p style="font-size:11px;color:var(--mute);margin-top:10px">${ms.rationale}</p>`:''}`;
 }
 
-// Детализация по эпикам — существующий вычисляемый реестр data.scope_dec[] (готовность каждого эпика к вехе)
-const sc = d.scope_dec || [];
-const STATUS={'✅ Готово':'ok','🟡 Частично':'warn','⬜ После 10.12':'gray'};
-const detailHtml = sc.length ? `<table class="tbl" id="tbl">
-  <thead><tr><th>Эпик</th><th>Содержание</th><th>Задач всего</th><th>Готово к 10.12</th><th>%</th><th>Статус</th></tr></thead>
-  <tbody>${sc.map(s=>{
-    const pct=s.total?Math.round((parseInt(s.ready)||0)/(parseInt(s.total)||1)*100):0;
-    const cls=Object.entries(STATUS).find(([k])=>s.status&&s.status.includes(k.substring(0,2)))?.[1]||'blue';
-    return `<tr>
-      <td style="font-weight:600;color:var(--text);min-width:200px">${s.epic}</td>
-      <td style="font-size:11px;color:var(--mute)">${s.content}</td>
-      <td style="text-align:center">${s.total}</td>
-      <td style="text-align:center;color:var(--yel);font-weight:700">${s.ready}</td>
-      <td style="text-align:center"><div class="prog-bar" style="min-width:60px"><div class="prog-fill" style="width:${pct}%;background:${pct>=100?'#2ecc71':pct>=50?'#e67e22':'#e74c3c'}"></div></div><span style="font-size:10px;color:var(--mute)">${pct}%</span></td>
-      <td><span class="badge badge-${cls}">${s.status}</span></td>
-    </tr>`;}).join('')}</tbody></table>` : '';
+// Детализация по эпикам — считается из ganttV2.items (Jira на дату обновления),
+// а не из ручного data.scope_dec[]: тот был заполнен 20.09 и считал только
+// полностью готовые стори, поэтому 9 эпиков из 10 выглядели «не начатыми»,
+// хотя по ним идёт работа спринта (жалоба Виктора 03.10.2026).
+const DEADLINE='2026-12-10';
+const gItems=(d.ganttV2&&d.ganttV2.items)||[];
+const epicsG=gItems.filter(i=>i.type==='epic').sort((a,b)=>(a.priority??999)-(b.priority??999)||a.key.localeCompare(b.key));
+const fmtD=s=>s?`${s.slice(8,10)}.${s.slice(5,7)}.${s.slice(0,4)}`:'—';
+const detailRows=epicsG.map(e=>{
+  const tasks=gItems.filter(t=>t.type==='task'&&t.epic===e.key);
+  const stories=gItems.filter(t=>t.type==='story'&&t.parent===e.key);
+  const n=c=>tasks.filter(t=>t.category===c).length;
+  const done=n('done'), inProg=n('in_progress'), backlog=tasks.length-done-inProg;
+  const est=tasks.reduce((a,t)=>a+(t.estimateH||0),0), spent=tasks.reduce((a,t)=>a+(t.spentH||0),0);
+  const pctRaw=est?Math.round(spent/est*100):0, pct=Math.min(100,pctRaw);
+  const byDeadline=tasks.filter(t=>t.category==='done'||(t.end&&t.end<=DEADLINE)).length;
+  const storiesDone=stories.filter(st=>st.category==='done').length;
+  const status=tasks.length&&done===tasks.length?['✅ Готово','ok']
+    :(inProg||done||spent>0)?[`🔵 В работе`,'blue']:['⬜ Не начато','gray'];
+  const inProgList=tasks.filter(t=>t.category==='in_progress').map(t=>`${t.key} ${t.status||''}`).join('\n');
+  return {e,tasks,stories,done,inProg,backlog,est,spent,pct,pctRaw,byDeadline,storiesDone,status,inProgList};
+});
+const tot=k=>detailRows.reduce((a,r)=>a+r[k],0);
+const detailHtml = detailRows.length ? `
+  <div style="font-size:11px;color:var(--mute);margin-bottom:8px">
+    Считается автоматически из Jira при каждом обновлении дашборда (данные на ${d.updated||'—'}).
+    Сейчас в работе <b style="color:var(--text)">${tot('inProg')}</b> задач в <b style="color:var(--text)">${detailRows.filter(r=>r.inProg).length}</b> эпиках из ${detailRows.length};
+    списано <b style="color:var(--text)">${Math.round(tot('spent'))}</b> из ${Math.round(tot('est'))} ч.
+    «В работе» — задачи в любом активном статусе (Анализ, Разработка, Тестирование, Ready for testing, Waiting for release и т.п.).
+  </div>
+  <table class="tbl" id="tbl">
+  <thead><tr><th>Эпик</th><th>Статус</th><th>Задачи: готово / в работе / бэклог</th><th>Стори готово</th><th>Часы: списано / план</th><th>Плановое окончание</th><th>Задач к 10.12</th></tr></thead>
+  <tbody>${detailRows.map(r=>`<tr>
+      <td style="font-weight:600;color:var(--text);min-width:200px">${jiraLink(r.e.key)} ${r.e.summary||''}</td>
+      <td><span class="badge badge-${r.status[1]}">${r.status[0]}</span>${r.inProg?` <span style="font-size:10px;color:var(--mute)" title="${r.inProgList.replace(/"/g,'&quot;')}">${r.inProg} в работе</span>`:''}</td>
+      <td style="text-align:center"><b style="color:var(--ok)">${r.done}</b> / <b style="color:var(--blue)">${r.inProg}</b> / ${r.backlog} <span style="color:var(--mute);font-size:10px">из ${r.tasks.length}</span></td>
+      <td style="text-align:center">${r.storiesDone} / ${r.stories.length}</td>
+      <td style="min-width:150px"><div class="prog-bar" style="min-width:60px"><div class="prog-fill" style="width:${r.pct}%;background:${r.pctRaw>100?'var(--err)':r.pct>=50?'#e67e22':'#4472C4'}"></div></div><span style="font-size:10px;color:${r.pctRaw>100?'var(--err)':'var(--mute)'}">${Math.round(r.spent)} / ${Math.round(r.est)} ч · ${r.pctRaw}%${r.pctRaw>100?' — списано больше плана':''}</span></td>
+      <td style="text-align:center;${r.e.end&&r.e.end>DEADLINE?'color:var(--err);font-weight:700':''}">${fmtD(r.e.end)}</td>
+      <td style="text-align:center">${r.byDeadline} / ${r.tasks.length}</td>
+    </tr>`).join('')}</tbody></table>
+  <div style="font-size:10px;color:var(--mute);margin-top:6px">Плановое окончание и «задач к 10.12» — по текущему расчёту ганта (очереди исполнителей, зависимости ролей BA → ARC → DS∥BE → FE → QA). Красным — эпики, которые по плану заканчиваются после 10.12.2026. Наведи на «N в работе», чтобы увидеть задачи.</div>` : '';
 
 // ── СОСТАВ MVP: 35 сценариев по 4 контурам (каталог Леонида, перенесён и
 // сверен с нашими данными 22.09.2026) — коды/названия фиксированы (не из

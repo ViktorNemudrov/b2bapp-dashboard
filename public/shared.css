@@ -186,3 +186,6 @@ body.light-theme .heatmap-table td{border-bottom-color:#e8ecf5}
 body.light-theme .h-0{background:transparent;color:#99aabb}
 body.light-theme .empty{color:#6b7a99}
 body.light-theme .sidebar-burger{background:#fff;border-color:#d0d8e8;color:#1a2940}
+
+.nav-wip{margin-left:auto;font-size:8.5px;font-weight:700;color:var(--yel);border:1px solid rgba(255,107,61,.45);border-radius:6px;padding:0 5px;line-height:14px;white-space:nowrap}
+body.light-theme .heat-0{background:#eef1f6;color:#9aa6bb}

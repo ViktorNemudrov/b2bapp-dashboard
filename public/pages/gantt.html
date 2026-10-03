@@ -41,7 +41,37 @@
 .gantt2-bar.g2-crit{outline:2px solid var(--err)}
 .gantt2-bar.g2-overspent{box-shadow:0 0 0 2px var(--err) inset}
 .gantt2-bar.g2-overspent::after{content:'⚠';position:absolute;right:2px;top:50%;transform:translateY(-50%);font-size:10px;z-index:2}
-.gantt2-bar-ghost{position:absolute;top:3px;height:20px;border-radius:3px;background:rgba(255,255,255,.12);border:1px dashed rgba(255,255,255,.3)}
+/* Прошлый план (слепок) — пунктирный контур ПОВЕРХ текущего бара: раньше был
+   полупрозрачной заливкой ПОД баром и на перекрытии/светлой теме не был виден. */
+:root{--g2-ghost:rgba(232,237,245,.85)}
+body.light-theme{--g2-ghost:rgba(26,41,64,.7)}
+.gantt2-bar-ghost{position:absolute;top:1px;height:24px;border-radius:4px;box-sizing:border-box;border:1.5px dashed var(--g2-ghost);background:repeating-linear-gradient(135deg,transparent 0 5px,rgba(127,143,166,.12) 5px 7px);z-index:3;pointer-events:none}
+.gantt2-shift{position:absolute;top:12px;height:2px;z-index:3;pointer-events:none}
+.gantt2-shift.gc-late{background:var(--err)}.gantt2-shift.gc-early{background:var(--ok)}
+.gantt2-shift::after{content:'';position:absolute;top:-4px;border:5px solid transparent}
+.gantt2-shift.gc-late::after{right:-6px;border-left:6px solid var(--err)}
+.gantt2-shift.gc-early::after{left:-6px;border-right:6px solid var(--ok)}
+.gantt2-delta{position:absolute;top:5px;height:16px;line-height:16px;padding:0 5px;border-radius:8px;font-size:9px;font-weight:800;white-space:nowrap;z-index:4;pointer-events:none}
+.gantt2-delta.gc-late{background:rgba(231,76,60,.18);color:var(--err)}
+.gantt2-delta.gc-early{background:rgba(46,204,113,.18);color:var(--ok)}
+.gantt2-delta.gc-new{background:rgba(68,114,196,.2);color:var(--blue)}
+.gantt2-row.gc-dim .gantt2-bar{opacity:.25}
+#ganttCompare{display:none;margin:0 0 14px}
+#ganttCompare .gc-head{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-size:12px}
+#ganttCompare .gc-kpi{color:var(--mute)}#ganttCompare .gc-kpi b{color:var(--text)}
+#ganttCompare .gc-text{margin:10px 0;font-size:12.5px;line-height:1.55}#ganttCompare .gc-text p{margin:4px 0}
+#ganttCompare .gc-warn{margin-top:8px;color:var(--warn);font-size:11px}
+#ganttCompare details{margin-top:10px}#ganttCompare summary{cursor:pointer;font-weight:700;color:var(--yel);font-size:12px}
+.gc-table{width:100%;border-collapse:collapse;margin-top:6px;font-size:11px}
+.gc-table th{text-align:left;color:var(--mute);font-weight:600;border-bottom:1px solid var(--line);padding:4px 6px}
+.gc-table td{border-bottom:1px solid var(--line);padding:4px 6px;vertical-align:top}
+.gc-table td.gc-why{color:var(--mute);min-width:280px}
+.gc-keys{font-size:11px}
+.gc-note{color:var(--mute);font-size:10.5px;margin-top:6px}
+.gc-delta{display:inline-block;padding:0 6px;border-radius:8px;font-weight:800;font-size:10.5px;white-space:nowrap}
+.gc-late{color:var(--err)}.gc-early{color:var(--ok)}
+.gc-delta.gc-late{background:rgba(231,76,60,.15)}.gc-delta.gc-early{background:rgba(46,204,113,.15)}.gc-delta.gc-new{background:rgba(68,114,196,.2);color:var(--blue)}
+.gls-tip .gc-tip-why{margin-top:6px;padding-top:6px;border-top:1px solid var(--line);font-size:10.5px;max-width:300px;white-space:normal}
 .gantt2-today-line{position:absolute;top:0;width:2px;background:#00d4ff;z-index:2;pointer-events:none}
 .gantt2-milestone-line{position:absolute;top:0;width:2px;background:#9b59b6;z-index:2;pointer-events:none}
 .gantt2-hire-line{position:absolute;top:0;width:1px;background:var(--blue);z-index:2;opacity:.6;pointer-events:none}
@@ -122,8 +152,9 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
         <select id="resourceFilter"><option value="">Все</option></select>
       </div>
       <div class="gantt2-toolbar-group">
-        <label>Сравнить с baseline:</label>
+        <label>Сравнить со слепком:</label>
         <select id="baselineSelect"><option value="">—</option></select>
+        <label class="gantt2-line-toggle" id="onlyChangedWrap" style="display:none" title="Показать только задачи/стори/эпики, которые сдвинулись, новые или убранные"><input type="checkbox" id="onlyChanged"> только изменившиеся</label>
       </div>
       <div class="gantt2-toolbar-group">
         <button id="todayBtn" title="Прокрутить к сегодняшней дате">⦿ Сегодня</button>
@@ -149,6 +180,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
       <span class="pri-msg" id="priMsg"></span>
       <span class="pri-end-date" id="priEndDate">Конец: —</span>
     </div>
+    <div class="assum-box" id="ganttCompare"></div>
     <div class="gantt2-legend" id="ganttLegend"></div>
     <div class="gantt2-body">
       <div class="gantt2-tree">
@@ -166,6 +198,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     <div class="assum-box" id="ganttAssumptions"></div>
   </div>
 </div>
+<script src="gantt-compare.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const ROLE_COLOR={BE:'#FF4444',FE:'#4472C4',BA:'#70AD47',DS:'#FFC803',QA:'#ED7D31',DVO:'#7030A0',ARC:'#00B0F0',ORG:'#A5A5A5'};
@@ -177,7 +210,7 @@ const TYPE_ICON={
   task:'<svg viewBox="0 0 16 16" width="16" height="16"><rect width="16" height="16" rx="3" fill="#4BADE8"/><path d="M4 8l2.5 2.5L12 5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 };
 const SCALE_PX={week:26,month:6,quarter:2};
-const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',resourceFilter:'',_scrolledToToday:false,
+const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',cmp:null,onlyChanged:false,resourceFilter:'',_scrolledToToday:false,
   treeWidth:340,treeCollapsed:false,showToday:true,showMilestone:true,showHires:false};
 
 function setTreeWidth(px){
@@ -313,7 +346,7 @@ function initGanttTooltip(){
     const t=e.target.closest('.gantt2-bar[data-tip-key]');
     if(!t)return;
     const d=t.dataset;
-    ganttTipEl.innerHTML=`<strong>${d.tipKey}</strong> ${d.tipSummary}<div style="margin-top:5px;font-size:10px;color:var(--mute)">Ресурс: ${d.tipResource||'—'}</div><div style="font-size:10px">Оценка/списано: ${d.tipEst}ч / ${d.tipSpent}ч</div><div style="font-size:10px">${d.tipStart} → ${d.tipEnd}</div><div style="font-size:10px;color:var(--mute)">Статус: ${d.tipStatus||'—'}</div>`;
+    ganttTipEl.innerHTML=`<strong>${d.tipKey}</strong> ${d.tipSummary}<div style="margin-top:5px;font-size:10px;color:var(--mute)">Ресурс: ${d.tipResource||'—'}</div><div style="font-size:10px">Оценка/списано: ${d.tipEst}ч / ${d.tipSpent}ч</div><div style="font-size:10px">${d.tipStart} → ${d.tipEnd}</div><div style="font-size:10px;color:var(--mute)">Статус: ${d.tipStatus||'—'}</div>${d.tipWhy?`<div class="gc-tip-why">${d.tipWhy}</div>`:''}`;
     ganttTipEl.style.display='block';
     const x=Math.min(e.clientX+14,window.innerWidth-296), y=Math.min(e.clientY+14,window.innerHeight-110);
     ganttTipEl.style.left=x+'px';ganttTipEl.style.top=y+'px';
@@ -373,7 +406,10 @@ let CURRENT_DATA=null, LAST_ITEMS=[];
 // календарь, формула критпути) — синхронизировать и здесь, иначе предпросмотр
 // разъедется с тем, что на самом деле посчитает билдер при следующем прогоне.
 // ═══════════════════════════════════════════════════════════════════════════
-const PRI_ROLE_PHASE={ARC:0, BA:1, DS:2, BE:3, FE:4, QA:5}; // держать = ROLE_PHASE в build_dashboard.py
+// Держать = ROLE_PHASE/ROLE_DEPS в build_dashboard.py (модель Виктора 03.10.2026):
+// BA → (при необходимости) ARC → DS и BE параллельно → FE после DS и BE → QA после BE и FE.
+const PRI_ROLE_PHASE={BA:0, ARC:1, DS:2, BE:2, FE:3, QA:4};
+const PRI_ROLE_DEPS={BA:[], ARC:['BA'], DS:['BA','ARC'], BE:['BA','ARC'], FE:['BA','ARC','DS','BE'], QA:['BA','ARC','BE','FE']};
 let PRI_MODE=false, PRI=null, PRI_ITEMS=null, PRI_CRIT=null;
 
 // Все даты держим и сравниваем строго в UTC-компонентах (getUTCDate/setUTCDate/
@@ -462,9 +498,9 @@ function recomputeSchedule(items, resources, workCalendar, order){
   ordered.forEach(t=>{
     const role=t.role, storyKey=t.parent, phase=PRI_ROLE_PHASE[role];
     let depEnd=null;
-    if(phase!==undefined && phase>0){
+    if(phase!==undefined){
       const se=storyPhaseEnd[storyKey]||{};
-      for(let ph=0; ph<phase; ph++){ if(se[ph] && (!depEnd||se[ph]>depEnd)) depEnd=se[ph]; }
+      (PRI_ROLE_DEPS[role]||[]).forEach(dr=>{ if(se[dr] && (!depEnd||se[dr]>depEnd)) depEnd=se[dr]; });
     }
     (t.deps||[]).forEach(dk=>{ const dp=planned[dk]; if(dp && (!depEnd||dp.end>depEnd)) depEnd=dp.end; });
     const res=pickResource(role, depEnd || priUTC(2026,0,1));
@@ -477,7 +513,7 @@ function recomputeSchedule(items, resources, workCalendar, order){
     resFree[res.id]=priNextWorkday(nf, holidays);
     if(phase!==undefined){
       storyPhaseEnd[storyKey]=storyPhaseEnd[storyKey]||{};
-      if(!storyPhaseEnd[storyKey][phase] || end>storyPhaseEnd[storyKey][phase]) storyPhaseEnd[storyKey][phase]=end;
+      if(!storyPhaseEnd[storyKey][role] || end>storyPhaseEnd[storyKey][role]) storyPhaseEnd[storyKey][role]=end;
     }
     planned[t.key]={start, end, resource:res.id};
   });
@@ -570,7 +606,7 @@ function togglePriorityMode(){
   $('priControls').style.display=PRI_MODE?'flex':'none';
   if(PRI_MODE){
     GS.resourceFilter=''; if($('resourceFilter'))$('resourceFilter').value='';
-    GS.baseline=''; if($('baselineSelect'))$('baselineSelect').value='';
+    GS.baseline=''; GS.cmp=null; if($('baselineSelect'))$('baselineSelect').value=''; $('onlyChangedWrap').style.display='none';
     if(!PRI) PRI=buildInitialPriorityOrder(CURRENT_DATA.ganttV2.items);
     recomputeAndRender();
   } else {
@@ -667,6 +703,32 @@ function attachDragHandlers(){
   });
 }
 
+// Выбор слепка: baselines.json грузится по требованию (≈1 МБ, остальным
+// страницам не нужен), затем считается сравнение с текущим планом (gantt-compare.js).
+async function selectBaseline(){
+  const v=$('baselineSelect').value;
+  GS.baseline=v; GS.cmp=null;
+  $('onlyChangedWrap').style.display=v===''?'none':'';
+  if(v!==''){
+    $('ganttCompare').style.display='block';
+    $('ganttCompare').innerHTML='<span style="color:var(--mute)">Загружаю слепок…</span>';
+    const all=await GC.loadBaselines();
+    const meta=(CURRENT_DATA.baselines||[])[+v];
+    const bl=all.find(b=>meta && b.ts===meta.ts && b.id===meta.id);
+    if(GS.baseline!==v) return;
+    if(!bl){ $('ganttCompare').innerHTML='<span style="color:var(--err)">Не удалось загрузить слепок.</span>'; return; }
+    const names={}; (CURRENT_DATA.ganttV2.resources||[]).forEach(r=>names[r.id]=r.name||r.id);
+    GS.cmp=GC.compare(bl, CURRENT_DATA.ganttV2, names);
+  }
+  renderGanttV2();
+}
+function renderComparePanel(){
+  const box=$('ganttCompare');
+  if(GS.baseline==='' || !GS.cmp || PRI_MODE){ box.style.display='none'; return; }
+  box.style.display='block';
+  box.innerHTML=GC.panelHtml(GS.cmp, jiraLink);
+}
+
 function renderGanttV2(){
   const data=CURRENT_DATA;
   let gv=data.ganttV2;
@@ -715,7 +777,10 @@ function renderGanttV2(){
       .forEach(node=>rows.push({node,depth:0,ladder:true,epicName:EPIC_NAME[node.epic]||''}));
   } else {
     const taskOnly = GS.level==='task';
+    const cmpOn = GS.onlyChanged && GS.cmp && GS.baseline!=='' && !PRI_MODE;
+    const changed = n => { const r=GS.cmp.res[n.key]; return (r && r.state!=='same') || (n.children||[]).some(changed); };
     function walk(node,depth){
+      if(cmpOn && !changed(node)) return;
       if(!taskOnly || node.type==='task') rows.push({node,depth});
       const isExpanded = taskOnly || GS.expanded.has(node.key);
       if(node.type==='epic' && GS.level==='epic')return;
@@ -756,11 +821,7 @@ function renderGanttV2(){
   $('ganttRuler').style.width=totalPx+'px';
   $('ganttRuler').innerHTML=marks.map(m=>`<div class="gantt2-ruler-mark" style="left:${m.x}px">${m.label}</div>`).join('');
 
-  let baselineItems=null;
-  if(GS.baseline){
-    const bl=(data.baselines||[]).find(b=>b.id===GS.baseline);
-    if(bl && bl.items && bl.items.length){ baselineItems={}; bl.items.forEach(it=>baselineItems[it.key]=it); }
-  }
+  const CMP=(GS.baseline!=='' && GS.cmp && !PRI_MODE) ? GS.cmp : null;
 
   const rowsHtml=rows.map(({node})=>{
     if(!node.start || !node.end){
@@ -777,14 +838,28 @@ function renderGanttV2(){
     const fillColor=overspent?'rgba(231,76,60,.65)':activeSpend?'rgba(46,204,113,.6)':'rgba(0,0,0,.35)';
     const catClass=(node.category==='done'?'g2-done':node.category==='in_progress'?'g2-inprogress':'g2-planned')+(overspent?' g2-overspent':'');
     const assigneeName=node.type==='task' && node.resource ? (RESOURCE_NAME[node.resource]||'') : '';
-    let ghost='';
-    if(baselineItems && baselineItems[node.key]){
-      const b=baselineItems[node.key];
-      ghost=`<div class="gantt2-bar-ghost" style="left:${xOf(b.start)}px;width:${widthOf(b.start,b.end)}px"></div>`;
+    let ghost='', whyAttr='';
+    const cr=CMP && CMP.res[node.key];
+    if(cr){
+      const endX=x+w;
+      if(cr.b && cr.b.start && cr.b.end){
+        const bx=xOf(cr.b.start), bw=widthOf(cr.b.start,cr.b.end), bEndX=bx+bw;
+        ghost+=`<div class="gantt2-bar-ghost" style="left:${bx}px;width:${bw}px"></div>`;
+        if(cr.dEnd && Math.abs(bEndX-endX)>4){
+          const l=Math.min(bEndX,endX), r=Math.max(bEndX,endX);
+          ghost+=`<div class="gantt2-shift ${cr.dEnd>0?'gc-late':'gc-early'}" style="left:${l}px;width:${r-l}px"></div>`;
+        }
+        const tagX=Math.max(endX,bEndX)+8;
+        if(cr.dEnd) ghost+=`<div class="gantt2-delta ${cr.dEnd>0?'gc-late':'gc-early'}" style="left:${tagX}px">${cr.dEnd>0?'+':'−'}${Math.abs(cr.dEnd)} дн.</div>`;
+      } else if(cr.state==='new'){
+        ghost+=`<div class="gantt2-delta gc-new" style="left:${endX+8}px">новая</div>`;
+      }
+      const whyText=(cr.state==='new'?'Новая — в слепке её не было':(cr.b&&cr.b.start?`Было: ${GC.ddmm(cr.b.start)} → ${GC.ddmm(cr.b.end)} · сдвиг конца ${GC.fmtDays(cr.dEnd||0)}`:''))+(cr.why?`<br>Почему: ${cr.why}`:'');
+      whyAttr=` data-tip-why="${whyText.replace(/"/g,'&quot;')}"`;
     }
-    return `<div class="gantt2-row">${ghost}<div class="gantt2-bar ${catClass}${node.onCriticalPath?' g2-crit':''}" style="left:${x}px;width:${w}px;background:${color}"
+    return `<div class="gantt2-row${CMP&&cr&&cr.state==='same'?' gc-dim':''}">${ghost}<div class="gantt2-bar ${catClass}${node.onCriticalPath?' g2-crit':''}" style="left:${x}px;width:${w}px;background:${color}"
       data-tip-key="${node.key}" data-tip-summary="${spaceify(node.summary||'').replace(/"/g,'&quot;')}" data-tip-resource="${node.resource||''}"
-      data-tip-est="${est}" data-tip-spent="${spent}" data-tip-start="${node.start||''}" data-tip-end="${node.end||''}" data-tip-status="${node.status||''}">
+      data-tip-est="${est}" data-tip-spent="${spent}" data-tip-start="${node.start||''}" data-tip-end="${node.end||''}" data-tip-status="${node.status||''}"${whyAttr}>
       <div class="gantt2-bar-fill" style="width:${progress}%;background:${fillColor}"></div>
       ${assigneeName?`<div class="gantt2-bar-name">${assigneeName}</div>`:''}
     </div></div>`;
@@ -850,10 +925,15 @@ function renderGanttV2(){
 
   const blSel=$('baselineSelect');
   if(blSel.dataset.populated!=='1'){
-    blSel.innerHTML='<option value="">—</option>'+(data.baselines||[]).map(b=>`<option value="${b.id}">${b.label||b.ts}</option>`).join('');
+    // value = индекс слепка: id не уникален (два bl-2026-07-21 за один день).
+    // Новые сверху; пустые слепки (без задач) и слепок текущего же расчёта не показываем.
+    blSel.innerHTML='<option value="">—</option>'+(data.baselines||[]).map((b,i)=>({b,i})).reverse()
+      .filter(({b})=>(b.nItems??(b.items||[]).length)>0 && b.ts!==(data.ganttV2&&data.ganttV2.generatedAt))
+      .map(({b,i})=>`<option value="${i}">${b.label||b.ts}${b.criticalEnd?` · конец ${GC.ddmm(b.criticalEnd)}.${b.criticalEnd.slice(0,4)}`:''}</option>`).join('');
     blSel.dataset.populated='1';
-    blSel.onchange=()=>{ GS.baseline=blSel.value; renderGanttV2(); };
+    blSel.onchange=selectBaseline;
   }
+  renderComparePanel();
 
   const resSel=$('resourceFilter');
   if(resSel.dataset.populated!=='1'){
@@ -913,6 +993,7 @@ $('expandSelect').onchange=e=>{
   renderGanttV2();
 };
 $('todayBtn').onclick=()=>{ GS._scrolledToToday=false; renderGanttV2(); };
+$('onlyChanged').onchange=e=>{ GS.onlyChanged=e.target.checked; renderGanttV2(); };
 $('lineToday').onchange=e=>{ GS.showToday=e.target.checked; renderGanttV2(); };
 $('lineMilestone').onchange=e=>{ GS.showMilestone=e.target.checked; renderGanttV2(); };
 $('lineHires').onchange=e=>{ GS.showHires=e.target.checked; renderGanttV2(); };
