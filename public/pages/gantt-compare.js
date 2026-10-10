@@ -135,7 +135,11 @@ const GC = (() => {
       if((c.spentH || 0) > est1 && est1 > 0 && !((b.spentH || 0) > est0))
         r.push({code: 'OVERRUN', text: `перерасход: списано ${h(c.spentH)} ч при оценке ${h(est1)} ч`, hours: (c.spentH || 0) - est1});
       if(b.resource && c.resource && b.resource !== c.resource)
-        r.push({code: 'RES', text: `исполнитель: ${firstName(nameOf(b))} → ${firstName(nameOf(c))}`, hours: 0});
+        // Внутри роли исполнителя выбирает планировщик (кто раньше свободен), а не
+        // assignee из Jira — поэтому это «перераспределение в плане», не переназначение.
+        r.push({code: 'RES', text: b.role === c.role
+          ? `в плане переложена между исполнителями роли ${c.role}: ${firstName(nameOf(b))} → ${firstName(nameOf(c))}`
+          : `исполнитель: ${firstName(nameOf(b))} → ${firstName(nameOf(c))}`, hours: 0});
       // Не сделано к дате, к которой по прошлому плану должно было быть сделано/начато.
       if(b.start && b.start < snap){
         const progressed = (c.spentH || 0) - (b.spentH || 0);
@@ -295,7 +299,7 @@ const GC = (() => {
   const CAT_LABEL = {
     NEW: 'Новые задачи в плане', REMOVED: 'Убраны из плана', EST: 'Изменились оценки',
     OVERRUN: 'Перерасход (списано больше оценки)', LAG: 'Не сделано к плановой дате',
-    DONE_LATE: 'Закрыты позже плана', DONE_EARLY: 'Закрыты раньше плана', RES: 'Смена исполнителя',
+    DONE_LATE: 'Закрыты позже плана', DONE_EARLY: 'Закрыты раньше плана', RES: 'Перераспределение между исполнителями роли',
     TODAY: 'Прошло время (план не начинает работу в прошлом)', QUEUE: 'Перестроение очередей',
   };
   const CAT_HOURS = {NEW: 'ч добавлено', REMOVED: 'ч освобождено', EST: 'ч изменение оценок', OVERRUN: 'ч сверх оценок', LAG: 'ч перенесено вперёд', DONE_EARLY: 'ч освобождено', DONE_LATE: 'ч сверх оценок'};
@@ -314,7 +318,7 @@ const GC = (() => {
       OVERRUN: k => `перерасход (списано больше оценки): ${tasksN(k.n)} (+${h(k.hours)} ч)`,
       DONE_LATE: k => `закрыты позже плана: ${tasksN(k.n)}`,
       DONE_EARLY: k => `закрыты раньше плана: ${tasksN(k.n)}`,
-      RES: k => `сменился исполнитель: ${tasksN(k.n)}`,
+      RES: k => `перераспределение задач между исполнителями одной роли в плане: ${tasksN(k.n)}`,
       REMOVED: k => `убраны из плана: ${tasksN(k.n)} (−${h(k.hours)} ч)`,
       TODAY: k => `прошло время — работа, не сделанная к сегодня, перенесена вперёд`,
     };
