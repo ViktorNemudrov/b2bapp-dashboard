@@ -221,6 +221,11 @@ def normalize_issue(raw):
         "status": (f.get("status") or {}).get("name", ""),
         "assignee": assignee.get("name") or assignee.get("key") or "",
         "created": parse_dt(f.get("created")),
+        # «Дата начала» (customfield_18100) — фактическое начало работы; у стори и
+        # эпиков = самая ранняя у их задач (правило Виктора 11.10.2026, проверка
+        # check_jira_rollup.py). Начало задачи на ганте берётся отсюда, не из created.
+        "startDate": parse_dt(f.get("customfield_18100")),
+        "jiraStarted": ((f.get("status") or {}).get("name", "") or "").strip().lower() != "бэклог",
         "resolutiondate": parse_dt(f.get("resolutiondate")),
         "duedate": parse_dt(f.get("duedate")),
         "updated": parse_dt(f.get("updated")),
@@ -413,8 +418,8 @@ def plan_gantt(issues, resources, today=None):
 
     def schedule_one(t, role, cat, st_key, phase):
         if cat == "done":
-            start = t["created"] or date(2026, 1, 1)
-            end = t["resolutiondate"] or t["updated"] or start
+            end = t["resolutiondate"] or t["updated"] or t["startDate"] or t["created"] or date(2026, 1, 1)
+            start = min(t["startDate"] or t["created"] or end, end)
             res = pick_resource(role, start)
         else:
             dep_end = ready_time(t, phase, st_key)
@@ -430,7 +435,14 @@ def plan_gantt(issues, resources, today=None):
                 prev = story_phase_end[st_key][role]
                 if prev is None or end > prev:
                     story_phase_end[st_key][role] = end
-        planned[t["key"]] = {"start": start, "end": end, "resource": res["id"], "category": cat}
+        # Начатая в Jira задача (статус не «Бэклог») рисуется от фактической «Даты
+        # начала»; plan_start — где планировщик поставил остаток работы (очереди,
+        # зависимости и разбор сдвигов в gantt-compare.js считаются от него).
+        plan_start = start
+        if cat != "done" and t["jiraStarted"] and t["startDate"] and t["startDate"] < start:
+            start = t["startDate"]
+        planned[t["key"]] = {"start": start, "end": end, "resource": res["id"], "category": cat,
+                             "planStart": plan_start if plan_start != start else None}
 
     # done — факт, порядок обработки не важен (не трогает очереди ресурсов).
     nondone_by_role = defaultdict(list)
@@ -483,6 +495,9 @@ def plan_gantt(issues, resources, today=None):
             "estimateH": t["estimateH"], "spentH": t["spentH"],
             "status": t["status"], "category": p["category"],
             "start": p["start"].isoformat(), "end": p["end"].isoformat(),
+            **({"planStart": p["planStart"].isoformat()} if p.get("planStart") else {}),
+            **({"actualStart": t["startDate"].isoformat()} if t["jiraStarted"] and t["startDate"] and p["category"] != "done" else {}),
+            "started": bool(t["jiraStarted"]),
             "resource": p["resource"], "onCriticalPath": False,
             "deps": t["blocksDeps"],
         })
@@ -501,6 +516,9 @@ def plan_gantt(issues, resources, today=None):
             "estimateH": t["estimateH"], "spentH": t["spentH"],
             "status": t["status"], "category": p["category"],
             "start": p["start"].isoformat(), "end": p["end"].isoformat(),
+            **({"planStart": p["planStart"].isoformat()} if p.get("planStart") else {}),
+            **({"actualStart": t["startDate"].isoformat()} if t["jiraStarted"] and t["startDate"] and p["category"] != "done" else {}),
+            "started": bool(t["jiraStarted"]),
             "resource": p["resource"], "onCriticalPath": False,
             "deps": t["blocksDeps"], "orphan": True,
         })
@@ -512,16 +530,19 @@ def plan_gantt(issues, resources, today=None):
             start = min(it["start"] for it in kids)
             end = max(it["end"] for it in kids)
         else:
-            start = (s["created"] or date(2026, 1, 1)).isoformat()
+            start = (s["startDate"] or s["created"] or date(2026, 1, 1)).isoformat()
             end = start
+        # Стори не может быть «не начата», если хоть одна её задача в Jira не в
+        # «Бэклог» (правило Виктора 11.10.2026).
         cat = "done" if kids and all(it["category"] == "done" for it in kids) \
-              else ("in_progress" if any(it["category"] != "backlog" for it in kids) else "backlog")
+              else ("in_progress" if any(it["category"] != "backlog" or it.get("started") for it in kids) else "backlog")
         items.append({
             "key": sk, "type": "story", "parent": s["epicLink"], "epic": s["epicLink"],
             "summary": s["summary"], "priority": s["priority"],
             "estimateH": sum(it["estimateH"] for it in kids),
             "spentH": sum(it["spentH"] for it in kids),
             "start": start, "end": end, "category": cat,
+            "started": cat != "backlog",
             "onCriticalPath": False, "deps": [],
         })
     # эпики (агрегат из их стори + прямых задач-сирот под эпиком, у которых
@@ -534,10 +555,13 @@ def plan_gantt(issues, resources, today=None):
                 and (it["type"] == "story" or (it["type"] == "task" and it.get("orphan")))]
         if not kids:
             continue
-        start = min(it["start"] for it in kids)
+        # Начало эпика — по стори с задачами (у пустых стори дата условная:
+        # «Дата начала» или created), иначе эпик «начинается» раньше реальной работы.
+        timed = [it for it in kids if it["type"] == "task" or it.get("estimateH")] or kids
+        start = min(it["start"] for it in timed)
         end = max(it["end"] for it in kids)
         cat = "done" if all(it["category"] == "done" for it in kids) \
-              else ("in_progress" if any(it["category"] != "backlog" for it in kids) else "backlog")
+              else ("in_progress" if any(it["category"] != "backlog" or it.get("started") for it in kids) else "backlog")
         items.append({
             "key": ek, "type": "epic", "parent": None, "epic": ek,
             "summary": (e or {}).get("summary", ek),
@@ -709,7 +733,7 @@ def self_checks(items, gv2, mvp_scope, resource_plan, epic_progress):
 # ─────────────────────────────────────────────────────────────────────────────
 #  Главный проход режима gantt
 # ─────────────────────────────────────────────────────────────────────────────
-BASELINE_FIELDS = ("key", "type", "parent", "epic", "role", "start", "end",
+BASELINE_FIELDS = ("key", "type", "parent", "epic", "role", "start", "planStart", "end",
                    "estimateH", "spentH", "status", "category", "resource",
                    "deps", "onCriticalPath")
 
