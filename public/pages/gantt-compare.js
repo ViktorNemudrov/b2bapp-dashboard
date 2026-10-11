@@ -377,5 +377,5 @@ const GC = (() => {
       <div class="gc-note">Сдвиги считаются в рабочих днях по концу задачи. На ганте: пунктир — прошлый план, стрелка — куда сдвинулся конец, бейдж — на сколько. Наведи на бар, чтобы увидеть причину.</div>`;
   }
 
-  return {loadBaselines, compare, panelHtml, fmtDays, ddmm};
+  return {loadBaselines, compare, panelHtml, sentence, CAT_LABEL, fmtDays, ddmm};
 })();
