@@ -471,7 +471,10 @@ function recomputeSchedule(items, resources, workCalendar, order){
   const tasks=items.filter(i=>i.type==='task');
   const liveTasks=tasks.filter(t=>t.category!=='done');
 
-  const resFree={}; resources.forEach(r=>{ resFree[r.id]=r.from?new Date(r.from):priUTC(2026,0,1); });
+  // Пол «не раньше сегодня» — как в build_dashboard.py (правка 21.09.2026): без него
+  // незавершённые задачи в режиме приоритетов уезжали в прошлое (с даты найма).
+  const _n=new Date(), TODAY=priUTC(_n.getFullYear(), _n.getMonth(), _n.getDate());
+  const resFree={}; resources.forEach(r=>{ const f=r.from?new Date(r.from):priUTC(2026,0,1); resFree[r.id]=f>TODAY?f:TODAY; });
   const resByRole={}; resources.forEach(r=>{ (resByRole[r.role]=resByRole[r.role]||[]).push(r); });
   function pickResource(role, earliest){
     const pool=resByRole[role]||resByRole.OTHER||resources;
@@ -505,7 +508,7 @@ function recomputeSchedule(items, resources, workCalendar, order){
     (t.deps||[]).forEach(dk=>{ const dp=planned[dk]; if(dp && (!depEnd||dp.end>depEnd)) depEnd=dp.end; });
     const res=pickResource(role, depEnd || priUTC(2026,0,1));
     const fte=res.fte||1;
-    const earliest=new Date(Math.max(resFree[res.id].getTime(), (res.from?new Date(res.from):priUTC(2026,0,1)).getTime(), (depEnd||priUTC(2026,0,1)).getTime()));
+    const earliest=new Date(Math.max(resFree[res.id].getTime(), (res.from?new Date(res.from):priUTC(2026,0,1)).getTime(), (depEnd||priUTC(2026,0,1)).getTime(), TODAY.getTime()));
     const remaining=Math.max(t.category==='in_progress' ? (t.estimateH-t.spentH) : t.estimateH, 0);
     const start=priNextWorkday(earliest, holidays);
     const end=priAddWorkHours(start, remaining, fte, holidays, hoursPerDay);
@@ -526,9 +529,13 @@ function recomputeSchedule(items, resources, workCalendar, order){
     if(t.category==='done') return {...t};
     const p=planned[t.key];
     if(!p) return {...t};
-    return {...t, start:p.start.toISOString().slice(0,10), end:p.end.toISOString().slice(0,10), resource:p.resource, onCriticalPath:false};
+    // Начатая в Jira задача рисуется от фактической «Даты начала» (как в build_dashboard.py).
+    const ps=p.start.toISOString().slice(0,10);
+    const actual=t.actualStart||null;
+    const start=actual&&actual<ps?actual:ps;
+    return {...t, start, planStart:start!==ps?ps:undefined, end:p.end.toISOString().slice(0,10), resource:p.resource, onCriticalPath:false};
   }
-  function aggCategory(kids){ return kids.every(k=>k.category==='done')?'done':(kids.some(k=>k.category!=='backlog')?'in_progress':'backlog'); }
+  function aggCategory(kids){ return kids.every(k=>k.category==='done')?'done':(kids.some(k=>k.category!=='backlog'||k.started)?'in_progress':'backlog'); }
 
   // Строим НЕ по исходному порядку items[] (он произвольный — из Python-set),
   // а строго по order.epics/storiesByEpic/tasksByStory, чтобы дерево в UI
@@ -843,7 +850,8 @@ function renderGanttV2(){
     if(cr){
       const endX=x+w;
       if(cr.b && cr.b.start && cr.b.end){
-        const bx=xOf(cr.b.start), bw=widthOf(cr.b.start,cr.b.end), bEndX=bx+bw;
+        const bs=cr.b.shownStart||cr.b.start;
+        const bx=xOf(bs), bw=widthOf(bs,cr.b.end), bEndX=bx+bw;
         ghost+=`<div class="gantt2-bar-ghost" style="left:${bx}px;width:${bw}px"></div>`;
         if(cr.dEnd && Math.abs(bEndX-endX)>4){
           const l=Math.min(bEndX,endX), r=Math.max(bEndX,endX);

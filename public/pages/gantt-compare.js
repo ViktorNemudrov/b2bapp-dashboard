@@ -68,14 +68,19 @@ const GC = (() => {
     const W = makeWorkdays(gv.workCalendar && gv.workCalendar.holidays);
     const snap = iso(gv.generatedAt) || new Date().toISOString().slice(0, 10);
     const blDate = iso(bl.ts);
+    // У начатых задач start — фактическая «Дата начала» из Jira (для отрисовки),
+    // planStart — где планировщик поставил остаток. Причины сдвига считаем по
+    // плановому началу; shownStart оставляем для пунктира прошлого плана.
+    const norm = i => i.planStart ? {...i, start: i.planStart, shownStart: i.start} : i;
     const B = {}, C = {};
-    (bl.items || []).forEach(i => B[i.key] = i);
-    gv.items.forEach(i => C[i.key] = i);
+    (bl.items || []).forEach(i => B[i.key] = norm(i));
+    const gvItems = gv.items.map(norm);
+    gvItems.forEach(i => C[i.key] = i);
     const detailed = (bl.items || []).some(i => i.type && i.estimateH != null);
     const nameOf = (it) => it ? (it.resourceName || resourceNames[it.resource] || it.resource || '—') : '—';
 
     // Текущий план: очередь каждого исполнителя и конец фаз каждой стори.
-    const tasks = gv.items.filter(i => i.type === 'task');
+    const tasks = gvItems.filter(i => i.type === 'task');
     const byRes = {};
     tasks.forEach(t => { if(t.resource) (byRes[t.resource] = byRes[t.resource] || []).push(t); });
     Object.values(byRes).forEach(a => a.sort((x, y) => x.start < y.start ? -1 : x.start > y.start ? 1 : x.end < y.end ? -1 : 1));
