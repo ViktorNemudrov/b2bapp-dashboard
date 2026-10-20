@@ -811,6 +811,38 @@ def assign_scenarios(items, issues, reg):
         if it["type"] == "task":
             it["scenario"] = story_sc.get(it["parent"], "PLATFORM")
 
+QA_SHARE = 0.35          # доля QA внутри оценки задач [FE]/[BE] (Виктор 20.10.2026)
+QA_STATUSES = {"ready for testing", "тестирование"}   # разработка готова, идёт QA
+
+def stage_segments(tasks):
+    """Отрезки этапов из задач. QA сидит внутри задач [FE]/[BE]: последние 35%
+    оценки — тестирование, после реализации задача сама уходит на QA. Поэтому
+    задача FE/BE даёт два отрезка: разработка (первые 65% её срока) и QA
+    (остальные 35%). Статус «Ready for testing»/«Тестирование» — разработка
+    готова, QA в работе. Отдельные задачи [QA] — целиком в этап QA."""
+    out = []
+    for t in tasks:
+        sid = ROLE_STAGE.get(t["role"])
+        if not sid:
+            continue
+        s, e = date.fromisoformat(t["start"]), date.fromisoformat(t["end"])
+        cat = t["category"]
+        dev_cat = cat if cat != "backlog" or not t.get("started") else "in_progress"
+        if sid in ("FE", "BE"):
+            mid = s + timedelta(days=round((e - s).days * (1 - QA_SHARE)))
+            in_qa = (t.get("status") or "").strip().lower() in QA_STATUSES
+            out.append({"stage": sid, "start": t["start"], "end": mid.isoformat(),
+                        "h": t["estimateH"] * (1 - QA_SHARE),
+                        "cat": "done" if in_qa else dev_cat, "key": t["key"]})
+            out.append({"stage": "QA", "start": mid.isoformat(), "end": t["end"],
+                        "h": t["estimateH"] * QA_SHARE, "embedded": True,
+                        "cat": "done" if cat == "done" else ("in_progress" if in_qa else "backlog"),
+                        "key": t["key"]})
+        else:
+            out.append({"stage": sid, "start": t["start"], "end": t["end"], "h": t["estimateH"],
+                        "cat": dev_cat, "key": t["key"]})
+    return out
+
 def calc_scenarios(items, reg, today):
     """Агрегат по сценарию + этапы (Аналитика/Дизайн/Бэк/Фронт/QA) для
     упрощённого вида. Прошлое — факт, будущее — прогноз планировщика (даты
@@ -832,26 +864,29 @@ def calc_scenarios(items, reg, today):
         timed = [t for t in kt if t.get("start") and t.get("end")]
         cat = ("done" if kt and all(t["category"] == "done" for t in kt) else
                "in_progress" if any(t["category"] != "backlog" or t.get("started") for t in kt) else "backlog")
+        segs = stage_segments(timed)
         stages = []
         for sid, sname in STAGES:
-            st_t = [t for t in timed if ROLE_STAGE.get(t["role"]) == sid]
+            st_t = [g for g in segs if g["stage"] == sid]
             if not st_t:
                 continue
-            est = sum(t["estimateH"] for t in st_t)
-            done_h = sum(t["estimateH"] for t in st_t if t["category"] == "done")
-            scat = ("done" if all(t["category"] == "done" for t in st_t) else
-                    "in_progress" if any(t["category"] == "in_progress" or (t.get("started") and t["category"] != "done") for t in st_t)
-                    else "backlog")
-            start = min(t["start"] for t in st_t)
-            end = max(t["end"] for t in st_t)
+            est = round(sum(g["h"] for g in st_t))
+            done_h = round(sum(g["h"] for g in st_t if g["cat"] == "done"))
+            # частично готовый этап (часть отрезков done, остальные не начаты) — «в работе»
+            scat = ("done" if all(g["cat"] == "done" for g in st_t) else
+                    "in_progress" if any(g["cat"] in ("in_progress", "done") for g in st_t) else "backlog")
+            start = min(g["start"] for g in st_t)
+            end = max(g["end"] for g in st_t)
             end_sp = sprint_of_date(date.fromisoformat(end))
             # День-граница (20.10) — и начало С4, и конец С3: не даём началу
             # этапа оказаться в спринте позже его конца.
             start_sp = min(sprint_of_date(date.fromisoformat(start) + timedelta(days=1)), end_sp)
             stages.append({"id": sid, "name": sname, "start": start, "end": end,
                            "estimateH": est, "doneH": done_h, "tasks": len(st_t),
-                           "tasksDone": sum(1 for t in st_t if t["category"] == "done"),
-                           "category": scat, "startSprint": start_sp, "endSprint": end_sp})
+                           "tasksDone": sum(1 for g in st_t if g["cat"] == "done"),
+                           "category": scat, "startSprint": start_sp, "endSprint": end_sp,
+                           **({"embeddedQaH": round(sum(g["h"] for g in st_t if g.get("embedded")))}
+                              if sid == "QA" else {})})
         # Аналитика, Бэк и QA обязательны для каждого сценария, Дизайн и Фронт —
         # по необходимости (Виктор 20.10.2026). Нет задач обязательного этапа в
         # Jira — показываем явно: прогноз готовности без него оптимистичен.
