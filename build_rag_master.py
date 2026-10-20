@@ -263,6 +263,9 @@ def build(d, cmp):
         for c in scs:
             stg = "; ".join(f"{x['name']} {sp(x['startSprint'])}–{sp(x['endSprint'])} ({h(x['doneH'])}/{h(x['estimateH'])} ч)"
                             for x in c.get("stages") or []) or "—"
+            if c.get("tasks") and c.get("missingStages"):
+                names = {"AN": "Аналитика", "BE": "Бэк", "QA": "QA"}
+                stg += "; НЕТ задач обязательного этапа: " + ", ".join(names.get(m, m) for m in c["missingStages"])
             rows.append([c["code"], c["name"], c.get("contour") or "", c.get("priority") or "", c.get("current") or "",
                          f"{c.get('tasksDone', 0)}/{c.get('tasks', 0)}", h(c.get("estimateH")),
                          f"{sp(c.get('readySprint'))} ({ddmmyy(c.get('end'))})" if c.get("end") else "—",
