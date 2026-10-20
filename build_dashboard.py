@@ -103,6 +103,7 @@ SPRINT_NAME_RE = re.compile(r"Спринт\s*(\d+)", re.I)
 # аналитике; ORG/DVO/OTHER в этапы не входят (Виктор 20.10.2026).
 STAGES = (("AN", "Аналитика"), ("DS", "Дизайн"), ("BE", "Бэк"), ("FE", "Фронт"), ("QA", "QA"))
 ROLE_STAGE = {"BA": "AN", "ARC": "AN", "DS": "DS", "BE": "BE", "FE": "FE", "QA": "QA"}
+MANDATORY_STAGES = ("AN", "BE", "QA")   # Дизайн и Фронт — опциональны
 SCENARIO_PREFIX_RE = re.compile(r"^\s*(?:\d+\.\s*)?((?:MD|OB|RB|PL|PK)\d+|NAI|IB|B2C)[.\s]")
 SCENARIO_LABEL_RE = re.compile(r"^(?:MD|OB|RB|PL|PK)\d+$")
 
@@ -825,6 +826,7 @@ def calc_scenarios(items, reg, today):
             out.append({**{k: s.get(k) for k in ("order", "contour", "code", "name", "priority", "epic")},
                         "registryStatus": s.get("status"), "stories": [], "tasks": 0,
                         "estimateH": 0, "spentH": 0, "category": "empty", "stages": [],
+                        "missingStages": list(MANDATORY_STAGES),
                         "current": "нет задач в Jira"})
             continue
         timed = [t for t in kt if t.get("start") and t.get("end")]
@@ -850,6 +852,11 @@ def calc_scenarios(items, reg, today):
                            "estimateH": est, "doneH": done_h, "tasks": len(st_t),
                            "tasksDone": sum(1 for t in st_t if t["category"] == "done"),
                            "category": scat, "startSprint": start_sp, "endSprint": end_sp})
+        # Аналитика, Бэк и QA обязательны для каждого сценария, Дизайн и Фронт —
+        # по необходимости (Виктор 20.10.2026). Нет задач обязательного этапа в
+        # Jira — показываем явно: прогноз готовности без него оптимистичен.
+        have = {st["id"] for st in stages}
+        missing = [sid for sid in MANDATORY_STAGES if sid not in have]
         active = [st["name"] for st in stages if st["category"] == "in_progress"]
         if cat == "done":
             current = "Готово"
@@ -870,7 +877,7 @@ def calc_scenarios(items, reg, today):
             "spentH": sum(t["spentH"] for t in kt),
             "start": start, "end": end, "category": cat,
             "onCriticalPath": any(t.get("onCriticalPath") for t in kt),
-            "stages": stages, "current": current,
+            "stages": stages, "current": current, "missingStages": missing,
             "readySprint": sprint_of_date(end_d) if end_d else None,
             "onTime": bool(end_d and end_d <= DEADLINE),
         })
@@ -1174,6 +1181,10 @@ def run_gantt(args):
         by_src = Counter((it.get("scenarioSource") or "").split(":")[0] for it in items if it["type"] == "story")
         print(f"  Сценариев: {len(scenarios)} (с задачами {sum(1 for s in scenarios if s['tasks'])}); "
               f"привязка стори: {dict(by_src)}")
+        miss = Counter(m for s in scenarios if s["tasks"] for m in s.get("missingStages", []))
+        if miss:
+            print(f"  ⚠ Сценариев без задач обязательного этапа (из {sum(1 for s in scenarios if s['tasks'])}): "
+                  f"{dict(miss)} — в Jira нет задач [BA]/[ARC], [BE] или [QA]")
     if orphan_report:
         orphan_h = sum(o["estimateH"] for o in orphan_report)
         print(f"  ⚠ Задач-сирот (без Part-связи на стори, запланированы напрямую под эпик): "
