@@ -240,6 +240,36 @@ def build(d, cmp):
              "План, ч", "Списано, ч", "Списано от плана", "Начало", "Окончание", "Успевает к 10.12", "Задач к 10.12", "Сдвиг с прошлого"], rows))
     w("\n«Списано от плана» > 100% — перерасход часов относительно оценки.\n")
 
+    # 5а. Сценарии и спринты (с 20.10.2026) — для ответа «на какой стадии сценарий»
+    scs = g.get("scenarios") or []
+    sps = g.get("sprints") or []
+    sp = lambda n: "—" if n is None else ("до С0" if n < 0 else f"С{n}")
+    if sps:
+        w(f"## 5а. Спринты ({H})\n")
+        w("Спринт — ровно 2 недели; Спринт 4 = 20.10–03.11.2026, Спринт 0 = 25.08–08.09.2026. Завершённая задача из "
+          "закрытого спринта стоит на ганте с датой окончания этого спринта (в т.ч. «Waiting for release» — для команды это готово); "
+          "если задача закрыта раньше начала спринта по этому календарю — с фактической датой.\n")
+        w(table(["Спринт", "Начало", "Конец", "Состояние"],
+                [[s["name"], ddmmyy(s["start"]), ddmmyy(s["end"]),
+                  {"closed": "закрыт", "active": "текущий", "future": "будущий"}.get(s["state"], s["state"])] for s in sps]))
+        w("")
+    if scs:
+        w(f"## 5б. Сценарии MVP: текущий этап и прогноз по спринтам ({H})\n")
+        w("Сценарии — из реестра Confluence 2356754448 «Реестр оценки скоупа MVP v.2». Стори привязана к сценарию по метке Jira "
+          "(OB1, PL9…), иначе по префиксу названия, иначе по таблице «Структура и оценка» реестра, иначе по логической привязке; "
+          "непривязанное — «Платформа». Этапы: Аналитика ([BA]+[ARC]) → Дизайн [DS] ∥ Бэк [BE] → Фронт [FE] → QA; "
+          "прошлое — факт Jira, будущее — прогноз планировщика. «Сейчас» — этапы с задачами в работе (или следующий незавершённый).\n")
+        rows = []
+        for c in scs:
+            stg = "; ".join(f"{x['name']} {sp(x['startSprint'])}–{sp(x['endSprint'])} ({h(x['doneH'])}/{h(x['estimateH'])} ч)"
+                            for x in c.get("stages") or []) or "—"
+            rows.append([c["code"], c["name"], c.get("contour") or "", c.get("priority") or "", c.get("current") or "",
+                         f"{c.get('tasksDone', 0)}/{c.get('tasks', 0)}", h(c.get("estimateH")),
+                         f"{sp(c.get('readySprint'))} ({ddmmyy(c.get('end'))})" if c.get("end") else "—",
+                         ("да" if c.get("onTime") else "нет") if c.get("end") else "—", stg])
+        w(table(["Код", "Сценарий", "Контур", "P", "Сейчас", "Задач готово/всего", "План, ч", "Готов к спринту", "Успевает к 10.12", "Этапы (спринты, ч готово/план)"], rows))
+        w("")
+
     # 6. Команда
     w(f"## 6. Команда и загрузка ({H})\n")
     tc = d.get("teamConfluence") or {}
@@ -312,6 +342,7 @@ def build(d, cmp):
                 w(f"#### Стори {st['key']} «{st['summary']}» (эпик «{e['summary']}»)\n")
                 w(f"Статус: {CAT_RU.get(st['category'], st['category'])}; план {h(st.get('estimateH'))} ч, списано {h(st.get('spentH'))} ч; "
                   f"{ddmmyy(st.get('start'))} – {ddmmyy(st.get('end'))}; {mvp}"
+                  f"{('; сценарий ' + st['scenario']) if st.get('scenario') else ''}"
                   f"{'; на критпути' if st['key'] in crit_keys else ''}"
                   f"{('; сдвиг ' + shift_txt(sh['dEnd']) + (' — ' + sh['why'] if sh['why'] else '')) if sh and sh.get('dEnd') else ''}.\n")
                 if not tl:
