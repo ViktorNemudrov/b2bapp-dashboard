@@ -105,6 +105,33 @@ body.g2-fullscreen #ganttApp{position:fixed;inset:0;z-index:9999;background:var(
 .gantt2-body.pri-active .gantt2-bar.pri-dragover{box-shadow:0 0 0 2px var(--yel)}
 .pri-handle{display:none;flex-shrink:0;width:10px;height:16px}
 .gantt2-body.pri-active .pri-handle{display:inline-flex}
+/* Спринты: отсечки на таймлайне + полоса с номерами под шкалой дат (20.10.2026). */
+:root{--g2-ruler-h:26px}
+.gantt2-tree-header,.gantt2-ruler{height:var(--g2-ruler-h)}
+.gantt2-ruler-mark{bottom:auto;height:26px}
+.gantt2-sprint-band{position:absolute;left:0;right:0;top:26px;height:16px;border-top:1px solid var(--line)}
+.gantt2-sprint-cell{position:absolute;top:0;bottom:0;border-left:1px dashed rgba(127,143,166,.55);font-size:9px;font-weight:700;color:var(--mute);display:flex;align-items:center;padding-left:4px;white-space:nowrap;overflow:hidden;box-sizing:border-box}
+.gantt2-sprint-cell.sp-active{background:rgba(0,212,255,.14);color:#00d4ff}
+.gantt2-sprint-cell.sp-closed{background:rgba(127,143,166,.08)}
+.gantt2-sprint-line{position:absolute;top:0;width:0;border-left:1px dashed rgba(225,232,245,.7);z-index:1;pointer-events:none}
+body.light-theme .gantt2-sprint-line{border-left-color:rgba(26,41,64,.45)}
+.gantt2-sprint-shade{position:absolute;top:0;background:rgba(127,143,166,.06);pointer-events:none}
+body.light-theme .gantt2-sprint-shade{background:rgba(26,41,64,.04)}
+.gantt2-row.g2-group{background:rgba(127,143,166,.10);font-weight:800}
+.g2-sc-chip{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:15px;padding:0 4px;border-radius:4px;font-size:8.5px;font-weight:800;color:#fff;background:#5b6b8c;flex-shrink:0}
+.g2-sc-chip.p0{background:#c0392b}.g2-sc-chip.p1{background:#d68910}.g2-sc-chip.p2{background:#5b6b8c}
+/* Упрощённый вид «Этапы сценариев»: строка выше, у каждого этапа своя дорожка
+   (по факту этапы часто идут одновременно — в общей дорожке они перекрывались). */
+.gantt2-row.g2-tall{height:52px}
+.g2-stage{position:absolute;height:9px;border-radius:2px;overflow:hidden;font-size:7.5px;line-height:9px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7);display:flex;align-items:center;padding-left:3px;box-sizing:border-box;white-space:nowrap;cursor:default}
+.g2-stage.lane0{top:1px}.g2-stage.lane1{top:11px}.g2-stage.lane2{top:21px}.g2-stage.lane3{top:31px}.g2-stage.lane4{top:41px}
+.g2-stage .g2-fc{position:absolute;top:0;bottom:0;right:0;background:repeating-linear-gradient(135deg,rgba(13,27,42,.55) 0 3px,transparent 3px 6px)}
+.g2-stage span{position:relative;z-index:1}
+.g2-stage.st-done{opacity:.85}
+.g2-now{font-size:9px;color:var(--yel);font-weight:700;white-space:nowrap}
+.g2-ready{font-size:9px;font-weight:800;white-space:nowrap;padding:0 4px;border-radius:6px}
+.g2-ready.ok{color:var(--ok);background:rgba(46,204,113,.12)}.g2-ready.late{color:var(--err);background:rgba(231,76,60,.12)}
+.gantt2-toolbar-group.g2-off{opacity:.35;pointer-events:none}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -122,6 +149,14 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   <div id="ganttApp" style="display:none">
     <div class="gantt2-toolbar">
       <div class="gantt2-toolbar-group">
+        <label>Вид:</label>
+        <select id="viewMode" title="Группировка ганта: классическая по эпикам, по сценариям реестра MVP или упрощённые этапы сценариев для руководства">
+          <option value="epics">По эпикам</option>
+          <option value="scenarios">По сценариям</option>
+          <option value="stages">Этапы сценариев (упрощённо)</option>
+        </select>
+      </div>
+      <div class="gantt2-toolbar-group" id="grpLevel">
         <label>Показывать:</label>
         <select id="levelFilter">
           <option value="all">Эпики ▸ Стори ▸ Задачи</option>
@@ -138,7 +173,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
         <label>Зум (или Ctrl+колесо / тачпад):</label>
         <button id="zoomOut">−</button><button id="zoomIn">+</button>
       </div>
-      <div class="gantt2-toolbar-group">
+      <div class="gantt2-toolbar-group" id="grpExpand">
         <label>Дерево:</label>
         <select id="expandSelect">
           <option value="" disabled selected>Развернуть/свернуть…</option>
@@ -147,11 +182,11 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
           <option value="collapse">Свернуть всё</option>
         </select>
       </div>
-      <div class="gantt2-toolbar-group">
+      <div class="gantt2-toolbar-group" id="grpResource">
         <label>Исполнитель:</label>
         <select id="resourceFilter"><option value="">Все</option></select>
       </div>
-      <div class="gantt2-toolbar-group">
+      <div class="gantt2-toolbar-group" id="grpBaseline">
         <label>Сравнить со слепком:</label>
         <select id="baselineSelect"><option value="">—</option></select>
         <label class="gantt2-line-toggle" id="onlyChangedWrap" style="display:none" title="Показать только задачи/стори/эпики, которые сдвинулись, новые или убранные"><input type="checkbox" id="onlyChanged"> только изменившиеся</label>
@@ -164,12 +199,13 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
         <label class="gantt2-line-toggle"><input type="checkbox" id="lineToday" checked> Сегодня</label>
         <label class="gantt2-line-toggle"><input type="checkbox" id="lineMilestone" checked> Веха MVP</label>
         <label class="gantt2-line-toggle"><input type="checkbox" id="lineHires"> Выход сотрудников</label>
+        <label class="gantt2-line-toggle" title="Отсечки спринтов (2 недели, Спринт 4 = 20.10–03.11.2026)"><input type="checkbox" id="lineSprints" checked> Спринты</label>
       </div>
       <div class="gantt2-toolbar-group">
         <button id="treeCollapseBtn" title="Скрыть/показать колонку с названиями">◂ Панель</button>
         <button id="fullscreenBtn" title="Развернуть/свернуть гант на весь экран">⛶ На весь экран</button>
       </div>
-      <div class="gantt2-toolbar-group">
+      <div class="gantt2-toolbar-group" id="grpPri">
         <button id="priModeBtn" title="Перетаскивай эпики/стори/задачи, чтобы менять приоритет — даты и критпуть пересчитываются на лету">🔀 Приоритеты (drag&amp;drop)</button>
       </div>
     </div>
@@ -184,7 +220,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     <div class="gantt2-legend" id="ganttLegend"></div>
     <div class="gantt2-body">
       <div class="gantt2-tree">
-        <div class="gantt2-tree-header">Эпик / Стори / Задача (роль)</div>
+        <div class="gantt2-tree-header" id="ganttTreeHeader">Эпик / Стори / Задача (роль)</div>
         <div id="ganttTree"></div>
       </div>
       <div class="gantt2-resizer" id="ganttResizer" title="Потяни, чтобы изменить ширину панели"></div>
@@ -208,10 +244,17 @@ const TYPE_ICON={
   epic:'<svg viewBox="0 0 16 16" width="16" height="16"><rect width="16" height="16" rx="3" fill="#8B46FF"/><path d="M9 2L4 9h3l-1 5 6-8H9z" fill="#fff"/></svg>',
   story:'<svg viewBox="0 0 16 16" width="16" height="16"><rect width="16" height="16" rx="3" fill="#63BA3C"/><path d="M5 3h6v10l-3-2-3 2V3z" fill="#fff"/></svg>',
   task:'<svg viewBox="0 0 16 16" width="16" height="16"><rect width="16" height="16" rx="3" fill="#4BADE8"/><path d="M4 8l2.5 2.5L12 5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  scenario:'<svg viewBox="0 0 16 16" width="16" height="16"><rect width="16" height="16" rx="3" fill="#E5534B"/><path d="M5 3v10M5 3h6l-1.5 2.5L11 8H5" stroke="#fff" stroke-width="1.6" fill="none" stroke-linejoin="round"/></svg>',
 };
+const SCENARIO_COLOR='#c2647a';
+// Этапы упрощённого вида: цвет = цвет роли, у каждого этапа своя дорожка в строке.
+const STAGE_META={AN:{c:ROLE_COLOR.BA,s:'Ан',lane:0},DS:{c:ROLE_COLOR.DS,s:'Диз',lane:1},BE:{c:ROLE_COLOR.BE,s:'Бэк',lane:2},FE:{c:ROLE_COLOR.FE,s:'Фр',lane:3},QA:{c:ROLE_COLOR.QA,s:'QA',lane:4}};
 const SCALE_PX={week:26,month:6,quarter:2};
 const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',cmp:null,onlyChanged:false,resourceFilter:'',_scrolledToToday:false,
-  treeWidth:340,treeCollapsed:false,showToday:true,showMilestone:true,showHires:false};
+  treeWidth:340,treeCollapsed:false,showToday:true,showMilestone:true,showHires:false,showSprints:true,view:'epics'};
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const ddmm=s=>s?`${s.slice(8,10)}.${s.slice(5,7)}`:'—';
+const spName=n=>n==null?'—':(n<0?'до С0':`С${n}`);
 
 function setTreeWidth(px){
   GS.treeWidth=Math.max(160,Math.min(700,px));
@@ -304,6 +347,29 @@ function buildTree(items){
   return epics.map(e=>({...e, children:sortByPriority(byParent[e.key]||[]).map(s=>({...s, children:sortByPriority(byParent[s.key]||[])}))}));
 }
 
+// Вид «По сценариям»: Сценарий ▸ Стори ▸ Задача. Привязку стори/задач к
+// сценарию и агрегаты сценария (даты, часы, статус) считает build_dashboard.py
+// (items[].scenario, ganttV2.scenarios[]) — здесь только раскладка в дерево.
+function buildScenarioTree(items, scenarios){
+  const byParent={};
+  items.forEach(i=>{ if(i.parent){ (byParent[i.parent]=byParent[i.parent]||[]).push(i); } });
+  const storyKeys=new Set(items.filter(i=>i.type==='story').map(i=>i.key));
+  return (scenarios||[]).map(sc=>{
+    const stories=sortByPriority(items.filter(i=>i.type==='story' && i.scenario===sc.code))
+      .map(s=>({...s, children:sortByPriority(byParent[s.key]||[])}));
+    // задачи без стори (сироты) — прямо под сценарием
+    const loose=sortByPriority(items.filter(i=>i.type==='task' && i.scenario===sc.code && !storyKeys.has(i.parent)));
+    const children=[...stories, ...loose];
+    if(!children.length) return null;
+    return {key:'SC:'+sc.code, type:'scenario', code:sc.code, priority:sc.priority, contour:sc.contour,
+      summary:`${sc.code} · ${sc.name}`, start:sc.start, end:sc.end, category:sc.category,
+      estimateH:sc.estimateH, spentH:sc.spentH, onCriticalPath:sc.onCriticalPath, status:sc.current, children};
+  }).filter(Boolean);
+}
+function treeExpandableKeys(tree){
+  const s=[]; (function w(ns){ ns.forEach(n=>{ if(n.children&&n.children.length){ s.push(n.key); w(n.children); } }); })(tree); return s;
+}
+
 function allExpandableKeys(items){
   const s=new Set();
   items.forEach(i=>{ if(i.parent) s.add(i.parent); });
@@ -343,6 +409,12 @@ function initGanttTooltip(){
   if(!ganttTipEl){ganttTipEl=document.createElement('div');ganttTipEl.className='gls-tip';document.body.appendChild(ganttTipEl);}
   if(ganttTipBound)return; ganttTipBound=true;
   document.addEventListener('mouseover',e=>{
+    const h=e.target.closest('[data-tip-html]');
+    if(h){
+      ganttTipEl.innerHTML=h.dataset.tipHtml; ganttTipEl.style.display='block';
+      ganttTipEl.style.left=Math.min(e.clientX+14,window.innerWidth-296)+'px'; ganttTipEl.style.top=Math.min(e.clientY+14,window.innerHeight-110)+'px';
+      return;
+    }
     const t=e.target.closest('.gantt2-bar[data-tip-key]');
     if(!t)return;
     const d=t.dataset;
@@ -353,7 +425,7 @@ function initGanttTooltip(){
   });
   document.addEventListener('mousemove',e=>{
     if(!ganttTipEl||ganttTipEl.style.display==='none')return;
-    if(!e.target.closest('.gantt2-bar[data-tip-key]')){ganttTipEl.style.display='none';}
+    if(!e.target.closest('.gantt2-bar[data-tip-key],[data-tip-html]')){ganttTipEl.style.display='none';}
     else{const x=Math.min(e.clientX+14,window.innerWidth-296),y=Math.min(e.clientY+14,window.innerHeight-110);ganttTipEl.style.left=x+'px';ganttTipEl.style.top=y+'px';}
   });
 }
@@ -736,6 +808,141 @@ function renderComparePanel(){
   box.innerHTML=GC.panelHtml(GS.cmp, jiraLink);
 }
 
+// Шкала дат + (опционально) полоса спринтов под ней. Высота шапки дерева
+// синхронизируется через --g2-ruler-h, иначе строки дерева и таймлайна разъедутся.
+function drawRuler(minD,maxD,totalPx,xOf,sprints){
+  const marks=buildRulerMarks(minD,maxD,GS.scale,GS.pxPerDay);
+  const showSp=GS.showSprints && (sprints||[]).length;
+  document.documentElement.style.setProperty('--g2-ruler-h', showSp?'42px':'26px');
+  $('ganttRuler').style.width=totalPx+'px';
+  let band='';
+  if(showSp){
+    band='<div class="gantt2-sprint-band">'+sprints.map(s=>{
+      const x=xOf(s.start), w=xOf(s.end)-x;
+      if(x+w<0 || x>totalPx) return '';
+      const lbl=w>70?`${s.short} · ${ddmm(s.start)}–${ddmm(s.end)}`:s.short;
+      return `<div class="gantt2-sprint-cell sp-${s.state}" style="left:${x}px;width:${w}px" title="${s.name}: ${ddmm(s.start)}.${s.start.slice(0,4)} – ${ddmm(s.end)}.${s.end.slice(0,4)}${s.state==='active'?' (текущий)':s.state==='closed'?' (закрыт)':''}">${lbl}</div>`;
+    }).join('')+'</div>';
+  }
+  $('ganttRuler').innerHTML=marks.map(m=>`<div class="gantt2-ruler-mark" style="left:${m.x}px">${m.label}</div>`).join('')+band;
+}
+
+// Вертикальные линии поверх строк: отсечки спринтов (с лёгкой заливкой через
+// один), сегодня, веха MVP, выход сотрудников. Возвращает x линии «сегодня».
+function drawOverlays(gv, xOf, totalPx, overlayH){
+  const host=$('ganttRows');
+  if(GS.showSprints) (gv.sprints||[]).forEach(s=>{
+    const x=xOf(s.start), x2=xOf(s.end);
+    if(s.n%2===1 && x2>0 && x<totalPx) host.insertAdjacentHTML('afterbegin',`<div class="gantt2-sprint-shade" style="left:${x}px;width:${x2-x}px;height:${overlayH}px"></div>`);
+    if(x>=0 && x<=totalPx) host.insertAdjacentHTML('beforeend',`<div class="gantt2-sprint-line" style="left:${x}px;height:${overlayH}px"></div>`);
+  });
+  const today=new Date(), todayX=xOf(today.toISOString().slice(0,10));
+  if(GS.showToday && todayX>=0 && todayX<=totalPx) host.insertAdjacentHTML('beforeend',`<div class="gantt2-today-line" style="left:${todayX}px;height:${overlayH}px" title="Сегодня"></div>`);
+  const mvpX=xOf('2026-12-10');
+  if(GS.showMilestone && mvpX>=0 && mvpX<=totalPx) host.insertAdjacentHTML('beforeend',`<div class="gantt2-milestone-line" style="left:${mvpX}px;height:${overlayH}px" title="Веха MVP 10.12.2026"></div>`);
+  if(GS.showHires) (gv.resources||[]).forEach(r=>{
+    if(!r.from)return;
+    const hx=xOf(r.from);
+    if(hx>=0 && hx<=totalPx) host.insertAdjacentHTML('beforeend',`<div class="gantt2-hire-line" style="left:${hx}px;height:${overlayH}px" title="Выход: ${r.name||r.role} (${r.from})"></div>`);
+  });
+  return todayX;
+}
+
+// Что из панели инструментов имеет смысл в текущем виде.
+function applyViewChrome(){
+  const v=GS.view;
+  ['grpLevel','grpExpand','grpResource','grpBaseline'].forEach(id=>$(id).classList.toggle('g2-off', v==='stages'));
+  $('grpPri').classList.toggle('g2-off', v!=='epics');
+  $('ganttTreeHeader').textContent = v==='stages' ? 'Сценарий · сейчас · готов к спринту' : v==='scenarios' ? 'Сценарий / Стори / Задача (роль)' : 'Эпик / Стори / Задача (роль)';
+  const top=v==='scenarios'?'Сценарии':'Эпики', lf=$('levelFilter').options;
+  lf[0].text=`${top} ▸ Стори ▸ Задачи`; lf[1].text=`${top} ▸ Стори`; lf[2].text=`Только ${top.toLowerCase()}`;
+  $('expandSelect').options[2].text = v==='scenarios' ? 'Развернуть только сценарии' : 'Развернуть только эпики';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Вид «Этапы сценариев» (для руководства): строка = сценарий, на шкале — этапы
+// Аналитика → Дизайн ∥ Бэк → Фронт → QA. Сплошная часть — факт/прошлое,
+// штриховка — прогноз планировщика. Всё посчитано в build_dashboard.py
+// (ganttV2.scenarios[].stages[]); здесь только раскладка по шкале.
+// ═══════════════════════════════════════════════════════════════════════════
+function renderStages(gv, data){
+  const scs=gv.scenarios||[];
+  const legend=$('ganttLegend'), assumEl=$('ganttAssumptions');
+  $('ganttCompare').style.display='none';
+  if(!scs.length){
+    $('ganttTree').innerHTML=''; $('ganttRows').innerHTML='';
+    assumEl.innerHTML='Нет данных по сценариям — пересоберите дашборд (build_dashboard.py со scenarios.json).';
+    return;
+  }
+  const rows=[]; let lastContour=null;
+  scs.forEach(sc=>{
+    if(sc.contour!==lastContour){ rows.push({group:sc.contour}); lastContour=sc.contour; }
+    rows.push({sc});
+  });
+  const ds=[new Date()];
+  scs.forEach(sc=>(sc.stages||[]).forEach(st=>{ ds.push(new Date(st.start), new Date(st.end)); }));
+  const minD=new Date(Math.min(...ds)); minD.setDate(minD.getDate()-3);
+  const maxD=new Date(Math.max(...ds, new Date('2026-12-15'))); maxD.setDate(maxD.getDate()+3);
+  GS._minD=minD;
+  const totalPx=Math.max(1,Math.round((maxD-minD)/86400000))*GS.pxPerDay;
+  const xOf=s=>{const t=new Date(s); return isNaN(t)?0:Math.round((t-minD)/86400000*GS.pxPerDay);};
+  const todayISO=new Date().toISOString().slice(0,10), todayX=xOf(todayISO);
+
+  $('ganttTree').innerHTML=rows.map(r=>{
+    if(r.group) return `<div class="gantt2-row g2-group"><div class="gantt2-label">${esc(r.group)}</div></div>`;
+    const sc=r.sc, pcls=(sc.priority||'').toLowerCase();
+    const ready=sc.readySprint!=null ? `<span class="g2-ready ${sc.onTime?'ok':'late'}" title="Окончание по прогнозу: ${ddmm(sc.end)}.${(sc.end||'').slice(0,4)}${sc.onTime?' — до вехи MVP 10.12':' — ПОСЛЕ вехи MVP 10.12'}">→ ${spName(sc.readySprint)} (${ddmm(sc.end)})</span>` : '';
+    return `<div class="gantt2-row g2-tall"><div class="gantt2-label" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;line-height:1.15" title="${esc(sc.code+' · '+sc.name)}">
+      <div style="display:flex;gap:4px;align-items:center;max-width:100%;overflow:hidden"><span class="g2-sc-chip ${pcls}">${esc(sc.code)}</span><span style="overflow:hidden;text-overflow:ellipsis">${esc(sc.name)}</span></div>
+      <div style="display:flex;gap:6px;align-items:center;padding-left:2px"><span class="g2-now">${esc(sc.current)}</span>${ready}</div></div></div>`;
+  }).join('');
+
+  drawRuler(minD,maxD,totalPx,xOf,gv.sprints);
+  $('ganttRows').style.width=totalPx+'px';
+  $('ganttRows').style.position='relative';
+  $('ganttRows').innerHTML=rows.map(r=>{
+    if(r.group) return '<div class="gantt2-row g2-group"></div>';
+    const sc=r.sc;
+    if(!(sc.stages||[]).length) return `<div class="gantt2-row g2-tall" style="color:var(--mute);font-size:9px;padding-left:8px">${sc.tasks?'нет задач с этапами (только ORG/DVO)':'нет задач в Jira'}${sc.registryStatus?' · реестр: '+esc(sc.registryStatus.slice(0,60)):''}</div>`;
+    return `<div class="gantt2-row g2-tall">`+sc.stages.map(st=>{
+      const m=STAGE_META[st.id]||{c:'#7f8fa6',s:st.id,lane:0};
+      const x=xOf(st.start), w=Math.max(4, xOf(st.end)-x);
+      let fc='';
+      if(st.category!=='done' && st.end>todayISO){ const l=Math.max(0, Math.min(w, todayX-x)); fc=`<div class="g2-fc" style="left:${l}px"></div>`; }
+      const stLbl={done:'готово',in_progress:'в работе',backlog:'не начат'}[st.category]||st.category;
+      const tip=`<strong>${esc(sc.code)} · ${esc(st.name)}</strong>${esc(sc.name)}<div style="margin-top:5px;font-size:10px">${ddmm(st.start)} → ${ddmm(st.end)} · ${spName(st.startSprint)}${st.endSprint!==st.startSprint?'–'+spName(st.endSprint):''}</div><div style="font-size:10px">Часы: ${st.doneH} из ${st.estimateH} ч готово · задач ${st.tasksDone}/${st.tasks}</div><div style="font-size:10px;color:var(--mute)">Статус этапа: ${stLbl}${st.end>todayISO&&st.category!=='done'?' · после сегодня — прогноз':''}</div>`;
+      // Подпись — у линии «сегодня», если этап её пересекает (начало длинных
+      // этапов часто за левым краем экрана), иначе — в начале полосы.
+      const off=(st.start<todayISO && st.end>todayISO) ? Math.max(0, todayX-x)+2 : 0;
+      const room=w-off;
+      return `<div class="g2-stage lane${m.lane} st-${st.category}" style="left:${x}px;width:${w}px;background:${m.c}" data-tip-html="${esc(tip)}">${fc}<span style="margin-left:${off}px">${room>22?m.s:''}${st.category==='done'&&room>34?' ✓':''}</span></div>`;
+    }).join('')+'</div>';
+  }).join('');
+  const overlayH=rows.reduce((s,r)=>s+(r.group?26:52),0);
+  drawOverlays(gv, xOf, totalPx, overlayH);
+  if(!GS._scrolledToToday && todayX>=0 && todayX<=totalPx){
+    GS._scrolledToToday=true;
+    const scroller=$('ganttScroll'); scroller.scrollLeft=Math.max(0, todayX - scroller.clientWidth/2);
+  }
+  legend.innerHTML=Object.entries(STAGE_META).map(([id,m])=>`<span><span class="sw" style="background:${m.c}"></span>${({AN:'Аналитика (BA+ARC)',DS:'Дизайн',BE:'Бэк',FE:'Фронт',QA:'QA'})[id]}</span>`).join('')+
+    `<span style="margin-left:12px"><span class="sw" style="background:#7f8fa6"></span>сплошная — факт/прошлое</span>`+
+    `<span><span class="sw" style="background:repeating-linear-gradient(135deg,#7f8fa6 0 3px,#0d1b2a 3px 6px)"></span>штриховка — прогноз</span>`+
+    `<span><span class="sw" style="border:1px dashed var(--mute);background:transparent"></span>отсечка спринта</span>`+
+    `<span><span class="sw" style="background:#00d4ff"></span>сегодня</span>`+
+    `<span><span class="sw" style="background:#9b59b6"></span>веха 10.12.2026</span>`;
+  initGanttTooltip();
+  const late=scs.filter(s=>s.readySprint!=null && !s.onTime).length, withT=scs.filter(s=>s.readySprint!=null).length;
+  assumEl.innerHTML=`<div>🧭 <b>Этапы сценариев:</b> ${withT} сценариев с задачами, из них к вехе MVP 10.12.2026 по прогнозу не успевают <b style="color:var(--err)">${late}</b>.</div>
+    <ul class="assum-list">
+      <li>Этап = задачи сценария с ролью: Аналитика — [BA] и [ARC], Дизайн — [DS], Бэк — [BE], Фронт — [FE], QA — [QA]; [ORG]/[DVO] в этапы не входят.</li>
+      <li>Начало/конец этапа — от самой ранней до самой поздней задачи этой роли во всех стори сценария. Прошлое — факт из Jira (завершённые в закрытом спринте — по дате конца спринта), будущее — прогноз того же планировщика, что и основной гант.</li>
+      <li>«Сейчас» — этапы, где есть задачи в работе; если таких нет — следующий незавершённый этап. «→ С№» — спринт, в котором по прогнозу закончится последняя задача сценария.</li>
+      <li>Спринты по 2 недели: Спринт 4 = 20.10–03.11.2026, Спринт 0 = 25.08–08.09.2026.</li>
+      <li>Привязка стори к сценарию: метка Jira → префикс названия → реестр Confluence (2356754448) → логическая привязка; непривязанное — «Платформа».</li>
+    </ul>
+    <div style="margin-top:8px;color:var(--mute);font-size:11px">Сгенерировано: ${gv.generatedAt||'—'}</div>`;
+}
+
 function renderGanttV2(){
   const data=CURRENT_DATA;
   let gv=data.ganttV2;
@@ -747,6 +954,8 @@ function renderGanttV2(){
   }
   $('ganttEmpty').innerHTML='';
   $('ganttApp').style.display='block';
+  applyViewChrome();
+  if(GS.view==='stages'){ renderStages(gv, data); return; }
   if(gv._flatAdapted){
     $('ganttEmpty').innerHTML=`<div class="note-banner" style="background:rgba(255,107,61,.08);border:1px solid rgba(255,107,61,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mute);margin-bottom:14px">⚠ Скилл ещё не даёт story/task-уровень в ganttV2 — показан агрегат по ролям внутри эпика (наведи на бар — детали). Разверни ⌄ эпик, чтобы увидеть роли.</div>`;
   }
@@ -757,7 +966,8 @@ function renderGanttV2(){
   const RESOURCE_NAME={}; (gv.resources||[]).forEach(r=>{RESOURCE_NAME[r.id]=(r.name||'').split(' ')[0];});
 
   const items=resourceFilteredItems;
-  const tree=buildTree(items);
+  const tree=GS.view==='scenarios' ? buildScenarioTree(items, gv.scenarios) : buildTree(items);
+  GS._tree=tree;
   // new Date(null) не даёт NaN (превращается в эпоху 1970-01-01), поэтому пустые
   // start/end (стори без дочерних задач — у скилла такое бывает) сначала
   // отсеиваются явной проверкой, иначе одна такая запись растягивает всю шкалу
@@ -790,7 +1000,7 @@ function renderGanttV2(){
       if(cmpOn && !changed(node)) return;
       if(!taskOnly || node.type==='task') rows.push({node,depth});
       const isExpanded = taskOnly || GS.expanded.has(node.key);
-      if(node.type==='epic' && GS.level==='epic')return;
+      if((node.type==='epic'||node.type==='scenario') && GS.level==='epic')return;
       if(node.children && node.children.length && isExpanded){
         node.children.forEach(c=>{
           if(node.type==='story' && GS.level==='story')return;
@@ -805,8 +1015,13 @@ function renderGanttV2(){
   // задачи, привязанные напрямую к эпику (без стори), иначе оказывались бы на
   // уровне отступа "стори" и визуально не выстраивались в один столбец с
   // остальными задачами ("пляшущие" строки).
-  const TYPE_INDENT={epic:0,story:1,task:2};
+  const TYPE_INDENT={epic:0,scenario:0,story:1,task:2};
   $('ganttTree').innerHTML=rows.map(({node,epicName,ladder})=>{
+      if(node.type==='scenario'){
+        const isExp=GS.expanded.has(node.key);
+        const pcls=(node.priority||'').toLowerCase();
+        return `<div class="gantt2-row" data-key="${node.key}" data-type="scenario"><div class="gantt2-label" title="${esc(node.summary)} — сейчас: ${esc(node.status)}" style="padding-left:8px"><span class="gantt2-toggle" data-key="${node.key}">${isExp?'▾':'▸'}</span><span class="g2-type-icon">${TYPE_ICON.scenario}</span><span class="g2-sc-chip ${pcls}">${esc(node.code)}</span> ${esc(node.summary.replace(/^\S+ · /,'')).slice(0,40)} <span style="color:var(--mute);font-size:9px">(${node.spentH||0}/${node.estimateH||0}ч)</span></div></div>`;
+      }
       const hasChildren=node.children && node.children.length>0;
       const isExpanded=forceExpand || GS.expanded.has(node.key);
       const toggle=hasChildren?`<span class="gantt2-toggle" data-key="${node.key}">${isExpanded?'▾':'▸'}</span>`:'<span class="gantt2-toggle-spacer"></span>';
@@ -824,9 +1039,7 @@ function renderGanttV2(){
   });
   $('ganttTree').closest('.gantt2-body').classList.toggle('pri-active', PRI_MODE);
 
-  const marks=buildRulerMarks(minD,maxD,GS.scale,GS.pxPerDay);
-  $('ganttRuler').style.width=totalPx+'px';
-  $('ganttRuler').innerHTML=marks.map(m=>`<div class="gantt2-ruler-mark" style="left:${m.x}px">${m.label}</div>`).join('');
+  drawRuler(minD,maxD,totalPx,xOf,gv.sprints);
 
   const CMP=(GS.baseline!=='' && GS.cmp && !PRI_MODE) ? GS.cmp : null;
 
@@ -836,7 +1049,7 @@ function renderGanttV2(){
       // без бара, а не рисуем мусорную позицию на эпохе 1970 года.
       return `<div class="gantt2-row" style="color:var(--mute);font-size:9px;padding-left:8px">нет дат</div>`;
     }
-    const color=ROLE_COLOR[node.role]||'#7f8fa6';
+    const color=node.type==='scenario'?SCENARIO_COLOR:(ROLE_COLOR[node.role]||'#7f8fa6');
     const x=xOf(node.start), w=widthOf(node.start,node.end);
     const est=node.estimateH||0, spent=node.spentH||0;
     const progress=est?Math.min(100,Math.round(spent/est*100)):0;
@@ -881,15 +1094,7 @@ function renderGanttV2(){
   if(PRI_MODE) attachDragHandlers();
 
   const overlayH=rows.length*26;
-  const today=new Date(), todayX=xOf(today.toISOString().slice(0,10));
-  if(GS.showToday && todayX>=0 && todayX<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-today-line" style="left:${todayX}px;height:${overlayH}px" title="Сегодня"></div>`);
-  const mvpX=xOf('2026-12-10');
-  if(GS.showMilestone && mvpX>=0 && mvpX<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-milestone-line" style="left:${mvpX}px;height:${overlayH}px" title="Веха MVP 10.12.2026"></div>`);
-  if(GS.showHires) (gv.resources||[]).forEach(r=>{
-    if(!r.from)return;
-    const hx=xOf(r.from);
-    if(hx>=0 && hx<=totalPx) $('ganttRows').insertAdjacentHTML('beforeend',`<div class="gantt2-hire-line" style="left:${hx}px;height:${overlayH}px" title="Выход: ${r.name||r.role} (${r.from})"></div>`);
-  });
+  const todayX=drawOverlays(gv, xOf, totalPx, overlayH);
 
   // Первая отрисовка после загрузки данных — прокручиваем таймлайн так, чтобы
   // линия "сегодня" сразу была в видимой области (не за краем экрана).
@@ -911,6 +1116,8 @@ function renderGanttV2(){
     `<span><span class="sw" style="background:#00d4ff"></span>сегодня</span>`+
     `<span><span class="sw" style="background:#9b59b6"></span>веха 10.12.2026</span>`+
     `<span><span class="sw" style="background:var(--blue)"></span>выход сотрудника (наём/старт)</span>`+
+    (GS.view==='scenarios'?`<span><span class="g2-type-icon">${TYPE_ICON.scenario}</span> Сценарий</span>`:'')+
+    `<span><span class="sw" style="border:1px dashed var(--mute);background:transparent"></span>отсечка спринта (2 нед.)</span>`+
     `<span><span class="sw" style="background:#2ecc71"></span>идёт списание времени</span>`+
     `<span><span class="sw" style="background:#e74c3c"></span>⚠ списано больше оценки</span>`;
 
@@ -988,8 +1195,23 @@ document.querySelectorAll('.gantt2-toolbar-group button[data-scale]').forEach(bt
 $('zoomIn').onclick=()=>zoomTo(GS.pxPerDay+2);
 $('zoomOut').onclick=()=>zoomTo(GS.pxPerDay-2);
 $('levelFilter').onchange=e=>{ GS.level=e.target.value; renderGanttV2(); };
+$('viewMode').onchange=e=>{
+  if(PRI_MODE && e.target.value!=='epics') togglePriorityMode();
+  GS.view=e.target.value; GS._scrolledToToday=false;
+  // В режиме сценариев сразу раскрываем сценарии (до стори), иначе видна только плашка.
+  if(GS.view==='scenarios') (CURRENT_DATA.ganttV2.scenarios||[]).forEach(s=>GS.expanded.add('SC:'+s.code));
+  try{ localStorage.setItem('g2-view', GS.view); }catch(_){}
+  renderGanttV2();
+};
+$('lineSprints').onchange=e=>{ GS.showSprints=e.target.checked; renderGanttV2(); };
 $('expandSelect').onchange=e=>{
   const v=e.target.value;
+  if(GS.view==='scenarios' && GS._tree){
+    if(v==='all') treeExpandableKeys(GS._tree).forEach(k=>GS.expanded.add(k));
+    else if(v==='epics'){ GS.expanded.clear(); GS._tree.forEach(n=>GS.expanded.add(n.key)); }
+    else if(v==='collapse') GS.expanded.clear();
+    e.target.selectedIndex=0; renderGanttV2(); return;
+  }
   if(v==='all') allExpandableKeys(LAST_ITEMS).forEach(k=>GS.expanded.add(k));
   else if(v==='epics'){
     GS.expanded.clear();
@@ -1029,6 +1251,9 @@ AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   document.getElementById('upd').textContent=d.updated||'—';
   CURRENT_DATA=d;
+  // Последний выбранный вид — удобство на одного зрителя (может не сохраниться).
+  try{ const v=localStorage.getItem('g2-view'); if(v && ['epics','scenarios','stages'].includes(v) && (v==='epics' || (d.ganttV2&&d.ganttV2.scenarios||[]).length)){ GS.view=v; $('viewMode').value=v;
+    if(v==='scenarios') (d.ganttV2.scenarios||[]).forEach(s=>GS.expanded.add('SC:'+s.code)); } }catch(_){}
   renderGanttV2();
 }).catch(showFetchError);
 });
