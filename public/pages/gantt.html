@@ -913,7 +913,7 @@ function renderStages(gv, data){
       let fc='';
       if(st.category!=='done' && st.end>todayISO){ const l=Math.max(0, Math.min(w, todayX-x)); fc=`<div class="g2-fc" style="left:${l}px"></div>`; }
       const stLbl={done:'готово',in_progress:'в работе',backlog:'не начат'}[st.category]||st.category;
-      const tip=`<strong>${esc(sc.code)} · ${esc(st.name)}</strong>${esc(sc.name)}<div style="margin-top:5px;font-size:10px">${ddmm(st.start)} → ${ddmm(st.end)} · ${spName(st.startSprint)}${st.endSprint!==st.startSprint?'–'+spName(st.endSprint):''}</div><div style="font-size:10px">Часы: ${st.doneH} из ${st.estimateH} ч готово · задач ${st.tasksDone}/${st.tasks}</div><div style="font-size:10px;color:var(--mute)">Статус этапа: ${stLbl}${st.end>todayISO&&st.category!=='done'?' · после сегодня — прогноз':''}</div>`;
+      const tip=`<strong>${esc(sc.code)} · ${esc(st.name)}</strong>${esc(sc.name)}<div style="margin-top:5px;font-size:10px">${ddmm(st.start)} → ${ddmm(st.end)} · ${spName(st.startSprint)}${st.endSprint!==st.startSprint?'–'+spName(st.endSprint):''}</div><div style="font-size:10px">Часы: ${st.doneH} из ${st.estimateH} ч готово · задач ${st.tasksDone}/${st.tasks}</div>${st.id==='QA'&&st.embeddedQaH?`<div style="font-size:10px">в т.ч. ${st.embeddedQaH} ч — 35% оценки задач Фронт/Бэк${st.embeddedQaH<st.estimateH?`, ${st.estimateH-st.embeddedQaH} ч — отдельные задачи [QA]`:''}</div>`:''}${(st.id==='FE'||st.id==='BE')?`<div style="font-size:10px;color:var(--mute)">разработка = 65% оценки и срока задач, остальные 35% — QA</div>`:''}<div style="font-size:10px;color:var(--mute)">Статус этапа: ${stLbl}${st.end>todayISO&&st.category!=='done'?' · после сегодня — прогноз':''}</div>`;
       // Подпись — у линии «сегодня», если этап её пересекает (начало длинных
       // этапов часто за левым краем экрана), иначе — в начале полосы.
       const off=(st.start<todayISO && st.end>todayISO) ? Math.max(0, todayX-x)+2 : 0;
@@ -946,8 +946,9 @@ function renderStages(gv, data){
   const missTxt=Object.entries(missCnt).map(([id,n])=>`${STAGE_NAME[id]} — у ${n}`).join(', ');
   assumEl.innerHTML=`<div>🧭 <b>Этапы сценариев:</b> ${withT} сценариев с задачами, из них к вехе MVP 10.12.2026 по прогнозу не успевают <b style="color:var(--err)">${late}</b>.</div>
     <ul class="assum-list">
-      ${missTxt?`<li style="color:var(--err)"><b>Обязательные этапы (Аналитика, Бэк, QA) без задач в Jira:</b> ${missTxt} из ${withT} сценариев. Они показаны красной пунктирной плашкой «нет задач»; прогноз готовности их не учитывает, поэтому по этим сценариям он оптимистичен. Дизайн и Фронт — опциональны.</li>`:''}
-      <li>Этап = задачи сценария с ролью: Аналитика — [BA] и [ARC], Дизайн — [DS], Бэк — [BE], Фронт — [FE], QA — [QA]; [ORG]/[DVO] в этапы не входят.</li>
+      ${missTxt?`<li style="color:var(--err)"><b>Обязательные этапы (Аналитика, Бэк, QA) без задач в Jira:</b> ${missTxt} из ${withT} сценариев (QA считается есть, если есть задачи Фронта или Бэка). Они показаны красной пунктирной плашкой «нет задач»; прогноз готовности их не учитывает, поэтому по этим сценариям он оптимистичен. Дизайн и Фронт — опциональны.</li>`:''}
+      <li>Этап = задачи сценария с ролью: Аналитика — [BA] и [ARC], Дизайн — [DS], Бэк — [BE], Фронт — [FE]; [ORG]/[DVO] в этапы не входят.</li>
+      <li><b>QA встроен в задачи Фронта и Бэка:</b> последние 35% оценки и срока каждой задачи [FE]/[BE] — тестирование (после реализации задача сама уходит на QA), первые 65% — разработка. Статус «Ready for testing»/«Тестирование» = разработка готова, идёт QA. Отдельные задачи [QA], если есть, добавляются к этапу QA.</li>
       <li>Начало/конец этапа — от самой ранней до самой поздней задачи этой роли во всех стори сценария. Прошлое — факт из Jira (завершённые в закрытом спринте — по дате конца спринта), будущее — прогноз того же планировщика, что и основной гант.</li>
       <li>«Сейчас» — этапы, где есть задачи в работе; если таких нет — следующий незавершённый этап. «→ С№» — спринт, в котором по прогнозу закончится последняя задача сценария.</li>
       <li>Спринты по 2 недели: Спринт 4 = 20.10–03.11.2026, Спринт 0 = 25.08–08.09.2026.</li>
