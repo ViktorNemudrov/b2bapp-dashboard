@@ -91,6 +91,21 @@ ROLE_DEPS = {"BA": (), "ARC": ("BA",), "DS": ("BA", "ARC"), "BE": ("BA", "ARC"),
 ROLE_PHASE = {"BA": 0, "ARC": 1, "DS": 2, "BE": 2, "FE": 3, "QA": 4}
 PARALLEL_ROLES = {"ORG", "DVO", "OTHER"}  # не встраиваются в фазовую цепочку
 
+# Спринты (Виктор 20.10.2026): каждый спринт ровно 2 недели, и в прошлом, и в
+# будущем; Спринт 4 = 20.10.2026–03.11.2026, отсюда Спринт 0 = 25.08–08.09.
+# Даты из Jira не берём: у будущих спринтов их нет, у закрытых они «грязные»
+# (Спринт 0 в Jira 01.01–06.09, Спринт 1 закрыт 22.09 при плане 22.06).
+SPRINT_ANCHOR = date(2026, 8, 25)   # начало Спринта 0
+SPRINT_DAYS = 14
+SPRINT_NAME_RE = re.compile(r"Спринт\s*(\d+)", re.I)
+
+# Этапы сценария для упрощённого вида (роль задачи → этап). ARC относится к
+# аналитике; ORG/DVO/OTHER в этапы не входят (Виктор 20.10.2026).
+STAGES = (("AN", "Аналитика"), ("DS", "Дизайн"), ("BE", "Бэк"), ("FE", "Фронт"), ("QA", "QA"))
+ROLE_STAGE = {"BA": "AN", "ARC": "AN", "DS": "DS", "BE": "BE", "FE": "FE", "QA": "QA"}
+SCENARIO_PREFIX_RE = re.compile(r"^\s*(?:\d+\.\s*)?((?:MD|OB|RB|PL|PK)\d+|NAI|IB|B2C)[.\s]")
+SCENARIO_LABEL_RE = re.compile(r"^(?:MD|OB|RB|PL|PK)\d+$")
+
 # ─────────────────────────────────────────────────────────────────────────────
 #  Календарные помощники
 # ─────────────────────────────────────────────────────────────────────────────
@@ -121,6 +136,40 @@ def workdays_between(a: date, b: date):
     while d <= b:
         yield d
         d = next_workday(d + timedelta(days=1))
+
+def sprint_start(n: int) -> date:
+    return SPRINT_ANCHOR + timedelta(days=SPRINT_DAYS * n)
+
+def sprint_end(n: int) -> date:
+    """Последний день спринта = день старта следующего (20.10–03.11 — так
+    называет даты Виктор), поэтому граница принадлежит обоим соседям."""
+    return sprint_start(n + 1)
+
+def sprint_of_date(d: date) -> int:
+    """В каком спринте закончится работа с датой окончания d (граница —
+    в уходящий спринт: 20.10 = последний день Спринта 3). До Спринта 0 → -1."""
+    if d <= SPRINT_ANCHOR:
+        return -1
+    return ((d - SPRINT_ANCHOR).days - 1) // SPRINT_DAYS
+
+def sprint_calendar(until: date, today: date, jira_sprints):
+    """Спринты 0..N, пока не покроют until. state по today (closed/active/
+    future); jiraState — как в Jira, для справки."""
+    jira_by_n = {}
+    for s in jira_sprints or []:
+        m = SPRINT_NAME_RE.search(s.get("name") or "")
+        if m:
+            jira_by_n[int(m.group(1))] = s
+    last = max(sprint_of_date(until), max(jira_by_n, default=0), sprint_of_date(today))
+    out = []
+    for n in range(0, last + 1):
+        st, en = sprint_start(n), sprint_end(n)
+        state = "closed" if en <= today else ("active" if st <= today else "future")
+        js = jira_by_n.get(n) or {}
+        out.append({"n": n, "name": f"Спринт {n}", "short": f"С{n}",
+                    "start": st.isoformat(), "end": en.isoformat(), "state": state,
+                    **({"jiraState": js.get("state"), "jiraId": js.get("id")} if js else {})})
+    return out
 
 def month_normhours(year: int, month: int) -> int:
     """Норма рабочих часов месяца по производственному календарю РФ."""
@@ -214,10 +263,24 @@ def normalize_issue(raw):
             inw = lk.get("inwardIssue")
             if inw and t.get("inward", "").lower().startswith(("is blocked", "блок")):
                 blocks_deps.append(inw.get("key"))
+    # Спринты задачи (customfield_10905, в дампе — разобранный список sprints[]).
+    # closedSprint — номер последнего ЗАКРЫТОГО в Jira спринта задачи: в нём она
+    # и «завершилась» (незакрытые задачи переезжают в следующий спринт и
+    # закрытый остаётся в истории). lastSprint — последний вообще.
+    sprint_nums, closed_nums = [], []
+    for s in f.get("sprints") or []:
+        m = SPRINT_NAME_RE.search(s.get("name") or "")
+        if not m:
+            continue
+        sprint_nums.append(int(m.group(1)))
+        if (s.get("state") or "").upper() == "CLOSED":
+            closed_nums.append(int(m.group(1)))
     return {
         "key": raw.get("key"),
         "type": itype,
         "summary": summary,
+        "lastSprint": max(sprint_nums) if sprint_nums else None,
+        "closedSprint": max(closed_nums) if closed_nums else None,
         "status": (f.get("status") or {}).get("name", ""),
         "assignee": assignee.get("name") or assignee.get("key") or "",
         "created": parse_dt(f.get("created")),
@@ -419,6 +482,15 @@ def plan_gantt(issues, resources, today=None):
     def schedule_one(t, role, cat, st_key, phase):
         if cat == "done":
             end = t["resolutiondate"] or t["updated"] or t["startDate"] or t["created"] or date(2026, 1, 1)
+            # Завершённая задача из закрытого спринта заканчивается датой окончания
+            # этого спринта (Виктор 20.10.2026), в т.ч. «Waiting for release» —
+            # для нас это готово. Без закрытого спринта — resolutiondate, как раньше.
+            # Исключение: закрыта ДО начала этого спринта по нашему календарю
+            # (Спринт 0 в Jira шёл с 01.01 и собрал работу, сделанную ещё в
+            # июне–июле) — оставляем фактическую дату, иначе история искажается.
+            n = t.get("closedSprint")
+            if n is not None and t.get("lastSprint") == n and end >= sprint_start(n):
+                end = sprint_end(n)
             start = min(t["startDate"] or t["created"] or end, end)
             res = pick_resource(role, start)
         else:
@@ -522,6 +594,11 @@ def plan_gantt(issues, resources, today=None):
             "resource": p["resource"], "onCriticalPath": False,
             "deps": t["blocksDeps"], "orphan": True,
         })
+    # Спринт задачи (для подписи/фильтра на ганте): последний спринт в Jira.
+    for it in items:
+        src = by_key.get(it["key"]) or {}
+        if src.get("lastSprint") is not None:
+            it["sprint"] = src["lastSprint"]
     # стори (агрегат из их задач)
     for sk in mvp_story_keys:
         s = stories[sk]
@@ -689,6 +766,116 @@ def calc_status_counters(all_issues):
 # ─────────────────────────────────────────────────────────────────────────────
 #  Самопроверки (ассерты) — из §3.1/§3.2 скилла, теперь как КОД
 # ─────────────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+#  Сценарии (реестр Confluence 2356754448, запрос Виктора 20.10.2026)
+# ─────────────────────────────────────────────────────────────────────────────
+def load_scenarios(path):
+    if not path or not os.path.exists(path):
+        return None
+    return json.load(open(path, encoding="utf-8"))
+
+def assign_scenarios(items, issues, reg):
+    """Каждой стори — ровно один сценарий; задача наследует сценарий стори.
+    Источник по убыванию надёжности: метка Jira (OB1, PL9…) → префикс названия
+    («PK1. Как…») → таблица «Структура и оценка» реестра → ручная логическая
+    привязка storyOverrides → PLATFORM. Задачи-сироты (без стори) → PLATFORM."""
+    known = {s["code"] for s in reg["scenarios"]}
+    by_key = {i["key"]: i for i in issues}
+    conf = reg.get("confluenceStories") or {}
+    over = reg.get("storyOverrides") or {}
+    story_sc = {}
+    for it in items:
+        if it["type"] != "story":
+            continue
+        src = by_key.get(it["key"]) or {}
+        code, how = None, None
+        labels = [l for l in (src.get("labels") or []) if SCENARIO_LABEL_RE.match(l) and l in known]
+        if labels:
+            code, how = labels[0], "метка Jira"
+        if not code:
+            m = SCENARIO_PREFIX_RE.match(src.get("summary") or "")
+            if m and m.group(1) in known:
+                code, how = m.group(1), "префикс названия"
+        if not code:
+            cands = [c for c in conf.get(it["key"], []) if c in known]
+            if cands:
+                code, how = cands[0], "реестр Confluence"
+        if not code and it["key"] in over and over[it["key"]]["code"] in known:
+            code, how = over[it["key"]]["code"], "логическая привязка: " + over[it["key"]]["why"]
+        if not code:
+            code, how = "PLATFORM", "не привязана — по умолчанию в «Платформу»"
+        it["scenario"], it["scenarioSource"] = code, how
+        story_sc[it["key"]] = code
+    for it in items:
+        if it["type"] == "task":
+            it["scenario"] = story_sc.get(it["parent"], "PLATFORM")
+
+def calc_scenarios(items, reg, today):
+    """Агрегат по сценарию + этапы (Аналитика/Дизайн/Бэк/Фронт/QA) для
+    упрощённого вида. Прошлое — факт, будущее — прогноз планировщика (даты
+    задач уже посчитаны в plan_gantt). Фронт только рисует."""
+    tasks = [it for it in items if it["type"] == "task"]
+    stories = [it for it in items if it["type"] == "story"]
+    out = []
+    for s in reg["scenarios"]:
+        code = s["code"]
+        kt = [t for t in tasks if t.get("scenario") == code]
+        ks = [st["key"] for st in stories if st.get("scenario") == code]
+        if not kt and not ks:
+            out.append({**{k: s.get(k) for k in ("order", "contour", "code", "name", "priority", "epic")},
+                        "registryStatus": s.get("status"), "stories": [], "tasks": 0,
+                        "estimateH": 0, "spentH": 0, "category": "empty", "stages": [],
+                        "current": "нет задач в Jira"})
+            continue
+        timed = [t for t in kt if t.get("start") and t.get("end")]
+        cat = ("done" if kt and all(t["category"] == "done" for t in kt) else
+               "in_progress" if any(t["category"] != "backlog" or t.get("started") for t in kt) else "backlog")
+        stages = []
+        for sid, sname in STAGES:
+            st_t = [t for t in timed if ROLE_STAGE.get(t["role"]) == sid]
+            if not st_t:
+                continue
+            est = sum(t["estimateH"] for t in st_t)
+            done_h = sum(t["estimateH"] for t in st_t if t["category"] == "done")
+            scat = ("done" if all(t["category"] == "done" for t in st_t) else
+                    "in_progress" if any(t["category"] == "in_progress" or (t.get("started") and t["category"] != "done") for t in st_t)
+                    else "backlog")
+            start = min(t["start"] for t in st_t)
+            end = max(t["end"] for t in st_t)
+            end_sp = sprint_of_date(date.fromisoformat(end))
+            # День-граница (20.10) — и начало С4, и конец С3: не даём началу
+            # этапа оказаться в спринте позже его конца.
+            start_sp = min(sprint_of_date(date.fromisoformat(start) + timedelta(days=1)), end_sp)
+            stages.append({"id": sid, "name": sname, "start": start, "end": end,
+                           "estimateH": est, "doneH": done_h, "tasks": len(st_t),
+                           "tasksDone": sum(1 for t in st_t if t["category"] == "done"),
+                           "category": scat, "startSprint": start_sp, "endSprint": end_sp})
+        active = [st["name"] for st in stages if st["category"] == "in_progress"]
+        if cat == "done":
+            current = "Готово"
+        elif active:
+            current = ", ".join(active)
+        else:
+            nxt = next((st["name"] for st in stages if st["category"] != "done"), None)
+            current = f"ожидает: {nxt}" if nxt else "—"
+        end = max((t["end"] for t in timed), default=None)
+        start = min((t["start"] for t in timed), default=None)
+        end_d = date.fromisoformat(end) if end else None
+        out.append({
+            **{k: s.get(k) for k in ("order", "contour", "code", "name", "priority", "epic")},
+            "registryStatus": s.get("status"),
+            "stories": ks, "tasks": len(kt),
+            "tasksDone": sum(1 for t in kt if t["category"] == "done"),
+            "estimateH": sum(t["estimateH"] for t in kt),
+            "spentH": sum(t["spentH"] for t in kt),
+            "start": start, "end": end, "category": cat,
+            "onCriticalPath": any(t.get("onCriticalPath") for t in kt),
+            "stages": stages, "current": current,
+            "readySprint": sprint_of_date(end_d) if end_d else None,
+            "onTime": bool(end_d and end_d <= DEADLINE),
+        })
+    return out
+
 def self_checks(items, gv2, mvp_scope, resource_plan, epic_progress):
     errs = []
     types = Counter(it["type"] for it in items)
@@ -777,6 +964,17 @@ def run_gantt(args):
     resources = [r for r in build_resources(team, issues) if not r.get("vacant")]
     items, end_date, crit_res, mvp_story_keys, orphan_report = plan_gantt(issues, resources, today)
 
+    # Сценарии и спринты (20.10.2026): привязка стори/задач к сценариям реестра,
+    # агрегаты этапов и календарь спринтов для отсечек на ганте.
+    reg = load_scenarios(args.scenarios)
+    scenarios = []
+    if reg:
+        assign_scenarios(items, issues, reg)
+        scenarios = calc_scenarios(items, reg, today)
+    raw_dump = json.load(open(args.jira, encoding="utf-8"))
+    jira_sprints = raw_dump.get("sprints") if isinstance(raw_dump, dict) else None
+    sprints = sprint_calendar(max(end_date or today, DEADLINE), today, jira_sprints)
+
     mvp_scope = calc_mvp_scope(items)
     resource_plan = calc_resource_plan(items, resources)
     epic_progress = calc_epic_progress(items)
@@ -802,6 +1000,8 @@ def run_gantt(args):
         "workCalendar": {"holidays": sorted(HOLIDAYS), "hoursPerDay": HOURS_PER_DAY},
         "resources": resources,
         "items": items,
+        "sprints": sprints,
+        "scenarios": scenarios,
         "mvpScope": mvp_scope,
         "criticalPathExplained": {
             "method": "Критический путь = цепочка задач до max(end) по ресурсу-хвосту.",
@@ -968,6 +1168,12 @@ def run_gantt(args):
     print(f"  Ресурсов: {len(resources)} (реальных {sum(1 for r in resources if not r['vacant'])}, "
           f"вакансий {sum(1 for r in resources if r['vacant'])})")
     print(f"  scopeGrowth точек: {len(sg)}, baselines: {len(bl)}")
+    act = next((s for s in sprints if s["state"] == "active"), None)
+    print(f"  Спринтов в календаре: {len(sprints)}; текущий: {act['name'] + ' ' + act['start'] + '–' + act['end'] if act else '—'}")
+    if scenarios:
+        by_src = Counter((it.get("scenarioSource") or "").split(":")[0] for it in items if it["type"] == "story")
+        print(f"  Сценариев: {len(scenarios)} (с задачами {sum(1 for s in scenarios if s['tasks'])}); "
+              f"привязка стори: {dict(by_src)}")
     if orphan_report:
         orphan_h = sum(o["estimateH"] for o in orphan_report)
         print(f"  ⚠ Задач-сирот (без Part-связи на стори, запланированы напрямую под эпик): "
@@ -980,6 +1186,8 @@ def main():
     ap.add_argument("--jira")
     ap.add_argument("--team")
     ap.add_argument("--confluence")
+    ap.add_argument("--scenarios", default="scenarios.json",
+                    help="реестр сценариев (Confluence 2356754448) + привязки стори")
     ap.add_argument("--usm-patch")
     ap.add_argument("--data", required=True, help="текущий public/data/data.json (для мёржа)")
     ap.add_argument("--out", required=True, help="куда писать (можно тот же файл)")
