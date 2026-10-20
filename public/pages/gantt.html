@@ -36,8 +36,8 @@
 .gantt2-bar-fill{position:absolute;left:0;top:0;bottom:0}
 .gantt2-bar-name{position:absolute;left:4px;top:0;bottom:0;display:flex;align-items:center;font-size:9px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7);white-space:nowrap;pointer-events:none;z-index:1;max-width:100%;overflow:hidden}
 .gantt2-bar.g2-planned{opacity:.55}
-.gantt2-bar.g2-inprogress{outline:1px dashed rgba(255,255,255,.6);animation:g2pulse 2s infinite}
-@keyframes g2pulse{0%,100%{outline-color:rgba(255,255,255,.25)}50%{outline-color:rgba(255,255,255,.85)}}
+/* «В работе» — статичный пунктирный контур (пульсация убрана по просьбе Виктора 20.10.2026). */
+.gantt2-bar.g2-inprogress{outline:1px dashed rgba(255,255,255,.6)}
 .gantt2-bar.g2-crit{outline:2px solid var(--err)}
 .gantt2-bar.g2-overspent{box-shadow:0 0 0 2px var(--err) inset}
 .gantt2-bar.g2-overspent::after{content:'⚠';position:absolute;right:2px;top:50%;transform:translateY(-50%);font-size:10px;z-index:2}
@@ -132,6 +132,8 @@ body.light-theme .gantt2-sprint-shade{background:rgba(26,41,64,.04)}
 .g2-ready{font-size:9px;font-weight:800;white-space:nowrap;padding:0 4px;border-radius:6px}
 .g2-ready.ok{color:var(--ok);background:rgba(46,204,113,.12)}.g2-ready.late{color:var(--err);background:rgba(231,76,60,.12)}
 .gantt2-toolbar-group.g2-off{opacity:.35;pointer-events:none}
+.g2-miss{position:absolute;height:9px;box-sizing:border-box;border:1px dashed var(--err);border-radius:2px;background:rgba(231,76,60,.10);color:var(--err);font-size:7.5px;font-weight:800;line-height:7px;padding:0 4px;white-space:nowrap;cursor:default}
+.g2-miss-note{font-size:9px;font-weight:800;color:var(--err);white-space:nowrap}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -248,6 +250,7 @@ const TYPE_ICON={
 };
 const SCENARIO_COLOR='#c2647a';
 // Этапы упрощённого вида: цвет = цвет роли, у каждого этапа своя дорожка в строке.
+const STAGE_NAME={AN:'Аналитика',DS:'Дизайн',BE:'Бэк',FE:'Фронт',QA:'QA'};
 const STAGE_META={AN:{c:ROLE_COLOR.BA,s:'Ан',lane:0},DS:{c:ROLE_COLOR.DS,s:'Диз',lane:1},BE:{c:ROLE_COLOR.BE,s:'Бэк',lane:2},FE:{c:ROLE_COLOR.FE,s:'Фр',lane:3},QA:{c:ROLE_COLOR.QA,s:'QA',lane:4}};
 const SCALE_PX={week:26,month:6,quarter:2};
 const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',cmp:null,onlyChanged:false,resourceFilter:'',_scrolledToToday:false,
@@ -890,11 +893,11 @@ function renderStages(gv, data){
 
   $('ganttTree').innerHTML=rows.map(r=>{
     if(r.group) return `<div class="gantt2-row g2-group"><div class="gantt2-label">${esc(r.group)}</div></div>`;
-    const sc=r.sc, pcls=(sc.priority||'').toLowerCase();
+    const sc=r.sc, pcls=(sc.priority||'').toLowerCase(), miss=sc.missingStages||[];
     const ready=sc.readySprint!=null ? `<span class="g2-ready ${sc.onTime?'ok':'late'}" title="Окончание по прогнозу: ${ddmm(sc.end)}.${(sc.end||'').slice(0,4)}${sc.onTime?' — до вехи MVP 10.12':' — ПОСЛЕ вехи MVP 10.12'}">→ ${spName(sc.readySprint)} (${ddmm(sc.end)})</span>` : '';
     return `<div class="gantt2-row g2-tall"><div class="gantt2-label" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;line-height:1.15" title="${esc(sc.code+' · '+sc.name)}">
       <div style="display:flex;gap:4px;align-items:center;max-width:100%;overflow:hidden"><span class="g2-sc-chip ${pcls}">${esc(sc.code)}</span><span style="overflow:hidden;text-overflow:ellipsis">${esc(sc.name)}</span></div>
-      <div style="display:flex;gap:6px;align-items:center;padding-left:2px"><span class="g2-now">${esc(sc.current)}</span>${ready}</div></div></div>`;
+      <div style="display:flex;gap:6px;align-items:center;padding-left:2px"><span class="g2-now">${esc(sc.current)}</span>${ready}${miss.length&&sc.tasks?`<span class="g2-miss-note" title="Обязательные этапы без задач в Jira — прогноз готовности без них оптимистичен">⚠ нет: ${miss.map(id=>STAGE_NAME[id]).join(', ')}</span>`:''}</div></div></div>`;
   }).join('');
 
   drawRuler(minD,maxD,totalPx,xOf,gv.sprints);
@@ -916,6 +919,12 @@ function renderStages(gv, data){
       const off=(st.start<todayISO && st.end>todayISO) ? Math.max(0, todayX-x)+2 : 0;
       const room=w-off;
       return `<div class="g2-stage lane${m.lane} st-${st.category}" style="left:${x}px;width:${w}px;background:${m.c}" data-tip-html="${esc(tip)}">${fc}<span style="margin-left:${off}px">${room>22?m.s:''}${st.category==='done'&&room>34?' ✓':''}</span></div>`;
+    }).join('')+(sc.missingStages||[]).map(id=>{
+      // Обязательный этап без задач в Jira — красная пунктирная плашка в его
+      // (пустой) дорожке у линии «сегодня», чтобы была видна без прокрутки.
+      const m=STAGE_META[id], x=todayX+6;
+      const tip=`<strong>${esc(sc.code)} · ${STAGE_NAME[id]}: нет задач в Jira</strong>Этап обязателен для каждого сценария, но задач с ролью ${id==='AN'?'[BA]/[ARC]':'['+id+']'} в стори сценария нет. В прогноз готовности «→ ${spName(sc.readySprint)}» этот этап не входит — реальная дата будет позже.`;
+      return `<div class="g2-miss lane${m.lane}" style="left:${x}px;top:${1+m.lane*10}px" data-tip-html="${esc(tip)}">нет задач: ${STAGE_NAME[id]}</div>`;
     }).join('')+'</div>';
   }).join('');
   const overlayH=rows.reduce((s,r)=>s+(r.group?26:52),0);
@@ -927,13 +936,17 @@ function renderStages(gv, data){
   legend.innerHTML=Object.entries(STAGE_META).map(([id,m])=>`<span><span class="sw" style="background:${m.c}"></span>${({AN:'Аналитика (BA+ARC)',DS:'Дизайн',BE:'Бэк',FE:'Фронт',QA:'QA'})[id]}</span>`).join('')+
     `<span style="margin-left:12px"><span class="sw" style="background:#7f8fa6"></span>сплошная — факт/прошлое</span>`+
     `<span><span class="sw" style="background:repeating-linear-gradient(135deg,#7f8fa6 0 3px,#0d1b2a 3px 6px)"></span>штриховка — прогноз</span>`+
+    `<span><span class="sw" style="border:1px dashed var(--err);background:rgba(231,76,60,.1)"></span>обязательный этап без задач в Jira</span>`+
     `<span><span class="sw" style="border:1px dashed var(--mute);background:transparent"></span>отсечка спринта</span>`+
     `<span><span class="sw" style="background:#00d4ff"></span>сегодня</span>`+
     `<span><span class="sw" style="background:#9b59b6"></span>веха 10.12.2026</span>`;
   initGanttTooltip();
   const late=scs.filter(s=>s.readySprint!=null && !s.onTime).length, withT=scs.filter(s=>s.readySprint!=null).length;
+  const missCnt={}; scs.filter(s=>s.tasks).forEach(s=>(s.missingStages||[]).forEach(id=>missCnt[id]=(missCnt[id]||0)+1));
+  const missTxt=Object.entries(missCnt).map(([id,n])=>`${STAGE_NAME[id]} — у ${n}`).join(', ');
   assumEl.innerHTML=`<div>🧭 <b>Этапы сценариев:</b> ${withT} сценариев с задачами, из них к вехе MVP 10.12.2026 по прогнозу не успевают <b style="color:var(--err)">${late}</b>.</div>
     <ul class="assum-list">
+      ${missTxt?`<li style="color:var(--err)"><b>Обязательные этапы (Аналитика, Бэк, QA) без задач в Jira:</b> ${missTxt} из ${withT} сценариев. Они показаны красной пунктирной плашкой «нет задач»; прогноз готовности их не учитывает, поэтому по этим сценариям он оптимистичен. Дизайн и Фронт — опциональны.</li>`:''}
       <li>Этап = задачи сценария с ролью: Аналитика — [BA] и [ARC], Дизайн — [DS], Бэк — [BE], Фронт — [FE], QA — [QA]; [ORG]/[DVO] в этапы не входят.</li>
       <li>Начало/конец этапа — от самой ранней до самой поздней задачи этой роли во всех стори сценария. Прошлое — факт из Jira (завершённые в закрытом спринте — по дате конца спринта), будущее — прогноз того же планировщика, что и основной гант.</li>
       <li>«Сейчас» — этапы, где есть задачи в работе; если таких нет — следующий незавершённый этап. «→ С№» — спринт, в котором по прогнозу закончится последняя задача сценария.</li>
