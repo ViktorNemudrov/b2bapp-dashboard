@@ -27,8 +27,8 @@ const GC = (() => {
   }
 
   const iso = d => d ? String(d).slice(0, 10) : '';
-  const ddmm = s => s ? `${s.slice(8,10)}.${s.slice(5,7)}` : '—';
-  const ddmmyy = s => s ? `${s.slice(8,10)}.${s.slice(5,7)}.${s.slice(0,4)}` : '—';
+  const ddmm = s => s ? `${s.slice(8,10)}.${s.slice(5,7)}.${s.slice(2,4)}` : '—';   // дд.мм.гг
+  const ddmmyy = s => s ? `${s.slice(8,10)}.${s.slice(5,7)}.${s.slice(2,4)}` : '—';
   const h = x => Math.round((x || 0) * 10) / 10;
   const firstName = n => (n || '').split(' ').slice(0, 2).join(' ');
   // 1 задача, 2 задачи, 5 задач

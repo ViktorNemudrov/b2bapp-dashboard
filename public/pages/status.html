@@ -13,7 +13,7 @@
 .st-tab.active{color:var(--text);border-bottom-color:var(--yel);font-weight:700}
 .st-pane{display:none}.st-pane.active{display:block}
 .st-pane h2{font-size:19px;margin:0 0 4px}
-.lead{color:var(--mute);margin:0 0 16px;max-width:960px;font-size:13px}
+.lead{color:var(--mute);margin:0 0 16px;font-size:13px;line-height:1.5}
 .g2c{display:grid;grid-template-columns:1fr 1fr;gap:14px}.g3c{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.g4c{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
 .card h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:8px}
@@ -54,9 +54,12 @@
 .gt td.now{background:rgba(0,212,255,.07)}
 .gbar{display:block;margin:0 3px;border-radius:8px;height:16px;line-height:16px;font-size:10px;font-weight:700;text-align:center;color:#fff}
 .gbar.done{background:var(--ok)}.gbar.work{background:var(--yel)}.gbar.plan{background:#7f8fa6}
-.pill{display:inline-block;border-radius:6px;padding:1px 5px;margin:1px;font-size:9.5px;font-weight:800;color:#fff;white-space:nowrap}
-.pill.late{box-shadow:0 0 0 2px var(--err) inset}
-.pill.nojira{opacity:.5}
+.pill{display:inline-block;border-radius:6px;padding:1px 6px;margin:1px;font-size:10px;font-weight:700;white-space:nowrap}
+.gt tr.done-row td{background:rgba(46,204,113,.08)}
+.t6-ctl{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin:0 0 10px}
+.t6-ctl .t6-lbl{font-size:11px;color:var(--mute);margin-right:2px}
+.t6-ctl button{background:var(--card);border:1px solid var(--line);color:var(--mute);border-radius:14px;padding:3px 11px;font-size:11px;cursor:pointer;font-family:inherit}
+.t6-ctl button.on{border-color:var(--yel);color:var(--yel);background:rgba(255,107,61,.1)}
 .lgd{font-size:12px;color:var(--mute);margin:2px 0 10px;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center}
 .lgd .sw{display:inline-block;width:18px;height:11px;border-radius:3px;vertical-align:middle;margin-right:5px}
 .ptbl{width:100%;border-collapse:collapse;font-size:13px}
@@ -133,13 +136,13 @@
   <div class="card" style="overflow-x:auto">
     <table class="ptbl">
       <tr><th>№</th><th>Позиция</th><th>Грейд</th><th>Статус</th><th>Дата выхода</th><th>Комментарий</th></tr>
-      <tr><td>1</td><td><b>Дизайнер</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>23.03.2026</td><td>—</td></tr>
-      <tr><td>2</td><td><b>Аналитик</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>12.08.2026</td><td>—</td></tr>
-      <tr><td>3</td><td><b>Аналитик</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>01.09.2026</td><td>—</td></tr>
-      <tr><td>4</td><td><b>Бэк</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>24.07.2026</td><td>—</td></tr>
-      <tr><td>5</td><td><b>Бэк</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>04.09.2026</td><td>—</td></tr>
-      <tr><td>6</td><td><b>Фронт</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>27.07.2026</td><td>—</td></tr>
-      <tr><td>7</td><td><b>Тестировщик</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>21.07.2026</td><td>—</td></tr>
+      <tr><td>1</td><td><b>Дизайнер</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>23.03.26</td><td>—</td></tr>
+      <tr><td>2</td><td><b>Аналитик</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>12.08.26</td><td>—</td></tr>
+      <tr><td>3</td><td><b>Аналитик</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>01.09.26</td><td>—</td></tr>
+      <tr><td>4</td><td><b>Бэк</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>24.07.26</td><td>—</td></tr>
+      <tr><td>5</td><td><b>Бэк</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>04.09.26</td><td>—</td></tr>
+      <tr><td>6</td><td><b>Фронт</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>27.07.26</td><td>—</td></tr>
+      <tr><td>7</td><td><b>Тестировщик</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>21.07.26</td><td>—</td></tr>
       <tr><td>8</td><td><b>Фронт</b></td><td><span class="tag">джун</span></td><td><span class="badge badge-warn">○ Не начато</span></td><td>–</td><td>Фриз снят, уточнить возможность старта подбора у HR BP</td></tr>
       <tr><td>9</td><td><b>Тестировщик</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-warn">○ Не начато</span></td><td>–</td><td>Фриз снят, уточнить возможность старта подбора у HR BP</td></tr>
     </table>
@@ -189,12 +192,14 @@
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-const dmy=s=>s?`${s.slice(8,10)}.${s.slice(5,7)}.${s.slice(0,4)}`:'—';
-const dm=s=>s?`${s.slice(8,10)}.${s.slice(5,7)}`:'—';
+const dmy=s=>fmtDate(s), dm=s=>fmtDate(s);   // дд.мм.гг везде (Виктор 26.10.2026)
+// Приглушённая заливка: цвет роли полупрозрачным фоном, текст — тот же цвет,
+// смешанный с цветом текста темы (яркие плашки с белым текстом не читались).
+const softPill=c=>`background:color-mix(in srgb, ${c} 26%, transparent);color:color-mix(in srgb, ${c} 70%, var(--text));border:1px solid color-mix(in srgb, ${c} 55%, transparent)`;
 const DEADLINE='2026-12-10';
 // Цвета ролей — как на ганте; зелёный только «готово» (Завершена / Waiting for release).
 const DONE_GREEN='#2ECC71';
-const STG={AN:['Ан','#E36FA8','Аналитика'],DS:['Диз','#FFC803','Дизайн'],BE:['Бэк','#FF4444','Бэк'],BE1:['Бэк 1','#FF4444','Бек 1 (Попов)'],BE2:['Бэк 2','#B0306A','Бек 2 (Григоркин)'],FE:['Фр','#4472C4','Фронт'],QA:['QA','#ED7D31','QA']};
+const STG={AN:['Аналитика','#E36FA8','Аналитика'],DS:['Дизайн','#FFC803','Дизайн'],BE:['Бэк','#FF4444','Бэк'],BE1:['Бэк 1','#FF4444','Бэк 1 (Попов)'],BE2:['Бэк 2','#B0306A','Бэк 2 (Григоркин)'],FE:['Фронт','#4472C4','Фронт'],QA:['QA','#ED7D31','QA']};
 const CONTOUR_NOTE={
   'Мой день':'Главный экран как срез состояния бизнеса + ежедневный обзор — точка входа в остальные контуры.',
   'Обращения и клиенты':'Ядро дифференциации MVP: звонки → расшифровка/секретарь → извлечённые задачи → напоминания/календарь. Основной риск: запись/расшифровка/секретарь (OB3/OB4) подтверждены пока только для самозанятых — для ИП/ООО тех. конфликт (PFC-1271).',
@@ -211,15 +216,15 @@ try{ const t=localStorage.getItem('st-tab'); const b=t&&document.querySelector(`
 
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   mountFreshness('freshness', d.refreshedAt, d.updated);
-  $('upd').textContent=d.updated||'—';
+  $('upd').textContent=fmtDate(d.updated);
   const g=d.ganttV2||{}, k=d.kpi||{}, m=d.metrics||{}, sp=g.statusPage||{};
   const crit=k.criticalEnd, ok=crit&&crit<=DEADLINE;
   const spBy={}; (g.sprints||[]).forEach(s=>spBy[s.n]=s);
   const cur=spBy[sp.currentSprint], prev=spBy[sp.lastClosedSprint];
-  $('chips').innerHTML=`<span class="st-chip">Срез на <b>${esc(d.updated||'—')}</b></span><span class="st-chip">Старт разработки — <b>авг 2026</b></span><span class="st-chip">Дедлайн MVP — <b>10.12.2026</b></span><span class="st-chip">Прогноз завершения — <b style="color:${ok?'var(--ok)':'var(--err)'}">${dmy(crit)}</b></span>${cur?`<span class="st-chip">Идёт <b>${esc(cur.name)}</b> (${dm(cur.start)}–${dm(cur.end)})</span>`:''}`;
+  $('chips').innerHTML=`<span class="st-chip">Срез на <b>${fmtDate(d.updated)}</b></span><span class="st-chip">Старт разработки — <b>авг 2026</b></span><span class="st-chip">Дедлайн MVP — <b>10.12.26</b></span><span class="st-chip">Прогноз завершения — <b style="color:${ok?'var(--ok)':'var(--err)'}">${dmy(crit)}</b></span>${cur?`<span class="st-chip">Идёт <b>${esc(cur.name)}</b> (${dm(cur.start)}–${dm(cur.end)})</span>`:''}`;
   const critRes=(g.resources||[]).find(r=>r.id===(g.criticalPathExplained||{}).resource);
-  const verdict=ok?`<div class="okbox">Статус по срокам: <b>к дедлайну MVP 10.12.2026 успеваем</b> — критический путь до ${dmy(crit)}.</div>`
-    :`<div class="danger">Статус по срокам: <b>к дедлайну MVP 10.12.2026 не успеваем</b>. Критический путь уходит до <b>${dmy(crit)}</b>${critRes?` (хвост — ${esc(critRes.role)}, ${esc(critRes.name.split(' ')[0])})`:''}. Источник: <a href="gantt.html">диаграмма Ганта</a>.</div>`;
+  const verdict=ok?`<div class="okbox">Статус по срокам: <b>к дедлайну MVP 10.12.26 успеваем</b> — критический путь до ${dmy(crit)}.</div>`
+    :`<div class="danger">Статус по срокам: <b>к дедлайну MVP 10.12.26 не успеваем</b>. Критический путь уходит до <b>${dmy(crit)}</b>${critRes?` (хвост — ${esc(critRes.role)}, ${esc(critRes.name.split(' ')[0])})`:''}. Источник: <a href="gantt.html">диаграмма Ганта</a>.</div>`;
 
   // ── 01 Обзор ──
   const goals=sp.sprintGoals||{}, gBy={}; (goals.sprints||[]).forEach(s=>gBy[s.n]=s);
@@ -232,7 +237,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   const pg=gBy[sp.lastClosedSprint], cg=gBy[sp.currentSprint];
   const cnt=s=>s?Object.entries(s.goals.reduce((a,x)=>(a[x.status]=(a[x.status]||0)+1,a),{})).map(([k,v])=>`${GST[k][1]}: ${v}`).join(' · '):'';
   $('t1body').innerHTML=`<h2>Обзор по проекту</h2>
-    <p class="lead">Общий статус, итоги закрытого спринта и цели текущего, открытые вопросы руководству. Цифры — из Jira на ${esc(d.updated||'—')}; цели спринтов — со страницы «Реализация» в Confluence${gs.version?` (версия ${gs.version} от ${dmy((gs.when||'').slice(0,10))})`:''}.</p>
+    <p class="lead">Общий статус, итоги закрытого спринта и цели текущего, открытые вопросы руководству. Цифры — из Jira на ${fmtDate(d.updated)}; цели спринтов — со страницы «Реализация» в Confluence${gs.version?` (версия ${gs.version} от ${fmtDate(gs.when)})`:''}.</p>
     <div class="g4c" style="margin-bottom:12px">
       <div class="kpi"><div class="l">Эпиков</div><div class="v">${m.epicsTotal??'—'}</div></div>
       <div class="kpi"><div class="l">Стори (сделано/всего)</div><div class="v">${m.storiesDone??'—'} / ${m.storiesTotal??'—'}</div></div>
@@ -295,8 +300,8 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     <div class="gt"><table><colgroup><col style="width:230px">${months.map(()=>'<col>').join('')}</colgroup>
       <tr><th class="lab">Фаза</th>${months.map(x=>`<th>${MN[+x.slice(5)-1]}${x.slice(5)==='01'&&x>'2026-01'?"'"+x.slice(2,4):''}</th>`).join('')}</tr>
       ${PH.map(row).join('')}</table></div>
-    ${ok?`<div class="okbox">Дедлайн MVP — <b>10.12.2026</b>, по критическому пути <b>успеваем</b> (${dmy(crit)}).</div>`
-       :`<div class="danger">Дедлайн MVP — <b>10.12.2026</b>, но по критическому пути <b>не успеваем</b>; прогноз завершения — <b>${dmy(crit)}</b>. Поэтому разработка MVP вытягивается до ${MN[+devEnd.slice(5)-1]} ${devEnd.slice(0,4)}, пилот и коммерческий запуск сдвигаются следом.</div>`}
+    ${ok?`<div class="okbox">Дедлайн MVP — <b>10.12.26</b>, по критическому пути <b>успеваем</b> (${dmy(crit)}).</div>`
+       :`<div class="danger">Дедлайн MVP — <b>10.12.26</b>, но по критическому пути <b>не успеваем</b>; прогноз завершения — <b>${dmy(crit)}</b>. Поэтому разработка MVP вытягивается до ${MN[+devEnd.slice(5)-1]} ${devEnd.slice(0,4)}, пилот и коммерческий запуск сдвигаются следом.</div>`}
     <div class="medals">
       <div class="medal"><span class="num">1</span><span><b>к концу мар '26</b> — разворот на новую стратегию, AI-first</span></div>
       <div class="medal"><span class="num">2</span><span><b>к концу июн '26</b> — утверждена новая стратегия продукта</span></div>
@@ -307,33 +312,63 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
     </div>`;
 
   // ── 06 Дорожная карта по сценариям — «План ручной» по спринтам ──
+  // Цвет этапа (state) посчитан в build_dashboard.py: done/passed — зелёный
+  // (закрыт в Jira, начался следующий этап или сценарий завершён полностью),
+  // иначе — цвет роли. Фильтр роли и сортировка — только отображение.
   const mp=g.manualPlan;
   if(!mp){ $('t6body').innerHTML='<div class="empty">Нет «Плана ручного» в данных.</div>'; return; }
   const sps=(mp.sprints||[]).map(s=>s.n);
   // спринты плана дальше календаря ганта (он кончается на прогнозе) — даты из плана
-  (mp.sprints||[]).forEach(s=>{ if(!spBy[s.n]) spBy[s.n]={n:s.n,start:s.start,end:s.end,state:s.end<=new Date().toISOString().slice(0,10)?'closed':'future'}; });
-  const today=new Date().toISOString().slice(0,10);
-  const jiraOf=(r,sid)=>(r.jira||{})[sid]||((sid==='BE1'||sid==='BE2')?(r.jira||{}).BE:null);
-  let lastC=null, lateCnt=0;
-  const body=mp.rows.map(r=>{
-    let h='';
-    if(r.contour!==lastC){ lastC=r.contour; h+=`<tr><td class="grp" colspan="${sps.length+1}">${esc(r.contour)}</td></tr>`; }
-    h+=`<tr><td class="lab" title="${esc(r.code+' · '+r.name+' · '+r.owner)}"><b style="color:var(--yel)">${esc(r.code)}</b> ${esc(r.name)}</td>`+sps.map(n=>{
-      const s=spBy[n]||{}, sts=(r.cells||{})[n]||[];
-      return `<td${s.state==='active'?' class="now"':''} style="text-align:center">${sts.map(sid=>{
-        const j=jiraOf(r,sid), done=j&&j.category==='done', late=!done&&s.end&&s.end<=today;
-        if(late) lateCnt++;
-        return `<span class="pill${late?' late':''}${j?'':' nojira'}" style="background:${done?DONE_GREEN:STG[sid][1]}" title="${esc(STG[sid][2])}: ${j?({done:'готово',in_progress:'в работе',backlog:'не начат'})[j.category]+` (задач ${j.done}/${j.tasks})`:'в Jira нет задач'}${late?' · срок по плану прошёл':''}">${STG[sid][0]}</span>`;}).join('')}</td>`;}).join('')+'</tr>';
-    return h;}).join('');
+  (mp.sprints||[]).forEach(s=>{ if(!spBy[s.n]) spBy[s.n]={n:s.n,name:'Спринт '+s.n,start:s.start,end:s.end,state:s.end<=new Date().toISOString().slice(0,10)?'closed':'future'}; });
   const src=mp.source||{};
+  const ROLE_F={all:'Все роли',AN:'Аналитика',DS:'Дизайн',BE:'Бэк',FE:'Фронт',QA:'QA'};
+  const PHASE={completed:'Завершены',overdue:'План прошёл, работа не закрыта',now:'Идут сейчас по плану',next:'Впереди'};
+  const T6={role:'all',sort:'registry'};
+  try{ Object.assign(T6, JSON.parse(localStorage.getItem('st-t6')||'{}')); }catch(_){}
+  // Зелёный только в начавшихся спринтах (будущая работа ещё не заведена в Jira) или у завершённого сценария.
+  const isGreen=(r,sid,n)=>r.completed||(n<=sp.currentSprint&&['done','passed'].includes((r.state||{})[sid]));
+  const pill=(r,sid,n)=>{
+    const c=isGreen(r,sid,n)?DONE_GREEN:STG[sid][1], j=(r.jira||{})[sid]||((sid==='BE1'||sid==='BE2')?(r.jira||{}).BE:null);
+    const why={done:r.completed?'сценарий завершён полностью':'закрыт в Jira',passed:'начался следующий этап',active:'в работе',todo:j?'не начат':'в Jira нет задач этапа'}[(r.state||{})[sid]]||'';
+    return `<span class="pill" style="${softPill(c)}" title="${esc(STG[sid][2])}: ${why}${j?` · задач в Jira ${j.done}/${j.tasks}`:''}">${STG[sid][0]}</span>`;
+  };
+  function renderT6(){
+    const roleOk=sid=>T6.role==='all'||sid===T6.role||(T6.role==='BE'&&(sid==='BE1'||sid==='BE2'));
+    let rows=mp.rows.slice(), groupOf;
+    if(T6.sort==='launch'){
+      const ord={completed:0,overdue:1,now:2,next:3};
+      rows.sort((a,b)=>(ord[a.phase]-ord[b.phase])||((a.firstSprint??99)-(b.firstSprint??99))||((a.lastSprint??99)-(b.lastSprint??99)));
+      groupOf=r=>PHASE[r.phase];
+    } else groupOf=r=>r.contour;
+    if(T6.role!=='all') rows=rows.filter(r=>Object.values(r.cells||{}).some(v=>v.some(roleOk)));
+    let lastG=null;
+    const body=rows.map(r=>{
+      let h='';
+      const gname=groupOf(r);
+      if(gname!==lastG){ lastG=gname; h+=`<tr><td class="grp" colspan="${sps.length+1}">${esc(gname)}</td></tr>`; }
+      h+=`<tr${r.completed?' class="done-row"':''}><td class="lab" title="${esc(r.code+' · '+r.name+' · владелец: '+r.owner)}"><b style="color:var(--yel)">${esc(r.code)}</b> ${esc(r.name)}${r.completed?' <span class="tag" style="color:var(--ok)">завершён</span>':''}</td>`+sps.map(n=>{
+        const s=spBy[n]||{}, sts=((r.cells||{})[n]||[]).filter(roleOk);
+        return `<td${s.state==='active'?' class="now"':''} style="text-align:center">${sts.map(sid=>pill(r,sid,n)).join('')}</td>`;}).join('')+'</tr>';
+      return h;}).join('');
+    $('t6grid').innerHTML=`<table style="min-width:${300+sps.length*96}px"><colgroup><col style="width:300px">${sps.map(()=>'<col>').join('')}</colgroup>
+      <tr><th class="lab">Сценарий</th>${sps.map(n=>{const s=spBy[n];return `<th title="${s?fmtDate(s.start)+' – '+fmtDate(s.end):''}">Спринт ${n}<div style="font-weight:400;font-size:9.5px">${s?(n===0?'до '+fmtDate(s.end):fmtDate(s.start)+'–'+fmtDate(s.end)):''}</div></th>`;}).join('')}</tr>
+      ${body||`<tr><td class="lab" colspan="${sps.length+1}">Нет сценариев с этой ролью</td></tr>`}</table>`;
+    document.querySelectorAll('#t6ctl [data-role]').forEach(b=>b.classList.toggle('on',b.dataset.role===T6.role));
+    document.querySelectorAll('#t6ctl [data-sort]').forEach(b=>b.classList.toggle('on',b.dataset.sort===T6.sort));
+    try{ localStorage.setItem('st-t6', JSON.stringify(T6)); }catch(_){}
+  }
   $('t6body').innerHTML=`<h2>Дорожная карта — по сценариям MVP</h2>
-    <p class="lead">План команды по спринтам в разрезе сценариев и ролей — «План ручной» аналитиков (<a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2666206915" target="_blank" rel="noopener">Confluence</a>, версия ${esc(src.version||'—')} от ${dmy((src.when||'').slice(0,10))}). Цвет — роль; <b>зелёный — только этап, готовый по Jira</b> (Завершена / Waiting for release). Интерактивно, по датам — <a href="gantt.html?view=stages">«Этапы по сценариям (упрощённо)» на диаграмме Ганта</a>.</p>
-    <div class="lgd">${['AN','DS','BE1','BE2','FE','QA'].map(id=>`<span><span class="sw" style="background:${STG[id][1]}"></span>${STG[id][2]}</span>`).join('')}<span><span class="sw" style="background:${DONE_GREEN}"></span>готово по Jira</span><span><span class="sw" style="box-shadow:0 0 0 2px var(--err) inset"></span>срок прошёл, этап не закрыт (${lateCnt})</span><span><span class="sw" style="background:#7f8fa6;opacity:.5"></span>в Jira нет задач этапа</span><span><span class="sw" style="background:rgba(0,212,255,.3)"></span>текущий спринт</span></div>
-    <div class="gt"><table style="min-width:${300+sps.length*78}px"><colgroup><col style="width:300px">${sps.map(()=>'<col>').join('')}</colgroup>
-      <tr><th class="lab">Сценарий</th>${sps.map(n=>{const s=spBy[n];return `<th title="${s?dmy(s.start)+' – '+dmy(s.end):''}">С${n}<div style="font-weight:400;font-size:9.5px">${s?(n===0?'до '+dm(s.end):dm(s.start)+'–'+dm(s.end)):''}</div></th>`;}).join('')}</tr>
-      ${body}</table></div>
-    <div class="danger">Срок 1-й задачи «запись↔этикетка» (PFC-1271) по контуру «Обращения и клиенты» (OB3/OB4) — до 1 месяца (~2 спринта); для ИП/ООО сценарии записи/расшифровки пока заблокированы, доступны только самозанятым. ${ok?'':`По критическому пути к дедлайну <b>10.12.2026 не успеваем</b>, прогноз завершения — <b>${dmy(crit)}</b>.`}</div>
+    <p class="lead">План команды по спринтам в разрезе сценариев и ролей — «План ручной» аналитиков (<a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2666206915" target="_blank" rel="noopener">Confluence</a>, версия ${esc(src.version||'—')} от ${fmtDate(src.when)}). Цвет — роль; <b>зелёный — этап пройден</b>: закрыт в Jira (Завершена / Waiting for release) или уже начался следующий этап. Светло-зелёные строки — сценарии, по которым работы завершены полностью. По датам — <a href="gantt.html?view=stages">«Этапы по сценариям (упрощённо)» на диаграмме Ганта</a>.</p>
+    <div class="t6-ctl" id="t6ctl">
+      <span class="t6-lbl">Роль:</span>${Object.entries(ROLE_F).map(([k,v])=>`<button data-role="${k}">${v}</button>`).join('')}
+      <span class="t6-lbl" style="margin-left:14px">Порядок:</span><button data-sort="registry">По контурам реестра</button><button data-sort="launch" title="Завершены → план прошёл, работа не закрыта → идут сейчас → впереди; внутри — по первому спринту плана">По времени запуска</button>
+    </div>
+    <div class="lgd">${['AN','DS','BE1','BE2','FE','QA'].map(id=>`<span><span class="sw" style="${softPill(STG[id][1])}"></span>${STG[id][2]}</span>`).join('')}<span><span class="sw" style="${softPill(DONE_GREEN)}"></span>этап пройден</span><span><span class="sw" style="background:rgba(0,212,255,.3)"></span>текущий спринт</span></div>
+    <div class="gt" id="t6grid"></div>
+    <div class="danger">Срок 1-й задачи «запись↔этикетка» (PFC-1271) по контуру «Обращения и клиенты» (OB3/OB4) — до 1 месяца (~2 спринта); для ИП/ООО сценарии записи/расшифровки пока заблокированы, доступны только самозанятым. ${ok?'':`По критическому пути к дедлайну <b>10.12.26 не успеваем</b>, прогноз завершения — <b>${fmtDate(crit)}</b>.`}</div>
     <div class="warn">Выход в продуктив (E2E-тестирование, пилот, коммерческий запуск) и контрольные точки — на общей дорожной карте (вкладка 05).</div>`;
+  $('t6ctl').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; if(b.dataset.role) T6.role=b.dataset.role; if(b.dataset.sort) T6.sort=b.dataset.sort; renderT6(); });
+  renderT6();
 }).catch(e=>{ $('t1body').innerHTML='<div class="empty">Не удалось загрузить data.json: '+esc(e.message)+'</div>'; });
 </script>
 </body></html>

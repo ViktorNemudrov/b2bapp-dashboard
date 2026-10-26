@@ -15,7 +15,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 <script>
 AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
-  document.getElementById('upd').textContent=d.updated||'—';
+  document.getElementById('upd').textContent=fmtDate(d.updated);
 
 // Состав команды — снимок страницы Confluence «Команда проекта» (data.teamConfluence,
 // обновляется при каждом обновлении дашборда), плюс сколько работы у человека в
@@ -23,7 +23,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 // и было не видно, кто ушёл/кто на вакансии (Виктор 03.10.2026).
 function teamHtml(d){
   const tc=d.teamConfluence; if(!tc||!tc.members) return '';
-  const fmt=s=>s?`${s.slice(8,10)}.${s.slice(5,7)}.${s.slice(0,4)}`:'—';
+  const fmt=fmtDate;
   const items=(d.ganttV2&&d.ganttV2.items)||[], res=(d.ganttV2&&d.ganttV2.resources)||[];
   const two=n=>(n||'').split(' ').slice(0,2).join(' ');
   const resByName={}; res.forEach(r=>resByName[two(r.name)]=r);
@@ -99,7 +99,7 @@ if(!rp.length){
     return 'heat-low';
   }
   const html = `<table class="tbl heatmap-table" id="tbl">
-    <thead><tr><th>Человек</th><th>Роль</th>${months.map(m=>`<th>${m}</th>`).join('')}</tr></thead>
+    <thead><tr><th>Человек</th><th>Роль</th>${months.map(m=>`<th>${['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'][+m.slice(5)-1]} ${m.slice(2,4)}</th>`).join('')}</tr></thead>
     <tbody>${norm.map(r=>`<tr>
       <td style="font-weight:600;color:var(--text)">${r.person}</td>
       <td style="color:var(--mute)">${r.role}</td>
@@ -107,7 +107,7 @@ if(!rp.length){
         // До выхода сотрудника закрытые задачи роли делал предшественник —
         // планировщик раскладывает факт по текущим людям, поэтому такие месяцы
         // показываем как «не в проекте», а не как его загрузку.
-        if(r.from && m<r.from.slice(0,7)) return `<td class="heat-0" title="До выхода в проект (${r.from}); работу роли выполнял предшественник">·</td>`;
+        if(r.from && m<r.from.slice(0,7)) return `<td class="heat-0" title="До выхода в проект (${fmtDate(r.from)}); работу роли выполнял предшественник">·</td>`;
         const v=r.monthly[m];return `<td class="${heatClass(v)}">${v!=null?v+'%':'·'}</td>`;}).join('')}
     </tr>`).join('')}</tbody></table>
   <div style="margin-top:16px;display:flex;gap:12px;font-size:11px">
@@ -122,7 +122,7 @@ if(!rp.length){
   const spSet=new Set(); rp.forEach(r=>(r.sprints||[]).forEach(s=>spSet.add(s.n)));
   const spList=[...spSet].sort((a,b)=>a-b);
   const spHtml=spList.length?`<table class="tbl heatmap-table" id="tblSp">
-    <thead><tr><th>Человек</th><th>Роль</th>${spList.map(n=>{const s=spNames[n];return `<th title="${s?fmt(s.start)+' – '+fmt(s.end):''}">С${n}${s&&s.state==='active'?' ●':''}</th>`;}).join('')}</tr></thead>
+    <thead><tr><th>Человек</th><th>Роль</th>${spList.map(n=>{const s=spNames[n];return `<th title="${s?fmtDate(s.start)+' – '+fmtDate(s.end):''}">Спринт ${n}${s&&s.state==='active'?' ●':''}<div style="font-weight:400;font-size:9px">${s?fmtDate(s.start):''}</div></th>`;}).join('')}</tr></thead>
     <tbody>${rp.map(r=>{const by={};(r.sprints||[]).forEach(s=>by[s.n]=s);return `<tr>
       <td style="font-weight:600;color:var(--text)">${r.name}</td><td style="color:var(--mute)">${r.role}</td>
       ${spList.map(n=>{const s=by[n];return s?`<td class="${heatClass(s.loadPct)}" title="${s.hours} ч из ${s.capacity} ч">${s.loadPct}%<div style="font-size:9px;opacity:.75">${Math.round(s.hours)}/${Math.round(s.capacity)} ч</div></td>`:'<td class="heat-0">·</td>';}).join('')}

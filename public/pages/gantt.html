@@ -5,7 +5,17 @@
 .assum-box b{color:var(--yel)}
 .assum-list{margin:6px 0 0 18px}
 
-.gantt2-toolbar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:14px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.gantt2-toolbar{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.g2-tb-row{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.g2-tb-row+.g2-tb-row{border-top:1px solid var(--line);padding-top:8px}
+.g2-tb-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text);min-width:128px}
+.gantt2-row.g2-mp{height:46px}
+.gantt2-row.g2-mp-done{background:rgba(46,204,113,.08)}
+.g2-mp-bar{position:absolute;top:5px;height:36px;border-radius:7px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.g2-mp-stripe{flex:1;display:flex;align-items:center;padding-left:7px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);white-space:nowrap;overflow:hidden;cursor:default;opacity:.9}
+.g2-mp-stripe+.g2-mp-stripe{border-top:1px solid rgba(13,27,42,.55)}
+.gantt2-hire-tag{position:absolute;font-size:9px;font-weight:700;color:var(--blue);background:var(--card);border:1px solid var(--blue);border-radius:4px;padding:0 4px;white-space:nowrap;z-index:4;pointer-events:none}
+.gantt2-hire-note{position:sticky;left:4px;display:inline-block;font-size:9.5px;color:var(--blue);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:1px 6px;margin:2px 0 0 4px;z-index:4}
 .gantt2-toolbar-group{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mute)}
 .gantt2-toolbar-group select{background:#1e2d3d;border:1px solid var(--line);color:var(--text);border-radius:5px;padding:3px 8px;font-size:11px;max-width:180px}
 .gantt2-toolbar-group button{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--mute);border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer}
@@ -96,7 +106,7 @@ body.g2-fullscreen #ganttApp{position:fixed;inset:0;z-index:9999;background:var(
 .pri-end-date{margin-left:auto;font-weight:700;color:var(--yel);white-space:nowrap}
 /* pri-active сидит на .gantt2-body (общий предок дерева И таймлайна) —
    бары тоже должны выглядеть перетаскиваемыми, не только строки слева
-   (жалоба Виктора 22.09.2026: тянули бар, а не подпись — не работало). */
+   (жалоба Виктора 22.09.26: тянули бар, а не подпись — не работало). */
 .gantt2-body.pri-active .gantt2-tree .gantt2-row{cursor:grab}
 .gantt2-body.pri-active .gantt2-tree .gantt2-row.pri-dragging{opacity:.4}
 .gantt2-body.pri-active .gantt2-tree .gantt2-row.pri-dragover{background:rgba(255,107,61,.18);box-shadow:inset 0 0 0 1px var(--yel)}
@@ -120,23 +130,10 @@ body.light-theme .gantt2-sprint-shade{background:rgba(26,41,64,.04)}
 .gantt2-row.g2-group{background:rgba(127,143,166,.10);font-weight:800}
 .g2-sc-chip{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:15px;padding:0 4px;border-radius:4px;font-size:8.5px;font-weight:800;color:#fff;background:#5b6b8c;flex-shrink:0}
 .g2-sc-chip.p0{background:#c0392b}.g2-sc-chip.p1{background:#d68910}.g2-sc-chip.p2{background:#5b6b8c}
-/* Упрощённый вид «Этапы сценариев»: строка выше, у каждого этапа своя дорожка
-   (по факту этапы часто идут одновременно — в общей дорожке они перекрывались). */
-.gantt2-row.g2-tall{height:52px}
-.g2-stage{position:absolute;height:9px;border-radius:2px;overflow:hidden;font-size:7.5px;line-height:9px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7);display:flex;align-items:center;padding-left:3px;box-sizing:border-box;white-space:nowrap;cursor:default}
-.g2-stage.lane0{top:1px}.g2-stage.lane1{top:11px}.g2-stage.lane2{top:21px}.g2-stage.lane3{top:31px}.g2-stage.lane4{top:41px}.g2-stage.lane5{top:51px}
-.gantt2-row.g2-tall6{height:64px}
-.g2-stage.mp-late{box-shadow:0 0 0 2px var(--err) inset}
-.g2-stage.mp-nojira{opacity:.45}
-.g2-stage .g2-fc{position:absolute;top:0;bottom:0;right:0;background:repeating-linear-gradient(135deg,rgba(13,27,42,.55) 0 3px,transparent 3px 6px)}
-.g2-stage span{position:relative;z-index:1}
-.g2-stage.st-done{opacity:.85}
 .g2-now{font-size:9px;color:var(--yel);font-weight:700;white-space:nowrap}
 .g2-ready{font-size:9px;font-weight:800;white-space:nowrap;padding:0 4px;border-radius:6px}
 .g2-ready.ok{color:var(--ok);background:rgba(46,204,113,.12)}.g2-ready.late{color:var(--err);background:rgba(231,76,60,.12)}
 .gantt2-toolbar-group.g2-off{opacity:.35;pointer-events:none}
-.g2-miss{position:absolute;height:9px;box-sizing:border-box;border:1px dashed var(--err);border-radius:2px;background:rgba(231,76,60,.10);color:var(--err);font-size:7.5px;font-weight:800;line-height:7px;padding:0 4px;white-space:nowrap;cursor:default}
-.g2-miss-note{font-size:9px;font-weight:800;color:var(--err);white-space:nowrap}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -152,68 +149,78 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 <div class="content" id="root">
   <div id="ganttEmpty"></div>
   <div id="ganttApp" style="display:none">
+    <!-- Панель пересобрана по смыслу (Виктор 26.10.2026): 1) что показать,
+         2) шкала и линии, 3) сравнение и экран. id элементов прежние. -->
     <div class="gantt2-toolbar">
-      <div class="gantt2-toolbar-group">
-        <label>Вид:</label>
-        <select id="viewMode" title="Группировка ганта: классическая по эпикам, по сценариям реестра MVP или упрощённые этапы сценариев для руководства">
-          <option value="epics">По эпикам</option>
-          <option value="scenarios">По сценариям</option>
-          <option value="stages">Этапы по сценариям (упрощённо)</option>
-        </select>
+      <div class="g2-tb-row">
+        <span class="g2-tb-title">Что показать</span>
+        <div class="gantt2-toolbar-group">
+          <label>Вид</label>
+          <select id="viewMode" title="По эпикам и по сценариям — прогноз по задачам Jira; «Этапы по сценариям (упрощённо)» — план аналитиков по спринтам">
+            <option value="epics">По эпикам</option>
+            <option value="scenarios">По сценариям</option>
+            <option value="stages">Этапы по сценариям (упрощённо)</option>
+          </select>
+        </div>
+        <div class="gantt2-toolbar-group" id="grpLevel">
+          <label>Уровень</label>
+          <select id="levelFilter">
+            <option value="all">Эпики ▸ Стори ▸ Задачи</option>
+            <option value="story">Эпики ▸ Стори</option>
+            <option value="epic">Только эпики</option>
+            <option value="task">Только задачи</option>
+          </select>
+        </div>
+        <div class="gantt2-toolbar-group" id="grpResource">
+          <label>Исполнитель</label>
+          <select id="resourceFilter"><option value="">Все</option></select>
+        </div>
+        <div class="gantt2-toolbar-group" id="grpExpand">
+          <label>Дерево</label>
+          <select id="expandSelect">
+            <option value="" disabled selected>Развернуть/свернуть…</option>
+            <option value="all">Развернуть всё (эпики, стори, задачи)</option>
+            <option value="epics">Развернуть только эпики</option>
+            <option value="collapse">Свернуть всё</option>
+          </select>
+        </div>
       </div>
-      <div class="gantt2-toolbar-group" id="grpLevel">
-        <label>Показывать:</label>
-        <select id="levelFilter">
-          <option value="all">Эпики ▸ Стори ▸ Задачи</option>
-          <option value="story">Эпики ▸ Стори</option>
-          <option value="epic">Только эпики</option>
-          <option value="task">Только задачи</option>
-        </select>
+      <div class="g2-tb-row">
+        <span class="g2-tb-title">Шкала</span>
+        <div class="gantt2-toolbar-group">
+          <button data-scale="week" class="on">Недели</button><button data-scale="month">Месяцы</button><button data-scale="quarter">Кварталы</button>
+        </div>
+        <div class="gantt2-toolbar-group" title="Также Ctrl+колесо мыши или жест на тачпаде">
+          <label>Зум</label>
+          <button id="zoomOut">−</button><button id="zoomIn">+</button>
+        </div>
+        <div class="gantt2-toolbar-group">
+          <button id="todayBtn" title="Прокрутить к сегодняшней дате">⦿ К сегодня</button>
+        </div>
+        <div class="gantt2-toolbar-group">
+          <label>Линии</label>
+          <label class="gantt2-line-toggle"><input type="checkbox" id="lineToday" checked> Сегодня</label>
+          <label class="gantt2-line-toggle"><input type="checkbox" id="lineMilestone" checked> Веха MVP</label>
+          <label class="gantt2-line-toggle" title="Отсечки спринтов (2 недели, Спринт 4 = 20.10.26–03.11.26)"><input type="checkbox" id="lineSprints" checked> Спринты</label>
+          <label class="gantt2-line-toggle" title="Даты выхода членов команды в проект — линия с фамилией; вышедшие раньше начала шкалы перечислены у левого края"><input type="checkbox" id="lineHires"> Выход в проект</label>
+        </div>
       </div>
-      <div class="gantt2-toolbar-group">
-        <label>Масштаб:</label>
-        <button data-scale="week" class="on">Недели</button><button data-scale="month">Месяцы</button><button data-scale="quarter">Кварталы</button>
-      </div>
-      <div class="gantt2-toolbar-group">
-        <label>Зум (или Ctrl+колесо / тачпад):</label>
-        <button id="zoomOut">−</button><button id="zoomIn">+</button>
-      </div>
-      <div class="gantt2-toolbar-group" id="grpExpand">
-        <label>Дерево:</label>
-        <select id="expandSelect">
-          <option value="" disabled selected>Развернуть/свернуть…</option>
-          <option value="all">Развернуть всё (эпики, стори, задачи)</option>
-          <option value="epics">Развернуть только эпики</option>
-          <option value="collapse">Свернуть всё</option>
-        </select>
-      </div>
-      <div class="gantt2-toolbar-group" id="grpResource">
-        <label>Исполнитель:</label>
-        <select id="resourceFilter"><option value="">Все</option></select>
-      </div>
-      <div class="gantt2-toolbar-group" id="grpBaseline">
-        <label>Сравнить со слепком:</label>
-        <select id="baselineSelect"><option value="">—</option></select>
-        <label class="gantt2-line-toggle" id="onlyChangedWrap" style="display:none" title="Показать только задачи/стори/эпики, которые сдвинулись, новые или убранные"><input type="checkbox" id="onlyChanged"> только изменившиеся</label>
-      </div>
-      <div class="gantt2-toolbar-group">
-        <button id="todayBtn" title="Прокрутить к сегодняшней дате">⦿ Сегодня</button>
-      </div>
-      <div class="gantt2-toolbar-group">
-        <label>Линии:</label>
-        <label class="gantt2-line-toggle"><input type="checkbox" id="lineToday" checked> Сегодня</label>
-        <label class="gantt2-line-toggle"><input type="checkbox" id="lineMilestone" checked> Веха MVP</label>
-        <label class="gantt2-line-toggle"><input type="checkbox" id="lineHires"> Выход сотрудников</label>
-        <label class="gantt2-line-toggle" title="Отсечки спринтов (2 недели, Спринт 4 = 20.10–03.11.2026)"><input type="checkbox" id="lineSprints" checked> Спринты</label>
-      </div>
-      <div class="gantt2-toolbar-group">
-        <button id="treeCollapseBtn" title="Скрыть/показать колонку с названиями">◂ Панель</button>
-        <button id="fullscreenBtn" title="Развернуть/свернуть гант на весь экран">⛶ На весь экран</button>
-      </div>
-      <!-- Скрыт 26.10.2026: пересчёт в браузере повторяет старую очередную модель
-           (ready-queue), а билдер перешёл на спринтовую — даты бы не совпадали. -->
-      <div class="gantt2-toolbar-group" id="grpPri" style="display:none">
-        <button id="priModeBtn" title="Перетаскивай эпики/стори/задачи, чтобы менять приоритет — даты и критпуть пересчитываются на лету">🔀 Приоритеты (drag&amp;drop)</button>
+      <div class="g2-tb-row">
+        <span class="g2-tb-title">Сравнение и экран</span>
+        <div class="gantt2-toolbar-group" id="grpBaseline">
+          <label>Сравнить со слепком</label>
+          <select id="baselineSelect"><option value="">—</option></select>
+          <label class="gantt2-line-toggle" id="onlyChangedWrap" style="display:none" title="Показать только задачи/стори/эпики, которые сдвинулись, новые или убранные"><input type="checkbox" id="onlyChanged"> только изменившиеся</label>
+        </div>
+        <div class="gantt2-toolbar-group" style="margin-left:auto">
+          <button id="treeCollapseBtn" title="Скрыть/показать колонку с названиями">◂ Панель названий</button>
+          <button id="fullscreenBtn" title="Развернуть/свернуть гант на весь экран">⛶ На весь экран</button>
+        </div>
+        <!-- Скрыт 26.10.2026: пересчёт в браузере повторяет старую очередную модель
+             (ready-queue), а билдер перешёл на спринтовую — даты бы не совпадали. -->
+        <div class="gantt2-toolbar-group" id="grpPri" style="display:none">
+          <button id="priModeBtn" title="Перетаскивай эпики/стори/задачи, чтобы менять приоритет — даты и критпуть пересчитываются на лету">🔀 Приоритеты (drag&amp;drop)</button>
+        </div>
       </div>
     </div>
     <div class="pri-controls" id="priControls">
@@ -257,15 +264,12 @@ const TYPE_ICON={
 const SCENARIO_COLOR='#c2647a';
 // Откуда спринт задачи (build_dashboard.py, спринтовая модель 26.10.2026).
 const PLAN_SRC={jira:'спринт из Jira',"jira+":'спринт из Jira, не влезло в ёмкость — перенос в следующие',manual:'по «Плану ручному»',auto:'нет в плане — ближайший свободный спринт',fact:'факт (Спринт 0 / до спринтов)'};
-// Этапы упрощённого вида: цвет = цвет роли, у каждого этапа своя дорожка в строке.
-const STAGE_NAME={AN:'Аналитика',DS:'Дизайн',BE:'Бэк',FE:'Фронт',QA:'QA'};
-const STAGE_META={AN:{c:ROLE_COLOR.BA,s:'Ан',lane:0},DS:{c:ROLE_COLOR.DS,s:'Диз',lane:1},BE:{c:ROLE_COLOR.BE,s:'Бэк',lane:2},FE:{c:ROLE_COLOR.FE,s:'Фр',lane:3},QA:{c:ROLE_COLOR.QA,s:'QA',lane:4}};
 const SCALE_PX={week:26,month:6,quarter:2};
 const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',cmp:null,onlyChanged:false,resourceFilter:'',_scrolledToToday:false,
   treeWidth:340,treeCollapsed:false,showToday:true,showMilestone:true,showHires:false,showSprints:true,view:'epics'};
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-const ddmm=s=>s?`${s.slice(8,10)}.${s.slice(5,7)}`:'—';
-const spName=n=>n==null?'—':(n<0?'до С0':`С${n}`);
+const ddmm=s=>fmtDate(s);   // дд.мм.гг везде (Виктор 26.10.26)
+const spName=n=>n==null?'—':(n<0?'до Спринта 0':`Спринт ${n}`);
 
 function setTreeWidth(px){
   GS.treeWidth=Math.max(160,Math.min(700,px));
@@ -429,7 +433,7 @@ function initGanttTooltip(){
     const t=e.target.closest('.gantt2-bar[data-tip-key]');
     if(!t)return;
     const d=t.dataset;
-    ganttTipEl.innerHTML=`<strong>${d.tipKey}</strong> ${d.tipSummary}<div style="margin-top:5px;font-size:10px;color:var(--mute)">Ресурс: ${d.tipResource||'—'}</div><div style="font-size:10px">Оценка/списано: ${d.tipEst}ч / ${d.tipSpent}ч</div><div style="font-size:10px">${d.tipStart} → ${d.tipEnd}</div><div style="font-size:10px;color:var(--mute)">Статус: ${d.tipStatus||'—'}</div>${d.tipSprint?`<div style="font-size:10px">Спринт: ${d.tipSprint}${PLAN_SRC[d.tipSrc]?' · '+PLAN_SRC[d.tipSrc]:''}</div>`:''}${d.tipWhy?`<div class="gc-tip-why">${d.tipWhy}</div>`:''}`;
+    ganttTipEl.innerHTML=`<strong>${d.tipKey}</strong> ${d.tipSummary}<div style="margin-top:5px;font-size:10px;color:var(--mute)">Ресурс: ${d.tipResource||'—'}</div><div style="font-size:10px">Оценка/списано: ${d.tipEst}ч / ${d.tipSpent}ч</div><div style="font-size:10px">${fmtDate(d.tipStart)} → ${fmtDate(d.tipEnd)}</div><div style="font-size:10px;color:var(--mute)">Статус: ${d.tipStatus||'—'}</div>${d.tipSprint?`<div style="font-size:10px">Спринт: ${d.tipSprint}${PLAN_SRC[d.tipSrc]?' · '+PLAN_SRC[d.tipSrc]:''}</div>`:''}${d.tipWhy?`<div class="gc-tip-why">${d.tipWhy}</div>`:''}`;
     ganttTipEl.style.display='block';
     const x=Math.min(e.clientX+14,window.innerWidth-296), y=Math.min(e.clientY+14,window.innerHeight-110);
     ganttTipEl.style.left=x+'px';ganttTipEl.style.top=y+'px';
@@ -831,8 +835,8 @@ function drawRuler(minD,maxD,totalPx,xOf,sprints){
     band='<div class="gantt2-sprint-band">'+sprints.map(s=>{
       const x=xOf(s.start), w=xOf(s.end)-x;
       if(x+w<0 || x>totalPx) return '';
-      const lbl=w>70?`${s.short} · ${ddmm(s.start)}–${ddmm(s.end)}`:s.short;
-      return `<div class="gantt2-sprint-cell sp-${s.state}" style="left:${x}px;width:${w}px" title="${s.name}: ${ddmm(s.start)}.${s.start.slice(0,4)} – ${ddmm(s.end)}.${s.end.slice(0,4)}${s.state==='active'?' (текущий)':s.state==='closed'?' (закрыт)':''}">${lbl}</div>`;
+      const lbl=w>170?`${s.name} · ${ddmm(s.start)}–${ddmm(s.end)}`:w>60?s.name:String(s.n);
+      return `<div class="gantt2-sprint-cell sp-${s.state}" style="left:${x}px;width:${w}px" title="${s.name}: ${ddmm(s.start)} – ${ddmm(s.end)}${s.state==='active'?' (текущий)':s.state==='closed'?' (закрыт)':''}">${lbl}</div>`;
     }).join('')+'</div>';
   }
   $('ganttRuler').innerHTML=marks.map(m=>`<div class="gantt2-ruler-mark" style="left:${m.x}px">${m.label}</div>`).join('')+band;
@@ -850,12 +854,20 @@ function drawOverlays(gv, xOf, totalPx, overlayH){
   const today=new Date(), todayX=xOf(today.toISOString().slice(0,10));
   if(GS.showToday && todayX>=0 && todayX<=totalPx) host.insertAdjacentHTML('beforeend',`<div class="gantt2-today-line" style="left:${todayX}px;height:${overlayH}px" title="Сегодня"></div>`);
   const mvpX=xOf('2026-12-10');
-  if(GS.showMilestone && mvpX>=0 && mvpX<=totalPx) host.insertAdjacentHTML('beforeend',`<div class="gantt2-milestone-line" style="left:${mvpX}px;height:${overlayH}px" title="Веха MVP 10.12.2026"></div>`);
-  if(GS.showHires) (gv.resources||[]).forEach(r=>{
-    if(!r.from)return;
-    const hx=xOf(r.from);
-    if(hx>=0 && hx<=totalPx) host.insertAdjacentHTML('beforeend',`<div class="gantt2-hire-line" style="left:${hx}px;height:${overlayH}px" title="Выход: ${r.name||r.role} (${r.from})"></div>`);
-  });
+  if(GS.showMilestone && mvpX>=0 && mvpX<=totalPx) host.insertAdjacentHTML('beforeend',`<div class="gantt2-milestone-line" style="left:${mvpX}px;height:${overlayH}px" title="Веха MVP 10.12.26"></div>`);
+  // Выход в проект: у каждой линии — фамилия; кто вышел до начала шкалы (на
+  // ней их не видно — раньше казалось, что «линий только 2») — списком слева.
+  if(GS.showHires){
+    const before=[]; let i=0;
+    (gv.resources||[]).slice().sort((a,b)=>(a.from||'').localeCompare(b.from||'')).forEach(r=>{
+      if(!r.from) return;
+      const hx=xOf(r.from), who=(r.name||r.role).split(' ')[0];
+      if(hx<0){ before.push(`${who} (${fmtDate(r.from)})`); return; }
+      if(hx>totalPx) return;
+      host.insertAdjacentHTML('beforeend',`<div class="gantt2-hire-line" style="left:${hx}px;height:${overlayH}px" title="Выход в проект: ${r.name} (${fmtDate(r.from)})"></div><div class="gantt2-hire-tag" style="left:${hx+3}px;top:${4+(i++%3)*14}px">${who} · ${fmtDate(r.from)}</div>`);
+    });
+    if(before.length) host.insertAdjacentHTML('afterbegin',`<div class="gantt2-hire-note" title="Вышли в проект раньше начала шкалы">↤ до начала шкалы: ${before.join(', ')}</div>`);
+  }
   return todayX;
 }
 
@@ -864,7 +876,7 @@ function applyViewChrome(){
   const v=GS.view;
   ['grpLevel','grpExpand','grpResource','grpBaseline'].forEach(id=>$(id).classList.toggle('g2-off', v==='stages'));
   $('grpPri').classList.toggle('g2-off', v!=='epics');
-  $('ganttTreeHeader').textContent = v==='stages' ? 'Сценарий · сейчас · готов к спринту' : v==='scenarios' ? 'Сценарий / Стори / Задача (роль)' : 'Эпик / Стори / Задача (роль)';
+  $('ganttTreeHeader').textContent = v==='stages' ? 'Сценарий · приоритет · владелец' : v==='scenarios' ? 'Сценарий / Стори / Задача (роль)' : 'Эпик / Стори / Задача (роль)';
   const top=v==='scenarios'?'Сценарии':'Эпики', lf=$('levelFilter').options;
   lf[0].text=`${top} ▸ Стори ▸ Задачи`; lf[1].text=`${top} ▸ Стори`; lf[2].text=`Только ${top.toLowerCase()}`;
   $('expandSelect').options[2].text = v==='scenarios' ? 'Развернуть только сценарии' : 'Развернуть только эпики';
@@ -872,17 +884,20 @@ function applyViewChrome(){
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Вид «Этапы по сценариям (упрощённо)» (Виктор 26.10.2026): план аналитиков
-// «План ручной» (Confluence 2666206915) как есть — строка = сценарий, на шкале
-// по спринтам колбаски ролей (Аналитика, Дизайн, Бек 1 = Попов, Бек 2 =
-// Григоркин, Фронт, QA), у каждой роли своя дорожка. Цвет — цвет роли;
-// ЗЕЛЁНЫЙ только если этап по Jira готов (все задачи «Завершена»/«Waiting for
-// release»). Красная обводка — спринт этапа по плану уже прошёл, а этап не
-// закрыт. Данные — ganttV2.manualPlan (build_dashboard.py), фронт только рисует.
+// «План ручной» (Confluence 2666206915) как есть. Строка = сценарий, одна
+// толстая цельная колбаса: подряд идущие спринты с одинаковым набором ролей
+// сливаются; если в периоде идут 2+ роли — колбаса делится горизонтально на
+// полосы (цвет + полное название роли). Зелёный — этап пройден: закрыт в Jira
+// (Завершена / Waiting for release) или уже начался следующий этап
+// (state = done/passed, посчитано в build_dashboard.py). Сценарии, по которым
+// работы завершены полностью, — строка светло-зелёная. Фронт только рисует.
 // ═══════════════════════════════════════════════════════════════════════════
 const DONE_GREEN='#2ECC71';
-const MP_STAGE={AN:{n:'Аналитика',s:'Ан',c:ROLE_COLOR.BA,lane:0},DS:{n:'Дизайн',s:'Диз',c:ROLE_COLOR.DS,lane:1},
-  BE:{n:'Бэк',s:'Бэк',c:ROLE_COLOR.BE,lane:2},BE1:{n:'Бек 1 (Попов)',s:'Бэк 1',c:ROLE_COLOR.BE,lane:2},BE2:{n:'Бек 2 (Григоркин)',s:'Бэк 2',c:'#B0306A',lane:3},
-  FE:{n:'Фронт',s:'Фр',c:ROLE_COLOR.FE,lane:4},QA:{n:'QA',s:'QA',c:ROLE_COLOR.QA,lane:5}};
+const MP_STAGE={AN:{n:'Аналитика',c:ROLE_COLOR.BA},DS:{n:'Дизайн',c:ROLE_COLOR.DS},
+  BE:{n:'Бэк',c:ROLE_COLOR.BE},BE1:{n:'Бэк 1 (Попов)',c:ROLE_COLOR.BE},BE2:{n:'Бэк 2 (Григоркин)',c:'#B0306A'},
+  FE:{n:'Фронт',c:ROLE_COLOR.FE},QA:{n:'QA',c:ROLE_COLOR.QA}};
+const MP_ORDER=['AN','DS','BE','BE1','BE2','FE','QA'];
+const MP_ROW_H=46;
 function renderStages(gv, data){
   const mp=gv.manualPlan;
   const legend=$('ganttLegend'), assumEl=$('ganttAssumptions');
@@ -893,24 +908,27 @@ function renderStages(gv, data){
     return;
   }
   const spByN={}; (gv.sprints||[]).forEach(s=>spByN[s.n]=s);
+  (mp.sprints||[]).forEach(s=>{ if(!spByN[s.n]) spByN[s.n]={n:s.n,name:'Спринт '+s.n,start:s.start,end:s.end}; });
+  // Зелёный только в начавшихся спринтах (будущая работа ещё не заведена в Jira) или у завершённого сценария.
+  const curN=((gv.sprints||[]).find(s=>s.state==='active')||{}).n??99;
+  const green=(r,sid,n)=>r.completed||(n<=curN&&['done','passed'].includes((r.state||{})[sid]));
+  // Отрезки: подряд идущие спринты с одинаковым составом (роль + зелёная/нет) — одна колбаса.
+  const segsOf=r=>{
+    const ns=Object.keys(r.cells||{}).map(Number).filter(n=>spByN[n]).sort((a,b)=>a-b);
+    const out=[];
+    ns.forEach(n=>{
+      const roles=MP_ORDER.filter(s=>(r.cells[n]||[]).includes(s));
+      const key=roles.map(s=>s+(green(r,s,n)?'+':'')).join(',');
+      const last=out[out.length-1];
+      if(last && last.key===key && last.to===n-1) last.to=n; else out.push({key,roles,from:n,to:n});
+    });
+    return out;
+  };
   const rows=[]; let lastContour=null;
   mp.rows.forEach(r=>{ if(r.contour!==lastContour){ rows.push({group:r.contour}); lastContour=r.contour; } rows.push({r}); });
   const todayISO=new Date().toISOString().slice(0,10);
-  // Отрезки: подряд идущие спринты одного этапа сливаются в одну колбасу.
-  const barsOf=r=>{
-    const by={};
-    Object.entries(r.cells||{}).forEach(([n,sts])=>sts.forEach(sid=>(by[sid]=by[sid]||[]).push(+n)));
-    const out=[];
-    Object.entries(by).forEach(([sid,ns])=>{
-      ns.sort((a,b)=>a-b);
-      let a=ns[0], p=ns[0];
-      ns.slice(1).concat([null]).forEach(n=>{ if(n!==null && n===p+1){ p=n; return; } out.push({sid,from:a,to:p}); a=n; p=n; });
-    });
-    return out.filter(b=>spByN[b.from]&&spByN[b.to]);
-  };
-  const jiraOf=(r,sid)=>(r.jira||{})[sid] || ((sid==='BE1'||sid==='BE2')?(r.jira||{}).BE:null);
   const ds=[new Date(), new Date('2026-12-15')];
-  mp.rows.forEach(r=>barsOf(r).forEach(b=>{ ds.push(new Date(spByN[b.from].start), new Date(spByN[b.to].end)); }));
+  mp.rows.forEach(r=>segsOf(r).forEach(g=>{ ds.push(new Date(spByN[g.from].start), new Date(spByN[g.to].end)); }));
   const minD=new Date(Math.min(...ds)); minD.setDate(minD.getDate()-3);
   const maxD=new Date(Math.max(...ds)); maxD.setDate(maxD.getDate()+3);
   GS._minD=minD;
@@ -921,57 +939,54 @@ function renderStages(gv, data){
   $('ganttTree').innerHTML=rows.map(x=>{
     if(x.group) return `<div class="gantt2-row g2-group"><div class="gantt2-label">${esc(x.group)}</div></div>`;
     const r=x.r, pcls=(r.priority||'').toLowerCase();
-    const st=Object.entries(r.jira||{}).filter(([k])=>!['BE1','BE2'].includes(k));
-    const done=st.filter(([,v])=>v.category==='done').map(([k])=>MP_STAGE[k].s);
-    const jiraTxt=r.jira&&Object.keys(r.jira).length?(done.length?`готово: ${done.join(', ')}`:'в Jira не закрыто ни одного этапа'):'нет задач в Jira';
-    return `<div class="gantt2-row g2-tall6"><div class="gantt2-label" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;line-height:1.15" title="${esc(r.code+' · '+r.name+' · владелец: '+r.owner)}">
+    return `<div class="gantt2-row g2-mp${r.completed?' g2-mp-done':''}"><div class="gantt2-label" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;line-height:1.15" title="${esc(r.code+' · '+r.name+' · владелец: '+r.owner)}">
       <div style="display:flex;gap:4px;align-items:center;max-width:100%;overflow:hidden"><span class="g2-sc-chip ${pcls}">${esc(r.code)}</span><span style="overflow:hidden;text-overflow:ellipsis">${esc(r.name)}</span></div>
-      <div style="display:flex;gap:6px;align-items:center;padding-left:2px;font-size:9px;color:var(--mute);white-space:nowrap;overflow:hidden">${esc(r.priority||'')} · ${esc(r.owner||'')}</div>
-      <div style="padding-left:2px;font-size:9px;white-space:nowrap" class="g2-now">${esc(jiraTxt)}</div></div></div>`;
+      <div style="padding-left:2px;font-size:9px;color:var(--mute);white-space:nowrap;overflow:hidden">${esc(r.priority||'')} · ${esc(r.owner||'')}${r.completed?' · <b style="color:var(--ok)">завершён</b>':''}</div></div></div>`;
   }).join('');
 
   drawRuler(minD,maxD,totalPx,xOf,gv.sprints);
   $('ganttRows').style.width=totalPx+'px';
   $('ganttRows').style.position='relative';
-  let late=0, doneCnt=0, total=0;
+  const WHY={done:'закрыт в Jira',passed:'начался следующий этап',active:'в работе',todo:'не начат'};
   $('ganttRows').innerHTML=rows.map(x=>{
     if(x.group) return '<div class="gantt2-row g2-group"></div>';
     const r=x.r;
-    return `<div class="gantt2-row g2-tall6">`+barsOf(r).map(b=>{
-      const m=MP_STAGE[b.sid], j=jiraOf(r,b.sid);
-      const s=spByN[b.from], e=spByN[b.to];
-      const x0=xOf(s.start), w=Math.max(6, xOf(e.end)-x0-2);
-      const isDone=j&&j.category==='done';
-      const isLate=!isDone && e.end<=todayISO;
-      total++; if(isDone) doneCnt++; if(isLate) late++;
-      const stLbl=!j?'в Jira нет задач этого этапа':({done:'готово (Завершена / Waiting for release)',in_progress:'в работе',backlog:'не начат'})[j.category];
-      const tip=`<strong>${esc(r.code)} · ${esc(m.n)}</strong>${esc(r.name)}<div style="margin-top:5px;font-size:10px">План: ${s.short}${b.to!==b.from?'–'+e.short:''} · ${ddmm(s.start)} → ${ddmm(e.end)}</div><div style="font-size:10px">Jira: ${stLbl}${j?` · задач ${j.done}/${j.tasks} · ${j.estimateH} ч${j.sprints&&j.sprints.length?' · спринты в Jira/прогнозе: '+j.sprints.map(n=>'С'+n).join(', '):''}`:''}</div>${b.sid==='QA'?'<div style="font-size:10px;color:var(--mute)">QA встроен в задачи Фронта и Бэка (30% оценки): в работе — когда задача в Ready for testing / Тестирование, готов — когда закрыты</div>':''}${isLate?'<div style="font-size:10px;color:var(--err)">Срок по плану прошёл, этап не закрыт</div>':''}`;
-      return `<div class="g2-stage lane${m.lane}${isLate?' mp-late':''}${j?'':' mp-nojira'}" style="left:${x0+1}px;width:${w}px;background:${isDone?DONE_GREEN:m.c}" data-tip-html="${esc(tip)}"><span>${w>26?m.s:''}${isDone&&w>44?' ✓':''}</span></div>`;
+    return `<div class="gantt2-row g2-mp${r.completed?' g2-mp-done':''}">`+segsOf(r).map(g=>{
+      const s=spByN[g.from], e=spByN[g.to];
+      const x0=xOf(s.start)+1, w=Math.max(8, xOf(e.end)-xOf(s.start)-2);
+      const per=g.roles.length;
+      return `<div class="g2-mp-bar" style="left:${x0}px;width:${w}px">`+g.roles.map(sid=>{
+        const m=MP_STAGE[sid], gr=green(r,sid,g.to), j=(r.jira||{})[sid]||((sid==='BE1'||sid==='BE2')?(r.jira||{}).BE:null);
+        const why=r.completed?'сценарий завершён полностью':(WHY[(r.state||{})[sid]]||'');
+        const tip=`<strong>${esc(r.code)} · ${esc(m.n)}</strong>${esc(r.name)}<div style="margin-top:5px;font-size:10px">План: ${s.name}${g.to!==g.from?' – '+e.name:''} · ${fmtDate(s.start)} → ${fmtDate(e.end)}</div><div style="font-size:10px">Этап: ${why}${j?` · задач в Jira ${j.done}/${j.tasks}, ${j.estimateH} ч`:' · задач этапа в Jira нет'}</div>${sid==='QA'?'<div style="font-size:10px;color:var(--mute)">QA встроен в задачи Фронта и Бэка (30% оценки)</div>':''}`;
+        const fs=per>=3?8:per===2?9.5:11;
+        return `<div class="g2-mp-stripe" style="background:${gr?DONE_GREEN:m.c};font-size:${fs}px" data-tip-html="${esc(tip)}">${w>40?esc(m.n)+(gr&&w>90?' ✓':''):''}</div>`;
+      }).join('')+'</div>';
     }).join('')+'</div>';
   }).join('');
-  const overlayH=rows.reduce((s,x)=>s+(x.group?26:64),0);
+  const overlayH=rows.reduce((s,x)=>s+(x.group?26:MP_ROW_H),0);
   drawOverlays(gv, xOf, totalPx, overlayH);
   if(!GS._scrolledToToday && todayX>=0 && todayX<=totalPx){
     GS._scrolledToToday=true;
     const scroller=$('ganttScroll'); scroller.scrollLeft=Math.max(0, todayX - scroller.clientWidth/2);
   }
   legend.innerHTML=['AN','DS','BE1','BE2','FE','QA'].map(id=>`<span><span class="sw" style="background:${MP_STAGE[id].c}"></span>${MP_STAGE[id].n}</span>`).join('')+
-    `<span style="margin-left:12px"><span class="sw" style="background:${DONE_GREEN}"></span>готово по Jira (Завершена / Waiting for release)</span>`+
-    `<span><span class="sw" style="border:2px solid var(--err);background:transparent"></span>срок по плану прошёл, этап не закрыт</span>`+
-    `<span><span class="sw" style="opacity:.45;background:#7f8fa6"></span>в Jira нет задач этапа</span>`+
+    `<span style="margin-left:12px"><span class="sw" style="background:${DONE_GREEN}"></span>этап пройден (закрыт в Jira или начался следующий)</span>`+
+    `<span><span class="sw" style="background:rgba(46,204,113,.18)"></span>сценарий завершён полностью</span>`+
     `<span><span class="sw" style="border:1px dashed var(--mute);background:transparent"></span>отсечка спринта</span>`+
     `<span><span class="sw" style="background:#00d4ff"></span>сегодня</span>`+
-    `<span><span class="sw" style="background:#9b59b6"></span>веха 10.12.2026</span>`;
+    `<span><span class="sw" style="background:#9b59b6"></span>веха 10.12.26</span>`;
   initGanttTooltip();
   const src=mp.source||{};
-  assumEl.innerHTML=`<div>🧭 <b>Этапы по сценариям (упрощённо)</b> — план аналитиков «План ручной» (Confluence, стр. ${esc(src.pageId||'2666206915')}, версия ${esc(src.version||'—')} от ${ddmm((src.when||'').slice(0,10))}). Колбасок этапов: ${total}, готово по Jira: <b style="color:${DONE_GREEN}">${doneCnt}</b>, срок по плану прошёл и не закрыто: <b style="color:var(--err)">${late}</b>.</div>
+  const nDone=mp.rows.filter(r=>r.completed).length;
+  assumEl.innerHTML=`<div>🧭 <b>Этапы по сценариям (упрощённо)</b> — план аналитиков «План ручной» (Confluence, стр. ${esc(src.pageId||'2666206915')}, версия ${esc(src.version||'—')} от ${fmtDate(src.when)}). Сценариев: ${mp.rows.length}, завершены полностью: ${nDone}.</div>
     <ul class="assum-list">
-      <li>Колбаски и спринты — как в таблице аналитиков, без пересчёта. Задачи в Jira со временем должны приблизиться к этому плану; детальный прогноз по задачам — виды «По эпикам» / «По сценариям».</li>
-      <li>Цвет — роль; <b>зелёный только для готового</b>: все задачи этапа сценария в Jira «Завершена» или «Waiting for release». QA встроен в задачи Фронта и Бэка: оценка = 70% разработка + 30% тестирование, в конце задача переходит к QA (статусы «Ready for testing»/«Тестирование» — этап QA в работе). Этап QA готов, когда закрыты эти задачи.</li>
-      <li>Бек 1 = Попов, Бек 2 = Григоркин; «Бек» без номера — бэк без указания исполнителя (дорожка Бек 1). Готовность Бек 1/Бек 2 — по задачам [BE] этого исполнителя, если их нет — по всем [BE] сценария.</li>
-      <li>Спринт 0 в таблице = вся работа до 08.09.2026, на шкале показан как С0 (25.08–08.09). После Спринта 8 — новогодний перерыв, Спринт 9 = 12.01–26.01.2027.</li>
+      <li>Колбаски и спринты — как в таблице аналитиков, без пересчёта. Задачи в Jira со временем должны приблизиться к этому плану; прогноз по задачам — виды «По эпикам» / «По сценариям».</li>
+      <li>Если в одном периоде идут несколько ролей, колбаса делится по горизонтали. Цвет — роль; <b>зелёный — этап пройден</b>: все его задачи в Jira «Завершена»/«Waiting for release» либо уже начался следующий этап (после аналитики — дизайн, бэк или фронт; после дизайна — фронт; бэк/фронт — все задачи уже в тестировании).</li>
+      <li>QA встроен в задачи Фронта и Бэка: 70% оценки — разработка, 30% — тестирование («Ready for testing»/«Тестирование»).</li>
+      <li>Бэк 1 = Попов, Бэк 2 = Григоркин. Спринт 0 в таблице — вся работа до 08.09.26. После Спринта 8 — новогодний перерыв, Спринт 9 = 12.01.27–26.01.27.</li>
     </ul>
-    <div style="margin-top:8px;color:var(--mute);font-size:11px">Сгенерировано: ${gv.generatedAt||'—'}</div>`;
+    <div style="margin-top:8px;color:var(--mute);font-size:11px">Сгенерировано: ${fmtDateTime(gv.generatedAt)}</div>`;
 }
 
 function renderGanttV2(){
@@ -1146,7 +1161,7 @@ function renderGanttV2(){
     Object.entries(ROLE_COLOR).map(([r,c])=>`<span><span class="sw" style="background:${c}"></span>${r}</span>`).join('')+
     `<span style="margin-left:12px"><span class="sw" style="background:var(--err)"></span>критический путь (обводка)</span>`+
     `<span><span class="sw" style="background:#00d4ff"></span>сегодня</span>`+
-    `<span><span class="sw" style="background:#9b59b6"></span>веха 10.12.2026</span>`+
+    `<span><span class="sw" style="background:#9b59b6"></span>веха 10.12.26</span>`+
     `<span><span class="sw" style="background:var(--blue)"></span>выход сотрудника (наём/старт)</span>`+
     (GS.view==='scenarios'?`<span><span class="g2-type-icon">${TYPE_ICON.scenario}</span> Сценарий</span>`:'')+
     `<span><span class="sw" style="border:1px dashed var(--mute);background:transparent"></span>отсечка спринта (2 нед.)</span>`+
@@ -1161,14 +1176,14 @@ function renderGanttV2(){
   if(PRI_MODE && PRI_CRIT){
     const okDeadline = PRI_CRIT.end && PRI_CRIT.end<='2026-12-10';
     cpe={...cpe, endDate:PRI_CRIT.end, resource:PRI_CRIT.resource,
-      conclusion: `[Пересчитано вручную] ${okDeadline?'Успеваем к 10.12.2026':'НЕ успеваем'}: критпуть до ${PRI_CRIT.end||'—'} (ресурс ${PRI_CRIT.resource||'—'})`};
+      conclusion: `[Пересчитано вручную] ${okDeadline?'Успеваем к 10.12.26':'НЕ успеваем'}: критпуть до ${PRI_CRIT.end||'—'} (ресурс ${PRI_CRIT.resource||'—'})`};
   }
   $('ganttAssumptions').innerHTML=`
     <div>🔴 <b>Критический путь:</b> ${cpe.conclusion||'—'}</div>
     ${(cpe.steps&&cpe.steps.length)?`<div style="margin-top:8px"><b>Шаги:</b></div><ul class="assum-list">${cpe.steps.map(s=>`<li>${s}</li>`).join('')}</ul>`:''}
     ${assum.roleAssumptions?`<div style="margin-top:10px"><b>Допущения по ролям:</b></div><ul class="assum-list">${Object.entries(assum.roleAssumptions).map(([r,a])=>`<li><b>${r}</b>: ${a}</li>`).join('')}</ul>`:''}
     ${(assum.excludedScenarios&&assum.excludedScenarios.length)?`<div style="margin-top:10px">⚠️ <b>Посчитано БЕЗ следующих сценариев</b> <span style="color:var(--mute);font-weight:400">(нет в этом гант-плане совсем)</span>:</div><ul class="assum-list">${assum.excludedScenarios.map(s=>`<li><b>${s.code}</b> «${s.name}» <span style="color:var(--mute)">(${s.group})</span> — ${s.reason}</li>`).join('')}</ul>`:''}
-    <div style="margin-top:8px;color:var(--mute);font-size:11px">Часов в дне: ${gv.workCalendar?.hoursPerDay||8} · праздников учтено: ${(gv.workCalendar?.holidays||[]).length} · сгенерировано: ${gv.generatedAt||'—'}</div>
+    <div style="margin-top:8px;color:var(--mute);font-size:11px">Часов в дне: ${gv.workCalendar?.hoursPerDay||8} · праздников учтено: ${(gv.workCalendar?.holidays||[]).length} · сгенерировано: ${fmtDateTime(gv.generatedAt)}</div>
   `;
 
   const blSel=$('baselineSelect');
@@ -1177,7 +1192,7 @@ function renderGanttV2(){
     // Новые сверху; пустые слепки (без задач) и слепок текущего же расчёта не показываем.
     blSel.innerHTML='<option value="">—</option>'+(data.baselines||[]).map((b,i)=>({b,i})).reverse()
       .filter(({b})=>(b.nItems??(b.items||[]).length)>0 && b.ts!==(data.ganttV2&&data.ganttV2.generatedAt))
-      .map(({b,i})=>`<option value="${i}">${b.label||b.ts}${b.criticalEnd?` · конец ${GC.ddmm(b.criticalEnd)}.${b.criticalEnd.slice(0,4)}`:''}</option>`).join('');
+      .map(({b,i})=>`<option value="${i}">${String(b.label||b.ts).replace(/(\d\d\.\d\d\.)20(\d\d)/g,'$1$2')}${b.criticalEnd?` · конец ${fmtDate(b.criticalEnd)}`:''}</option>`).join('');
     blSel.dataset.populated='1';
     blSel.onchange=selectBaseline;
   }
@@ -1282,7 +1297,7 @@ $('ganttScroll').addEventListener('wheel', e=>{
 
 AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
-  document.getElementById('upd').textContent=d.updated||'—';
+  document.getElementById('upd').textContent=fmtDate(d.updated);
   CURRENT_DATA=d;
   // Последний выбранный вид — удобство на одного зрителя (может не сохраниться).
   // ?view=stages — ссылка со страницы «Статус для руководства» сразу на упрощённый вид

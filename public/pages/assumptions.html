@@ -15,7 +15,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 <script>
 AUTH_READY.then(()=>{
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
-  document.getElementById('upd').textContent=d.updated||'—';
+  document.getElementById('upd').textContent=fmtDate(d.updated);
 
 const items = d.assumptions || [];
 document.getElementById('root').innerHTML=`<table class="tbl" id="tbl">

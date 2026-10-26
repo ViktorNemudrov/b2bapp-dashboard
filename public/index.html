@@ -594,15 +594,6 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
     </div>
   </header>
 
-  <!-- AUDIENCE SWITCHER (п.5) -->
-  <div class="aud-bar">
-    <span class="aud-label">👁 Вид для:</span>
-    <button class="aud-btn active" onclick="setAudience('all',this)"><span class="aud-icon">🌐</span>Все</button>
-    <button class="aud-btn" onclick="setAudience('exec',this)"><span class="aud-icon">👔</span>Руководство</button>
-    <button class="aud-btn" onclick="setAudience('pm',this)"><span class="aud-icon">📋</span>PM</button>
-    <button class="aud-btn" onclick="setAudience('team',this)"><span class="aud-icon">💻</span>Команда</button>
-  </div>
-
   <!-- SEARCH BAR + LEGEND (п.1.3: поиск слева, легенда справа в одной строке) -->
   <div class="search-bar" style="flex-wrap:wrap">
     <div class="srch-wrap">
@@ -634,7 +625,7 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
   </div>
 
   <!-- HERO: технологии/демо-стенды + прогноз завершения + счётчик до вехи —
-       все три в одну строку (3 колонки), правка Виктора 21.09.2026. -->
+       все три в одну строку (3 колонки), правка Виктора 21.09.26. -->
   <div class="hero" id="s-hero">
     <div class="hero-left">
       <div class="hero-tech-label">Используемые технологии</div>
@@ -663,7 +654,7 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
 
     <!-- COUNTDOWN: тикающий отсчёт по рабочему времени (дни/часы/минуты); календарные дни — мелким текстом справочно -->
     <div class="countdown">
-      <div class="cd-label">⏱ До вехи 10.12.2026 (рабочее время)</div>
+      <div class="cd-label">⏱ До вехи 10.12.26 (рабочее время)</div>
       <div class="cd-units">
         <div class="cd-unit"><div class="cd-n" id="cdWD">—</div><div class="cd-u">раб. дней</div></div>
         <div class="cd-sep">:</div>
@@ -672,6 +663,7 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
         <div class="cd-unit"><div class="cd-n" id="cdWM">—</div><div class="cd-u">минут</div></div>
       </div>
       <div class="cd-date" id="cdCalDays">—</div>
+      <div class="cd-date" id="cdSprints" style="margin-top:4px;color:var(--text);font-weight:600"></div>
     </div>
   </div>
 
@@ -690,7 +682,7 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
   <!-- PROGRESS (§3.6: epicProgress) -->
   <div class="section" id="s-progress">
     <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>✅ Готовность эпиков к 10.12.2026</span><span class="acc-chevron">▼</span>
+      <span>✅ Готовность эпиков к 10.12.26</span><span class="acc-chevron">▼</span>
     </div>
     <div class="acc-body" style="max-height:999px">
       <div class="prog-card" id="progressEpics"></div>
@@ -823,10 +815,10 @@ function renderOverview(data){
   const roles=new Set(res.map(r=>r.role));
   const kpi=data.kpi||{};
   const cells=[
-    {v: startDate||'—', l:'Старт разработки'},
+    {v: startDate?fmtDate(startDate):'—', l:'Старт разработки'},
     {v: res.length||'—', l:`Команда (${roles.size||0} ролей)`},
-    {v:'10.12.2026', l:'Дедлайн MVP'},
-    {v: kpi.mvpReachable?'✅ Успеваем':'⚠️ Не успеваем', l:`Критпуть: ${kpi.criticalEnd||'—'}`},
+    {v:'10.12.26', l:'Дедлайн MVP'},
+    {v: kpi.mvpReachable?'✅ Успеваем':'⚠️ Не успеваем', l:`Критпуть: ${fmtDate(kpi.criticalEnd)}`},
   ];
   $('overviewRow').innerHTML=cells.map(c=>`<div class="kpi"><div class="kpi-val" style="font-size:20px">${c.v}</div><div class="kpi-lbl">${c.l}</div></div>`).join('');
 }
@@ -850,7 +842,7 @@ function renderForecast(data){
     $('fcConclusion').innerHTML=renderEmptyState('Нет данных, запустите обновление');
     return;
   }
-  const endDate=cp.endDate?new Date(cp.endDate).toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'}).replace(' г.',''):'—';
+  const endDate=fmtDate(cp.endDate);
   $('fcConclusion').innerHTML=`<div class="fc-date" style="color:var(--yel)">${endDate}</div><div class="fc-note" style="margin-top:8px;font-size:12px">${cp.conclusion}</div>`;
 }
 
@@ -1066,6 +1058,17 @@ function setAudience(aud,btn){
   const hint=$('audHint');if(hint)hint.textContent=cfg.label;
   localStorage.setItem('b2bapp_audience',aud);
 }
+// Сколько спринтов осталось до вехи: текущий (если идёт) + будущие, начавшиеся
+// до вехи. Календарь спринтов — ganttV2.sprints (build_dashboard.py).
+function renderSprintsLeft(data){
+  const el=$('cdSprints'); if(!el) return;
+  const sp=(data.ganttV2&&data.ganttV2.sprints)||[], dl='2026-12-10';
+  const left=sp.filter(s=>s.state!=='closed' && s.start<dl);
+  if(!left.length){ el.textContent=''; return; }
+  const last=left[left.length-1], cur=left.find(s=>s.state==='active');
+  const n=left.length, w=n%10===1&&n%100!==11?'спринт':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?'спринта':'спринтов');
+  el.textContent=`Осталось ${n} ${w}: ${cur?'идёт '+cur.name+', ':''}веха — внутри Спринта ${last.n} (${fmtDate(last.start)}–${fmtDate(last.end)})`;
+}
 function restoreAudience(){
   const saved=localStorage.getItem('b2bapp_audience')||'all';
   const btn=document.querySelector(`.aud-btn[onclick*="${saved}"]`);
@@ -1134,7 +1137,7 @@ function renderScopeGrowth(data){
   const xLabels=[sorted[0],sorted[sorted.length-1]].map((p,i)=>{
     const d=new Date(p.date);
     const x=i===0?PAD.left:W-PAD.right;
-    return `<text x="${x}" y="${PAD.top-4}" font-size="9" font-weight="700" fill="var(--yel)" text-anchor="${i===0?'start':'end'}">${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}</text>`;
+    return `<text x="${x}" y="${PAD.top-4}" font-size="9" font-weight="700" fill="var(--yel)" text-anchor="${i===0?'start':'end'}">${fmtDate(d)}</text>`;
   }).join('');
   el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${gridLines}${svgLines}${weekLabels}${xLabels}</svg>
     <div class="creep-legend" style="margin-top:8px">${SERIES.map(s=>`<div class="creep-leg"><div class="creep-leg-sq" style="background:${s.color}"></div>${s.label}</div>`).join('')}</div>`;
@@ -1253,7 +1256,8 @@ function init(data){
   mountFreshness('freshness', data.refreshedAt, data.updated);
   const upd=data.updated||'—';
   setSmartTime(upd);
-  setTimeout(()=>{initGlossaryTooltips(data.glossary);restoreAccordions();restoreAudience();},100);
+  setTimeout(()=>{initGlossaryTooltips(data.glossary);restoreAccordions();},100);
+  renderSprintsLeft(data);
 }
 // Entry point — auth first, then load
 AUTH_READY.then(()=>{

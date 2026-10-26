@@ -11,11 +11,8 @@ const NAV = [
   {group:'План', items:[
     {label:'Диаграмма Ганта', icon:'📊', href:'/pages/gantt.html'},
     {label:'Ресурсный план', icon:'👥', href:'/pages/resources.html'},
-    {label:'MVP по месяцам', icon:'🏆', href:'/pages/mvp.html'},
-    {label:'Скоуп MVP', icon:'📅', href:'/pages/scope_dec.html'},
   ]},
   {group:'Аналитика', items:[
-    {label:'USM', icon:'🗺️', href:'/pages/usm.html', wip:true},
     {label:'Реестр рисков', icon:'⚠️', href:'/pages/risks.html'},
     {label:'Реестр допущений', icon:'📌', href:'/pages/assumptions.html'},
   ]},
@@ -168,9 +165,25 @@ function renderFreshness(refreshedAt, fallback){
   const cls = days<=3 ? 'freshness-ok' : days<=7 ? 'freshness-warn' : 'freshness-err';
   const dd = String(dt.getDate()).padStart(2,'0'), mo = String(dt.getMonth()+1).padStart(2,'0');
   const hh = String(dt.getHours()).padStart(2,'0'), mi = String(dt.getMinutes()).padStart(2,'0');
-  return `<span class="freshness ${cls}">Данные актуальны на ${dd}.${mo}.${dt.getFullYear()} ${hh}:${mi}</span>`;
+  return `<span class="freshness ${cls}">Данные актуальны на ${dd}.${mo}.${String(dt.getFullYear()).slice(2)} ${hh}:${mi}</span>`;
 }
 window.renderFreshness = renderFreshness;
+// Единый формат дат на сайте — дд.мм.гг (Виктор 26.10.2026). Принимает
+// ISO «2026-10-26», «2026-10-26T18:44…», «26.10.2026» или Date.
+function fmtDate(v){
+  if(!v) return '—';
+  if(v instanceof Date) return isNaN(v)?'—':`${String(v.getDate()).padStart(2,'0')}.${String(v.getMonth()+1).padStart(2,'0')}.${String(v.getFullYear()).slice(2)}`;
+  const s=String(v);
+  let m=s.match(/^(\d{4})-(\d{2})-(\d{2})/); if(m) return `${m[3]}.${m[2]}.${m[1].slice(2)}`;
+  m=s.match(/^(\d{2})\.(\d{2})\.(\d{4})/); if(m) return `${m[1]}.${m[2]}.${m[3].slice(2)}`;
+  return s;
+}
+function fmtDateTime(v){
+  if(!v) return '—';
+  const m=String(v).match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+  return m?`${m[3]}.${m[2]}.${m[1].slice(2)} ${m[4]}:${m[5]}`:fmtDate(v);
+}
+window.fmtDate = fmtDate; window.fmtDateTime = fmtDateTime;
 function mountFreshness(elId, refreshedAt, fallback){
   const el = document.getElementById(elId);
   if(el) el.innerHTML = renderFreshness(refreshedAt, fallback);

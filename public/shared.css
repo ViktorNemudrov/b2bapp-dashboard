@@ -64,9 +64,10 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
 /* HEATMAP */
 .heatmap-table th,.heatmap-table td{text-align:center;padding:5px 8px;font-size:11px;white-space:nowrap}
 .heat-0{background:#1e2d3d;color:var(--mute)}
-.heat-low{background:rgba(46,204,113,.25);color:#2ecc71}
-.heat-mid{background:rgba(230,126,34,.25);color:#e67e22}
-.heat-high{background:rgba(231,76,60,.35);color:#e74c3c}
+/* Приглушённые (Виктор 26.10.2026: яркие заливки мешали читать цифры) */
+.heat-low{background:rgba(46,204,113,.10);color:color-mix(in srgb,#2ecc71 55%,var(--text))}
+.heat-mid{background:rgba(230,126,34,.13);color:color-mix(in srgb,#e67e22 60%,var(--text))}
+.heat-high{background:rgba(231,76,60,.16);color:color-mix(in srgb,#e74c3c 65%,var(--text))}
 
 /* EMPTY */
 .empty{text-align:center;padding:48px;color:var(--mute);font-size:13px}
