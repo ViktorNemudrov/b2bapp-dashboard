@@ -6,7 +6,8 @@ def urlopen_retry(req, tries=5, delay=2):
     last_err = None
     for i in range(tries):
         try:
-            return urllib.request.urlopen(req)
+            # без таймаута зависший запрос вешал весь пуш навсегда (26.10.2026)
+            return urllib.request.urlopen(req, timeout=60)
         except Exception as e:
             last_err = e
             if i < tries - 1:
