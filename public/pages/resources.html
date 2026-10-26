@@ -116,7 +116,21 @@ if(!rp.length){
     <span style="color:#e74c3c">■ ≥100% — перегруз</span>
     <span style="color:var(--mute)">■ · — не в проекте (в т.ч. до даты выхода)</span>
   </div>`;
-  document.getElementById('root').innerHTML=teamHtml(d)+`<div class="sec-title" style="margin-top:24px">Загрузка по месяцам (по расчёту ганта)</div>`+html;
+  // Загрузка по спринтам (спринтовая модель 26.10.2026): часы задач в спринте
+  // против ёмкости 2 недели × 8ч × FTE — всё посчитано в build_dashboard.py.
+  const spNames={}; (d.ganttV2&&d.ganttV2.sprints||[]).forEach(s=>spNames[s.n]=s);
+  const spSet=new Set(); rp.forEach(r=>(r.sprints||[]).forEach(s=>spSet.add(s.n)));
+  const spList=[...spSet].sort((a,b)=>a-b);
+  const spHtml=spList.length?`<table class="tbl heatmap-table" id="tblSp">
+    <thead><tr><th>Человек</th><th>Роль</th>${spList.map(n=>{const s=spNames[n];return `<th title="${s?fmt(s.start)+' – '+fmt(s.end):''}">С${n}${s&&s.state==='active'?' ●':''}</th>`;}).join('')}</tr></thead>
+    <tbody>${rp.map(r=>{const by={};(r.sprints||[]).forEach(s=>by[s.n]=s);return `<tr>
+      <td style="font-weight:600;color:var(--text)">${r.name}</td><td style="color:var(--mute)">${r.role}</td>
+      ${spList.map(n=>{const s=by[n];return s?`<td class="${heatClass(s.loadPct)}" title="${s.hours} ч из ${s.capacity} ч">${s.loadPct}%<div style="font-size:9px;opacity:.75">${Math.round(s.hours)}/${Math.round(s.capacity)} ч</div></td>`:'<td class="heat-0">·</td>';}).join('')}
+    </tr>`;}).join('')}</tbody></table>
+    <div style="margin-top:6px;font-size:11px;color:var(--mute)">Закрытые спринты — факт (задачи, завершённые в спринте; перегруз &gt;100% — оценки больше, чем вмещает спринт). Текущий (●) и будущие — план: сначала спринты Jira, затем «План ручной»; что не влезает в ёмкость, переносится в следующий спринт.</div>`:'';
+  document.getElementById('root').innerHTML=teamHtml(d)
+    +(spHtml?`<div class="sec-title" style="margin-top:24px">Загрузка по спринтам (часы / ёмкость)</div>`+spHtml:'')
+    +`<div class="sec-title" style="margin-top:24px">Загрузка по месяцам (по расчёту ганта)</div>`+html;
   makeSortable(document.getElementById('tbl'));
 }
 }).catch(showFetchError);

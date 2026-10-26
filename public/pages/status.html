@@ -1,0 +1,339 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Статус для руководства — B2BAPP</title><link rel="stylesheet" href="../shared.css">
+<!-- Дашборд Леонида «Dashboard_B2BAPP_obnovlenie12.10.2026», перенесён 26.10.2026.
+     Динамика (KPI, прогноз, цели и задачи спринтов, план по сценариям) — из
+     data.json, всё посчитано в build_dashboard.py; остальное — статичный текст. -->
+<style>
+.st-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.st-chip{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--mute)}
+.st-chip b{color:var(--text)}
+.st-tabs{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:12px 0 20px}
+.st-tab{padding:9px 13px;cursor:pointer;color:var(--mute);font-size:13px;border-bottom:2px solid transparent;white-space:nowrap;background:none;border-top:0;border-left:0;border-right:0;font-family:inherit}
+.st-tab .n{opacity:.6;font-size:11px;margin-right:6px}
+.st-tab.active{color:var(--text);border-bottom-color:var(--yel);font-weight:700}
+.st-pane{display:none}.st-pane.active{display:block}
+.st-pane h2{font-size:19px;margin:0 0 4px}
+.lead{color:var(--mute);margin:0 0 16px;max-width:960px;font-size:13px}
+.g2c{display:grid;grid-template-columns:1fr 1fr;gap:14px}.g3c{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.g4c{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
+.card h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--yel);display:inline-block;flex-shrink:0}
+.dot.g{background:var(--ok)}.dot.b{background:var(--blue)}.dot.r{background:var(--err)}
+.row{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:13px}
+.row:first-of-type{border-top:none}
+.idx{color:var(--yel);font-size:12px;min-width:34px;font-weight:700;flex-shrink:0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.kpi .l{color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.kpi .v{font-size:18px;font-weight:800;margin-top:4px}
+.kpi .v.red{color:var(--err)}.kpi .v.ok{color:var(--ok)}
+.warn{background:rgba(230,126,34,.12);border-left:4px solid var(--warn);padding:10px 14px;border-radius:8px;margin:12px 0;font-size:13px}
+.danger{background:rgba(231,76,60,.12);border-left:4px solid var(--err);padding:10px 14px;border-radius:8px;margin:12px 0;font-size:13px}
+.okbox{background:rgba(46,204,113,.12);border-left:4px solid var(--ok);padding:10px 14px;border-radius:8px;margin:12px 0;font-size:13px}
+.tag{display:inline-block;border:1px solid var(--line);border-radius:14px;padding:1px 9px;font-size:11px;color:var(--mute)}
+.upd{color:var(--ok)}
+.sub{color:var(--mute);font-size:12px}
+.goal{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+.goal:first-of-type{border-top:none}
+.gst{flex-shrink:0;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff}
+.gst.done{background:var(--ok)}.gst.partial{background:var(--warn)}.gst.fail{background:var(--err)}.gst.dropped{background:var(--mute)}.gst.open{background:var(--blue)}
+.gres{color:var(--mute);font-size:12px;margin-top:2px}
+.mini{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px}
+.mini th{text-align:left;color:var(--mute);font-size:10px;text-transform:uppercase;padding:5px 6px;border-bottom:1px solid var(--line)}
+.mini td{padding:5px 6px;border-bottom:1px solid var(--line)}
+.mini td.c,.mini th.c{text-align:center}
+.medals{display:flex;flex-direction:column;gap:2px;margin-top:12px}
+.medal{display:flex;gap:12px;align-items:center;padding:6px 0;font-size:13px}
+.medal .num{flex:0 0 28px;height:28px;border-radius:50%;background:var(--yel);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px}
+.gt{border:1px solid var(--line);border-radius:12px;overflow-x:auto;margin-top:6px}
+.gt table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:820px}
+.gt th{background:rgba(127,143,166,.12);color:var(--mute);font-size:11px;font-weight:700;text-align:center;padding:8px 2px;border-left:1px solid var(--line)}
+.gt th.lab{text-align:left;padding-left:12px;border-left:none;color:var(--text)}
+.gt td{height:32px;vertical-align:middle;border-left:1px solid var(--line);border-top:1px solid var(--line);padding:0 2px}
+.gt td.lab{border-left:none;font-size:12px;padding:0 8px 0 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gt td.grp{background:rgba(127,143,166,.18);font-weight:800;font-size:12px;padding:5px 12px}
+.gt td.now{background:rgba(0,212,255,.07)}
+.gbar{display:block;margin:0 3px;border-radius:8px;height:16px;line-height:16px;font-size:10px;font-weight:700;text-align:center;color:#fff}
+.gbar.done{background:var(--ok)}.gbar.work{background:var(--yel)}.gbar.plan{background:#7f8fa6}
+.pill{display:inline-block;border-radius:6px;padding:1px 5px;margin:1px;font-size:9.5px;font-weight:800;color:#fff;white-space:nowrap}
+.pill.late{box-shadow:0 0 0 2px var(--err) inset}
+.pill.nojira{opacity:.5}
+.lgd{font-size:12px;color:var(--mute);margin:2px 0 10px;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center}
+.lgd .sw{display:inline-block;width:18px;height:11px;border-radius:3px;vertical-align:middle;margin-right:5px}
+.ptbl{width:100%;border-collapse:collapse;font-size:13px}
+.ptbl th{text-align:left;color:var(--mute);font-size:11px;text-transform:uppercase;padding:7px 9px;border-bottom:1px solid var(--line)}
+.ptbl td{padding:8px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+.scst{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+@media(max-width:900px){.g2c,.g3c,.g4c{grid-template-columns:1fr}}
+</style></head><body>
+<div class="layout">
+<div id="sidebar-root"></div>
+<script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();</script>
+<div class="main">
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🧾 Статус для руководства</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
+</header>
+<div class="content">
+  <div class="st-chips" id="chips"></div>
+  <div class="st-tabs" id="tabs" role="tablist">
+    <button class="st-tab active" data-t="t1"><span class="n">01</span>Обзор</button>
+    <button class="st-tab" data-t="t2"><span class="n">02</span>Переосмысление скоупа</button>
+    <button class="st-tab" data-t="t3"><span class="n">03</span>Что планируется в MVP</button>
+    <button class="st-tab" data-t="t4"><span class="n">04</span>Подбор команды</button>
+    <button class="st-tab" data-t="t5"><span class="n">05</span>Дорожная карта общая</button>
+    <button class="st-tab" data-t="t6"><span class="n">06</span>Дорожная карта по сценариям</button>
+    <button class="st-tab" data-t="t7"><span class="n">07</span>Билайн vs Альфа</button>
+  </div>
+
+<!-- ===== 01 Обзор (динамика из data.json) ===== -->
+<div class="st-pane active" id="t1"><div id="t1body">Загрузка…</div></div>
+
+<!-- ===== 02 Переосмысление (статично) ===== -->
+<div class="st-pane" id="t2">
+  <h2>Переосмысление скоупа MVP</h2>
+  <p class="lead">Почему скоуп изменился: от насыщения продуктовыми сценариями внешних партнёров — к минимизации внешних зависимостей и фокусу на том, что мы контролируем сами.</p>
+  <div class="g2c">
+    <div class="card"><h3><span class="dot"></span>Было</h3>
+      <p>Закрываем гигиену от Билайн (ЕЛК, КСС) + насыщаем продуктовыми сценариями внешних продуктов (ИИ-ассистенты, записи/расшифровки, рассылки).</p>
+      <div class="danger" style="margin-bottom:0">→ большая зависимость от сроков/возможностей внешних продуктов и команд</div>
+    </div>
+    <div class="card"><h3><span class="dot g"></span>Стало</h3>
+      <p>Минимизируем зависимости от внешних продуктов/команд.</p>
+      <p>Акцентируем на обработку и аналитику коммуникаций и аналитику от Билайн.</p>
+      <p class="upd">Движок — свой оркестратор + MCP-tools на LLM «ИИ Билайн»; интеграция с BeeGPT (B2C) признана нереализуемой.</p>
+    </div>
+  </div>
+  <div class="warn">Ограничение: запись/расшифровка/секретарь реализуются через продукт от B2C и доступны только самозанятым. Для ИП/ООО — конфликт на сети у записи и «этикетки» номера (<a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2511603224" target="_blank" rel="noopener">PFC-1271 / B2BAPP-1262</a>). <b>Срок 1-й задачи (запись↔этикетка) подтверждён — до 1 месяца (~2 спринта):</b> доработка требований + разработка (~полспринта) + тестирование; запуск — по планированию спринта смежной команды. Прежняя оценка «начало 2027» снята как ошибочная. Отдельно есть <b>2-я задача — конфликт записи с виртуальным номером: ещё не описана, будет сложнее.</b></div>
+  <h3 style="margin:18px 0 10px">Из скоупа MVP убраны</h3>
+  <div class="g3c">
+    <div class="card"><h3><span class="dot r"></span>Внешний ИИ-ассистент (Солопренер)</h3>
+      <p class="sub" style="margin-top:0">Продукт в процессе переезда в Билайн (оплата/договор):</p>
+      <div class="row">Не подписан договор между компаниями</div>
+      <div class="row">Не утверждено ТЗ между компаниями</div>
+      <div class="row">Сроки реализации постоянно двигаются</div>
+      <div class="warn" style="margin-bottom:0">Альтернатива: реализация через ИИ-платформу Билайн для текстовых ассистентов — если ок, включим в MVP (ИИ-маркетолог, проверка идеи, анализ конкурентов).</div>
+    </div>
+    <div class="card"><h3><span class="dot r"></span>ОАТС</h3>
+      <p>Нет готовой якорной функциональности по расшифровке и саммари; нет своего API; только postpay.</p>
+      <p class="upd">Заведён отдельный трек: аналитик описал юз-кейсы; письмо команде ОАТС (владелец продукта / глава / архитектор) на подтверждение реализуемости. Горизонт — ноябрь+.</p>
+    </div>
+    <div class="card"><h3><span class="dot r"></span>Гигиена от Билайн (ЕЛК, КСС)</h3>
+      <p>Затратны и не несут новой ценности — будем делать в рамках Post-MVP.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 03 Что планируется в MVP (реестр сценариев из data.json) ===== -->
+<div class="st-pane" id="t3"><div id="t3body"></div></div>
+
+<!-- ===== 04 Подбор команды (статично) ===== -->
+<div class="st-pane" id="t4">
+  <h2>Состояние по подбору команды</h2>
+  <p class="lead">7 из 9 позиций закрыты, 2 в ожидании старта подбора. Текущий состав и загрузка — на странице <a href="resources.html">«Ресурсный план»</a>.</p>
+  <div class="card" style="overflow-x:auto">
+    <table class="ptbl">
+      <tr><th>№</th><th>Позиция</th><th>Грейд</th><th>Статус</th><th>Дата выхода</th><th>Комментарий</th></tr>
+      <tr><td>1</td><td><b>Дизайнер</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>23.03.2026</td><td>—</td></tr>
+      <tr><td>2</td><td><b>Аналитик</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>12.08.2026</td><td>—</td></tr>
+      <tr><td>3</td><td><b>Аналитик</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>01.09.2026</td><td>—</td></tr>
+      <tr><td>4</td><td><b>Бэк</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>24.07.2026</td><td>—</td></tr>
+      <tr><td>5</td><td><b>Бэк</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>04.09.2026</td><td>—</td></tr>
+      <tr><td>6</td><td><b>Фронт</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>27.07.2026</td><td>—</td></tr>
+      <tr><td>7</td><td><b>Тестировщик</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>21.07.2026</td><td>—</td></tr>
+      <tr><td>8</td><td><b>Фронт</b></td><td><span class="tag">джун</span></td><td><span class="badge badge-warn">○ Не начато</span></td><td>–</td><td>Фриз снят, уточнить возможность старта подбора у HR BP</td></tr>
+      <tr><td>9</td><td><b>Тестировщик</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-warn">○ Не начато</span></td><td>–</td><td>Фриз снят, уточнить возможность старта подбора у HR BP</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 05 Дорожная карта общая (фазы статичны, разработка MVP — по прогнозу) ===== -->
+<div class="st-pane" id="t5"><div id="t5body"></div></div>
+
+<!-- ===== 06 Дорожная карта по сценариям («План ручной» из data.json) ===== -->
+<div class="st-pane" id="t6"><div id="t6body"></div></div>
+
+<!-- ===== 07 Билайн vs Альфа (статично) ===== -->
+<div class="st-pane" id="t7">
+  <h2>Моб. приложение Билайн B2B vs «ИИ-сотрудник» Альфы</h2>
+  <p class="lead">Сравнение по анализу партнёрского сценарного файла.</p>
+  <div class="card" style="overflow-x:auto">
+    <table class="ptbl">
+      <tr><th>Измерение</th><th>Мы (Beeline B2B)</th><th>Партнёр (Альфа-Банк)</th></tr>
+      <tr><td><b>Позиционирование продукта</b></td><td>«Мы уже знаем, что было в ваших звонках» — узкий, глубокий дифференциатор</td><td>«ИИ-сотрудник» — универсальный заменитель нескольких сотрудников</td></tr>
+      <tr><td><b>Источник эксклюзивности</b></td><td>Контент звонков (данные телеком-оператора)</td><td>Банковские данные + рельсы (карта, платежи)</td></tr>
+      <tr><td><b>Широта охвата задач</b></td><td>Узкий фокус: звонки + рост бизнеса (34 сцен.)</td><td>Универсальный «ИИ-сотрудник»: 28 навыков</td></tr>
+      <tr><td><b>Монетизация</b></td><td>Сейчас — не коммерческий продукт, бесплатный апсейл-инструмент на продукты Билайн</td><td>Коммерческий продукт. Монетизация зрелая: freemium → навыки → 2 подписки</td></tr>
+      <tr><td><b>Охват сегментов</b></td><td>По звонкам пока только самозанятые (ИП/ООО — тех. конфликт)</td><td>Без ограничений / либо не известно</td></tr>
+      <tr><td><b>Каналы присутствия</b></td><td>Только мобильное приложение</td><td>Веб + интерфейс банка + Telegram/Max</td></tr>
+      <tr><td><b>Эксклюзивные сценарии</b></td><td>Расшифровка/саммари входящих звонков; секретарь пропущенных; карточка контакта по истории разговоров; аналитика от Билайн</td><td>ROI-рекомендации на остатках счёта; своя карта для трат агента; мультибанк-агрегация; ЭП и подача деклараций</td></tr>
+      <tr><td><b>Одинаковые / похожие</b></td><td>Календарь и напоминания; анализ отрасли; проактивные инсайты по звонкам; дневная сводка</td><td>Календарь и напоминания; глубокие исследования рынка; проактивные NBO-подсказки; утренняя сводка</td></tr>
+      <tr><td><b>Легко копируется / не уникально</b></td><td>Календарь, напоминания, анализ отрасли — не требуют телеком-данных</td><td>Календарь, напоминания, почта, память, презентации, таблицы, SEO, реклама, сайты, CRM-рассылки, мессенджеры, исследование рынка, резюме встреч — доступно любому ИИ-игроку</td></tr>
+      <tr><td><b>Не повторяющиеся</b></td><td>Вся работа со звонками и контактами; геоаналитика и веб-сравнение роста — ~26 из 34 сценариев</td><td>Маркетинг и продажи, финансы и учёт, поддержка и голос, CRM и репутация, законодательство, закупки, карта агента — ~20 из 28 сценариев</td></tr>
+    </table>
+  </div>
+  <div class="g2c" style="margin-top:14px">
+    <div class="card"><h3><span class="dot"></span>Выводы</h3>
+      <p>Мы — акцентируем на звонки и аналитику от Билайн. Продукт бесплатный.</p>
+      <p>Альфа-банк — реализует максимальное количество универсальных сценариев, монетизация иная; в универсальности продвинулись дальше нас.</p>
+      <p class="upd">Обновление: сценарии Альфы разложены на тиры — Тир-1 берём (почта, резюме встреч, отзывы/репутация, КП); бухгалтерия и прочее «из данных Альфы» — горизонт 2027+; телефония/звонки/голос/карты не берём (наши фичи). Банковские данные Альфа не даёт. Оценены 7 задач интеграции; бизнес-кейс к 14.10. <a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2577985927" target="_blank" rel="noopener">Страница трека в Confluence →</a></p>
+    </div>
+    <div class="card"><h3><span class="dot"></span>Варианты сотрудничества (если поверхности разные, а не единая)</h3>
+      <div class="row"><span class="idx">1</span>Идеальный — забирать общие навыки без интеграции/монетизации, техобмен; монетизацию от себя по общим сценариям, эксклюзивные — отдельным треком.</div>
+      <div class="row"><span class="idx">2</span>Интеграция вместо внешнего ассистента — монетизация в нашем приложении.</div>
+      <div class="row"><span class="idx">3</span>Интеграция и с внешним ассистентом — монетизация составная (мы, партнёр 1, партнёр 2…).</div>
+    </div>
+  </div>
+</div>
+</div></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const dmy=s=>s?`${s.slice(8,10)}.${s.slice(5,7)}.${s.slice(0,4)}`:'—';
+const dm=s=>s?`${s.slice(8,10)}.${s.slice(5,7)}`:'—';
+const DEADLINE='2026-12-10';
+// Цвета ролей — как на ганте; зелёный только «готово» (Завершена / Waiting for release).
+const DONE_GREEN='#2ECC71';
+const STG={AN:['Ан','#E36FA8','Аналитика'],DS:['Диз','#FFC803','Дизайн'],BE:['Бэк','#FF4444','Бэк'],BE1:['Бэк 1','#FF4444','Бек 1 (Попов)'],BE2:['Бэк 2','#B0306A','Бек 2 (Григоркин)'],FE:['Фр','#4472C4','Фронт'],QA:['QA','#ED7D31','QA']};
+const CONTOUR_NOTE={
+  'Мой день':'Главный экран как срез состояния бизнеса + ежедневный обзор — точка входа в остальные контуры.',
+  'Обращения и клиенты':'Ядро дифференциации MVP: звонки → расшифровка/секретарь → извлечённые задачи → напоминания/календарь. Основной риск: запись/расшифровка/секретарь (OB3/OB4) подтверждены пока только для самозанятых — для ИП/ООО тех. конфликт (PFC-1271).',
+  'Развитие бизнеса':'Discovery/growth-слой: рыночный контекст и цифровая витрина Билайн. Не ежедневный экран, доступен по запросу.',
+  'Платформа/Ядро':'Технологическая инфраструктура, без которой ни один контур не работает.'};
+
+document.getElementById('tabs').addEventListener('click',e=>{
+  const t=e.target.closest('.st-tab'); if(!t) return;
+  document.querySelectorAll('.st-tab').forEach(x=>x.classList.toggle('active',x===t));
+  document.querySelectorAll('.st-pane').forEach(x=>x.classList.toggle('active',x.id===t.dataset.t));
+  try{ localStorage.setItem('st-tab',t.dataset.t); }catch(_){}
+});
+try{ const t=localStorage.getItem('st-tab'); const b=t&&document.querySelector(`.st-tab[data-t="${t}"]`); if(b) b.click(); }catch(_){}
+
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  mountFreshness('freshness', d.refreshedAt, d.updated);
+  $('upd').textContent=d.updated||'—';
+  const g=d.ganttV2||{}, k=d.kpi||{}, m=d.metrics||{}, sp=g.statusPage||{};
+  const crit=k.criticalEnd, ok=crit&&crit<=DEADLINE;
+  const spBy={}; (g.sprints||[]).forEach(s=>spBy[s.n]=s);
+  const cur=spBy[sp.currentSprint], prev=spBy[sp.lastClosedSprint];
+  $('chips').innerHTML=`<span class="st-chip">Срез на <b>${esc(d.updated||'—')}</b></span><span class="st-chip">Старт разработки — <b>авг 2026</b></span><span class="st-chip">Дедлайн MVP — <b>10.12.2026</b></span><span class="st-chip">Прогноз завершения — <b style="color:${ok?'var(--ok)':'var(--err)'}">${dmy(crit)}</b></span>${cur?`<span class="st-chip">Идёт <b>${esc(cur.name)}</b> (${dm(cur.start)}–${dm(cur.end)})</span>`:''}`;
+  const critRes=(g.resources||[]).find(r=>r.id===(g.criticalPathExplained||{}).resource);
+  const verdict=ok?`<div class="okbox">Статус по срокам: <b>к дедлайну MVP 10.12.2026 успеваем</b> — критический путь до ${dmy(crit)}.</div>`
+    :`<div class="danger">Статус по срокам: <b>к дедлайну MVP 10.12.2026 не успеваем</b>. Критический путь уходит до <b>${dmy(crit)}</b>${critRes?` (хвост — ${esc(critRes.role)}, ${esc(critRes.name.split(' ')[0])})`:''}. Источник: <a href="gantt.html">диаграмма Ганта</a>.</div>`;
+
+  // ── 01 Обзор ──
+  const goals=sp.sprintGoals||{}, gBy={}; (goals.sprints||[]).forEach(s=>gBy[s.n]=s);
+  const GST={done:['✓','выполнено'],partial:['◐','частично'],fail:['✗','не выполнено'],dropped:['–','снято'],open:['•','в работе']};
+  const goalList=s=>s&&s.goals.length?s.goals.map((x,i)=>`<div class="goal"><span class="gst ${x.status}" title="${GST[x.status][1]}">${GST[x.status][0]}</span><div><div>${esc(x.text)}</div>${x.result?`<div class="gres">Итог: ${esc(x.result)}</div>`:''}</div></div>`).join(''):'<div class="sub">Цели спринта на странице «Реализация» не заполнены.</div>';
+  const statTbl=(n,closed)=>{const rows=((sp.sprintStats||{})[n]||[]).filter(r=>r.tasks);
+    if(!rows.length) return '';
+    return `<table class="mini"><tr><th>Сценарий</th><th class="c">Задач</th><th class="c">Готово</th>${closed?'':'<th class="c">В тесте</th><th class="c">В работе</th>'}<th class="c">Часы</th></tr>${rows.map(r=>`<tr><td><b>${esc(r.code)}</b> ${esc((r.name||'').slice(0,46))}</td><td class="c">${r.tasks}</td><td class="c" style="color:${r.done?'var(--ok)':'inherit'}">${r.done}</td>${closed?'':`<td class="c">${r.inQa||''}</td><td class="c">${r.inProgress||''}</td>`}<td class="c">${r.estimateH}</td></tr>`).join('')}</table>`;};
+  const gs=goals.source||{};
+  const pg=gBy[sp.lastClosedSprint], cg=gBy[sp.currentSprint];
+  const cnt=s=>s?Object.entries(s.goals.reduce((a,x)=>(a[x.status]=(a[x.status]||0)+1,a),{})).map(([k,v])=>`${GST[k][1]}: ${v}`).join(' · '):'';
+  $('t1body').innerHTML=`<h2>Обзор по проекту</h2>
+    <p class="lead">Общий статус, итоги закрытого спринта и цели текущего, открытые вопросы руководству. Цифры — из Jira на ${esc(d.updated||'—')}; цели спринтов — со страницы «Реализация» в Confluence${gs.version?` (версия ${gs.version} от ${dmy((gs.when||'').slice(0,10))})`:''}.</p>
+    <div class="g4c" style="margin-bottom:12px">
+      <div class="kpi"><div class="l">Эпиков</div><div class="v">${m.epicsTotal??'—'}</div></div>
+      <div class="kpi"><div class="l">Стори (сделано/всего)</div><div class="v">${m.storiesDone??'—'} / ${m.storiesTotal??'—'}</div></div>
+      <div class="kpi"><div class="l">Задач (сделано/всего)</div><div class="v">${m.tasksDone??'—'} / ${m.tasksTotal??'—'}</div></div>
+      <div class="kpi"><div class="l">Прогноз завершения</div><div class="v ${ok?'ok':'red'}">${dmy(crit)}</div></div>
+    </div>${verdict}
+    <div class="g2c">
+      <div class="card"><h3><span class="dot g"></span>Итоги ${prev?esc(prev.name)+' ('+dm(prev.start)+'–'+dm(prev.end)+')':'прошлого спринта'}</h3>
+        ${pg?`<div class="sub" style="margin-bottom:4px">${cnt(pg)}</div>`:''}${goalList(pg)}
+        ${statTbl(sp.lastClosedSprint,true)}</div>
+      <div class="card"><h3><span class="dot b"></span>Фокус ${cur?esc(cur.name)+' ('+dm(cur.start)+'–'+dm(cur.end)+')':'текущего спринта'}</h3>
+        ${goalList(cg)}
+        ${statTbl(sp.currentSprint,false)}</div>
+    </div>
+    <div class="card" style="margin-top:14px"><h3><span class="dot r"></span>Дополнительно — встреча с руководством смежной дирекции</h3>
+      <p class="sub" style="margin-top:0">Итоги встречи и открытые вопросы к руководству:</p>
+      <table class="ptbl"><tr><th>Итог встречи</th><th>Комментарий / кому на реакцию</th></tr>
+        <tr><td>Позиция: должно быть одно единое приложение на базе B2C</td><td><b>Директор дирекции</b> — что с этим делаем?</td></tr>
+        <tr><td>Реализация приложения на базе решения B2C (платформа/техника) — независимо от того, одно приложение или нет</td><td><b>Медиатор смежных треков</b> — определить, меняется ли что-то, донести до команды</td></tr></table>
+    </div>`;
+
+  // ── 03 Что планируется в MVP — реестр сценариев v.2 ──
+  const scs=(g.scenarios||[]).filter(s=>s.code!=='PLATFORM');
+  const ST_COL={done:DONE_GREEN,in_progress:'var(--yel)',backlog:'#7f8fa6',empty:'transparent'};
+  const ST_LBL={done:'готово',in_progress:'в работе',backlog:'в бэклоге',empty:'нет задач в Jira'};
+  const card=(title,list,dot,note)=>`<div class="card"><h3><span class="dot ${dot}"></span>${esc(title)} <span class="tag" style="margin-left:auto">${list.length} сцен.</span></h3>${note?`<p class="sub" style="margin-top:0">${esc(note)}</p>`:''}${list.map(s=>`<div class="row"><span class="idx">${esc(s.code)}</span><span style="flex:1"><span class="scst" title="${ST_LBL[s.category]||''}" style="background:${ST_COL[s.category]||'transparent'};border:1px solid #7f8fa6"></span>${esc(s.name)}</span><span class="tag">${esc(s.priority||'')}</span></div>`).join('')}</div>`;
+  const byC=c=>scs.filter(s=>s.contour===c);
+  const other=scs.filter(s=>!CONTOUR_NOTE[s.contour]);
+  $('t3body').innerHTML=`<h2>Что планируется в MVP</h2>
+    <p class="lead">Реестр сценариев MVP (v.2, <a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2356754448" target="_blank" rel="noopener">Confluence</a>) по 4 контурам: Мой день, Обращения и клиенты, Развитие бизнеса, Платформа/Ядро. Точка у сценария — статус по Jira: <span class="scst" style="background:${DONE_GREEN}"></span>готово <span class="scst" style="background:var(--yel)"></span>в работе <span class="scst" style="background:#7f8fa6"></span>в бэклоге <span class="scst" style="border:1px solid #7f8fa6"></span>нет задач.</p>
+    <div class="g2c">${card('1. Мой день',byC('Мой день'),'',CONTOUR_NOTE['Мой день'])}${card('2. Обращения и клиенты',byC('Обращения и клиенты'),'',CONTOUR_NOTE['Обращения и клиенты'])}</div>
+    <div class="g2c" style="margin-top:14px">${card('3. Развитие бизнеса',byC('Развитие бизнеса'),'g',CONTOUR_NOTE['Развитие бизнеса'])}${card('4. Платформа/Ядро (техническая база)',byC('Платформа/Ядро'),'b',CONTOUR_NOTE['Платформа/Ядро'])}</div>
+    ${other.length?`<div style="margin-top:14px">${card('Сквозные треки',other,'r','Первое касание, переиспользование B2C, другие AI-ассистенты, трек ИБ — вне 4 контуров, но в плане работ.')}</div>`:''}`;
+
+  // ── 05 Дорожная карта общая: фазы — Леонид 12.10.2026; разработка MVP
+  //    заканчивается в месяце прогноза критпути, пилот и запуск — следом ──
+  const mAdd=(ym,n)=>{const [y,mo]=ym.split('-').map(Number);const t=new Date(Date.UTC(y,mo-1+n,1));return t.toISOString().slice(0,7);};
+  const devEnd=crit?crit.slice(0,7):'2027-01', pilot=mAdd(devEnd,1), launch=mAdd(devEnd,2);
+  const last=launch>'2027-03'?launch:'2027-03';
+  const months=[]; for(let x='2026-01';x<=last;x=mAdd(x,1)) months.push(x);
+  const MN=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  const nowM=new Date().toISOString().slice(0,7);
+  const PH=[
+    {n:'Стратегия, архитектура решения',a:'2026-01',b:'2026-03',c:'done',t:'готово'},
+    {n:'<a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/1562746385" target="_blank" rel="noopener">Исследования</a>',a:'2026-02',b:'2026-05',c:'done',t:'готово',extra:['2026-08']},
+    {n:'Формирование новой стратегии',a:'2026-04',b:'2026-06',c:'done',t:'готово'},
+    {n:'Тестирование новой концепции',a:'2026-05',b:'2026-06',c:'done',t:''},
+    {n:'Формирование скоупа MVP',a:'2026-07',b:'2026-09',c:'done',t:'готово'},
+    {n:'Разработка MVP',a:'2026-08',b:devEnd,c:'work',t:'в работе'},
+    {n:'Пилот',a:pilot,b:pilot,c:'plan',t:'план'},
+    {n:'Коммерческий запуск MVP',a:launch,b:launch,c:'plan',t:''}];
+  const row=p=>{let h='',i=0;while(i<months.length){const mo=months[i];
+      if(mo===p.a){let j=i;while(j+1<months.length&&months[j+1]<=p.b)j++;h+=`<td colspan="${j-i+1}"${mo<=nowM&&months[j]>=nowM?' class="now"':''}><span class="gbar ${p.c}">${p.t}</span></td>`;i=j+1;continue;}
+      if((p.extra||[]).includes(mo)){h+=`<td><span class="gbar ${p.c}"></span></td>`;i++;continue;}
+      h+=`<td${mo===nowM?' class="now"':''}></td>`;i++;}
+    return `<tr><td class="lab">${p.n}</td>${h}</tr>`;};
+  $('t5body').innerHTML=`<h2>Дорожная карта — общая</h2>
+    <p class="lead">Верхнеуровневая последовательность фаз проекта от стратегии до коммерческого запуска. Схематично, до уровня месяца. Окончание разработки MVP — месяц прогноза критического пути (${dmy(crit)}), пилот и коммерческий запуск — следом.</p>
+    <div class="lgd"><span><span class="sw" style="background:var(--ok)"></span>реализовано</span><span><span class="sw" style="background:var(--yel)"></span>в работе</span><span><span class="sw" style="background:#7f8fa6"></span>в бэклоге / план</span><span><span class="sw" style="background:rgba(0,212,255,.3)"></span>текущий месяц</span></div>
+    <div class="gt"><table><colgroup><col style="width:230px">${months.map(()=>'<col>').join('')}</colgroup>
+      <tr><th class="lab">Фаза</th>${months.map(x=>`<th>${MN[+x.slice(5)-1]}${x.slice(5)==='01'&&x>'2026-01'?"'"+x.slice(2,4):''}</th>`).join('')}</tr>
+      ${PH.map(row).join('')}</table></div>
+    ${ok?`<div class="okbox">Дедлайн MVP — <b>10.12.2026</b>, по критическому пути <b>успеваем</b> (${dmy(crit)}).</div>`
+       :`<div class="danger">Дедлайн MVP — <b>10.12.2026</b>, но по критическому пути <b>не успеваем</b>; прогноз завершения — <b>${dmy(crit)}</b>. Поэтому разработка MVP вытягивается до ${MN[+devEnd.slice(5)-1]} ${devEnd.slice(0,4)}, пилот и коммерческий запуск сдвигаются следом.</div>`}
+    <div class="medals">
+      <div class="medal"><span class="num">1</span><span><b>к концу мар '26</b> — разворот на новую стратегию, AI-first</span></div>
+      <div class="medal"><span class="num">2</span><span><b>к концу июн '26</b> — утверждена новая стратегия продукта</span></div>
+      <div class="medal"><span class="num">3</span><span><b>к концу сен '26</b> — зафиксирован скоуп MVP</span></div>
+      <div class="medal"><span class="num">4</span><span><b>к концу дек '26</b> — целевое E2E-тестирование${ok?'':' (по прогнозу сдвигается)'}</span></div>
+      <div class="medal"><span class="num">5</span><span><b>${MN[+pilot.slice(5)-1]} '${pilot.slice(2,4)}</b> — приложение доступно пилотной группе</span></div>
+      <div class="medal"><span class="num">6</span><span><b>~${MN[+launch.slice(5)-1]} '${launch.slice(2,4)}</b> — приложение доступно клиентам в сторах</span></div>
+    </div>`;
+
+  // ── 06 Дорожная карта по сценариям — «План ручной» по спринтам ──
+  const mp=g.manualPlan;
+  if(!mp){ $('t6body').innerHTML='<div class="empty">Нет «Плана ручного» в данных.</div>'; return; }
+  const sps=(mp.sprints||[]).map(s=>s.n);
+  // спринты плана дальше календаря ганта (он кончается на прогнозе) — даты из плана
+  (mp.sprints||[]).forEach(s=>{ if(!spBy[s.n]) spBy[s.n]={n:s.n,start:s.start,end:s.end,state:s.end<=new Date().toISOString().slice(0,10)?'closed':'future'}; });
+  const today=new Date().toISOString().slice(0,10);
+  const jiraOf=(r,sid)=>(r.jira||{})[sid]||((sid==='BE1'||sid==='BE2')?(r.jira||{}).BE:null);
+  let lastC=null, lateCnt=0;
+  const body=mp.rows.map(r=>{
+    let h='';
+    if(r.contour!==lastC){ lastC=r.contour; h+=`<tr><td class="grp" colspan="${sps.length+1}">${esc(r.contour)}</td></tr>`; }
+    h+=`<tr><td class="lab" title="${esc(r.code+' · '+r.name+' · '+r.owner)}"><b style="color:var(--yel)">${esc(r.code)}</b> ${esc(r.name)}</td>`+sps.map(n=>{
+      const s=spBy[n]||{}, sts=(r.cells||{})[n]||[];
+      return `<td${s.state==='active'?' class="now"':''} style="text-align:center">${sts.map(sid=>{
+        const j=jiraOf(r,sid), done=j&&j.category==='done', late=!done&&s.end&&s.end<=today;
+        if(late) lateCnt++;
+        return `<span class="pill${late?' late':''}${j?'':' nojira'}" style="background:${done?DONE_GREEN:STG[sid][1]}" title="${esc(STG[sid][2])}: ${j?({done:'готово',in_progress:'в работе',backlog:'не начат'})[j.category]+` (задач ${j.done}/${j.tasks})`:'в Jira нет задач'}${late?' · срок по плану прошёл':''}">${STG[sid][0]}</span>`;}).join('')}</td>`;}).join('')+'</tr>';
+    return h;}).join('');
+  const src=mp.source||{};
+  $('t6body').innerHTML=`<h2>Дорожная карта — по сценариям MVP</h2>
+    <p class="lead">План команды по спринтам в разрезе сценариев и ролей — «План ручной» аналитиков (<a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2666206915" target="_blank" rel="noopener">Confluence</a>, версия ${esc(src.version||'—')} от ${dmy((src.when||'').slice(0,10))}). Цвет — роль; <b>зелёный — только этап, готовый по Jira</b> (Завершена / Waiting for release). Интерактивно, по датам — <a href="gantt.html?view=stages">«Этапы по сценариям (упрощённо)» на диаграмме Ганта</a>.</p>
+    <div class="lgd">${['AN','DS','BE1','BE2','FE','QA'].map(id=>`<span><span class="sw" style="background:${STG[id][1]}"></span>${STG[id][2]}</span>`).join('')}<span><span class="sw" style="background:${DONE_GREEN}"></span>готово по Jira</span><span><span class="sw" style="box-shadow:0 0 0 2px var(--err) inset"></span>срок прошёл, этап не закрыт (${lateCnt})</span><span><span class="sw" style="background:#7f8fa6;opacity:.5"></span>в Jira нет задач этапа</span><span><span class="sw" style="background:rgba(0,212,255,.3)"></span>текущий спринт</span></div>
+    <div class="gt"><table style="min-width:${300+sps.length*78}px"><colgroup><col style="width:300px">${sps.map(()=>'<col>').join('')}</colgroup>
+      <tr><th class="lab">Сценарий</th>${sps.map(n=>{const s=spBy[n];return `<th title="${s?dmy(s.start)+' – '+dmy(s.end):''}">С${n}<div style="font-weight:400;font-size:9.5px">${s?(n===0?'до '+dm(s.end):dm(s.start)+'–'+dm(s.end)):''}</div></th>`;}).join('')}</tr>
+      ${body}</table></div>
+    <div class="danger">Срок 1-й задачи «запись↔этикетка» (PFC-1271) по контуру «Обращения и клиенты» (OB3/OB4) — до 1 месяца (~2 спринта); для ИП/ООО сценарии записи/расшифровки пока заблокированы, доступны только самозанятым. ${ok?'':`По критическому пути к дедлайну <b>10.12.2026 не успеваем</b>, прогноз завершения — <b>${dmy(crit)}</b>.`}</div>
+    <div class="warn">Выход в продуктив (E2E-тестирование, пилот, коммерческий запуск) и контрольные точки — на общей дорожной карте (вкладка 05).</div>`;
+}).catch(e=>{ $('t1body').innerHTML='<div class="empty">Не удалось загрузить data.json: '+esc(e.message)+'</div>'; });
+</script>
+</body></html>
