@@ -98,6 +98,17 @@ PARALLEL_ROLES = {"ORG", "DVO", "OTHER"}  # не встраиваются в ф�
 SPRINT_ANCHOR = date(2026, 8, 25)   # начало Спринта 0
 SPRINT_DAYS = 14
 SPRINT_NAME_RE = re.compile(r"Спринт\s*(\d+)", re.I)
+# Перерывы между спринтами: после Спринта 8 (15.12–29.12.2026) — новогодние
+# каникулы, Спринт 9 начинается 12.01.2027 (так в «Плане ручном», Confluence
+# 2666206915, 26.10.2026). Ключ — номер спринта ПОСЛЕ которого перерыв, дни.
+SPRINT_GAP_AFTER = {8: 14}
+
+# Спринтовая модель ганта (Виктор 26.10.2026): задача живёт в спринтах. Внутри
+# спринта задачи исполнителя идут друг за другом по часам; бэклог без спринта
+# раскладывается по будущим спринтам по «Плану ручному» с учётом ёмкости.
+# Бек 1 = Попов, Бек 2 = Григоркин; остальные роли по одному (аналитики — по
+# владельцу сценария в плане).
+MANUAL_BE = {"BE1": "попов", "BE2": "григоркин"}
 
 # Этапы сценария для упрощённого вида (роль задачи → этап). ARC относится к
 # аналитике; ORG/DVO/OTHER в этапы не входят (Виктор 20.10.2026).
@@ -139,19 +150,36 @@ def workdays_between(a: date, b: date):
         d = next_workday(d + timedelta(days=1))
 
 def sprint_start(n: int) -> date:
-    return SPRINT_ANCHOR + timedelta(days=SPRINT_DAYS * n)
+    gap = sum(g for k, g in SPRINT_GAP_AFTER.items() if n > k)
+    return SPRINT_ANCHOR + timedelta(days=SPRINT_DAYS * n + gap)
 
 def sprint_end(n: int) -> date:
-    """Последний день спринта = день старта следующего (20.10–03.11 — так
-    называет даты Виктор), поэтому граница принадлежит обоим соседям."""
-    return sprint_start(n + 1)
+    """Последний день спринта = через 2 недели от старта (20.10–03.11 — так
+    называет даты Виктор): без перерыва это день старта следующего, граница
+    принадлежит обоим соседям."""
+    return sprint_start(n) + timedelta(days=SPRINT_DAYS)
 
 def sprint_of_date(d: date) -> int:
     """В каком спринте закончится работа с датой окончания d (граница —
-    в уходящий спринт: 20.10 = последний день Спринта 3). До Спринта 0 → -1."""
+    в уходящий спринт: 20.10 = последний день Спринта 3; дни перерыва —
+    в спринт перед ним). До Спринта 0 → -1."""
     if d <= SPRINT_ANCHOR:
         return -1
-    return ((d - SPRINT_ANCHOR).days - 1) // SPRINT_DAYS
+    n = 0
+    while sprint_start(n + 1) < d:
+        n += 1
+    return n
+
+def sprint_index(d: date) -> int:
+    """Текущий спринт на дату d: последний начавшийся (20.10 → Спринт 4)."""
+    n = 0
+    while sprint_start(n + 1) <= d:
+        n += 1
+    return n
+
+def sprint_workdays(n: int):
+    """Рабочие дни спринта: [старт, конец) — граничный день отдаём следующему."""
+    return list(workdays_between(sprint_start(n), sprint_end(n) - timedelta(days=1)))
 
 def sprint_calendar(until: date, today: date, jira_sprints):
     """Спринты 0..N, пока не покроют until. state по today (closed/active/
@@ -282,8 +310,11 @@ def normalize_issue(raw):
         "summary": summary,
         "lastSprint": max(sprint_nums) if sprint_nums else None,
         "closedSprint": max(closed_nums) if closed_nums else None,
+        "sprints": sorted(set(sprint_nums)),
         "status": (f.get("status") or {}).get("name", ""),
-        "assignee": assignee.get("name") or assignee.get("key") or "",
+        # выгрузка кладёт только displayName (первые два слова) — по фамилии
+        # сопоставляем с ресурсом (спринтовая модель 26.10.2026)
+        "assignee": assignee.get("name") or assignee.get("key") or assignee.get("displayName") or "",
         "created": parse_dt(f.get("created")),
         # «Дата начала» (customfield_18100) — фактическое начало работы; у стори и
         # эпиков = самая ранняя у их задач (правило Виктора 11.10.2026, проверка
@@ -379,7 +410,7 @@ def resolve_epic_priority(e):
         return 9999
     return e["epicPriorityRaw"] if e.get("epicPriorityRaw") is not None else e["priority"]
 
-def plan_gantt(issues, resources, today=None):
+def plan_gantt(issues, resources, today=None, manual=None, story_scenario=None):
     """
     Возвращает items[] (epic+story+task) с датами, ресурсами, критпутём.
     Планируем ТОЛЬКО MVP (метка mvp у стори) + их задачи. Вакантные (issue и
@@ -455,104 +486,247 @@ def plan_gantt(issues, resources, today=None):
     def prio_key(t):
         return (story_prio(t), t["priority"], t["key"])
 
-    # Хранит окончание работы каждой роли внутри стори (для зависимостей ролей).
-    story_phase_end = defaultdict(lambda: defaultdict(lambda: None))  # story→role→date
-
+    # ═════════════════════════════════════════════════════════════════════════
+    # Спринтовая модель (Виктор 26.10.2026; заменила ready-queue с 22.09).
+    # Раньше начатая задача рисовалась от «Даты начала» в Jira до конца её
+    # остатка в очереди планировщика — 2-часовая задача Самойло тянулась с
+    # сентября до января, и всё у исполнителя выглядело параллельным. Теперь:
+    #  1. Задача из спринтов Jira (факт и обязательство команды) — в своём
+    #     последнем спринте не позже текущего; завершённая (в т.ч. «Waiting for
+    #     release») — в спринте, где завершилась; переходившая из спринта в
+    #     спринт — бар от первого её спринта. Спринт 0 — как раньше, по факту.
+    #  2. Бэклог без спринта — в будущие спринты (с текущий+1) по «Плану
+    #     ручному» (сценарий → этап → спринт; Бек 1/2 → Попов/Григоркин) с
+    #     учётом ёмкости исполнителя (2 недели × 8ч × FTE); не влезло — в
+    #     следующий спринт. Зависимости ролей стори — на уровне спринтов (Фронт
+    #     не раньше спринта Бэка и Дизайна и т.д., тот же спринт — можно).
+    #  3. Внутри спринта задачи исполнителя идут подряд по часам: готовые →
+    #     в работе → остальные по приоритету; перегруз сжимается в спринт.
+    # ═════════════════════════════════════════════════════════════════════════
     def st_key_of(t):
-        # None у "сирот" (нет реальной стори) — НЕ используем partParent
-        # напрямую как ключ: несколько разных сирот иначе синхронизировались
-        # бы на один и тот же ключ None в story_phase_end и ложно гейтили
-        # бы друг друга фазами. У сирот дальше просто нет фазовой зависимости.
+        # None у "сирот" (нет реальной стори): иначе несколько разных сирот
+        # синхронизировались бы на один ключ None и ложно гейтили друг друга.
         return t["partParent"] if t["partParent"] in stories else None
 
-    def ready_time(t, phase, st_key):
-        """Не раньше чего задача МОЖЕТ начаться — фазовая зависимость внутри
-        стори + явные Blocks. Не путать с тем, КОГДА она реально начнётся
-        (это ещё и от занятости ресурса зависит) — см. run_role_queue."""
-        dep_end = None
-        if st_key is not None and phase is not None:
-            for dr in ROLE_DEPS.get(t["role"], ()):
-                e = story_phase_end[st_key][dr]
-                if e and (dep_end is None or e > dep_end):
-                    dep_end = e
-        for dk in t["blocksDeps"]:
-            if dk in planned and (dep_end is None or planned[dk]["end"] > dep_end):
-                dep_end = planned[dk]["end"]
-        return dep_end or today
+    manual = manual or {}
+    story_scenario = story_scenario or {}
+    plan_cells = {r["code"]: {int(k): v for k, v in r["cells"].items()} for r in manual.get("rows", [])}
+    plan_owner = {r["code"]: (r.get("owner") or "").lower() for r in manual.get("rows", [])}
+    cur = sprint_index(today)
+    nxt = cur + 1
+    res_by_id = {r["id"]: r for r in real_resources}
+    res_by_surname = {r["name"].split()[0].lower(): r for r in real_resources}
 
-    def schedule_one(t, role, cat, st_key, phase):
-        if cat == "done":
-            end = t["resolutiondate"] or t["updated"] or t["startDate"] or t["created"] or date(2026, 1, 1)
-            # Завершённая задача из закрытого спринта заканчивается датой окончания
-            # этого спринта (Виктор 20.10.2026), в т.ч. «Waiting for release» —
-            # для нас это готово. Без закрытого спринта — resolutiondate, как раньше.
-            # Исключение: закрыта ДО начала этого спринта по нашему календарю
-            # (Спринт 0 в Jira шёл с 01.01 и собрал работу, сделанную ещё в
-            # июне–июле) — оставляем фактическую дату, иначе история искажается.
-            n = t.get("closedSprint")
-            if n is not None and t.get("lastSprint") == n and end >= sprint_start(n):
-                end = sprint_end(n)
-            start = min(t["startDate"] or t["created"] or end, end)
-            res = pick_resource(role, start)
-        else:
-            dep_end = ready_time(t, phase, st_key)
-            res = pick_resource(role, dep_end)
-            fte = res["fte"]
-            earliest = max(res_free[res["id"]], parse_dt(res["from"]) or today, dep_end, today)
-            remaining = t["estimateH"] - t["spentH"] if cat == "in_progress" else t["estimateH"]
-            remaining = max(remaining, 0)
-            start = next_workday(earliest)
-            end = add_work_hours(start, remaining, fte)
-            res_free[res["id"]] = next_workday(end + timedelta(days=1))
-            if st_key is not None and phase is not None:
-                prev = story_phase_end[st_key][role]
-                if prev is None or end > prev:
-                    story_phase_end[st_key][role] = end
-        # Начатая в Jira задача (статус не «Бэклог») рисуется от фактической «Даты
-        # начала»; plan_start — где планировщик поставил остаток работы (очереди,
-        # зависимости и разбор сдвигов в gantt-compare.js считаются от него).
-        plan_start = start
-        if cat != "done" and t["jiraStarted"] and t["startDate"] and t["startDate"] < start:
-            start = t["startDate"]
-        planned[t["key"]] = {"start": start, "end": end, "resource": res["id"], "category": cat,
-                             "planStart": plan_start if plan_start != start else None}
+    def res_of_assignee(t):
+        """Исполнитель из Jira — только если его роль = роль задачи (задачи
+        [FE]/[BE] в тестировании висят на тестировщике, это не его работа)."""
+        a = (t.get("assignee") or "").split()
+        r = res_by_surname.get(a[0].lower()) if a else None
+        if r and (r["role"] == t["role"] or {r["role"], t["role"]} <= {"BA", "ARC"}):
+            return r
+        return None
 
-    # done — факт, порядок обработки не важен (не трогает очереди ресурсов).
-    nondone_by_role = defaultdict(list)
+    cap_cache = {}
+    def cap(r, n):
+        if (r["id"], n) not in cap_cache:
+            frm = parse_dt(r["from"]) or SPRINT_ANCHOR
+            cap_cache[(r["id"], n)] = sum(1 for d in sprint_workdays(n) if d >= frm) * HOURS_PER_DAY * r["fte"]
+        return cap_cache[(r["id"], n)]
+
+    load = defaultdict(float)            # (rid, n) → часы в спринте
+    segs = defaultdict(list)             # (rid, n) → [(order, key, hours)]
+    meta = {}                            # key → {first, last, res, cat, src}
+    story_sprint = defaultdict(dict)     # story → role → последний спринт
+
+    def note_story(t, last):
+        st = st_key_of(t)
+        if st is not None and t["role"]:
+            story_sprint[st][t["role"]] = max(story_sprint[st].get(t["role"], -1), last)
+
+    def scenario_of(t):
+        return story_scenario.get(t["partParent"]) if t["partParent"] in stories else None
+
+    def plan_sprints(t):
+        """Спринты этапа задачи по «Плану ручному» и какой бэк там назван."""
+        cells = plan_cells.get(scenario_of(t)) or {}
+        stage = ROLE_STAGE.get(t["role"])
+        out, be = [], None
+        for n, sts in sorted(cells.items()):
+            if stage == "BE":
+                hit = [s for s in sts if s in ("BE", "BE1", "BE2")]
+                if hit:
+                    out.append(n)
+                    be = be or next((s for s in hit if s != "BE"), None)
+            elif stage and stage in sts:
+                out.append(n)
+        return out, be
+
+    def choose_res(t, n, be=None):
+        r = res_of_assignee(t)
+        if r:
+            return r
+        if t["role"] == "BE" and be in MANUAL_BE:
+            r = res_by_surname.get(MANUAL_BE[be])
+            if r:
+                return r
+        pool = res_by_role.get(t["role"]) or res_by_role.get("OTHER") or real_resources
+        if t["role"] == "BA":
+            own = plan_owner.get(scenario_of(t)) or ""
+            mine = [r for r in pool if r["name"].split()[0].lower()[:5] in own]
+            if mine:
+                return mine[0]
+        return min(pool, key=lambda r: (load[(r["id"], n)] / max(cap(r, n), 1), r["id"]))
+
+    def hours_of(t, cat):
+        if cat == "in_progress":
+            return max(t["estimateH"] - t["spentH"], 1)
+        return max(t["estimateH"], 1)
+
+    # QA встроен в задачи [FE]/[BE] (Виктор 26.10.2026): оценка = 70% разработка
+    # + 30% тестирование, в конце задача переходит к тестировщику (статусы
+    # «Ready for testing»/«Тестирование»). Разработчику — 70% часов, QA — 30%
+    # в том же спринте; задача в статусе тестирования целиком у QA (остаток =
+    # 30% оценки). Отдельных задач [QA] пока нет.
+    qa_res = (res_by_role.get("QA") or [None])[0]
+    def is_dev(t):
+        return t["role"] in ("FE", "BE") and qa_res is not None
+    def in_qa(t):
+        return (t["status"] or "").strip().lower() in QA_STATUSES
+    def add_qa_load(n, h):
+        if qa_res is not None and h > 0:
+            load[(qa_res["id"], n)] += h
+
+    # ── 1. Задачи со спринтами Jira + начатые: факт / обязательство ──────────
+    backlog, committed = [], []
     for t in all_tasks:
         cat = status_category(t["status"])
+        sp = t.get("sprints") or []
+        hist = [n for n in sp if n <= cur]
         if cat == "done":
-            schedule_one(t, t["role"], cat, st_key_of(t), ROLE_PHASE.get(t["role"]))
+            fact_end = t["resolutiondate"] or t["updated"] or t["startDate"] or t["created"] or date(2026, 1, 1)
+            n = max(hist) if hist else None
+            # Спринт 0 и закрытые до начала своего спринта (Спринт 0 в Jira
+            # собрал работу с января) — по фактическим датам, как раньше.
+            if n is None or n == 0 or fact_end < sprint_start(n):
+                res = res_of_assignee(t) or choose_res(t, sprint_of_date(fact_end))
+                planned[t["key"]] = {"start": min(t["startDate"] or t["created"] or fact_end, fact_end),
+                                     "end": fact_end, "resource": res["id"], "category": cat,
+                                     "planStart": None, "src": "fact"}
+                note_story(t, sprint_of_date(fact_end))
+                continue
+            first = min([x for x in hist if x >= 1] or [n])
+            res = choose_res(t, n)
+            h, order = hours_of(t, cat), (0, fact_end.isoformat(), t["key"])
+            if is_dev(t):
+                add_qa_load(n, h * QA_SHARE)
+                h *= 1 - QA_SHARE
+        elif sp or cat == "in_progress":
+            committed.append(t)
+            continue
         else:
-            nondone_by_role[t["role"]].append((t, cat))
+            backlog.append(t)
+            continue
+        load[(res["id"], n)] += h
+        segs[(res["id"], n)].append((order, t["key"], h))
+        meta[t["key"]] = {"first": first, "last": n, "res": res["id"], "cat": cat, "src": "jira"}
+        note_story(t, n)
 
-    # Незавершённые — ready-queue по каждой роли: среди задач, чья зависимость
-    # УЖЕ разрешена к моменту освобождения ресурса, берём самую приоритетную,
-    # а не идём строго фиксированным списком. Иначе высокоприоритетная, но
-    # ещё не готовая (ждёт предыдущую фазу) задача держит ресурс в
-    # искусственном простое, хотя есть готовая менее приоритетная работа —
-    # жалоба Виктора 22.09.2026: "построй бэклог так, чтобы не было простоя".
-    # Роли с зависимостями (BA→ARC→DS∥BE→FE→QA) — по уровню ROLE_PHASE, иначе
-    # dep_end зависимой роли ещё не известен. ORG/DVO/OTHER — вне цепочки,
-    # ready_time = today, порядок обработки между собой не важен.
-    phases_present = sorted({ROLE_PHASE[r] for r in nondone_by_role if r in ROLE_PHASE})
-    role_order = [r for r in nondone_by_role if r not in ROLE_PHASE] + \
-                 [r for ph in phases_present for r in nondone_by_role if ROLE_PHASE.get(r) == ph]
+    def allocate(t, res, n, h, order):
+        """Положить h часов в спринты с n по ёмкости исполнителя; не влезло — в
+        следующий. Возвращает (первый, последний) спринт."""
+        first = None
+        while h > 1e-6 and n < 200:
+            free = cap(res, n) - load[(res["id"], n)]
+            if free < 0.5:
+                n += 1
+                continue
+            take = min(h, free)
+            load[(res["id"], n)] += take
+            segs[(res["id"], n)].append((order, t["key"], take))
+            first = n if first is None else first
+            h -= take
+            if h > 1e-6:
+                n += 1
+        return first, n
 
-    for role in role_order:
-        phase = ROLE_PHASE.get(role)
-        pending = list(nondone_by_role[role])   # [(task, cat), ...]
-        rt = {t["key"]: ready_time(t, phase, st_key_of(t)) for t, _ in pending}
-        pool = res_by_role.get(role) or res_by_role.get("OTHER") or real_resources
-        while pending:
-            current_time = min(res_free[r["id"]] for r in pool)
-            ready = [p for p in pending if rt[p[0]["key"]] <= current_time]
-            if not ready:
-                current_time = min(rt[p[0]["key"]] for p in pending)
-                ready = [p for p in pending if rt[p[0]["key"]] <= current_time]
-            t, cat = min(ready, key=lambda p: prio_key(p[0]))
-            pending.remove((t, cat))
-            schedule_one(t, role, cat, st_key_of(t), phase)
+    # Незавершённые из спринтов Jira (текущий/будущие; из закрытых — перенесены
+    # в текущий). Спринт в Jira — обязательство команды, но больше ёмкости в
+    # спринт не влезет: остаток уходит в следующие спринты (src=jira+), иначе
+    # прогноз молча оптимистичен (С4 у фронта на 26.10.2026 — 296ч при 80ч).
+    # Порядок: в работе → остальные по приоритету.
+    for t in sorted(committed, key=lambda t: (max(max(t.get("sprints") or [cur]), cur),
+                                              status_category(t["status"]) != "in_progress", prio_key(t))):
+        cat = status_category(t["status"])
+        sp = t.get("sprints") or []
+        n = max(sp) if sp and max(sp) >= cur else cur
+        order = (1 if cat == "in_progress" else 2, prio_key(t))
+        if is_dev(t) and in_qa(t):        # разработка готова — тестирует QA
+            res = qa_res
+            f, last = allocate(t, res, n, max(t["estimateH"] * QA_SHARE, 1), order)
+        elif is_dev(t):
+            res = choose_res(t, n)
+            h = hours_of(t, cat)
+            f, last = allocate(t, res, n, h * (1 - QA_SHARE), order)
+            add_qa_load(last, h * QA_SHARE)
+        else:
+            res = choose_res(t, n)
+            f, last = allocate(t, res, n, hours_of(t, cat), order)
+        # Бар от первого спринта — только если задача реально переходила из
+        # ЗАКРЫТОГО спринта; перенос по ёмкости начинается там, куда легла.
+        first = min([x for x in sp if 1 <= x < cur] + [f])
+        meta[t["key"]] = {"first": first, "last": last, "res": res["id"], "cat": cat,
+                          "src": "jira" if last == n else "jira+"}
+        note_story(t, last)
+
+    # ── 2. Бэклог без спринта → будущие спринты по «Плану ручному» ──────────
+    def phase_of(t):
+        return ROLE_PHASE.get(t["role"], -1)
+    for t in sorted(backlog, key=lambda t: (phase_of(t), prio_key(t))):
+        cat = status_category(t["status"])
+        ps, be = plan_sprints(t)
+        later = [n for n in ps if n >= nxt]
+        n = later[0] if later else nxt
+        src = "manual" if ps else "auto"
+        st = st_key_of(t)
+        if st is not None:
+            for dr in ROLE_DEPS.get(t["role"], ()):
+                n = max(n, story_sprint[st].get(dr, -1))
+        for dk in t["blocksDeps"]:
+            if dk in meta:
+                n = max(n, meta[dk]["last"])
+        res = choose_res(t, n, be)
+        h = hours_of(t, cat)
+        if is_dev(t):
+            first, n = allocate(t, res, n, h * (1 - QA_SHARE), (3, prio_key(t)))
+            add_qa_load(n, h * QA_SHARE)
+        else:
+            first, n = allocate(t, res, n, h, (3, prio_key(t)))
+        meta[t["key"]] = {"first": first, "last": n, "res": res["id"], "cat": cat, "src": src}
+        note_story(t, n)
+
+    # ── 3. Раскладка внутри спринта: подряд по часам ─────────────────────────
+    seg_dates = defaultdict(list)        # key → [(n, start, end)]
+    for (rid, n), lst in segs.items():
+        days = sprint_workdays(n) or [next_workday(sprint_start(n))]
+        per_day = HOURS_PER_DAY * res_by_id[rid]["fte"]
+        need = sum(h for _, _, h in lst) / per_day
+        k = min(1.0, len(days) / need) if need else 1.0   # перегруз — сжимаем в спринт
+        off = 0.0
+        for order, key, h in sorted(lst):
+            dur = h / per_day * k
+            si = min(int(off + 1e-9), len(days) - 1)
+            ei = min(max(si, -(-int(round((off + dur) * 1000)) // 1000) - 1), len(days) - 1)
+            seg_dates[key].append((n, days[si], days[ei]))
+            off += dur
+    for key, m in meta.items():
+        sd = sorted(seg_dates[key])
+        start, end = sd[0][1], sd[-1][2]
+        if m["first"] < sd[0][0]:   # переходила из спринта в спринт — бар от первого спринта
+            start = next_workday(sprint_start(m["first"]))
+        planned[key] = {"start": start, "end": end, "resource": m["res"], "category": m["cat"],
+                        "planStart": None, "src": m["src"], "sprintFrom": m["first"], "sprintTo": m["last"]}
+    sprint_load = {f"{rid}|{n}": {"hours": round(h, 1), "capacity": round(cap(res_by_id[rid], n), 1)}
+                   for (rid, n), h in load.items() if h > 0}
 
     # ── Сборка items[] ────────────────────────────────────────────────────────
     items = []
@@ -595,11 +769,16 @@ def plan_gantt(issues, resources, today=None):
             "resource": p["resource"], "onCriticalPath": False,
             "deps": t["blocksDeps"], "orphan": True,
         })
-    # Спринт задачи (для подписи/фильтра на ганте): последний спринт в Jira.
+    # Спринт задачи по спринтовой модели: sprint — в котором заканчивается,
+    # sprintFrom — первый; planSource — откуда спринт: jira (спринт в Jira),
+    # manual («План ручной»), auto (плана нет — ближайший свободный), fact (С0/факт).
     for it in items:
-        src = by_key.get(it["key"]) or {}
-        if src.get("lastSprint") is not None:
-            it["sprint"] = src["lastSprint"]
+        p = planned.get(it["key"]) or {}
+        if p.get("sprintTo") is not None:
+            it["sprint"], it["sprintFrom"] = p["sprintTo"], p["sprintFrom"]
+        else:
+            it["sprint"] = sprint_of_date(date.fromisoformat(it["end"]))
+        it["planSource"] = p.get("src")
     # стори (агрегат из их задач)
     for sk in mvp_story_keys:
         s = stories[sk]
@@ -677,7 +856,7 @@ def plan_gantt(issues, resources, today=None):
 
     orphan_report = [{"key": t["key"], "epic": t["epicLink"], "summary": t["summary"],
                        "estimateH": t["estimateH"]} for t in orphan_tasks]
-    return items, end_date, crit_res, mvp_story_keys, orphan_report
+    return items, end_date, crit_res, mvp_story_keys, orphan_report, sprint_load
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Производные секции из items[]
@@ -811,14 +990,14 @@ def assign_scenarios(items, issues, reg):
         if it["type"] == "task":
             it["scenario"] = story_sc.get(it["parent"], "PLATFORM")
 
-QA_SHARE = 0.35          # доля QA внутри оценки задач [FE]/[BE] (Виктор 20.10.2026)
+QA_SHARE = 0.30          # доля QA внутри оценки задач [FE]/[BE]: 70% разработка, 30% QA (Виктор 26.10.2026; было 35% с 20.10)
 QA_STATUSES = {"ready for testing", "тестирование"}   # разработка готова, идёт QA
 
 def stage_segments(tasks):
-    """Отрезки этапов из задач. QA сидит внутри задач [FE]/[BE]: последние 35%
+    """Отрезки этапов из задач. QA сидит внутри задач [FE]/[BE]: последние 30%
     оценки — тестирование, после реализации задача сама уходит на QA. Поэтому
-    задача FE/BE даёт два отрезка: разработка (первые 65% её срока) и QA
-    (остальные 35%). Статус «Ready for testing»/«Тестирование» — разработка
+    задача FE/BE даёт два отрезка: разработка (первые 70% её срока) и QA
+    (остальные 30%). Статус «Ready for testing»/«Тестирование» — разработка
     готова, QA в работе. Отдельные задачи [QA] — целиком в этап QA."""
     out = []
     for t in tasks:
@@ -918,6 +1097,65 @@ def calc_scenarios(items, reg, today):
         })
     return out
 
+def calc_sprint_stats(items, reg, n):
+    """Задачи спринта n по сценариям (для страницы «Статус для руководства»):
+    сколько задач было в спринте, сколько в нём завершено (в т.ч. Waiting for
+    release), в тестировании, в работе."""
+    names = {s["code"]: s.get("name") for s in (reg or {}).get("scenarios", [])}
+    order = {s["code"]: i for i, s in enumerate((reg or {}).get("scenarios", []))}
+    by = defaultdict(list)
+    for t in items:
+        if t["type"] == "task" and t.get("sprint") is not None and                 (t.get("sprintFrom") if t.get("sprintFrom") is not None else t["sprint"]) <= n <= t["sprint"]:
+            by[t.get("scenario") or "PLATFORM"].append(t)
+    out = []
+    for code, ts in by.items():
+        out.append({"code": code, "name": names.get(code, code), "tasks": len(ts),
+                    "done": sum(1 for t in ts if t["category"] == "done" and t["sprint"] == n),
+                    "inQa": sum(1 for t in ts if t["category"] != "done"
+                                and (t.get("status") or "").strip().lower() in QA_STATUSES),
+                    "inProgress": sum(1 for t in ts if t["category"] == "in_progress"
+                                      and (t.get("status") or "").strip().lower() not in QA_STATUSES),
+                    "estimateH": sum(t["estimateH"] for t in ts)})
+    return sorted(out, key=lambda x: order.get(x["code"], 999))
+
+
+def calc_manual_plan(mp, items, resources):
+    """«План ручной» для упрощённого вида «Этапы по сценариям»: план аналитиков
+    по спринтам как есть + статус этапа по Jira (для цвета: зелёный — только
+    если все задачи этапа «Завершена»/«Waiting for release»). QA встроен в
+    задачи Фронта/Бэка (30% оценки), поэтому этап QA = задачи [QA] + [FE] +
+    [BE]: в работе — есть задачи в «Ready for testing»/«Тестирование»."""
+    surname = {r["id"]: r["name"].split()[0].lower() for r in resources}
+    tasks = [it for it in items if it["type"] == "task"]
+
+    def stat(ts):
+        done = sum(1 for t in ts if t["category"] == "done")
+        cat = ("done" if done == len(ts) else
+               "in_progress" if any(t["category"] != "backlog" or t.get("started") for t in ts) else "backlog")
+        return {"category": cat, "tasks": len(ts), "done": done,
+                "estimateH": sum(t["estimateH"] for t in ts),
+                "sprints": sorted({t["sprint"] for t in ts if t.get("sprint") is not None})}
+    rows = []
+    for r in mp.get("rows", []):
+        kt = [t for t in tasks if t.get("scenario") == r["code"]]
+        be = [t for t in kt if t["role"] == "BE"]
+        by = {"AN": [t for t in kt if t["role"] in ("BA", "ARC")],
+              "DS": [t for t in kt if t["role"] == "DS"],
+              "BE": be,
+              "BE1": [t for t in be if surname.get(t["resource"]) == MANUAL_BE["BE1"]],
+              "BE2": [t for t in be if surname.get(t["resource"]) == MANUAL_BE["BE2"]],
+              "FE": [t for t in kt if t["role"] == "FE"],
+              "QA": [t for t in kt if t["role"] in ("QA", "FE", "BE")]}
+        jira = {k: stat(v) for k, v in by.items() if v}
+        if "QA" in jira:   # QA начинается, только когда задача ушла в тестирование
+            q = by["QA"]
+            if jira["QA"]["category"] != "done":
+                jira["QA"]["category"] = "in_progress" if any(
+                    (t.get("status") or "").strip().lower() in QA_STATUSES for t in q) else "backlog"
+        rows.append({**r, "jira": jira})
+    return {"source": mp.get("source"), "sprints": mp.get("sprints"), "rows": rows}
+
+
 def self_checks(items, gv2, mvp_scope, resource_plan, epic_progress):
     errs = []
     types = Counter(it["type"] for it in items)
@@ -1004,11 +1242,20 @@ def run_gantt(args):
     # Вакантные ставки-гипотезы (FE-2/BE-1/QA-2 и т.п.) больше не показываем и
     # не назначаем на них задачи (Виктор 21.09.2026: считаем, что их не будет).
     resources = [r for r in build_resources(team, issues) if not r.get("vacant")]
-    items, end_date, crit_res, mvp_story_keys, orphan_report = plan_gantt(issues, resources, today)
+    # Сценарий стори нужен ДО планирования: бэклог раскладывается по «Плану
+    # ручному», а он задан по сценариям (26.10.2026).
+    reg = load_scenarios(args.scenarios)
+    manual = json.load(open(args.manual_plan, encoding="utf-8")) if args.manual_plan and os.path.exists(args.manual_plan) else None
+    story_scenario = {}
+    if reg:
+        pre = [{"type": "story", "key": i["key"]} for i in issues if i["type"] == "story"]
+        assign_scenarios(pre, issues, reg)
+        story_scenario = {p["key"]: p["scenario"] for p in pre}
+    items, end_date, crit_res, mvp_story_keys, orphan_report, sprint_load = plan_gantt(
+        issues, resources, today, manual, story_scenario)
 
     # Сценарии и спринты (20.10.2026): привязка стори/задач к сценариям реестра,
     # агрегаты этапов и календарь спринтов для отсечек на ганте.
-    reg = load_scenarios(args.scenarios)
     scenarios = []
     if reg:
         assign_scenarios(items, issues, reg)
@@ -1019,6 +1266,24 @@ def run_gantt(args):
 
     mvp_scope = calc_mvp_scope(items)
     resource_plan = calc_resource_plan(items, resources)
+    # Загрузка по спринтам (часы / ёмкость 2 недели × 8ч × FTE) — для
+    # страницы ресурсов; перегруз >100% = задач в спринте больше, чем влезает.
+    for rp in resource_plan:
+        rows = []
+        for k, v in sprint_load.items():
+            rid, n = k.split("|")
+            if rid == rp["resourceId"]:
+                rows.append({"n": int(n), "hours": v["hours"], "capacity": v["capacity"],
+                             "loadPct": round(v["hours"] / v["capacity"] * 100) if v["capacity"] else None})
+        rp["sprints"] = sorted(rows, key=lambda x: x["n"])
+    manual_plan = calc_manual_plan(manual, items, resources) if manual else None
+    # Страница «Статус для руководства» (дашборд Леонида, 26.10.2026): цели
+    # спринтов со страницы «Реализация» + задачи прошлого и текущего спринта.
+    cur_sp = sprint_index(today)
+    goals = json.load(open(args.sprint_goals, encoding="utf-8")) if args.sprint_goals and os.path.exists(args.sprint_goals) else None
+    status_page = {"currentSprint": cur_sp, "lastClosedSprint": cur_sp - 1,
+                   "sprintGoals": goals,
+                   "sprintStats": {str(n): calc_sprint_stats(items, reg, n) for n in (cur_sp - 1, cur_sp)}}
     epic_progress = calc_epic_progress(items)
 
     # Единый проход счётчиков из items[] (MVP-подмножество)
@@ -1044,6 +1309,8 @@ def run_gantt(args):
         "items": items,
         "sprints": sprints,
         "scenarios": scenarios,
+        "manualPlan": manual_plan,
+        "statusPage": status_page,
         "mvpScope": mvp_scope,
         "criticalPathExplained": {
             "method": "Критический путь = цепочка задач до max(end) по ресурсу-хвосту.",
@@ -1053,15 +1320,16 @@ def run_gantt(args):
                            else f"НЕ успеваем: критпуть до {crit_end_iso}, дедлайн 10.12.2026"),
             "steps": [
                 "Весь бэклог из выгрузки по 10 согласованным эпикам; вакантные ставки не учитываются вообще",
-                "Завершённые — факт; в работе — остаток; бэклог — ready-queue по ролям (без искусственных простоев)",
-                "Зависимости ролей внутри стори: BA → (при необходимости) ARC → DS и BE параллельно → FE после DS и BE → QA по факту готовности BE и FE; + явные Blocks",
+                "Спринтовая модель: задачи из спринтов Jira — в своём спринте (завершённые, в т.ч. Waiting for release, — в спринте завершения; Спринт 0 — по факту); внутри спринта задачи исполнителя идут подряд по часам",
+                "Бэклог без спринта — в будущие спринты по «Плану ручному» (Confluence 2666206915; Бек 1 = Попов, Бек 2 = Григоркин) с учётом ёмкости 2 недели × 8ч × FTE; не влезло — в следующий спринт",
+                "Зависимости ролей внутри стори — по спринтам: BA → (ARC) → DS и BE → FE не раньше DS и BE → QA; + явные Blocks",
                 f"Хвост критпути: ресурс {crit_res}, окончание {crit_end_iso}",
             ],
         },
         "ganttAssumptions": {
             "dataSource": f"Jira B2BAPP {now_iso} (динамически)",
             "teamSource": "Confluence 1562745210 + сверка Jira assignee",
-            "ganttType": "per_task_v3_ready_queue",
+            "ganttType": "per_task_v4_sprints",
             "calendar": "Производственный календарь РФ",
             "excludedFromGantt": "Вакантные ставки (FE-2/BE-1/QA-2 и т.п.) — считаем, что их не будет, задачи на них не назначаются",
             "excludedScenarios": [
@@ -1234,6 +1502,10 @@ def main():
     ap.add_argument("--confluence")
     ap.add_argument("--scenarios", default="scenarios.json",
                     help="реестр сценариев (Confluence 2356754448) + привязки стори")
+    ap.add_argument("--manual-plan", default="manual_plan.json",
+                    help="«План ручной» (Confluence 2666206915), см. parse_manual_plan.py")
+    ap.add_argument("--sprint-goals", default="sprint_goals.json",
+                    help="цели спринтов (Confluence 1562746234), см. parse_sprint_goals.py")
     ap.add_argument("--usm-patch")
     ap.add_argument("--data", required=True, help="текущий public/data/data.json (для мёржа)")
     ap.add_argument("--out", required=True, help="куда писать (можно тот же файл)")
