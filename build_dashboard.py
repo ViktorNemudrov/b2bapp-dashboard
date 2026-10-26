@@ -1119,7 +1119,7 @@ def calc_sprint_stats(items, reg, n):
     return sorted(out, key=lambda x: order.get(x["code"], 999))
 
 
-def calc_manual_plan(mp, items, resources):
+def calc_manual_plan(mp, items, resources, reg=None, cur_sprint=0):
     """«План ручной» для упрощённого вида «Этапы по сценариям»: план аналитиков
     по спринтам как есть + статус этапа по Jira (для цвета: зелёный — только
     если все задачи этапа «Завершена»/«Waiting for release»). QA встроен в
@@ -1127,6 +1127,8 @@ def calc_manual_plan(mp, items, resources):
     [BE]: в работе — есть задачи в «Ready for testing»/«Тестирование»."""
     surname = {r["id"]: r["name"].split()[0].lower() for r in resources}
     tasks = [it for it in items if it["type"] == "task"]
+    cs = (reg or {}).get("completedScenarios") or {}
+    completed_codes, completed_why = set(cs.get("codes") or []), cs.get("why")
 
     def stat(ts):
         done = sum(1 for t in ts if t["category"] == "done")
@@ -1152,8 +1154,47 @@ def calc_manual_plan(mp, items, resources):
             if jira["QA"]["category"] != "done":
                 jira["QA"]["category"] = "in_progress" if any(
                     (t.get("status") or "").strip().lower() in QA_STATUSES for t in q) else "backlog"
-        rows.append({**r, "jira": jira})
-    return {"source": mp.get("source"), "sprints": mp.get("sprints"), "rows": rows}
+        # Состояние этапа для цвета (Виктор 26.10.2026): done — закрыт в Jira;
+        # passed — начался следующий этап (Аналитика → Дизайн/Бэк/Фронт;
+        # Дизайн → Фронт; Бэк/Фронт — все задачи уже в тестировании или
+        # закрыты); оба = зелёный. Сценарий из completedScenarios — весь зелёный.
+        def started(sid):
+            j = jira.get(sid)
+            return bool(j) and j["category"] != "backlog"
+        def dev_passed(ts):
+            return bool(ts) and all(t["category"] == "done" or
+                                    (t.get("status") or "").strip().lower() in QA_STATUSES for t in ts)
+        completed = r["code"] in completed_codes
+        state = {}
+        for sid in ("AN", "DS", "BE", "BE1", "BE2", "FE", "QA"):
+            j = jira.get(sid)
+            if completed or (j and j["category"] == "done"):
+                state[sid] = "done"
+            elif sid == "AN" and any(started(x) for x in ("DS", "BE", "FE")):
+                state[sid] = "passed"
+            elif sid == "DS" and started("FE"):
+                state[sid] = "passed"
+            elif sid in ("BE", "BE1", "BE2", "FE") and dev_passed(by[sid] or (by["BE"] if sid in ("BE1", "BE2") else [])):
+                state[sid] = "passed"
+            elif j and j["category"] == "in_progress":
+                state[sid] = "active"
+            else:
+                state[sid] = "todo"
+        planned = sorted(int(k) for k in r["cells"])
+        first, last = (planned[0], planned[-1]) if planned else (None, None)
+        used = {s for v in r["cells"].values() for s in v}
+        # Зелёным этап может быть только в начавшихся спринтах: будущая работа
+        # по плану ещё не заведена в Jira, «закрыто всё, что есть» ≠ сделано.
+        all_green = bool(used) and last is not None and last <= cur_sprint and             all(state.get(s) in ("done", "passed") for s in used)
+        # Стадия запуска для сортировки «по времени»: завершён / план прошёл,
+        # а работа не закрыта / идёт сейчас по плану / впереди.
+        phase = ("completed" if completed or all_green else
+                 "next" if first is None or first > cur_sprint else
+                 "overdue" if last < cur_sprint else "now")
+        rows.append({**r, "jira": jira, "state": state, "completed": completed,
+                     "firstSprint": first, "lastSprint": last, "phase": phase})
+    return {"source": mp.get("source"), "sprints": mp.get("sprints"), "rows": rows,
+            "completedWhy": completed_why}
 
 
 def self_checks(items, gv2, mvp_scope, resource_plan, epic_progress):
@@ -1276,7 +1317,7 @@ def run_gantt(args):
                 rows.append({"n": int(n), "hours": v["hours"], "capacity": v["capacity"],
                              "loadPct": round(v["hours"] / v["capacity"] * 100) if v["capacity"] else None})
         rp["sprints"] = sorted(rows, key=lambda x: x["n"])
-    manual_plan = calc_manual_plan(manual, items, resources) if manual else None
+    manual_plan = calc_manual_plan(manual, items, resources, reg, sprint_index(today)) if manual else None
     # Страница «Статус для руководства» (дашборд Леонида, 26.10.2026): цели
     # спринтов со страницы «Реализация» + задачи прошлого и текущего спринта.
     cur_sp = sprint_index(today)
@@ -1296,6 +1337,7 @@ def run_gantt(args):
     tasks_done = sum(1 for it in mvp_tasks_it if it["category"] == "done")
     completion = round(hours_spent / hours_total * 100, 1) if hours_total else 0
     crit_end_iso = end_date.isoformat() if end_date else None
+    crit_end_txt = end_date.strftime("%d.%m.%y") if end_date else "—"   # на сайте даты дд.мм.гг
     days_to_deadline = (DEADLINE - today).days
 
     # Счётчики по ВСЕМ задачам проекта (не MVP)
@@ -1316,14 +1358,14 @@ def run_gantt(args):
             "method": "Критический путь = цепочка задач до max(end) по ресурсу-хвосту.",
             "endDate": crit_end_iso,
             "resource": crit_res,
-            "conclusion": ("Успеваем к 10.12.2026" if end_date and end_date <= DEADLINE
-                           else f"НЕ успеваем: критпуть до {crit_end_iso}, дедлайн 10.12.2026"),
+            "conclusion": (f"Успеваем к 10.12.26: критпуть до {crit_end_txt}" if end_date and end_date <= DEADLINE
+                           else f"НЕ успеваем: критпуть до {crit_end_txt}, дедлайн 10.12.26"),
             "steps": [
                 "Весь бэклог из выгрузки по 10 согласованным эпикам; вакантные ставки не учитываются вообще",
                 "Спринтовая модель: задачи из спринтов Jira — в своём спринте (завершённые, в т.ч. Waiting for release, — в спринте завершения; Спринт 0 — по факту); внутри спринта задачи исполнителя идут подряд по часам",
                 "Бэклог без спринта — в будущие спринты по «Плану ручному» (Confluence 2666206915; Бек 1 = Попов, Бек 2 = Григоркин) с учётом ёмкости 2 недели × 8ч × FTE; не влезло — в следующий спринт",
                 "Зависимости ролей внутри стори — по спринтам: BA → (ARC) → DS и BE → FE не раньше DS и BE → QA; + явные Blocks",
-                f"Хвост критпути: ресурс {crit_res}, окончание {crit_end_iso}",
+                f"Хвост критпути: ресурс {crit_res}, окончание {crit_end_txt}",
             ],
         },
         "ganttAssumptions": {
