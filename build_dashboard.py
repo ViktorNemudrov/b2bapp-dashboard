@@ -1125,7 +1125,6 @@ def calc_manual_plan(mp, items, resources, reg=None, cur_sprint=0):
     если все задачи этапа «Завершена»/«Waiting for release»). QA встроен в
     задачи Фронта/Бэка (30% оценки), поэтому этап QA = задачи [QA] + [FE] +
     [BE]: в работе — есть задачи в «Ready for testing»/«Тестирование»."""
-    surname = {r["id"]: r["name"].split()[0].lower() for r in resources}
     tasks = [it for it in items if it["type"] == "task"]
     cs = (reg or {}).get("completedScenarios") or {}
     completed_codes, completed_why = set(cs.get("codes") or []), cs.get("why")
@@ -1144,8 +1143,12 @@ def calc_manual_plan(mp, items, resources, reg=None, cur_sprint=0):
         by = {"AN": [t for t in kt if t["role"] in ("BA", "ARC")],
               "DS": [t for t in kt if t["role"] == "DS"],
               "BE": be,
-              "BE1": [t for t in be if surname.get(t["resource"]) == MANUAL_BE["BE1"]],
-              "BE2": [t for t in be if surname.get(t["resource"]) == MANUAL_BE["BE2"]],
+              # Бэк 1 / Бэк 2 в плане — кто делает, но в Jira по человеку не отличить:
+              # в тестировании исполнитель — QA, а resource планировщика переезжает
+              # на QA. Поэтому этап «Бэк 1/2» = все [BE] сценария (27.10.2026,
+              # так же считает проверка P4 аудита в чате).
+              "BE1": be,
+              "BE2": be,
               "FE": [t for t in kt if t["role"] == "FE"],
               "QA": [t for t in kt if t["role"] in ("QA", "FE", "BE")]}
         jira = {k: stat(v) for k, v in by.items() if v}
