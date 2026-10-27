@@ -919,8 +919,11 @@ function renderStages(gv, data){
   const todayISO=localISO(new Date());
   const curN=((gv.sprints||[]).find(s=>s.start<=todayISO&&todayISO<s.end)||{}).n??99;
   const green=(r,sid,n)=>r.completed||(n<=curN&&['done','passed'].includes((r.state||{})[sid]));
-  // Отстаёт: спринт по плану уже закончился, а этап в Jira не закрыт и следующий не начат.
-  const late=(r,sid,n)=>!green(r,sid,n)&&spByN[n]&&spByN[n].end<=todayISO;
+  // Отстаёт: по плану этап уже должен был закончиться (прошёл ПОСЛЕДНИЙ спринт его
+  // непрерывного отрезка в «Плане ручном»), а в Jira он не закрыт и следующий не начат.
+  // То же правило — проверка P4 в TASK_CHECKLIST.md / скилле b2bapp-audit.
+  const runEnd=(r,sid,n)=>{ let k=n; while((r.cells[k+1]||[]).includes(sid)) k++; return k; };
+  const late=(r,sid,n)=>{ const e=spByN[runEnd(r,sid,n)]; return !green(r,sid,n)&&!!e&&e.end<=todayISO; };
   // Отрезки: подряд идущие спринты с одинаковым составом (роль + зелёная/нет) — одна колбаса.
   const segsOf=r=>{
     const ns=Object.keys(r.cells||{}).map(Number).filter(n=>spByN[n]).sort((a,b)=>a-b);
