@@ -14,7 +14,7 @@
 .g2-mp-bar{position:absolute;top:5px;height:36px;border-radius:7px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(0,0,0,.35)}
 .g2-mp-stripe{flex:1;display:flex;align-items:center;padding-left:7px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);white-space:nowrap;overflow:hidden;cursor:default;opacity:.9}
 .g2-mp-stripe+.g2-mp-stripe{border-top:1px solid rgba(13,27,42,.55)}
-.gantt2-hire-tag{position:absolute;font-size:9px;font-weight:700;color:var(--blue);background:var(--card);border:1px solid var(--blue);border-radius:4px;padding:0 4px;white-space:nowrap;z-index:4;pointer-events:none}
+.gantt2-hire-tag{position:absolute;top:4px;writing-mode:vertical-rl;transform:rotate(180deg);font-size:9px;font-weight:700;color:var(--blue);background:var(--card);border:1px solid var(--blue);border-radius:4px;padding:4px 0;white-space:nowrap;z-index:4;pointer-events:none}
 .gantt2-hire-note{position:sticky;left:4px;display:inline-block;font-size:9.5px;color:var(--blue);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:1px 6px;margin:2px 0 0 4px;z-index:4}
 .gantt2-toolbar-group{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mute)}
 .gantt2-toolbar-group select{background:#1e2d3d;border:1px solid var(--line);color:var(--text);border-radius:5px;padding:3px 8px;font-size:11px;max-width:180px}
@@ -851,20 +851,25 @@ function drawOverlays(gv, xOf, totalPx, overlayH){
     if(s.n%2===1 && x2>0 && x<totalPx) host.insertAdjacentHTML('afterbegin',`<div class="gantt2-sprint-shade" style="left:${x}px;width:${x2-x}px;height:${overlayH}px"></div>`);
     if(x>=0 && x<=totalPx) host.insertAdjacentHTML('beforeend',`<div class="gantt2-sprint-line" style="left:${x}px;height:${overlayH}px"></div>`);
   });
-  const today=new Date(), todayX=xOf(today.toISOString().slice(0,10));
+  const todayX=xOf(localISO(new Date()));  // считается в браузере при каждом открытии
   if(GS.showToday && todayX>=0 && todayX<=totalPx) host.insertAdjacentHTML('beforeend',`<div class="gantt2-today-line" style="left:${todayX}px;height:${overlayH}px" title="Сегодня"></div>`);
   const mvpX=xOf('2026-12-10');
   if(GS.showMilestone && mvpX>=0 && mvpX<=totalPx) host.insertAdjacentHTML('beforeend',`<div class="gantt2-milestone-line" style="left:${mvpX}px;height:${overlayH}px" title="Веха MVP 10.12.26"></div>`);
   // Выход в проект: у каждой линии — фамилия; кто вышел до начала шкалы (на
   // ней их не видно — раньше казалось, что «линий только 2») — списком слева.
   if(GS.showHires){
-    const before=[]; let i=0;
-    (gv.resources||[]).slice().sort((a,b)=>(a.from||'').localeCompare(b.from||'')).forEach(r=>{
+    // Подпись вертикально вдоль линии; вышедшие в один день — одной подписью.
+    const before=[], byDate={};
+    (gv.resources||[]).forEach(r=>{
       if(!r.from) return;
-      const hx=xOf(r.from), who=(r.name||r.role).split(' ')[0];
-      if(hx<0){ before.push(`${who} (${fmtDate(r.from)})`); return; }
-      if(hx>totalPx) return;
-      host.insertAdjacentHTML('beforeend',`<div class="gantt2-hire-line" style="left:${hx}px;height:${overlayH}px" title="Выход в проект: ${r.name} (${fmtDate(r.from)})"></div><div class="gantt2-hire-tag" style="left:${hx+3}px;top:${4+(i++%3)*14}px">${who} · ${fmtDate(r.from)}</div>`);
+      const who=(r.name||r.role).split(' ')[0];
+      if(xOf(r.from)<0){ before.push(`${who} (${fmtDate(r.from)})`); return; }
+      (byDate[r.from]=byDate[r.from]||[]).push(r);
+    });
+    Object.keys(byDate).sort().forEach(d=>{
+      const hx=xOf(d); if(hx>totalPx) return;
+      const ppl=byDate[d], names=ppl.map(r=>(r.name||r.role).split(' ')[0]).join(', ');
+      host.insertAdjacentHTML('beforeend',`<div class="gantt2-hire-line" style="left:${hx}px;height:${overlayH}px" title="Выход в проект: ${esc(ppl.map(r=>r.name).join(', '))} (${fmtDate(d)})"></div><div class="gantt2-hire-tag" style="left:${hx+2}px">${esc(names)} · ${fmtDate(d)}</div>`);
     });
     if(before.length) host.insertAdjacentHTML('afterbegin',`<div class="gantt2-hire-note" title="Вышли в проект раньше начала шкалы">↤ до начала шкалы: ${before.join(', ')}</div>`);
   }
@@ -910,15 +915,19 @@ function renderStages(gv, data){
   const spByN={}; (gv.sprints||[]).forEach(s=>spByN[s.n]=s);
   (mp.sprints||[]).forEach(s=>{ if(!spByN[s.n]) spByN[s.n]={n:s.n,name:'Спринт '+s.n,start:s.start,end:s.end}; });
   // Зелёный только в начавшихся спринтах (будущая работа ещё не заведена в Jira) или у завершённого сценария.
-  const curN=((gv.sprints||[]).find(s=>s.state==='active')||{}).n??99;
+  // Текущий спринт — по дате в браузере (не по моменту сборки).
+  const todayISO=localISO(new Date());
+  const curN=((gv.sprints||[]).find(s=>s.start<=todayISO&&todayISO<s.end)||{}).n??99;
   const green=(r,sid,n)=>r.completed||(n<=curN&&['done','passed'].includes((r.state||{})[sid]));
+  // Отстаёт: спринт по плану уже закончился, а этап в Jira не закрыт и следующий не начат.
+  const late=(r,sid,n)=>!green(r,sid,n)&&spByN[n]&&spByN[n].end<=todayISO;
   // Отрезки: подряд идущие спринты с одинаковым составом (роль + зелёная/нет) — одна колбаса.
   const segsOf=r=>{
     const ns=Object.keys(r.cells||{}).map(Number).filter(n=>spByN[n]).sort((a,b)=>a-b);
     const out=[];
     ns.forEach(n=>{
       const roles=MP_ORDER.filter(s=>(r.cells[n]||[]).includes(s));
-      const key=roles.map(s=>s+(green(r,s,n)?'+':'')).join(',');
+      const key=roles.map(s=>s+(green(r,s,n)?'+':late(r,s,n)?'!':'')).join(',');
       const last=out[out.length-1];
       if(last && last.key===key && last.to===n-1) last.to=n; else out.push({key,roles,from:n,to:n});
     });
@@ -926,7 +935,6 @@ function renderStages(gv, data){
   };
   const rows=[]; let lastContour=null;
   mp.rows.forEach(r=>{ if(r.contour!==lastContour){ rows.push({group:r.contour}); lastContour=r.contour; } rows.push({r}); });
-  const todayISO=new Date().toISOString().slice(0,10);
   const ds=[new Date(), new Date('2026-12-15')];
   mp.rows.forEach(r=>segsOf(r).forEach(g=>{ ds.push(new Date(spByN[g.from].start), new Date(spByN[g.to].end)); }));
   const minD=new Date(Math.min(...ds)); minD.setDate(minD.getDate()-3);
@@ -957,10 +965,11 @@ function renderStages(gv, data){
       const per=g.roles.length;
       return `<div class="g2-mp-bar" style="left:${x0}px;width:${w}px">`+g.roles.map(sid=>{
         const m=MP_STAGE[sid], gr=green(r,sid,g.to), j=(r.jira||{})[sid]||((sid==='BE1'||sid==='BE2')?(r.jira||{}).BE:null);
-        const why=r.completed?'сценарий завершён полностью':(WHY[(r.state||{})[sid]]||'');
+        const lt=late(r,sid,g.to);
+        const why=r.completed?'сценарий завершён полностью':(WHY[(r.state||{})[sid]]||'')+(lt?` — <b style="color:var(--red)">отстаёт от плана</b>: по плану должен был закончиться к ${fmtDate(e.end)}, в Jira не закрыт и следующий этап не начат`:'');
         const tip=`<strong>${esc(r.code)} · ${esc(m.n)}</strong>${esc(r.name)}<div style="margin-top:5px;font-size:10px">План: ${s.name}${g.to!==g.from?' – '+e.name:''} · ${fmtDate(s.start)} → ${fmtDate(e.end)}</div><div style="font-size:10px">Этап: ${why}${j?` · задач в Jira ${j.done}/${j.tasks}, ${j.estimateH} ч`:' · задач этапа в Jira нет'}</div>${sid==='QA'?'<div style="font-size:10px;color:var(--mute)">QA встроен в задачи Фронта и Бэка (30% оценки)</div>':''}`;
         const fs=per>=3?8:per===2?9.5:11;
-        return `<div class="g2-mp-stripe" style="background:${gr?DONE_GREEN:m.c};font-size:${fs}px" data-tip-html="${esc(tip)}">${w>40?esc(m.n)+(gr&&w>90?' ✓':''):''}</div>`;
+        return `<div class="g2-mp-stripe" style="background:${gr?DONE_GREEN:lt?`repeating-linear-gradient(135deg,${m.c} 0 7px,rgba(13,27,42,.55) 7px 11px)`:m.c};font-size:${fs}px" data-tip-html="${esc(tip)}">${w>40?esc(m.n)+(gr&&w>90?' ✓':lt&&w>90?' ⚠':''):''}</div>`;
       }).join('')+'</div>';
     }).join('')+'</div>';
   }).join('');
@@ -972,6 +981,7 @@ function renderStages(gv, data){
   }
   legend.innerHTML=['AN','DS','BE1','BE2','FE','QA'].map(id=>`<span><span class="sw" style="background:${MP_STAGE[id].c}"></span>${MP_STAGE[id].n}</span>`).join('')+
     `<span style="margin-left:12px"><span class="sw" style="background:${DONE_GREEN}"></span>этап пройден (закрыт в Jira или начался следующий)</span>`+
+    `<span><span class="sw" style="background:repeating-linear-gradient(135deg,${MP_STAGE.AN.c} 0 3px,rgba(13,27,42,.55) 3px 5px)"></span>отстаёт: спринт прошёл, этап в Jira не закрыт</span>`+
     `<span><span class="sw" style="background:rgba(46,204,113,.18)"></span>сценарий завершён полностью</span>`+
     `<span><span class="sw" style="border:1px dashed var(--mute);background:transparent"></span>отсечка спринта</span>`+
     `<span><span class="sw" style="background:#00d4ff"></span>сегодня</span>`+

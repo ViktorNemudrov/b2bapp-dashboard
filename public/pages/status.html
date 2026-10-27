@@ -74,7 +74,7 @@
 <div class="main">
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🧾 Статус для руководства</span></div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" id="exportBtn" onclick="exportStandalone()" title="Скачать эту страницу одним HTML-файлом с текущими данными — как файл Леонида: открывается без сайта и пароля, можно переслать" style="margin-left:8px">⬇ Выгрузить HTML</button><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
 <div class="content">
   <div class="st-chips" id="chips"></div>
@@ -215,6 +215,7 @@ document.getElementById('tabs').addEventListener('click',e=>{
 try{ const t=localStorage.getItem('st-tab'); const b=t&&document.querySelector(`.st-tab[data-t="${t}"]`); if(b) b.click(); }catch(_){}
 
 fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  window._stData=d;
   mountFreshness('freshness', d.refreshedAt, d.updated);
   $('upd').textContent=fmtDate(d.updated);
   const g=d.ganttV2||{}, k=d.kpi||{}, m=d.metrics||{}, sp=g.statusPage||{};
@@ -370,5 +371,44 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   $('t6ctl').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; if(b.dataset.role) T6.role=b.dataset.role; if(b.dataset.sort) T6.sort=b.dataset.sort; renderT6(); });
   renderT6();
 }).catch(e=>{ $('t1body').innerHTML='<div class="empty">Не удалось загрузить data.json: '+esc(e.message)+'</div>'; });
+
+// ── Выгрузка в один HTML (Виктор 27.10.2026): тот же формат, что файл Леонида —
+// все 7 вкладок с актуальными данными, без сайта. Берём исходник этой страницы,
+// встраиваем shared.css, shared-nav.js (без меню и пароля) и срез data.json
+// (только то, что страница читает). Скрипт рендера тот же — данные те же.
+async function exportStandalone(){
+  const btn=$('exportBtn'), d=window._stData;
+  if(!d){ alert('Данные ещё не загрузились'); return; }
+  btn.disabled=true; const was=btn.textContent; btn.textContent='⏳ Собираю…';
+  try{
+    const txt=u=>fetch(u+'?t='+Date.now()).then(r=>{ if(!r.ok) throw new Error(u+': '+r.status); return r.text(); });
+    const [src,css,nav]=await Promise.all([txt(location.pathname),txt('../shared.css'),txt('../shared-nav.js')]);
+    const g=d.ganttV2||{};
+    const slim={updated:d.updated,refreshedAt:d.refreshedAt,kpi:d.kpi,metrics:d.metrics,
+      ganttV2:{criticalPathExplained:g.criticalPathExplained,manualPlan:g.manualPlan,resources:g.resources,
+               scenarios:g.scenarios,sprints:g.sprints,statusPage:g.statusPage}};
+    const safe=t=>t.replace(/<\/(script)/gi,'<\\/$1');  // «</script» внутри встроенного кода закрыл бы тег
+    const cut=(t,a,b)=>{ const i=t.indexOf(a); if(i<0) throw new Error('не найден фрагмент: '+a.slice(0,40)); return t.slice(0,i)+b+t.slice(i+a.length); };
+    let h=src;
+    // ссылки внутри файла (гант, ресурсы) ведут на сайт
+    h=cut(h,'<link rel="stylesheet" href="../shared.css">','<base href="https://b2bapp-dashboard.vercel.app/pages/" target="_blank"><style>'+css+'\n.main{width:100%}<\/style>');
+    h=cut(h,'<div id="sidebar-root"></div>','');
+    h=cut(h,'<script src="../shared-nav.js"><\/script><script>renderSidebar(); initTheme();<\/script>',
+          '<script>'+safe(nav.replace('window.AUTH_READY = checkAuth();',''))+'<\/script><script>initTheme();<\/script>');
+    h=h.replace(/<a class="back-btn"[^>]*>.*?<\/a>/,'');
+    h=h.replace(/<button class="pdf-btn" id="exportBtn"[^>]*>.*?<\/button>/,'');
+    h=cut(h,"fetch('../data/data.json?t='+Date.now()).then(r=>r.json())",'Promise.resolve(window.__DATA__)');
+    const di=h.search(/<script>\s*const \$=/); if(di<0) throw new Error('не найден основной скрипт страницы');
+    h=h.slice(0,di)+'<script>window.__DATA__='+safe(JSON.stringify(slim))+';<\/script>\n'+h.slice(di);
+    h=h.replace('<title>Статус для руководства — B2BAPP</title>',`<title>Dashboard B2BAPP — обновление ${fmtDate(d.updated)}</title>`);
+    h=h.replace('<!DOCTYPE html>',`<!DOCTYPE html>\n<!-- Выгружено с b2bapp-dashboard.vercel.app ${fmtDateTime(new Date().toISOString())}, данные на ${fmtDate(d.updated)} -->`);
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([h],{type:'text/html'}));
+    a.download=`Dashboard_B2BAPP_obnovlenie${(d.updated||localISO(new Date())).slice(0,10).split('-').reverse().join('.')}.html`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+  }catch(e){ alert('Не удалось выгрузить: '+e.message); }
+  finally{ btn.disabled=false; btn.textContent=was; }
+}
 </script>
 </body></html>

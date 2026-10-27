@@ -652,11 +652,12 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
       <div class="fc-card" id="fcConclusion" style="max-width:600px"></div>
     </div>
 
-    <!-- COUNTDOWN: тикающий отсчёт по рабочему времени (дни/часы/минуты); календарные дни — мелким текстом справочно -->
+    <!-- COUNTDOWN: календарный отсчёт дни/часы/минуты (тикает каждую секунду); рабочие дни — мелким текстом.
+         Раньше тикало рабочее время 09–17: вечером и в выходные часы и минуты стояли на 00 (Виктор 27.10.2026). -->
     <div class="countdown">
-      <div class="cd-label">⏱ До вехи 10.12.26 (рабочее время)</div>
+      <div class="cd-label">⏱ До вехи 10.12.26</div>
       <div class="cd-units">
-        <div class="cd-unit"><div class="cd-n" id="cdWD">—</div><div class="cd-u">раб. дней</div></div>
+        <div class="cd-unit"><div class="cd-n" id="cdWD">—</div><div class="cd-u">дней</div></div>
         <div class="cd-sep">:</div>
         <div class="cd-unit"><div class="cd-n" id="cdWH">—</div><div class="cd-u">часов</div></div>
         <div class="cd-sep">:</div>
@@ -774,15 +775,12 @@ function updateCountdown(){
   const diff = DEADLINE - now;
   if(diff<=0){$('cdWD').textContent='0';$('cdWH').textContent='00';$('cdWM').textContent='00';$('cdCalDays').textContent='Веха наступила';return;}
   const calDays=Math.floor(diff/86400000);
-  const workSecs=workSecondsBetween(now, DEADLINE);
-  const workDayLen=(WORK_END_H-WORK_START_H)*3600;
-  const wd=Math.floor(workSecs/workDayLen);
-  const wh=Math.floor((workSecs%workDayLen)/3600);
-  const wm=Math.floor((workSecs%3600)/60);
-  $('cdWD').textContent=wd;
-  $('cdWH').textContent=String(wh).padStart(2,'0');
-  $('cdWM').textContent=String(wm).padStart(2,'0');
-  $('cdCalDays').textContent=`справочно: ${calDays} календарных дней`;
+  const ch=Math.floor((diff%86400000)/3600000), cm=Math.floor((diff%3600000)/60000);
+  const workDays=Math.floor(workSecondsBetween(now, DEADLINE)/((WORK_END_H-WORK_START_H)*3600));
+  $('cdWD').textContent=calDays;
+  $('cdWH').textContent=String(ch).padStart(2,'0');
+  $('cdWM').textContent=String(cm).padStart(2,'0');
+  $('cdCalDays').textContent=`из них рабочих: ${workDays} дн. (${workDays*8} ч на человека)`;
 }
 updateCountdown(); setInterval(updateCountdown,1000);
 
@@ -1063,9 +1061,10 @@ function setAudience(aud,btn){
 function renderSprintsLeft(data){
   const el=$('cdSprints'); if(!el) return;
   const sp=(data.ganttV2&&data.ganttV2.sprints)||[], dl='2026-12-10';
-  const left=sp.filter(s=>s.state!=='closed' && s.start<dl);
+  const today=localISO(new Date());  // по дате в браузере, а не по моменту сборки
+  const left=sp.filter(s=>s.end>today && s.start<dl);
   if(!left.length){ el.textContent=''; return; }
-  const last=left[left.length-1], cur=left.find(s=>s.state==='active');
+  const last=left[left.length-1], cur=left.find(s=>s.start<=today);
   const n=left.length, w=n%10===1&&n%100!==11?'спринт':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?'спринта':'спринтов');
   el.textContent=`Осталось ${n} ${w}: ${cur?'идёт '+cur.name+', ':''}веха — внутри Спринта ${last.n} (${fmtDate(last.start)}–${fmtDate(last.end)})`;
 }

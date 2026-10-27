@@ -170,6 +170,8 @@ function renderFreshness(refreshedAt, fallback){
 window.renderFreshness = renderFreshness;
 // Единый формат дат на сайте — дд.мм.гг (Виктор 26.10.2026). Принимает
 // ISO «2026-10-26», «2026-10-26T18:44…», «26.10.2026» или Date.
+// Локальная дата YYYY-MM-DD (toISOString даёт UTC — до 03:00 МСК это «вчера»).
+function localISO(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function fmtDate(v){
   if(!v) return '—';
   if(v instanceof Date) return isNaN(v)?'—':`${String(v.getDate()).padStart(2,'0')}.${String(v.getMonth()+1).padStart(2,'0')}.${String(v.getFullYear()).slice(2)}`;
@@ -184,6 +186,7 @@ function fmtDateTime(v){
   return m?`${m[3]}.${m[2]}.${m[1].slice(2)} ${m[4]}:${m[5]}`:fmtDate(v);
 }
 window.fmtDate = fmtDate; window.fmtDateTime = fmtDateTime;
+window.localISO = localISO;
 function mountFreshness(elId, refreshedAt, fallback){
   const el = document.getElementById(elId);
   if(el) el.innerHTML = renderFreshness(refreshedAt, fallback);
