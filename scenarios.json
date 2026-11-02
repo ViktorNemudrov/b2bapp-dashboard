@@ -1,6 +1,6 @@
 {
  "source": "Confluence 2356754448 «Реестр оценки скоупа MVP v.2»",
- "fetchedAt": "2026-10-20",
+ "fetchedAt": "2026-11-02",
  "note": "Реестр сценариев (Confluence 2356754448). Привязка стори к сценарию в build_dashboard.py: метка Jira → префикс названия → таблица «Структура и оценка» (confluenceStories) → storyOverrides (ручная логическая привязка, согласовано с Виктором 20.10.2026) → PLATFORM.",
  "scenarios": [
   {
@@ -330,28 +330,28 @@
   {
    "contour": "Доп. группы",
    "code": "B2C",
-   "name": "Переиспользование решений B2C",
-   "priority": "",
-   "status": "",
-   "epic": null,
+   "name": "Переиспользование наработок МП В2С",
+   "priority": "P0",
+   "status": "В работе, отдельно не оцениваем, т.к. надо по сценарно идти в процессе работы",
+   "epic": "B2BAPP-134",
    "order": 37
   },
   {
    "contour": "Доп. группы",
    "code": "NAI",
-   "name": "ИИ-ассистенты (ai.beeline)",
-   "priority": "",
-   "status": "",
-   "epic": "B2BAPP-484",
+   "name": "Аналоги AI-продуктов (GPTunnel и т.п.)",
+   "priority": "P3",
+   "status": "В работе",
+   "epic": "B2BAPP-27",
    "order": 38
   },
   {
    "contour": "Доп. группы",
    "code": "IB",
-   "name": "ИБ и вывод в продуктив (сторы, публикация)",
-   "priority": "",
-   "status": "",
-   "epic": null,
+   "name": "Выход в продуктив",
+   "priority": "P2",
+   "status": "В работе",
+   "epic": "B2BAPP-134",
    "order": 39
   },
   {
