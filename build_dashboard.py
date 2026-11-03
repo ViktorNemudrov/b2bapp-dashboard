@@ -170,12 +170,16 @@ def sprint_of_date(d: date) -> int:
         n += 1
     return n
 
+JIRA_ACTIVE_SPRINT = None  # номер ACTIVE-спринта из выгрузки Jira; ставит build_gantt()
+
 def sprint_index(d: date) -> int:
-    """Текущий спринт на дату d: последний начавшийся (20.10 → Спринт 4)."""
-    n = 0
-    while sprint_start(n + 1) <= d:
-        n += 1
-    return n
+    """Текущий спринт на дату d (Виктор 03.11.2026: в 01:00 03.11 Спринт 4 ещё
+    идёт, Спринт 5 не начат). Пока активный в Jira спринт не кончился по
+    календарю — текущий он; иначе граничный день — уходящему спринту
+    (03.11 → Спринт 4, 04.11 → Спринт 5). То же правило — currentSprintN() в shared-nav.js."""
+    if JIRA_ACTIVE_SPRINT is not None and sprint_start(JIRA_ACTIVE_SPRINT) <= d <= sprint_end(JIRA_ACTIVE_SPRINT):
+        return JIRA_ACTIVE_SPRINT
+    return max(sprint_of_date(d), 0)
 
 def sprint_workdays(n: int):
     """Рабочие дни спринта: [старт, конец) — граничный день отдаём следующему."""
@@ -193,7 +197,8 @@ def sprint_calendar(until: date, today: date, jira_sprints):
     out = []
     for n in range(0, last + 1):
         st, en = sprint_start(n), sprint_end(n)
-        state = "closed" if en <= today else ("active" if st <= today else "future")
+        cur = sprint_index(today)
+        state = "closed" if n < cur else ("active" if n == cur else "future")
         js = jira_by_n.get(n) or {}
         out.append({"n": n, "name": f"Спринт {n}", "short": f"С{n}",
                     "start": st.isoformat(), "end": en.isoformat(), "state": state,
@@ -1286,6 +1291,13 @@ def run_gantt(args):
     # Вакантные ставки-гипотезы (FE-2/BE-1/QA-2 и т.п.) больше не показываем и
     # не назначаем на них задачи (Виктор 21.09.2026: считаем, что их не будет).
     resources = [r for r in build_resources(team, issues) if not r.get("vacant")]
+    global JIRA_ACTIVE_SPRINT
+    raw_dump = json.load(open(args.jira, encoding="utf-8"))
+    jira_sprints = raw_dump.get("sprints") if isinstance(raw_dump, dict) else None
+    for s in jira_sprints or []:
+        m = SPRINT_NAME_RE.search(s.get("name") or "")
+        if m and (s.get("state") or "").upper() == "ACTIVE":
+            JIRA_ACTIVE_SPRINT = int(m.group(1))
     # Сценарий стори нужен ДО планирования: бэклог раскладывается по «Плану
     # ручному», а он задан по сценариям (26.10.2026).
     reg = load_scenarios(args.scenarios)
@@ -1304,8 +1316,6 @@ def run_gantt(args):
     if reg:
         assign_scenarios(items, issues, reg)
         scenarios = calc_scenarios(items, reg, today)
-    raw_dump = json.load(open(args.jira, encoding="utf-8"))
-    jira_sprints = raw_dump.get("sprints") if isinstance(raw_dump, dict) else None
     sprints = sprint_calendar(max(end_date or today, DEADLINE), today, jira_sprints)
 
     mvp_scope = calc_mvp_scope(items)

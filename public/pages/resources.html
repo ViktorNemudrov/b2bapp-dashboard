@@ -3,7 +3,7 @@
 <div class="layout">
 <div id="sidebar-root"></div>
 <script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();
-fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSprints(d);
   mountFreshness('freshness', d.refreshedAt, d.updated);
 }).catch(()=>{});</script>
 <div class="main">
@@ -14,7 +14,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 <div class="content" id="root"><div class="empty">Загрузка...</div></div>
 <script>
 AUTH_READY.then(()=>{
-fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSprints(d);
   document.getElementById('upd').textContent=fmtDate(d.updated);
 
 // Состав команды — снимок страницы Confluence «Команда проекта» (data.teamConfluence,

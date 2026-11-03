@@ -40,6 +40,19 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
 .badge-blue{background:rgba(68,114,196,.2);color:#4472C4}
 .badge-yel{background:rgba(255,107,61,.16);color:var(--yel)}
 .badge-gray{background:rgba(127,143,166,.15);color:var(--mute)}
+/* Единая палитра статусов задач на всём сайте (Виктор 03.11.2026): зелёный — готово,
+   синий — на тестировании, оранжевый — в работе, серо-голубой — готово к старту,
+   серый — бэклог, фиолетовый — на паузе. Красный — только критический путь.
+   Соответствие статусов Jira — STATUS_GROUPS в shared-nav.js. */
+:root{--st-done:#2ECC71;--st-test:#3D8BFD;--st-wip:#F5A623;--st-ready:#8FA3BF;--st-backlog:#5F6B7A;--st-hold:#A569BD;--st-over:#FFD43B}
+body.light-theme{--st-backlog:#9AA5B4;--st-ready:#7D93B2}
+.st-badge{display:inline-block;padding:1px 8px;border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap}
+.st-badge.st-done{background:rgba(46,204,113,.18);color:var(--st-done)}
+.st-badge.st-test{background:rgba(61,139,253,.18);color:var(--st-test)}
+.st-badge.st-wip{background:rgba(245,166,35,.18);color:var(--st-wip)}
+.st-badge.st-ready{background:rgba(143,163,191,.18);color:var(--st-ready)}
+.st-badge.st-backlog{background:rgba(127,143,166,.15);color:var(--mute)}
+.st-badge.st-hold{background:rgba(165,105,189,.18);color:var(--st-hold)}
 
 /* SEARCH */
 .search-row{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap}

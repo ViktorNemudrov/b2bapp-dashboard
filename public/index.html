@@ -1062,9 +1062,10 @@ function renderSprintsLeft(data){
   const el=$('cdSprints'); if(!el) return;
   const sp=(data.ganttV2&&data.ganttV2.sprints)||[], dl='2026-12-10';
   const today=localISO(new Date());  // по дате в браузере, а не по моменту сборки
-  const left=sp.filter(s=>s.end>today && s.start<dl);
+  const curN=currentSprintN(sp,today);  // граничный день — уходящему спринту (shared-nav.js)
+  const left=sp.filter(s=>s.n>=curN && s.start<dl);
   if(!left.length){ el.textContent=''; return; }
-  const last=left[left.length-1], cur=left.find(s=>s.start<=today);
+  const last=left[left.length-1], cur=left.find(s=>s.n===curN);
   const n=left.length, w=n%10===1&&n%100!==11?'спринт':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?'спринта':'спринтов');
   el.textContent=`Осталось ${n} ${w}: ${cur?'идёт '+cur.name+', ':''}веха — внутри Спринта ${last.n} (${fmtDate(last.start)}–${fmtDate(last.end)})`;
 }
@@ -1235,7 +1236,7 @@ window.addEventListener('pagehide',()=>{
 // ── CHANGELOG (§3.11: data-driven, <details> свёрнут по умолчанию, фильтр по area) ──
 // ── LOAD & RENDER ─────────────────────────────────────────────
 async function loadData(){
-  try{const r=await fetch('./data/data.json?t='+Date.now());return await r.json();}
+  try{const r=await fetch('./data/data.json?t='+Date.now());return normalizeSprints(await r.json());}
   catch(e){return null;}
 }
 async function refreshData(){

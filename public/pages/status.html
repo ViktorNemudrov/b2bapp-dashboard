@@ -132,19 +132,19 @@
 <!-- ===== 04 Подбор команды (статично) ===== -->
 <div class="st-pane" id="t4">
   <h2>Состояние по подбору команды</h2>
-  <p class="lead">7 из 9 позиций закрыты, 2 в ожидании старта подбора. Текущий состав и загрузка — на странице <a href="resources.html">«Ресурсный план»</a>.</p>
+  <p class="lead">7 из 9 позиций закрыты, по 1 идёт подбор, 1 в ожидании старта подбора. Текущий состав и загрузка — на странице <a href="resources.html">«Ресурсный план»</a>.</p>
   <div class="card" style="overflow-x:auto">
     <table class="ptbl">
       <tr><th>№</th><th>Позиция</th><th>Грейд</th><th>Статус</th><th>Дата выхода</th><th>Комментарий</th></tr>
-      <tr><td>1</td><td><b>Дизайнер</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>23.03.26</td><td>—</td></tr>
-      <tr><td>2</td><td><b>Аналитик</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>12.08.26</td><td>—</td></tr>
-      <tr><td>3</td><td><b>Аналитик</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>01.09.26</td><td>—</td></tr>
-      <tr><td>4</td><td><b>Бэк</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>24.07.26</td><td>—</td></tr>
-      <tr><td>5</td><td><b>Бэк</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>04.09.26</td><td>—</td></tr>
-      <tr><td>6</td><td><b>Фронт</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>27.07.26</td><td>—</td></tr>
-      <tr><td>7</td><td><b>Тестировщик</b></td><td><span class="tag">синьор</span></td><td><span class="badge badge-ok">● Вышел</span></td><td>21.07.26</td><td>—</td></tr>
-      <tr><td>8</td><td><b>Фронт</b></td><td><span class="tag">джун</span></td><td><span class="badge badge-warn">○ Не начато</span></td><td>–</td><td>Фриз снят, уточнить возможность старта подбора у HR BP</td></tr>
-      <tr><td>9</td><td><b>Тестировщик</b></td><td><span class="tag">миддл</span></td><td><span class="badge badge-warn">○ Не начато</span></td><td>–</td><td>Фриз снят, уточнить возможность старта подбора у HR BP</td></tr>
+      <tr><td>1</td><td><b>Дизайнер</b></td><td><span class="tag">миддл</span></td><td><span class="st-badge st-done">● Вышел</span></td><td>23.03.26</td><td>—</td></tr>
+      <tr><td>2</td><td><b>Аналитик</b></td><td><span class="tag">миддл</span></td><td><span class="st-badge st-done">● Вышел</span></td><td>12.08.26</td><td>—</td></tr>
+      <tr><td>3</td><td><b>Аналитик</b></td><td><span class="tag">синьор</span></td><td><span class="st-badge st-done">● Вышел</span></td><td>01.09.26</td><td>—</td></tr>
+      <tr><td>4</td><td><b>Бэк</b></td><td><span class="tag">синьор</span></td><td><span class="st-badge st-done">● Вышел</span></td><td>24.07.26</td><td>—</td></tr>
+      <tr><td>5</td><td><b>Бэк</b></td><td><span class="tag">миддл</span></td><td><span class="st-badge st-done">● Вышел</span></td><td>04.09.26</td><td>—</td></tr>
+      <tr><td>6</td><td><b>Фронт</b></td><td><span class="tag">синьор</span></td><td><span class="st-badge st-done">● Вышел</span></td><td>27.07.26</td><td>—</td></tr>
+      <tr><td>7</td><td><b>Тестировщик</b></td><td><span class="tag">синьор</span></td><td><span class="st-badge st-done">● Вышел</span></td><td>21.07.26</td><td>—</td></tr>
+      <tr><td>8</td><td><b>Фронт</b></td><td><span class="tag">джун</span></td><td><span class="st-badge st-backlog">○ Не начато</span></td><td>–</td><td>Фриз снят, уточнить возможность старта подбора у HR BP</td></tr>
+      <tr><td>9</td><td><b>Тестировщик</b></td><td><span class="tag">миддл</span></td><td><span class="st-badge st-wip">◐ Подбор начат</span></td><td>–</td><td>Подбор стартовал 02.11.26</td></tr>
     </table>
   </div>
 </div>
@@ -214,7 +214,7 @@ document.getElementById('tabs').addEventListener('click',e=>{
 });
 try{ const t=localStorage.getItem('st-tab'); const b=t&&document.querySelector(`.st-tab[data-t="${t}"]`); if(b) b.click(); }catch(_){}
 
-fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSprints(d);
   window._stData=d;
   mountFreshness('freshness', d.refreshedAt, d.updated);
   $('upd').textContent=fmtDate(d.updated);
@@ -262,7 +262,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
 
   // ── 03 Что планируется в MVP — реестр сценариев v.2 ──
   const scs=(g.scenarios||[]).filter(s=>s.code!=='PLATFORM');
-  const ST_COL={done:DONE_GREEN,in_progress:'var(--yel)',backlog:'#7f8fa6',empty:'transparent'};
+  const ST_COL={done:STATUS_GROUPS.done.color,in_progress:STATUS_GROUPS.wip.color,backlog:STATUS_GROUPS.backlog.color,empty:'transparent'};  // палитра — shared-nav.js
   const ST_LBL={done:'готово',in_progress:'в работе',backlog:'в бэклоге',empty:'нет задач в Jira'};
   const card=(title,list,dot,note)=>`<div class="card"><h3><span class="dot ${dot}"></span>${esc(title)} <span class="tag" style="margin-left:auto">${list.length} сцен.</span></h3>${note?`<p class="sub" style="margin-top:0">${esc(note)}</p>`:''}${list.map(s=>`<div class="row"><span class="idx">${esc(s.code)}</span><span style="flex:1"><span class="scst" title="${ST_LBL[s.category]||''}" style="background:${ST_COL[s.category]||'transparent'};border:1px solid #7f8fa6"></span>${esc(s.name)}</span><span class="tag">${esc(s.priority||'')}</span></div>`).join('')}</div>`;
   const byC=c=>scs.filter(s=>s.contour===c);
@@ -320,7 +320,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
   if(!mp){ $('t6body').innerHTML='<div class="empty">Нет «Плана ручного» в данных.</div>'; return; }
   const sps=(mp.sprints||[]).map(s=>s.n);
   // спринты плана дальше календаря ганта (он кончается на прогнозе) — даты из плана
-  (mp.sprints||[]).forEach(s=>{ if(!spBy[s.n]) spBy[s.n]={n:s.n,name:'Спринт '+s.n,start:s.start,end:s.end,state:s.end<=new Date().toISOString().slice(0,10)?'closed':'future'}; });
+  (mp.sprints||[]).forEach(s=>{ if(!spBy[s.n]) spBy[s.n]={n:s.n,name:'Спринт '+s.n,start:s.start,end:s.end,state:'future'}; });  // дальше календаря ганта — только будущие спринты
   const src=mp.source||{};
   const ROLE_F={all:'Все роли',AN:'Аналитика',DS:'Дизайн',BE:'Бэк',FE:'Фронт',QA:'QA'};
   const PHASE={completed:'Завершены',overdue:'План прошёл, работа не закрыта',now:'Идут сейчас по плану',next:'Впереди'};

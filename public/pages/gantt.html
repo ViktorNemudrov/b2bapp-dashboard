@@ -45,12 +45,15 @@
 .gantt2-bar{position:absolute;top:3px;height:20px;border-radius:3px;overflow:hidden;cursor:pointer}
 .gantt2-bar-fill{position:absolute;left:0;top:0;bottom:0}
 .gantt2-bar-name{position:absolute;left:4px;top:0;bottom:0;display:flex;align-items:center;font-size:9px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7);white-space:nowrap;pointer-events:none;z-index:1;max-width:100%;overflow:hidden}
-.gantt2-bar.g2-planned{opacity:.55}
-/* «В работе» — статичный пунктирный контур (пульсация убрана по просьбе Виктора 20.10.2026). */
-.gantt2-bar.g2-inprogress{outline:1px dashed rgba(255,255,255,.6)}
+/* Режим «цвет по роли»: статус передаётся прозрачностью/контуром. В режиме
+   «по статусу» (по умолчанию, Виктор 03.11.2026) статус — сам цвет бара. */
+.gantt2-body.color-role .gantt2-bar.g2-planned{opacity:.55}
+.gantt2-body.color-role .gantt2-bar.g2-inprogress{outline:1px dashed rgba(255,255,255,.6)}
+/* Красный — только критический путь. */
 .gantt2-bar.g2-crit{outline:2px solid var(--err)}
-.gantt2-bar.g2-overspent{box-shadow:0 0 0 2px var(--err) inset}
-.gantt2-bar.g2-overspent::after{content:'⚠';position:absolute;right:2px;top:50%;transform:translateY(-50%);font-size:10px;z-index:2}
+/* Перерасход: жёлтый треугольник справа от бара, внутри — сколько часов сверх оценки. */
+.g2-over{position:absolute;top:2px;width:30px;height:22px;background:var(--st-over);clip-path:polygon(50% 0,100% 100%,0 100%);
+  color:#1a1a1a;font-size:8px;font-weight:800;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;box-sizing:border-box;z-index:2;cursor:help;letter-spacing:-.3px}
 /* Прошлый план (слепок) — пунктирный контур ПОВЕРХ текущего бара: раньше был
    полупрозрачной заливкой ПОД баром и на перекрытии/светлой теме не был виден. */
 :root{--g2-ghost:rgba(232,237,245,.85)}
@@ -138,7 +141,7 @@ body.light-theme .gantt2-sprint-shade{background:rgba(26,41,64,.04)}
 <div class="layout">
 <div id="sidebar-root"></div>
 <script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();
-fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSprints(d);
   mountFreshness('freshness', d.refreshedAt, d.updated);
 }).catch(()=>{});</script>
 <div class="main">
@@ -202,6 +205,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
           <label class="gantt2-line-toggle"><input type="checkbox" id="lineToday" checked> Сегодня</label>
           <label class="gantt2-line-toggle"><input type="checkbox" id="lineMilestone" checked> Веха MVP</label>
           <label class="gantt2-line-toggle" title="Отсечки спринтов (2 недели, Спринт 4 = 20.10.26–03.11.26)"><input type="checkbox" id="lineSprints" checked> Спринты</label>
+          <select id="colorMode" title="Цвет баров: по статусу задачи (единая палитра сайта) или по роли исполнителя"><option value="status">Цвет: по статусу</option><option value="role">Цвет: по роли</option></select>
           <label class="gantt2-line-toggle" title="Даты выхода членов команды в проект — линия с фамилией; вышедшие раньше начала шкалы перечислены у левого края"><input type="checkbox" id="lineHires"> Выход в проект</label>
         </div>
       </div>
@@ -266,7 +270,8 @@ const SCENARIO_COLOR='#c2647a';
 const PLAN_SRC={jira:'спринт из Jira',"jira+":'спринт из Jira, не влезло в ёмкость — перенос в следующие',manual:'по «Плану ручному»',auto:'нет в плане — ближайший свободный спринт',fact:'факт (Спринт 0 / до спринтов)'};
 const SCALE_PX={week:26,month:6,quarter:2};
 const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',cmp:null,onlyChanged:false,resourceFilter:'',_scrolledToToday:false,
-  treeWidth:340,treeCollapsed:false,showToday:true,showMilestone:true,showHires:false,showSprints:true,view:'epics'};
+  treeWidth:340,treeCollapsed:false,showToday:true,showMilestone:true,showHires:false,showSprints:true,view:'epics',colorMode:'status'};
+try{ const cm=localStorage.getItem('g2-color'); if(cm==='role'||cm==='status') GS.colorMode=cm; }catch(_){}
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 const ddmm=s=>fmtDate(s);   // дд.мм.гг везде (Виктор 26.10.26)
 const spName=n=>n==null?'—':(n<0?'до Спринта 0':`Спринт ${n}`);
@@ -433,7 +438,7 @@ function initGanttTooltip(){
     const t=e.target.closest('.gantt2-bar[data-tip-key]');
     if(!t)return;
     const d=t.dataset;
-    ganttTipEl.innerHTML=`<strong>${d.tipKey}</strong> ${d.tipSummary}<div style="margin-top:5px;font-size:10px;color:var(--mute)">Ресурс: ${d.tipResource||'—'}</div><div style="font-size:10px">Оценка/списано: ${d.tipEst}ч / ${d.tipSpent}ч</div><div style="font-size:10px">${fmtDate(d.tipStart)} → ${fmtDate(d.tipEnd)}</div><div style="font-size:10px;color:var(--mute)">Статус: ${d.tipStatus||'—'}</div>${d.tipSprint?`<div style="font-size:10px">Спринт: ${d.tipSprint}${PLAN_SRC[d.tipSrc]?' · '+PLAN_SRC[d.tipSrc]:''}</div>`:''}${d.tipWhy?`<div class="gc-tip-why">${d.tipWhy}</div>`:''}`;
+    ganttTipEl.innerHTML=`<strong>${d.tipKey}</strong> ${d.tipSummary}<div style="margin-top:5px;font-size:10px;color:var(--mute)">Ресурс: ${d.tipResource||'—'}</div><div style="font-size:10px">Оценка/списано: ${d.tipEst}ч / ${d.tipSpent}ч</div><div style="font-size:10px">${fmtDate(d.tipStart)} → ${fmtDate(d.tipEnd)}</div><div style="font-size:10px;color:var(--mute)">Статус: ${d.tipStatus?statusBadge(d.tipStatus):'—'}</div>${(+d.tipSpent)>(+d.tipEst)&&(+d.tipEst)>0?`<div style="font-size:10px;color:var(--st-over)">▲ сверх оценки: +${Math.round(d.tipSpent-d.tipEst)} ч</div>`:''}${d.tipSprint?`<div style="font-size:10px">Спринт: ${d.tipSprint}${PLAN_SRC[d.tipSrc]?' · '+PLAN_SRC[d.tipSrc]:''}</div>`:''}${d.tipWhy?`<div class="gc-tip-why">${d.tipWhy}</div>`:''}`;
     ganttTipEl.style.display='block';
     const x=Math.min(e.clientX+14,window.innerWidth-296), y=Math.min(e.clientY+14,window.innerHeight-110);
     ganttTipEl.style.left=x+'px';ganttTipEl.style.top=y+'px';
@@ -917,7 +922,7 @@ function renderStages(gv, data){
   // Зелёный только в начавшихся спринтах (будущая работа ещё не заведена в Jira) или у завершённого сценария.
   // Текущий спринт — по дате в браузере (не по моменту сборки).
   const todayISO=localISO(new Date());
-  const curN=((gv.sprints||[]).find(s=>s.start<=todayISO&&todayISO<s.end)||{}).n??99;
+  const curN=(gv.sprints||[]).length?currentSprintN(gv.sprints,todayISO):99;  // правило — shared-nav.js
   const green=(r,sid,n)=>r.completed||(n<=curN&&['done','passed'].includes((r.state||{})[sid]));
   // Отстаёт: по плану этап уже должен был закончиться (прошёл ПОСЛЕДНИЙ спринт его
   // непрерывного отрезка в «Плане ручном»), а в Jira он не закрыт и следующий не начат.
@@ -1097,6 +1102,7 @@ function renderGanttV2(){
     t.onclick=()=>{ const k=t.dataset.key; GS.expanded.has(k)?GS.expanded.delete(k):GS.expanded.add(k); renderGanttV2(); };
   });
   $('ganttTree').closest('.gantt2-body').classList.toggle('pri-active', PRI_MODE);
+  $('ganttTree').closest('.gantt2-body').classList.toggle('color-role', GS.colorMode==='role');
 
   drawRuler(minD,maxD,totalPx,xOf,gv.sprints);
 
@@ -1108,20 +1114,24 @@ function renderGanttV2(){
       // без бара, а не рисуем мусорную позицию на эпохе 1970 года.
       return `<div class="gantt2-row" style="color:var(--mute);font-size:9px;padding-left:8px">нет дат</div>`;
     }
-    // Зелёный — только готовое (Завершена / Waiting for release), остальное — цвет роли.
-    const color=node.category==='done'&&node.type!=='scenario'?DONE_GREEN:node.type==='scenario'?SCENARIO_COLOR:(ROLE_COLOR[node.role]||'#7f8fa6');
+    // Цвет бара: по статусу (единая палитра сайта, shared-nav.js) или по роли.
+    // В режиме роли зелёный — только готовое (Завершена / Waiting for release).
+    const color=GS.colorMode==='status'
+      ? STATUS_GROUPS[statusGroup(node.type==='task'?node.status:null, node.category)].color
+      : node.category==='done'&&node.type!=='scenario'?DONE_GREEN:node.type==='scenario'?SCENARIO_COLOR:(ROLE_COLOR[node.role]||'#7f8fa6');
     const x=xOf(node.start), w=widthOf(node.start,node.end);
     const est=node.estimateH||0, spent=node.spentH||0;
     const progress=est?Math.min(100,Math.round(spent/est*100)):0;
     const overspent=est>0 && spent>est;
-    const activeSpend=spent>0 && !overspent;
-    const fillColor=overspent?'rgba(231,76,60,.65)':activeSpend?'rgba(255,255,255,.35)':'rgba(0,0,0,.35)';
-    const catClass=(node.category==='done'?'g2-done':node.category==='in_progress'?'g2-inprogress':'g2-planned')+(overspent?' g2-overspent':'');
+    const overH=overspent?Math.round(spent-est):0;
+    const fillColor=spent>0?'rgba(255,255,255,.35)':'rgba(0,0,0,.35)';
+    const catClass=node.category==='done'?'g2-done':node.category==='in_progress'?'g2-inprogress':'g2-planned';
+    const overMark=overspent?`<div class="g2-over" style="left:${x+w+3}px" title="Списано больше оценки: ${spent} ч из ${est} ч (+${overH} ч)">+${overH}</div>`:'';
     const assigneeName=node.type==='task' && node.resource ? (RESOURCE_NAME[node.resource]||'') : '';
     let ghost='', whyAttr='';
     const cr=CMP && CMP.res[node.key];
     if(cr){
-      const endX=x+w;
+      const endX=x+w, tagPad=overspent?34:0;  // метки сравнения — правее треугольника перерасхода
       if(cr.b && cr.b.start && cr.b.end){
         const bs=cr.b.shownStart||cr.b.start;
         const bx=xOf(bs), bw=widthOf(bs,cr.b.end), bEndX=bx+bw;
@@ -1130,10 +1140,10 @@ function renderGanttV2(){
           const l=Math.min(bEndX,endX), r=Math.max(bEndX,endX);
           ghost+=`<div class="gantt2-shift ${cr.dEnd>0?'gc-late':'gc-early'}" style="left:${l}px;width:${r-l}px"></div>`;
         }
-        const tagX=Math.max(endX,bEndX)+8;
+        const tagX=Math.max(endX+tagPad,bEndX)+8;
         if(cr.dEnd) ghost+=`<div class="gantt2-delta ${cr.dEnd>0?'gc-late':'gc-early'}" style="left:${tagX}px">${cr.dEnd>0?'+':'−'}${Math.abs(cr.dEnd)} дн.</div>`;
       } else if(cr.state==='new'){
-        ghost+=`<div class="gantt2-delta gc-new" style="left:${endX+8}px">новая</div>`;
+        ghost+=`<div class="gantt2-delta gc-new" style="left:${endX+tagPad+8}px">новая</div>`;
       }
       const whyText=(cr.state==='new'?'Новая — в слепке её не было':(cr.b&&cr.b.start?`Было: ${GC.ddmm(cr.b.start)} → ${GC.ddmm(cr.b.end)} · сдвиг конца ${GC.fmtDays(cr.dEnd||0)}`:''))+(cr.why?`<br>Почему: ${cr.why}`:'');
       whyAttr=` data-tip-why="${whyText.replace(/"/g,'&quot;')}"`;
@@ -1143,7 +1153,7 @@ function renderGanttV2(){
       data-tip-est="${est}" data-tip-spent="${spent}" data-tip-start="${node.start||''}" data-tip-end="${node.end||''}" data-tip-status="${node.status||''}" data-tip-sprint="${node.sprint!=null?(node.sprintFrom!=null&&node.sprintFrom!==node.sprint?'С'+node.sprintFrom+'–С'+node.sprint:'С'+node.sprint):''}" data-tip-src="${node.planSource||''}"${whyAttr}>
       <div class="gantt2-bar-fill" style="width:${progress}%;background:${fillColor}"></div>
       ${assigneeName?`<div class="gantt2-bar-name">${assigneeName}</div>`:''}
-    </div></div>`;
+    </div>${overMark}</div>`;
   }).join('');
   $('ganttRows').style.width=totalPx+'px';
   $('ganttRows').style.position='relative';
@@ -1171,16 +1181,17 @@ function renderGanttV2(){
     `<span><span class="g2-type-icon">${TYPE_ICON.epic}</span> Эпик</span>`+
     `<span><span class="g2-type-icon">${TYPE_ICON.story}</span> Стори</span>`+
     `<span><span class="g2-type-icon">${TYPE_ICON.task}</span> Задача</span>`+
-    Object.entries(ROLE_COLOR).map(([r,c])=>`<span><span class="sw" style="background:${c}"></span>${r}</span>`).join('')+
-    `<span style="margin-left:12px"><span class="sw" style="background:var(--err)"></span>критический путь (обводка)</span>`+
+    (GS.colorMode==='status' ? statusLegendHtml()
+      : Object.entries(ROLE_COLOR).map(([r,c])=>`<span><span class="sw" style="background:${c}"></span>${r}</span>`).join(''))+
+    `<span style="margin-left:12px"><span class="sw" style="background:transparent;outline:2px solid var(--err)"></span>критический путь (красная обводка)</span>`+
+    `<span><span class="sw" style="background:var(--st-over);clip-path:polygon(50% 0,100% 100%,0 100%)"></span>списано больше оценки (+ч в треугольнике)</span>`+
     `<span><span class="sw" style="background:#00d4ff"></span>сегодня</span>`+
     `<span><span class="sw" style="background:#9b59b6"></span>веха 10.12.26</span>`+
     `<span><span class="sw" style="background:var(--blue)"></span>выход сотрудника (наём/старт)</span>`+
     (GS.view==='scenarios'?`<span><span class="g2-type-icon">${TYPE_ICON.scenario}</span> Сценарий</span>`:'')+
     `<span><span class="sw" style="border:1px dashed var(--mute);background:transparent"></span>отсечка спринта (2 нед.)</span>`+
-    `<span><span class="sw" style="background:${DONE_GREEN}"></span>готово (Завершена / Waiting for release)</span>`+
-    `<span><span class="sw" style="background:rgba(255,255,255,.5)"></span>светлая заливка — списанное время</span>`+
-    `<span><span class="sw" style="background:#e74c3c"></span>⚠ списано больше оценки</span>`;
+    (GS.colorMode==='status'?'':`<span><span class="sw" style="background:${DONE_GREEN}"></span>готово (Завершена / Waiting for release)</span>`)+
+    `<span><span class="sw" style="background:rgba(255,255,255,.5)"></span>светлая заливка — списанное время</span>`;
 
   initGanttTooltip();
 
@@ -1265,6 +1276,8 @@ $('viewMode').onchange=e=>{
   renderGanttV2();
 };
 $('lineSprints').onchange=e=>{ GS.showSprints=e.target.checked; renderGanttV2(); };
+$('colorMode').value=GS.colorMode;
+$('colorMode').onchange=e=>{ GS.colorMode=e.target.value; try{ localStorage.setItem('g2-color', GS.colorMode); }catch(_){} renderGanttV2(); };
 $('expandSelect').onchange=e=>{
   const v=e.target.value;
   if(GS.view==='scenarios' && GS._tree){
@@ -1309,7 +1322,7 @@ $('ganttScroll').addEventListener('wheel', e=>{
 }, {passive:false});
 
 AUTH_READY.then(()=>{
-fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSprints(d);
   document.getElementById('upd').textContent=fmtDate(d.updated);
   CURRENT_DATA=d;
   // Последний выбранный вид — удобство на одного зрителя (может не сохраниться).

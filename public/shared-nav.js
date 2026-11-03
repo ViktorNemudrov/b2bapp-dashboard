@@ -187,6 +187,58 @@ function fmtDateTime(v){
 }
 window.fmtDate = fmtDate; window.fmtDateTime = fmtDateTime;
 window.localISO = localISO;
+
+// Текущий спринт — одно правило на весь сайт и в build_dashboard.py (sprint_index):
+// пока активный в Jira спринт не кончился по календарю, текущий — он; иначе
+// граничный день отдаём уходящему спринту (03.11 — ещё Спринт 4, 04.11 — Спринт 5).
+// Виктор 03.11.2026: «старый спринт 4 ещё идёт, а 5 ещё не начат».
+function currentSprintN(sprints, today){
+  today = today || localISO(new Date());
+  const sp = sprints || [];
+  const ja = sp.find(s => (s.jiraState||'').toUpperCase()==='ACTIVE' && s.start<=today && today<=s.end);
+  if(ja) return ja.n;
+  const started = sp.filter(s => s.start < today);
+  return started.length ? started[started.length-1].n : (sp[0] ? sp[0].n : 0);
+}
+// Состояние спринта на сегодня (а не на момент сборки): closed / active / future.
+function sprintStateNow(s, curN){ return s.n < curN ? 'closed' : s.n === curN ? 'active' : 'future'; }
+// Вызывать сразу после загрузки data.json: состояния спринтов — на сегодня по правилу выше.
+function normalizeSprints(d){
+  const sp = d && d.ganttV2 && d.ganttV2.sprints;
+  if(!sp || !sp.length) return d;
+  const cur = currentSprintN(sp);
+  sp.forEach(s => { s.state = sprintStateNow(s, cur); });
+  return d;
+}
+window.currentSprintN = currentSprintN; window.sprintStateNow = sprintStateNow; window.normalizeSprints = normalizeSprints;
+
+// Группы статусов — одна палитра на весь сайт (цвета — --st-* в shared.css).
+const STATUS_GROUPS = {
+  done:    {label:'Готово',          color:'#2ECC71', css:'st-done',    jira:['Завершена','Waiting for release','Done','Закрыта']},
+  test:    {label:'На тестировании', color:'#3D8BFD', css:'st-test',    jira:['Ready for testing','Тестирование','Review ready']},
+  wip:     {label:'В работе',        color:'#F5A623', css:'st-wip',     jira:['Разработка','В работе','Анализ','Development','In Progress']},
+  ready:   {label:'Готово к старту', color:'#8FA3BF', css:'st-ready',   jira:['Ready for DEV','Запланирована']},
+  backlog: {label:'Бэклог',          color:'#5F6B7A', css:'st-backlog', jira:['Бэклог','Backlog']},
+  hold:    {label:'На паузе',        color:'#A569BD', css:'st-hold',    jira:['Удержание','Hold']},
+};
+const STATUS_ORDER = ['done','test','wip','ready','backlog','hold'];
+const _ST_BY_NAME = {};
+Object.entries(STATUS_GROUPS).forEach(([g,v]) => v.jira.forEach(n => _ST_BY_NAME[n.toLowerCase()] = g));
+// Статус Jira (у задач) или category билдера (у стори/эпиков/сценариев) → группа.
+function statusGroup(status, category){
+  const g = _ST_BY_NAME[String(status||'').toLowerCase()];
+  if(g) return g;
+  return category==='done' ? 'done' : category==='in_progress' ? 'wip' : 'backlog';
+}
+function statusBadge(status, category){
+  const g = STATUS_GROUPS[statusGroup(status, category)];
+  return `<span class="st-badge ${g.css}" title="${g.label}">${status || g.label}</span>`;
+}
+function statusLegendHtml(){
+  return STATUS_ORDER.map(g => `<span><span class="sw" style="background:${STATUS_GROUPS[g].color}"></span>${STATUS_GROUPS[g].label}</span>`).join('');
+}
+window.STATUS_GROUPS = STATUS_GROUPS; window.STATUS_ORDER = STATUS_ORDER;
+window.statusGroup = statusGroup; window.statusBadge = statusBadge; window.statusLegendHtml = statusLegendHtml;
 function mountFreshness(elId, refreshedAt, fallback){
   const el = document.getElementById(elId);
   if(el) el.innerHTML = renderFreshness(refreshedAt, fallback);
