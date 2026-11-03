@@ -53,7 +53,7 @@
 .gt td.grp{background:rgba(127,143,166,.18);font-weight:800;font-size:12px;padding:5px 12px}
 .gt td.now{background:rgba(0,212,255,.07)}
 .gbar{display:block;margin:0 3px;border-radius:8px;height:16px;line-height:16px;font-size:10px;font-weight:700;text-align:center;color:#fff}
-.gbar.done{background:var(--ok)}.gbar.work{background:var(--yel)}.gbar.plan{background:#7f8fa6}
+.gbar.done{background:var(--st-done)}.gbar.work{background:var(--st-wip)}.gbar.plan{background:var(--st-backlog)}
 .pill{display:inline-block;border-radius:6px;padding:1px 6px;margin:1px;font-size:10px;font-weight:700;white-space:nowrap}
 .gt tr.done-row td{background:rgba(46,204,113,.08)}
 .t6-ctl{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin:0 0 10px}
@@ -233,7 +233,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
   const goalList=s=>s&&s.goals.length?s.goals.map((x,i)=>`<div class="goal"><span class="gst ${x.status}" title="${GST[x.status][1]}">${GST[x.status][0]}</span><div><div>${esc(x.text)}</div>${x.result?`<div class="gres">Итог: ${esc(x.result)}</div>`:''}</div></div>`).join(''):'<div class="sub">Цели спринта на странице «Реализация» не заполнены.</div>';
   const statTbl=(n,closed)=>{const rows=((sp.sprintStats||{})[n]||[]).filter(r=>r.tasks);
     if(!rows.length) return '';
-    return `<table class="mini"><tr><th>Сценарий</th><th class="c">Задач</th><th class="c">Готово</th>${closed?'':'<th class="c">В тесте</th><th class="c">В работе</th>'}<th class="c">Часы</th></tr>${rows.map(r=>`<tr><td><b>${esc(r.code)}</b> ${esc((r.name||'').slice(0,46))}</td><td class="c">${r.tasks}</td><td class="c" style="color:${r.done?'var(--ok)':'inherit'}">${r.done}</td>${closed?'':`<td class="c">${r.inQa||''}</td><td class="c">${r.inProgress||''}</td>`}<td class="c">${r.estimateH}</td></tr>`).join('')}</table>`;};
+    return `<table class="mini"><tr><th>Сценарий</th><th class="c">Задач</th><th class="c" style="color:var(--st-done)">Готово</th>${closed?'':'<th class="c" style="color:var(--st-test)">В тесте</th><th class="c" style="color:var(--st-wip)">В работе</th>'}<th class="c">Часы</th></tr>${rows.map(r=>`<tr><td><b>${esc(r.code)}</b> ${esc((r.name||'').slice(0,46))}</td><td class="c">${r.tasks}</td><td class="c" style="color:${r.done?'var(--st-done)':'inherit'}">${r.done}</td>${closed?'':`<td class="c" style="color:var(--st-test)">${r.inQa||''}</td><td class="c" style="color:var(--st-wip)">${r.inProgress||''}</td>`}<td class="c">${r.estimateH}</td></tr>`).join('')}</table>`;};
   const gs=goals.source||{};
   const pg=gBy[sp.lastClosedSprint], cg=gBy[sp.currentSprint];
   const cnt=s=>s?Object.entries(s.goals.reduce((a,x)=>(a[x.status]=(a[x.status]||0)+1,a),{})).map(([k,v])=>`${GST[k][1]}: ${v}`).join(' · '):'';

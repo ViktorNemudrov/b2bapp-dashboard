@@ -46,6 +46,7 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
    Соответствие статусов Jira — STATUS_GROUPS в shared-nav.js. */
 :root{--st-done:#2ECC71;--st-test:#3D8BFD;--st-wip:#F5A623;--st-ready:#8FA3BF;--st-backlog:#5F6B7A;--st-hold:#A569BD;--st-over:#FFD43B}
 body.light-theme{--st-backlog:#9AA5B4;--st-ready:#7D93B2}
+.st-legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
 .st-badge{display:inline-block;padding:1px 8px;border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap}
 .st-badge.st-done{background:rgba(46,204,113,.18);color:var(--st-done)}
 .st-badge.st-test{background:rgba(61,139,253,.18);color:var(--st-test)}

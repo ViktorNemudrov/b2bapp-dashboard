@@ -850,17 +850,24 @@ function renderEpicProgress(data){
   const prioByEpic={}; (data.ganttV2?.items||[]).forEach(it=>{ if(it.type==='epic') prioByEpic[it.key]=it.priority??9999; });
   const items=(data.epicProgress||[]).slice().sort((a,b)=>(prioByEpic[a.epicKey]??9999)-(prioByEpic[b.epicKey]??9999));
   if(!items.length){$('progressEpics').innerHTML=renderEmptyState('Нет данных, запустите обновление');return;}
+  // Задачи эпика по группам статусов — та же палитра, что на ганте и в статусе (shared-nav.js).
+  const byEpic={}; (data.ganttV2?.items||[]).forEach(it=>{ if(it.type!=='task'||!it.epic) return;
+    const g=statusGroup(it.status,it.category); (byEpic[it.epic]=byEpic[it.epic]||{})[g]=(byEpic[it.epic][g]||0)+1; });
   const rows=items.map(e=>{
     const hPct=e.hoursTotal?Math.round((e.hoursSpent||0)/e.hoursTotal*100):0;
     const sPct=e.storiesTotal?Math.round((e.storiesDone||0)/e.storiesTotal*100):0;
+    const cnt=byEpic[e.epicKey]||{}, nT=Object.values(cnt).reduce((a,b)=>a+b,0);
+    const segs=STATUS_ORDER.filter(g=>cnt[g]).map(g=>`<div class="p-fill" title="${STATUS_GROUPS[g].label}: ${cnt[g]}" style="width:${cnt[g]/nT*100}%;background:${STATUS_GROUPS[g].color};border-radius:0"></div>`).join('');
     return `<div class="p-item">
       <div class="p-row"><span class="p-name">${e.epicKey?jiraLink(e.epicKey)+' ':''}${e.epicName||''}</span><span class="p-nums">${e.hoursSpent||0}ч / ${e.hoursTotal||0}ч (${hPct}%)</span></div>
-      <div class="p-bar"><div class="p-fill" style="width:${hPct}%;background:var(--blue)"></div></div>
+      <div class="p-bar"><div class="p-fill" style="width:${hPct}%;background:rgba(143,163,191,.75)"></div></div>
+      ${nT?`<div class="p-row" style="margin-top:3px"><span class="p-name" style="color:var(--mute);font-size:10px">по задачам</span><span class="p-nums">${cnt.done||0} готово · ${cnt.test||0} в тесте · ${cnt.wip||0} в работе · ${nT} всего</span></div>
+      <div class="p-bar" style="display:flex">${segs}</div>`:''}
       <div class="p-row" style="margin-top:3px"><span class="p-name" style="color:var(--mute);font-size:10px">по стори</span><span class="p-nums">${e.storiesDone||0} / ${e.storiesTotal||0} стори</span></div>
-      <div class="p-bar"><div class="p-fill" style="width:${sPct}%;background:var(--ok)"></div></div>
+      <div class="p-bar"><div class="p-fill" style="width:${sPct}%;background:${STATUS_GROUPS.done.color}"></div></div>
     </div>`;
   }).join('');
-  $('progressEpics').innerHTML=`<h3>Готовность эпиков</h3>${rows}`;
+  $('progressEpics').innerHTML=`<h3>Готовность эпиков</h3><div class="st-legend" style="display:flex;flex-wrap:wrap;gap:10px;font-size:10px;color:var(--mute);margin:-4px 0 10px"><span>верхняя шкала — списано часов от оценки;</span>${statusLegendHtml()}</div>${rows}`;
 }
 
 // ── RISK MATRIX (§3.7: умное размещение маркеров + попап) ────────
