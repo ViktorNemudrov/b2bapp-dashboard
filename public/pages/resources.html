@@ -121,11 +121,12 @@ if(!rp.length){
   const spNames={}; (d.ganttV2&&d.ganttV2.sprints||[]).forEach(s=>spNames[s.n]=s);
   const spSet=new Set(); rp.forEach(r=>(r.sprints||[]).forEach(s=>spSet.add(s.n)));
   const spList=[...spSet].sort((a,b)=>a-b);
-  const spHtml=spList.length?`<table class="tbl heatmap-table" id="tblSp">
-    <thead><tr><th>Человек</th><th>Роль</th>${spList.map(n=>{const s=spNames[n];return `<th title="${s?fmtDate(s.start)+' – '+fmtDate(s.end):''}">Спринт ${n}${s&&s.state==='active'?' ●':''}<div style="font-weight:400;font-size:9px">${s?fmtDate(s.start):''}</div></th>`;}).join('')}</tr></thead>
+  // Текущий спринт выделен рамкой столбца (Виктор 06.11.2026).
+  const spHtml=spList.length?`<style>#tblSp .sp-cur{box-shadow:inset 2px 0 0 #00d4ff,inset -2px 0 0 #00d4ff}#tblSp th.sp-cur{color:#00d4ff;box-shadow:inset 2px 0 0 #00d4ff,inset -2px 0 0 #00d4ff,inset 0 2px 0 #00d4ff}#tblSp tbody tr:last-child td.sp-cur{box-shadow:inset 2px 0 0 #00d4ff,inset -2px 0 0 #00d4ff,inset 0 -2px 0 #00d4ff}</style><table class="tbl heatmap-table" id="tblSp">
+    <thead><tr><th>Человек</th><th>Роль</th>${spList.map(n=>{const s=spNames[n];return `<th${s&&s.state==='active'?' class="sp-cur"':''} title="${s?fmtDate(s.start)+' – '+fmtDate(s.end):''}${s&&s.state==='active'?' — текущий спринт':''}">Спринт ${n}${s&&s.state==='active'?' ● сейчас':''}<div style="font-weight:400;font-size:9px">${s?fmtDate(s.start):''}</div></th>`;}).join('')}</tr></thead>
     <tbody>${rp.map(r=>{const by={};(r.sprints||[]).forEach(s=>by[s.n]=s);return `<tr>
       <td style="font-weight:600;color:var(--text)">${r.name}</td><td style="color:var(--mute)">${r.role}</td>
-      ${spList.map(n=>{const s=by[n];return s?`<td class="${heatClass(s.loadPct)}" title="${s.hours} ч из ${s.capacity} ч">${s.loadPct}%<div style="font-size:9px;opacity:.75">${Math.round(s.hours)}/${Math.round(s.capacity)} ч</div></td>`:'<td class="heat-0">·</td>';}).join('')}
+      ${spList.map(n=>{const s=by[n];const cur=(spNames[n]||{}).state==='active'?' sp-cur':''; return s?`<td class="${heatClass(s.loadPct)}${cur}" title="${s.hours} ч из ${s.capacity} ч">${s.loadPct}%<div style="font-size:9px;opacity:.75">${Math.round(s.hours)}/${Math.round(s.capacity)} ч</div></td>`:`<td class="heat-0${cur}">·</td>`;}).join('')}
     </tr>`;}).join('')}</tbody></table>
     <div style="margin-top:6px;font-size:11px;color:var(--mute)">Закрытые спринты — факт (задачи, завершённые в спринте; перегруз &gt;100% — оценки больше, чем вмещает спринт). Текущий (●) и будущие — план: сначала спринты Jira, затем «План ручной»; что не влезает в ёмкость, переносится в следующий спринт.</div>`:'';
   document.getElementById('root').innerHTML=teamHtml(d)

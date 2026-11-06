@@ -171,6 +171,8 @@ def sprint_of_date(d: date) -> int:
     return n
 
 JIRA_ACTIVE_SPRINT = None  # номер ACTIVE-спринта из выгрузки Jira; ставит build_gantt()
+DELIVERY_ROLES = {"BA", "DS", "BE", "FE", "QA"}  # задают срок MVP; ARC/ORG/DVO — параллельные треки
+PARALLEL_END = None  # конец параллельных треков; ставит plan_gantt()
 
 def sprint_index(d: date) -> int:
     """Текущий спринт на дату d (Виктор 03.11.2026: в 01:00 03.11 Спринт 4 ещё
@@ -840,17 +842,28 @@ def plan_gantt(issues, resources, today=None, manual=None, story_scenario=None):
     # ── Критический путь: цепочка задач до max(end) ────────────────────────────
     # end_date держим как date (не ISO-строку!), иначе сравнение с DEADLINE и
     # .isoformat() падают. Баг найден Claude Code 22.08.2026, синхронизирован сюда.
-    task_ends = [date.fromisoformat(it["end"]) for it in items if it["type"] == "task"]
+    # Срок MVP задают роли, через которые идёт продукт (BA → DS/BE → FE → QA).
+    # ARC/ORG/DVO — параллельные треки (ИБ-документы, схемы, заказы, оргвопросы):
+    # на ганте есть, но конец MVP не двигают (Виктор 06.11.2026: «это же
+    # параллельная работа» — архитектор на 0.5 FTE утащил конец на 10.02.27).
+    # Их окончание — отдельно в parallel_end.
+    # по роли ИСПОЛНИТЕЛЯ: [BA]-задачи архитектора (B2BAPP-132, 269) тоже параллельный трек
+    is_delivery = lambda it: (it.get("resource") or "").split("-")[0] in DELIVERY_ROLES
+    task_ends = [date.fromisoformat(it["end"]) for it in items if it["type"] == "task" and is_delivery(it)]
+    par_ends = [date.fromisoformat(it["end"]) for it in items if it["type"] == "task" and not is_delivery(it)]
     end_date = max(task_ends) if task_ends else None
+    global PARALLEL_END
+    PARALLEL_END = max(par_ends) if par_ends else None
     crit_res = None
     if end_date:
         end_iso = end_date.isoformat()
-        tail = [it for it in items if it["type"] == "task" and it["end"] == end_iso]
+        tail = [it for it in items if it["type"] == "task" and is_delivery(it) and it["end"] == end_iso]
         if tail:
             crit_res = tail[0]["resource"]
-        # пометить критпуть: задачи ресурса-хвоста + их стори/эпики
+        # пометить критпуть: НЕЗАКРЫТЫЕ задачи ресурса-хвоста + их стори/эпики
+        # (закрытые срок уже не двигают — раньше красным был почти весь гант)
         crit_tasks = {it["key"] for it in items
-                      if it["type"] == "task" and it["resource"] == crit_res}
+                      if it["type"] == "task" and it["resource"] == crit_res and it.get("category") != "done"}
         crit_parents = {it["parent"] for it in items
                         if it["key"] in crit_tasks and it.get("parent")}
         crit_epics = {it["epic"] for it in items
@@ -1371,6 +1384,7 @@ def run_gantt(args):
             "method": "Критический путь = цепочка задач до max(end) по ресурсу-хвосту.",
             "endDate": crit_end_iso,
             "resource": crit_res,
+            "parallelEnd": PARALLEL_END.isoformat() if PARALLEL_END else None,
             "conclusion": (f"Успеваем к 10.12.26: критпуть до {crit_end_txt}" if end_date and end_date <= DEADLINE
                            else f"НЕ успеваем: критпуть до {crit_end_txt}, дедлайн 10.12.26"),
             "steps": [
@@ -1379,6 +1393,8 @@ def run_gantt(args):
                 "Бэклог без спринта — в будущие спринты по «Плану ручному» (Confluence 2666206915; Бек 1 = Попов, Бек 2 = Григоркин) с учётом ёмкости 2 недели × 8ч × FTE; не влезло — в следующий спринт",
                 "Зависимости ролей внутри стори — по спринтам: BA → (ARC) → DS и BE → FE не раньше DS и BE → QA; + явные Blocks",
                 f"Хвост критпути: ресурс {crit_res}, окончание {crit_end_txt}",
+                "Срок MVP задают аналитика, дизайн, бэк, фронт и QA; архитектура, оргзадачи и DevOps — параллельные треки, на срок не влияют"
+                + (f" (заканчиваются {PARALLEL_END.strftime('%d.%m.%y')})" if PARALLEL_END else ""),
             ],
         },
         "ganttAssumptions": {

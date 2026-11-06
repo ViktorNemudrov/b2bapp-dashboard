@@ -51,8 +51,8 @@
 .gantt2-body.color-role .gantt2-bar.g2-inprogress{outline:1px dashed rgba(255,255,255,.6)}
 /* Красный — только критический путь. */
 .gantt2-bar.g2-crit{outline:2px solid var(--err)}
-/* Перерасход: жёлтый треугольник справа от бара, внутри — сколько часов сверх оценки. */
-.g2-over{position:absolute;top:2px;width:30px;height:22px;background:var(--st-over);clip-path:polygon(50% 0,100% 100%,0 100%);
+/* Перерасход: жёлтый треугольник ВНУТРИ бара у правого края (Виктор 06.11.2026), в нём — часы сверх оценки. */
+.g2-over{position:absolute;top:1px;right:1px;width:26px;height:18px;background:var(--st-over);clip-path:polygon(50% 0,100% 100%,0 100%);
   color:#1a1a1a;font-size:8px;font-weight:800;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;box-sizing:border-box;z-index:2;cursor:help;letter-spacing:-.3px}
 /* Прошлый план (слепок) — пунктирный контур ПОВЕРХ текущего бара: раньше был
    полупрозрачной заливкой ПОД баром и на перекрытии/светлой теме не был виден. */
@@ -178,6 +178,10 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
           <label>Исполнитель</label>
           <select id="resourceFilter"><option value="">Все</option></select>
         </div>
+        <div class="gantt2-toolbar-group" id="grpAnalyst" title="Только сценарии, где аналитик указан владельцем в «Плане ручном»">
+          <label>Аналитик</label>
+          <select id="analystFilter"><option value="">Все</option></select>
+        </div>
         <div class="gantt2-toolbar-group" id="grpExpand">
           <label>Дерево</label>
           <select id="expandSelect">
@@ -269,7 +273,7 @@ const SCENARIO_COLOR='#c2647a';
 // Откуда спринт задачи (build_dashboard.py, спринтовая модель 26.10.2026).
 const PLAN_SRC={jira:'спринт из Jira',"jira+":'спринт из Jira, не влезло в ёмкость — перенос в следующие',manual:'по «Плану ручному»',auto:'нет в плане — ближайший свободный спринт',fact:'факт (Спринт 0 / до спринтов)'};
 const SCALE_PX={week:26,month:6,quarter:2};
-const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',cmp:null,onlyChanged:false,resourceFilter:'',_scrolledToToday:false,
+const GS={pxPerDay:26,scale:'week',level:'all',expanded:new Set(),baseline:'',cmp:null,onlyChanged:false,resourceFilter:'',analystFilter:'',_scrolledToToday:false,
   treeWidth:340,treeCollapsed:false,showToday:true,showMilestone:true,showHires:false,showSprints:true,view:'epics',colorMode:'status'};
 try{ const cm=localStorage.getItem('g2-color'); if(cm==='role'||cm==='status') GS.colorMode=cm; }catch(_){}
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
@@ -398,6 +402,30 @@ function allExpandableKeys(items){
 
 // Оставляет только эпики/стори/задачи, относящиеся к рабочему пути одного исполнителя
 // (чтобы увидеть, например, весь путь Аналитика 1 — задачи + их родительские стори/эпики для контекста).
+// Фильтр «Аналитик» (Виктор 06.11.2026): сценарии, где аналитик — владелец в «Плане ручном».
+// Владелец там — свободный текст с опечатками («Клемейнова», «Шевченок») и соавторами
+// через «/», поэтому сравниваем по первым 3 буквам фамилии.
+function analystCodes(gv, surname){
+  if(!surname) return null;
+  const key=surname.slice(0,3).toLowerCase();
+  const rows=((gv.manualPlan||{}).rows)||[];
+  return new Set(rows.filter(r=>(r.owner||'').toLowerCase().split(/[^а-яёa-z]+/).some(w=>w.startsWith(key))).map(r=>r.code));
+}
+function filterItemsByScenarios(items, codes){
+  if(!codes) return items;
+  const stories=items.filter(i=>i.type==='story' && codes.has(i.scenario));
+  const sk=new Set(stories.map(s=>s.key));
+  const tasks=items.filter(i=>i.type==='task' && sk.has(i.parent));
+  const ek=new Set(stories.map(s=>s.parent)); tasks.forEach(t=>ek.add(t.epic));
+  return [...items.filter(i=>i.type==='epic' && ek.has(i.key)), ...stories, ...tasks];
+}
+function populateAnalystSelect(gv){
+  const anSel=$('analystFilter');
+  if(!anSel || anSel.dataset.populated==='1') return;
+  anSel.innerHTML='<option value="">Все</option>'+(gv.resources||[]).filter(r=>r.role==='BA').map(r=>{const sn=(r.name||'').split(' ')[0];return `<option value="${sn}">${r.name}</option>`;}).join('');
+  anSel.dataset.populated='1';
+  anSel.onchange=()=>{ GS.analystFilter=anSel.value; GS._scrolledToToday=false; renderGanttV2(); };
+}
 function filterItemsByResource(items, resId){
   if(!resId) return items;
   const matchTasks=items.filter(i=>i.type==='task' && i.resource===resId);
@@ -941,10 +969,11 @@ function renderStages(gv, data){
     });
     return out;
   };
+  const anC=analystCodes(gv, GS.analystFilter), mpRows=anC?mp.rows.filter(r=>anC.has(r.code)):mp.rows;
   const rows=[]; let lastContour=null;
-  mp.rows.forEach(r=>{ if(r.contour!==lastContour){ rows.push({group:r.contour}); lastContour=r.contour; } rows.push({r}); });
+  mpRows.forEach(r=>{ if(r.contour!==lastContour){ rows.push({group:r.contour}); lastContour=r.contour; } rows.push({r}); });
   const ds=[new Date(), new Date('2026-12-15')];
-  mp.rows.forEach(r=>segsOf(r).forEach(g=>{ ds.push(new Date(spByN[g.from].start), new Date(spByN[g.to].end)); }));
+  mpRows.forEach(r=>segsOf(r).forEach(g=>{ ds.push(new Date(spByN[g.from].start), new Date(spByN[g.to].end)); }));
   const minD=new Date(Math.min(...ds)); minD.setDate(minD.getDate()-3);
   const maxD=new Date(Math.max(...ds)); maxD.setDate(maxD.getDate()+3);
   GS._minD=minD;
@@ -1019,18 +1048,20 @@ function renderGanttV2(){
   $('ganttEmpty').innerHTML='';
   $('ganttApp').style.display='block';
   applyViewChrome();
+  populateAnalystSelect(gv);  // до развилки: нужен и в виде «Этапы»
   if(GS.view==='stages'){ renderStages(gv, data); return; }
   if(gv._flatAdapted){
     $('ganttEmpty').innerHTML=`<div class="note-banner" style="background:rgba(255,107,61,.08);border:1px solid rgba(255,107,61,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mute);margin-bottom:14px">⚠ Скилл ещё не даёт story/task-уровень в ganttV2 — показан агрегат по ролям внутри эпика (наведи на бар — детали). Разверни ⌄ эпик, чтобы увидеть роли.</div>`;
   }
 
   const effectiveItems = (PRI_MODE && PRI_ITEMS) ? PRI_ITEMS : gv.items;
-  const resourceFilteredItems = filterItemsByResource(effectiveItems, GS.resourceFilter);
+  const anCodes = analystCodes(gv, GS.analystFilter);
+  const resourceFilteredItems = filterItemsByScenarios(filterItemsByResource(effectiveItems, GS.resourceFilter), anCodes);
   LAST_ITEMS = effectiveItems;
   const RESOURCE_NAME={}; (gv.resources||[]).forEach(r=>{RESOURCE_NAME[r.id]=(r.name||'').split(' ')[0];});
 
   const items=resourceFilteredItems;
-  const tree=GS.view==='scenarios' ? buildScenarioTree(items, gv.scenarios) : buildTree(items);
+  const tree=GS.view==='scenarios' ? buildScenarioTree(items, anCodes?(gv.scenarios||[]).filter(s=>anCodes.has(s.code)):gv.scenarios) : buildTree(items);
   GS._tree=tree;
   // new Date(null) не даёт NaN (превращается в эпоху 1970-01-01), поэтому пустые
   // start/end (стори без дочерних задач — у скилла такое бывает) сначала
@@ -1126,12 +1157,12 @@ function renderGanttV2(){
     const overH=overspent?Math.round(spent-est):0;
     const fillColor=spent>0?'rgba(255,255,255,.35)':'rgba(0,0,0,.35)';
     const catClass=node.category==='done'?'g2-done':node.category==='in_progress'?'g2-inprogress':'g2-planned';
-    const overMark=overspent?`<div class="g2-over" style="left:${x+w+3}px" title="Списано больше оценки: ${spent} ч из ${est} ч (+${overH} ч)">+${overH}</div>`:'';
+    const overMark=overspent?`<div class="g2-over"${w<30?' style="right:auto;left:0"':''} title="Списано больше оценки: ${spent} ч из ${est} ч (+${overH} ч)">+${overH}</div>`:'';
     const assigneeName=node.type==='task' && node.resource ? (RESOURCE_NAME[node.resource]||'') : '';
     let ghost='', whyAttr='';
     const cr=CMP && CMP.res[node.key];
     if(cr){
-      const endX=x+w, tagPad=overspent?34:0;  // метки сравнения — правее треугольника перерасхода
+      const endX=x+w, tagPad=0;
       if(cr.b && cr.b.start && cr.b.end){
         const bs=cr.b.shownStart||cr.b.start;
         const bx=xOf(bs), bw=widthOf(bs,cr.b.end), bEndX=bx+bw;
@@ -1152,8 +1183,8 @@ function renderGanttV2(){
       data-tip-key="${node.key}" data-tip-summary="${spaceify(node.summary||'').replace(/"/g,'&quot;')}" data-tip-resource="${node.resource||''}"
       data-tip-est="${est}" data-tip-spent="${spent}" data-tip-start="${node.start||''}" data-tip-end="${node.end||''}" data-tip-status="${node.status||''}" data-tip-sprint="${node.sprint!=null?(node.sprintFrom!=null&&node.sprintFrom!==node.sprint?'С'+node.sprintFrom+'–С'+node.sprint:'С'+node.sprint):''}" data-tip-src="${node.planSource||''}"${whyAttr}>
       <div class="gantt2-bar-fill" style="width:${progress}%;background:${fillColor}"></div>
-      ${assigneeName?`<div class="gantt2-bar-name">${assigneeName}</div>`:''}
-    </div>${overMark}</div>`;
+      ${assigneeName?`<div class="gantt2-bar-name">${assigneeName}</div>`:''}${overMark}
+    </div></div>`;
   }).join('');
   $('ganttRows').style.width=totalPx+'px';
   $('ganttRows').style.position='relative';

@@ -17,7 +17,13 @@ import sys
 # Блоки спринтов бывают в одной ячейке разметки (С3 и С4 — 26.10.2026),
 # поэтому тело блока — до начала следующего блока, а не до конца ячейки.
 EXPAND_RE = re.compile(r'<ac:structured-macro[^>]*ac:name="expand"[^>]*>\s*<ac:parameter[^>]*>(Спринт\s*(\d+)[^<]*)</ac:parameter>', re.S)
-LI_RE = re.compile(r"<li[^>]*>(.*?)</li>", re.S)
+LI_RE = re.compile(r"<li([^>]*)>(.*?)</li>", re.S)
+# Итог цели Виктор отмечает ЦВЕТОМ строки (06.11.2026: «прекрасно покрашены цели»):
+# зелёный — выполнено, оранжевый — частично, красный — не выполнено, серый — снято.
+# Цвет надёжнее слов в тексте итога; слова — запасной вариант для непокрашенных строк.
+COLOR_STATUS = (("success", "done"), ("green", "done"), ("orange", "partial"), ("yellow", "partial"),
+                ("red", "fail"), ("danger", "fail"), ("gray", "dropped"), ("grey", "dropped"))
+COLOR_RE = re.compile(r"color:\s*var\(--ds-([a-z-]+)", re.I)
 # Итог — после ПОСЛЕДНЕГО « - »/« — », за которым слово-итог (жадный префикс).
 RESULT_RE = re.compile(r"^(.*)\s[-—–]\s+((?:не\s+)?(?:выполнен\w*|достигнут\w*|частично|снял\w*|решено|решён|перенес\w*).*)$", re.I | re.S)
 
@@ -51,11 +57,19 @@ def main(src, dst):
         body = st[m.end():ms[i + 1].start() if i + 1 < len(ms) else len(st)]
         body = body.split("Задачи в Jira")[0]
         goals = []
-        for li in LI_RE.findall(body):
+        for attrs, li in LI_RE.findall(body):
             t = text(li)
             rm = RESULT_RE.search(t)
             goal, res = (rm.group(1).strip(), rm.group(2).strip()) if rm else (t, "")
-            goals.append({"text": goal, "result": res, "status": status_of(res)})
+            st_col = None
+            cm = COLOR_RE.search(attrs + li)
+            if cm:
+                tok = cm.group(1).lower()
+                st_col = next((v for k, v in COLOR_STATUS if k in tok), None)
+            if st_col and not res and " - " in t:  # итог без слова-маркера: «… - выпилили из спринта»
+                goal, res = t.rsplit(" - ", 1)
+                goal, res = goal.strip(), res.strip()
+            goals.append({"text": goal, "result": res, "status": st_col or status_of(res)})
         intro = text(body.split("<ol")[0]) if "<ol" in body else text(body)
         sprints.append({"n": n, "title": title, "intro": intro[:300], "goals": goals})
     out = {"source": {"pageId": page["id"], "title": page["title"], "version": page["version"], "when": page["when"]},

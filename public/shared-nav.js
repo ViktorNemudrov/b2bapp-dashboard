@@ -216,7 +216,7 @@ window.currentSprintN = currentSprintN; window.sprintStateNow = sprintStateNow; 
 const STATUS_GROUPS = {
   done:    {label:'Готово',          color:'#2ECC71', css:'st-done',    jira:['Завершена','Waiting for release','Done','Закрыта']},
   test:    {label:'На тестировании', color:'#3D8BFD', css:'st-test',    jira:['Ready for testing','Тестирование','Review ready']},
-  wip:     {label:'В работе',        color:'#F5A623', css:'st-wip',     jira:['Разработка','В работе','Анализ','Development','In Progress']},
+  wip:     {label:'В работе',        color:'#E2B46C', css:'st-wip',     jira:['Разработка','В работе','Анализ','Development','In Progress']},
   ready:   {label:'Запланировано',   color:'#8FA3BF', css:'st-ready',   jira:['Ready for DEV','Запланирована']},  // проанализирована, ждёт разработки
   backlog: {label:'Бэклог',          color:'#5F6B7A', css:'st-backlog', jira:['Бэклог','Backlog']},
   hold:    {label:'На паузе',        color:'#A569BD', css:'st-hold',    jira:['Удержание','Hold']},

@@ -199,7 +199,11 @@ body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
 .sec-title::after{content:'';flex:1;height:1px;background:var(--line)}
 
 /* ── HERO ── */
-.hero{padding:24px 24px 16px;background:linear-gradient(180deg,#162235 0%,transparent 100%);display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;width:100%}
+.hero{padding:24px 24px 16px;background:linear-gradient(180deg,#162235 0%,transparent 100%);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch;width:100%}
+/* три равные колонки, как «Ключевые метрики» (Виктор 06.11.2026) */
+.hero>*{min-width:0}
+.hero .countdown{max-width:none;display:flex;flex-direction:column;justify-content:center}
+.hero #s-forecast .fc-card{max-width:none!important}
 .hero #s-forecast{flex:1;min-width:260px;width:auto;padding:0}
 .hero-left{flex:1;min-width:200px;max-width:100%}
 .hero-left h1{font-size:24px;font-weight:800;line-height:1.2;margin-bottom:6px}
@@ -496,7 +500,7 @@ body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
   .exec-grid{grid-template-columns:1fr}
   .forecast-row,.scope-grid,.two-col{grid-template-columns:1fr}
   .section{padding:16px 16px 8px}
-  .hero{padding:16px 16px 12px}
+  .hero{padding:16px 16px 12px;grid-template-columns:1fr}
   .kpi-row{gap:8px}
   .kpi{min-width:110px;padding:10px 12px}
   .kpi-val{font-size:22px}
@@ -842,7 +846,9 @@ function renderForecast(data){
     return;
   }
   const endDate=fmtDate(cp.endDate);
-  $('fcConclusion').innerHTML=`<div class="fc-date" style="color:var(--yel)">${endDate}</div><div class="fc-note" style="margin-top:8px;font-size:12px">${cp.conclusion}</div>`;
+  // Параллельные треки (архитектура, оргзадачи, DevOps) срок MVP не двигают — показываем отдельно.
+  const par=cp.parallelEnd?`<div class="fc-note" style="margin-top:6px;font-size:11px;color:var(--mute)">Срок задают аналитика, дизайн, бэк, фронт и QA. Параллельные треки (архитектура, ИБ-документы, DevOps) — до ${fmtDate(cp.parallelEnd)}</div>`:'';
+  $('fcConclusion').innerHTML=`<div class="fc-date" style="color:var(--yel)">${endDate}</div><div class="fc-note" style="margin-top:8px;font-size:12px">${cp.conclusion}</div>${par}`;
 }
 
 // ── PROGRESS + DEVIATION (п.20) ───────────────────────────────
@@ -1090,7 +1096,7 @@ function renderScopeGrowth(data){
   if(!pts.length){el.innerHTML=renderEmptyState('Нет данных, запустите обновление');return;}
   // Скилл иногда кладёт часы под ключом estH вместо hoursTotal — нормализуем на входе.
   const sorted=[...pts].sort((a,b)=>new Date(a.date)-new Date(b.date)).map(p=>({...p,hoursTotal:p.hoursTotal??p.estH}));
-  const W=760,H=220,PAD={top:14,right:14,bottom:26,left:40};
+  const W=760,H=220,PAD={top:14,right:48,bottom:26,left:40};
   const innerW=W-PAD.left-PAD.right, innerH=H-PAD.top-PAD.bottom;
   const ALL_SERIES=[
     {key:'epics',label:'Эпики',color:'#A5A5A5'},
@@ -1103,16 +1109,26 @@ function renderScopeGrowth(data){
   const dates=sorted.map(p=>new Date(p.date).getTime());
   const minD=Math.min(...dates), maxD=Math.max(...dates)||minD+1;
   const xScale=t=>PAD.left+(t-minD)/(maxD-minD||1)*innerW;
-  function line(key){
-    const vals=sorted.map(p=>p[key]||0);
-    const maxV=Math.max(...vals,1);
-    const yScale=v=>PAD.top+innerH-(v/maxV*innerH);
-    const path=sorted.map((p,i)=>`${i===0?'M':'L'}${xScale(new Date(p.date).getTime()).toFixed(1)},${yScale(p[key]||0).toFixed(1)}`).join(' ');
-    return {path,maxV,yScale};
-  }
+  // Две оси (Виктор 06.11.2026: «не ясно кол-во»): слева — общая шкала для
+  // эпиков/стори/задач, справа — часы. Раньше каждая линия масштабировалась
+  // под свой максимум и вертикальных значений не было вовсе.
+  const nice=v=>{ if(v<=0) return 1; const p=Math.pow(10,Math.floor(Math.log10(v))); const m=v/p; return (m<=1?1:m<=2?2:m<=2.5?2.5:m<=5?5:10)*p; };
+  const cntKeys=SERIES.filter(s=>s.key!=='hoursTotal').map(s=>s.key);
+  const cntMax=nice(Math.max(1,...sorted.flatMap(p=>cntKeys.map(k=>p[k]||0))));
+  const hMax=nice(Math.max(1,...sorted.map(p=>p.hoursTotal||0)));
+  const yOf=(key,v)=>PAD.top+innerH-(v/(key==='hoursTotal'?hMax:cntMax)*innerH);
+  const yTicks=[0,1,2,3,4].map(i=>{
+    const y=(PAD.top+innerH-i/4*innerH).toFixed(1);
+    return `<line x1="${PAD.left}" y1="${y}" x2="${W-PAD.right}" y2="${y}" stroke="var(--line)" stroke-width="1" opacity=".35"/>`+
+      `<text x="${PAD.left-5}" y="${(+y+3).toFixed(1)}" font-size="8" fill="var(--mute)" text-anchor="end">${Math.round(cntMax*i/4)}</text>`+
+      (SERIES.some(s=>s.key==='hoursTotal')?`<text x="${W-PAD.right+5}" y="${(+y+3).toFixed(1)}" font-size="8" fill="#FFC803" text-anchor="start">${Math.round(hMax*i/4)}ч</text>`:'');
+  }).join('');
+  const last=sorted[sorted.length-1];
   const svgLines=SERIES.map(s=>{
-    const {path}=line(s.key);
-    return `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2"/>`;
+    const path=sorted.map((p,i)=>`${i===0?'M':'L'}${xScale(new Date(p.date).getTime()).toFixed(1)},${yOf(s.key,p[s.key]||0).toFixed(1)}`).join(' ');
+    const lv=last[s.key]||0, ly=yOf(s.key,lv);
+    return `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2"/>`+
+      `<text x="${(W-PAD.right-3).toFixed(1)}" y="${(ly-4).toFixed(1)}" font-size="9" font-weight="700" fill="${s.color}" text-anchor="end">${lv}${s.key==='hoursTotal'?'ч':''}</text>`;
   }).join('');
 
   // Календарные вехи по неделям (понедельники) — раньше были только две
@@ -1147,8 +1163,8 @@ function renderScopeGrowth(data){
     const x=i===0?PAD.left:W-PAD.right;
     return `<text x="${x}" y="${PAD.top-4}" font-size="9" font-weight="700" fill="var(--yel)" text-anchor="${i===0?'start':'end'}">${fmtDate(d)}</text>`;
   }).join('');
-  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${gridLines}${svgLines}${weekLabels}${xLabels}</svg>
-    <div class="creep-legend" style="margin-top:8px">${SERIES.map(s=>`<div class="creep-leg"><div class="creep-leg-sq" style="background:${s.color}"></div>${s.label}</div>`).join('')}</div>`;
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${gridLines}${yTicks}${svgLines}${weekLabels}${xLabels}</svg>
+    <div class="creep-legend" style="margin-top:8px">${SERIES.map(s=>`<div class="creep-leg"><div class="creep-leg-sq" style="background:${s.color}"></div>${s.label}${s.key==='hoursTotal'?' (правая шкала)':''}</div>`).join('')}<div class="creep-leg" style="color:var(--mute)">эпики, стори, задачи — левая шкала (шт.)</div></div>`;
 }
 
 function validateData(data){
