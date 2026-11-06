@@ -51,6 +51,8 @@
 .gantt2-body.color-role .gantt2-bar.g2-inprogress{outline:1px dashed rgba(255,255,255,.6)}
 /* Красный — только критический путь. */
 .gantt2-bar.g2-crit{outline:2px solid var(--err)}
+/* Отпуск исполнителя (lke.beeline.ru) — штриховка в строке его задачи, под баром. */
+.g2-vac{position:absolute;top:1px;height:24px;background:repeating-linear-gradient(135deg,rgba(165,105,189,.35) 0 4px,transparent 4px 8px);border-left:1px solid rgba(165,105,189,.6);border-right:1px solid rgba(165,105,189,.6);z-index:0}
 /* Перерасход: жёлтый треугольник ВНУТРИ бара у правого края (Виктор 06.11.2026), в нём — часы сверх оценки. */
 .g2-over{position:absolute;top:1px;right:1px;width:26px;height:18px;background:var(--st-over);clip-path:polygon(50% 0,100% 100%,0 100%);
   color:#1a1a1a;font-size:8px;font-weight:800;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;box-sizing:border-box;z-index:2;cursor:help;letter-spacing:-.3px}
@@ -1059,6 +1061,9 @@ function renderGanttV2(){
   const resourceFilteredItems = filterItemsByScenarios(filterItemsByResource(effectiveItems, GS.resourceFilter), anCodes);
   LAST_ITEMS = effectiveItems;
   const RESOURCE_NAME={}; (gv.resources||[]).forEach(r=>{RESOURCE_NAME[r.id]=(r.name||'').split(' ')[0];});
+  // Отпуска (data.vacations, lke.beeline.ru) — по фамилии исполнителя
+  const VAC_BY_RES={}; const vacPeople=((data.vacations||{}).people)||[];
+  (gv.resources||[]).forEach(r=>{ const sn=(r.name||'').split(' ')[0]; const p=vacPeople.find(v=>v.name.split(' ')[0]===sn); if(p) VAC_BY_RES[r.id]=p.periods; });
 
   const items=resourceFilteredItems;
   const tree=GS.view==='scenarios' ? buildScenarioTree(items, anCodes?(gv.scenarios||[]).filter(s=>anCodes.has(s.code)):gv.scenarios) : buildTree(items);
@@ -1179,7 +1184,8 @@ function renderGanttV2(){
       const whyText=(cr.state==='new'?'Новая — в слепке её не было':(cr.b&&cr.b.start?`Было: ${GC.ddmm(cr.b.start)} → ${GC.ddmm(cr.b.end)} · сдвиг конца ${GC.fmtDays(cr.dEnd||0)}`:''))+(cr.why?`<br>Почему: ${cr.why}`:'');
       whyAttr=` data-tip-why="${whyText.replace(/"/g,'&quot;')}"`;
     }
-    return `<div class="gantt2-row${CMP&&cr&&cr.state==='same'?' gc-dim':''}">${ghost}<div class="gantt2-bar ${catClass}${node.onCriticalPath?' g2-crit':''}" style="left:${x}px;width:${w}px;background:${color}"
+    const vacMark=node.type==='task'&&node.resource?(VAC_BY_RES[node.resource]||[]).map(([a,b2])=>{ const vx=xOf(a), vw=Math.max(3,widthOf(a,b2)); return `<div class="g2-vac" style="left:${vx}px;width:${vw}px" title="Отпуск ${RESOURCE_NAME[node.resource]||''}: ${fmtDate(a)} – ${fmtDate(b2)}"></div>`; }).join(''):'';
+    return `<div class="gantt2-row${CMP&&cr&&cr.state==='same'?' gc-dim':''}">${vacMark}${ghost}<div class="gantt2-bar ${catClass}${node.onCriticalPath?' g2-crit':''}" style="left:${x}px;width:${w}px;background:${color}"
       data-tip-key="${node.key}" data-tip-summary="${spaceify(node.summary||'').replace(/"/g,'&quot;')}" data-tip-resource="${node.resource||''}"
       data-tip-est="${est}" data-tip-spent="${spent}" data-tip-start="${node.start||''}" data-tip-end="${node.end||''}" data-tip-status="${node.status||''}" data-tip-sprint="${node.sprint!=null?(node.sprintFrom!=null&&node.sprintFrom!==node.sprint?'С'+node.sprintFrom+'–С'+node.sprint:'С'+node.sprint):''}" data-tip-src="${node.planSource||''}"${whyAttr}>
       <div class="gantt2-bar-fill" style="width:${progress}%;background:${fillColor}"></div>
@@ -1215,6 +1221,7 @@ function renderGanttV2(){
     (GS.colorMode==='status' ? statusLegendHtml(true)
       : Object.entries(ROLE_COLOR).map(([r,c])=>`<span><span class="sw" style="background:${c}"></span>${r}</span>`).join(''))+
     `<span style="margin-left:12px"><span class="sw" style="background:transparent;outline:2px solid var(--err)"></span>критический путь (красная обводка)</span>`+
+    `<span><span class="sw" style="background:repeating-linear-gradient(135deg,rgba(165,105,189,.7) 0 3px,transparent 3px 6px)"></span>отпуск исполнителя (<a href="vacations.html">график</a>)</span>`+
     `<span><span class="sw" style="background:var(--st-over);clip-path:polygon(50% 0,100% 100%,0 100%)"></span>списано больше оценки (+ч в треугольнике)</span>`+
     `<span><span class="sw" style="background:#00d4ff"></span>сегодня</span>`+
     `<span><span class="sw" style="background:#9b59b6"></span>веха 10.12.26</span>`+

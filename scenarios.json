@@ -1,6 +1,6 @@
 {
  "source": "Confluence 2356754448 «Реестр оценки скоупа MVP v.2»",
- "fetchedAt": "2026-11-02",
+ "fetchedAt": "2026-11-06",
  "note": "Реестр сценариев (Confluence 2356754448). Привязка стори к сценарию в build_dashboard.py: метка Jira → префикс названия → таблица «Структура и оценка» (confluenceStories) → storyOverrides (ручная логическая привязка, согласовано с Виктором 20.10.2026) → PLATFORM.",
  "scenarios": [
   {
@@ -326,6 +326,15 @@
    "priority": "P0",
    "status": "В работе",
    "epic": "B2BAPP-484"
+  },
+  {
+   "order": 40,
+   "contour": "Платформа/Ядро",
+   "code": "YD",
+   "name": "Сценарий фундамента",
+   "priority": "P0",
+   "status": "В работе",
+   "epic": null
   },
   {
    "contour": "Доп. группы",

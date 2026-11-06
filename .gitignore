@@ -8,3 +8,5 @@ usm_patch.json
 
 __pycache__/
 *.pyc
+
+vacations.json

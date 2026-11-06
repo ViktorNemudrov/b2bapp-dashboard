@@ -202,6 +202,9 @@ body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
 .hero{padding:24px 24px 16px;background:linear-gradient(180deg,#162235 0%,transparent 100%);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch;width:100%}
 /* три равные колонки, как «Ключевые метрики» (Виктор 06.11.2026) */
 .hero>*{min-width:0}
+/* левая колонка (технологии + демо-стенды) — по центру, как соседние (Виктор 06.11.2026) */
+.hero .hero-left{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hero .demo-tiles{justify-content:center}
 .hero .countdown{max-width:none;display:flex;flex-direction:column;justify-content:center}
 .hero #s-forecast .fc-card{max-width:none!important}
 .hero #s-forecast{flex:1;min-width:260px;width:auto;padding:0}

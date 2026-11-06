@@ -11,6 +11,7 @@ const NAV = [
   {group:'План', items:[
     {label:'Диаграмма Ганта', icon:'📊', href:'/pages/gantt.html'},
     {label:'Ресурсный план', icon:'👥', href:'/pages/resources.html'},
+    {label:'График отпусков', icon:'🏖️', href:'/pages/vacations.html'},
   ]},
   {group:'Аналитика', items:[
     {label:'Реестр рисков', icon:'⚠️', href:'/pages/risks.html'},

@@ -115,8 +115,8 @@ MANUAL_BE = {"BE1": "попов", "BE2": "григоркин"}
 STAGES = (("AN", "Аналитика"), ("DS", "Дизайн"), ("BE", "Бэк"), ("FE", "Фронт"), ("QA", "QA"))
 ROLE_STAGE = {"BA": "AN", "ARC": "AN", "DS": "DS", "BE": "BE", "FE": "FE", "QA": "QA"}
 MANDATORY_STAGES = ("AN", "BE", "QA")   # Дизайн и Фронт — опциональны
-SCENARIO_PREFIX_RE = re.compile(r"^\s*(?:\d+\.\s*)?((?:MD|OB|RB|PL|PK)\d+|NAI|IB|B2C)[.\s]")
-SCENARIO_LABEL_RE = re.compile(r"^(?:MD|OB|RB|PL|PK)\d+$")
+SCENARIO_PREFIX_RE = re.compile(r"^\s*(?:\d+\.\s*)?((?:MD|OB|RB|PL|PK)\d+|NAI|IB|B2C|YD)[.\s]")  # YD — «Сценарий фундамента» (реестр v78, 06.11.2026)
+SCENARIO_LABEL_RE = re.compile(r"^(?:(?:MD|OB|RB|PL|PK)\d+|YD)$")
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Календарные помощники
@@ -171,6 +171,12 @@ def sprint_of_date(d: date) -> int:
     return n
 
 JIRA_ACTIVE_SPRINT = None  # номер ACTIVE-спринта из выгрузки Jira; ставит build_gantt()
+VACATION_DAYS = {}  # фамилия (lower) → set(date) дней отпуска; ставит build_gantt()
+
+def vac_days(res):
+    """Дни отпуска исполнителя (по фамилии — первое слово имени ресурса)."""
+    return VACATION_DAYS.get(((res or {}).get("name") or "").split(" ")[0].lower(), set())
+
 DELIVERY_ROLES = {"BA", "DS", "BE", "FE", "QA"}  # задают срок MVP; ARC/ORG/DVO — параллельные треки
 PARALLEL_END = None  # конец параллельных треков; ставит plan_gantt()
 
@@ -537,7 +543,8 @@ def plan_gantt(issues, resources, today=None, manual=None, story_scenario=None):
     def cap(r, n):
         if (r["id"], n) not in cap_cache:
             frm = parse_dt(r["from"]) or SPRINT_ANCHOR
-            cap_cache[(r["id"], n)] = sum(1 for d in sprint_workdays(n) if d >= frm) * HOURS_PER_DAY * r["fte"]
+            vd = vac_days(r)  # отпуск — ноль часов (Виктор 06.11.2026)
+            cap_cache[(r["id"], n)] = sum(1 for d in sprint_workdays(n) if d >= frm and d not in vd) * HOURS_PER_DAY * r["fte"]
         return cap_cache[(r["id"], n)]
 
     load = defaultdict(float)            # (rid, n) → часы в спринте
@@ -714,7 +721,8 @@ def plan_gantt(issues, resources, today=None, manual=None, story_scenario=None):
     # ── 3. Раскладка внутри спринта: подряд по часам ─────────────────────────
     seg_dates = defaultdict(list)        # key → [(n, start, end)]
     for (rid, n), lst in segs.items():
-        days = sprint_workdays(n) or [next_workday(sprint_start(n))]
+        vd = vac_days(res_by_id[rid])
+        days = [d for d in sprint_workdays(n) if d not in vd] or sprint_workdays(n) or [next_workday(sprint_start(n))]
         per_day = HOURS_PER_DAY * res_by_id[rid]["fte"]
         need = sum(h for _, _, h in lst) / per_day
         k = min(1.0, len(days) / need) if need else 1.0   # перегруз — сжимаем в спринт
@@ -1304,7 +1312,17 @@ def run_gantt(args):
     # Вакантные ставки-гипотезы (FE-2/BE-1/QA-2 и т.п.) больше не показываем и
     # не назначаем на них задачи (Виктор 21.09.2026: считаем, что их не будет).
     resources = [r for r in build_resources(team, issues) if not r.get("vacant")]
-    global JIRA_ACTIVE_SPRINT
+    global JIRA_ACTIVE_SPRINT, VACATION_DAYS
+    vacations = None
+    if getattr(args, "vacations", None) and os.path.exists(args.vacations):
+        vacations = json.load(open(args.vacations, encoding="utf-8"))
+        for p in vacations.get("people", []):
+            ds = set()
+            for a, b2 in p.get("periods", []):
+                d = date.fromisoformat(a)
+                while d <= date.fromisoformat(b2):
+                    ds.add(d); d += timedelta(days=1)
+            VACATION_DAYS[p["name"].split(" ")[0].lower()] = ds
     raw_dump = json.load(open(args.jira, encoding="utf-8"))
     jira_sprints = raw_dump.get("sprints") if isinstance(raw_dump, dict) else None
     for s in jira_sprints or []:
@@ -1403,28 +1421,13 @@ def run_gantt(args):
             "ganttType": "per_task_v4_sprints",
             "calendar": "Производственный календарь РФ",
             "excludedFromGantt": "Вакантные ставки (FE-2/BE-1/QA-2 и т.п.) — считаем, что их не будет, задачи на них не назначаются",
+            # Вычисляется (Виктор 06.11.2026: «мы же вроде всё считаем?»): раньше список был
+            # вписан руками и устарел — у PL1/IB/PL16/PL11… давно есть оценённые задачи.
+            # Сюда попадает только сценарий реестра без единой оценённой задачи в Jira.
             "excludedScenarios": [
-                {"code": "OB10", "group": "Обращения и клиенты", "name": "Напоминания (авто из звонка + вручную)",
-                 "reason": "нет оценки"},
-                {"code": "PL1", "group": "Платформа/Ядро", "name": "Единый ИИ-движок и модель взаимодействия",
-                 "reason": "отдельной задачи нет — неотъемлемая часть любого процесса, где будем переиспользовать"},
-                {"code": "PL4", "group": "Платформа/Ядро", "name": "Сценарии-редиректы + замоканные",
-                 "reason": "оценка не требуется, будет реализовываться по ходу проекта и отдельных сценариев"},
-                {"code": "PL5", "group": "Платформа/Ядро", "name": "ИИ-гигиена (запретные темы, tone of voice, лимиты)",
-                 "reason": "оценка не требуется, будет реализовываться по ходу проекта и отдельных сценариев"},
-                {"code": "PL7", "group": "Платформа/Ядро", "name": "Продуктовая аналитика",
-                 "reason": "нет оценки — нет понимания, по каким продуктам и какие метрики нужны"},
-                {"code": "PL11", "group": "Платформа/Ядро", "name": "Бесшовная аутентификация",
-                 "reason": "не может быть выполнена сейчас — начнётся после первичной/B2C-архитектуры"},
-                {"code": "PL16", "group": "Платформа/Ядро", "name": "Управление настройками в Профиле",
-                 "reason": "не оценивали"},
-                {"code": "PL17", "group": "Платформа/Ядро", "name": "Отправка пуш-уведомлений",
-                 "reason": "не оценивали"},
-                {"code": "PL18", "group": "Платформа/Ядро", "name": "Анализ запросов и самоулучшение",
-                 "reason": "не оценивали"},
-                {"code": "IB", "group": "Трек с ИБ", "name": "Выход в продуктив",
-                 "reason": "большой трек, невозможно оценить целиком — переиспользуем функционал, "
-                           "нужно отдельно по каждому пункту решать с ИБ"},
+                {"code": sc["code"], "group": sc.get("contour") or "", "name": sc.get("name") or "",
+                 "reason": "в Jira нет оценённых задач" + (f" (в реестре: {sc['registryStatus']})" if sc.get("registryStatus") else "")}
+                for sc in scenarios if sc.get("code") != "PLATFORM" and not sc.get("tasks")
             ],
         },
         "epicProgress": epic_progress,
@@ -1523,6 +1526,8 @@ def run_gantt(args):
     # fallback. Список — чтобы можно было проставить Part-связи в Jira и
     # больше в нём не нуждаться.
     new["orphanTasks"] = orphan_report
+    if vacations:
+        new["vacations"] = vacations
 
     # ── Ассерты ────────────────────────────────────────────────────────────────
     errs = self_checks(items, ganttV2, mvp_scope, resource_plan, epic_progress)
@@ -1575,6 +1580,8 @@ def main():
                     help="реестр сценариев (Confluence 2356754448) + привязки стори")
     ap.add_argument("--manual-plan", default="manual_plan.json",
                     help="«План ручной» (Confluence 2666206915), см. parse_manual_plan.py")
+    ap.add_argument("--vacations", default="vacations.json",
+                    help="отпуска из lke.beeline.ru (people[].periods) — дни отпуска не дают часов")
     ap.add_argument("--sprint-goals", default="sprint_goals.json",
                     help="цели спринтов (Confluence 1562746234), см. parse_sprint_goals.py")
     ap.add_argument("--usm-patch")

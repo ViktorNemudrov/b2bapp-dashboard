@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>График отпусков — B2BAPP</title><link rel="stylesheet" href="../shared.css">
+<style>
+/* График отпусков команды (Виктор 06.11.2026): строки — люди, колонки — недели,
+   отпуск — фиолетовая полоса (тот же цвет, что штриховка на ганте), сегодня — голубая линия,
+   спринты — пунктир. Данные — vacations.json из lke.beeline.ru, собирает build_dashboard.py. */
+.vac-wrap{overflow-x:auto;background:var(--card);border-radius:12px;padding:12px}
+.vac-grid{position:relative;min-width:900px}
+.vac-row{display:flex;align-items:center;height:30px;border-bottom:1px solid var(--line)}
+.vac-name{width:210px;flex-shrink:0;font-size:12px;padding-right:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vac-name small{color:var(--mute);margin-left:4px}
+.vac-track{position:relative;flex:1;height:100%}
+.vac-bar{position:absolute;top:7px;height:16px;border-radius:4px;background:#A569BD;opacity:.85}
+.vac-bar.future{opacity:1;box-shadow:0 0 0 1px #fff3 inset}
+.vac-head{display:flex;height:26px;font-size:10px;color:var(--mute)}
+.vac-head .vac-track div{position:absolute;top:6px;transform:translateX(2px)}
+.vac-line{position:absolute;top:0;bottom:0;width:0;border-left:1px dashed var(--line);pointer-events:none}
+.vac-today{position:absolute;top:0;bottom:0;width:2px;background:#00d4ff;pointer-events:none}
+.vac-sprint-lbl{position:absolute;top:-2px;font-size:9px;color:var(--mute)}
+.vac-list td{font-size:12px}
+</style></head><body>
+<div class="layout">
+<div id="sidebar-root"></div>
+<script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();</script>
+<div class="main">
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🏖️ График отпусков</span></div>
+  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span></div>
+</header>
+<div class="content">
+  <p class="lead" id="lead" style="color:var(--mute);font-size:12px;margin-bottom:12px"></p>
+  <div class="vac-wrap"><div class="vac-grid" id="grid"></div></div>
+  <div class="sec-title" style="margin-top:24px">Ближайшие отпуска</div>
+  <table class="tbl vac-list"><thead><tr><th>Кто</th><th>С</th><th>По</th><th>Дней</th><th>Что в работе на это время</th></tr></thead><tbody id="upcoming"></tbody></table>
+</div>
+</div></div>
+<script>
+const $=id=>document.getElementById(id);
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSprints(d);
+  mountFreshness('freshness', d.refreshedAt, d.updated); $('upd').textContent=fmtDate(d.updated);
+  const V=d.vacations||{}, people=V.people||[], gv=d.ganttV2||{};
+  if(!people.length){ $('grid').innerHTML=renderEmptyState('Нет данных об отпусках — пересоберите дашборд с vacations.json'); return; }
+  $('lead').innerHTML=`Источник: ${V.source||'lke.beeline.ru'}, собрано ${fmtDate(V.collectedAt)}. Отпуска учтены в расчёте ганта: в эти дни у человека ноль часов, задачи раскладываются в обход.`;
+  const today=localISO(new Date());
+  const from=new Date('2026-01-01'), to=new Date('2027-03-31');
+  const span=(to-from)/86400000, pct=iso=>((new Date(iso)-from)/86400000/span*100);
+  const roleOf={}; (gv.resources||[]).forEach(r=>roleOf[(r.name||'').split(' ')[0]]=r.role);
+  // шапка: месяцы
+  const MN=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  let head='', lines='';
+  for(let m=new Date(from); m<=to; m.setMonth(m.getMonth()+1)){
+    const iso=localISO(m), x=pct(iso);
+    head+=`<div style="left:${x}%">${MN[m.getMonth()]}${m.getMonth()===0?" '"+String(m.getFullYear()).slice(2):''}</div>`;
+    lines+=`<div class="vac-line" style="left:calc(210px + (100% - 210px) * ${x/100})"></div>`;
+  }
+  const sp=(gv.sprints||[]).filter(s=>s.start>='2026-08-01');
+  const spMarks=sp.map(s=>`<div class="vac-sprint-lbl" style="left:${pct(s.start)}%">${s.state==='active'?'<b style="color:#00d4ff">С'+s.n+'</b>':'С'+s.n}</div>`).join('');
+  const rows=people.map(p=>{
+    const sn=p.name.split(' ')[0];
+    const bars=(p.periods||[]).map(([a,b])=>{ const l=pct(a), w=Math.max(.25,pct(b)-l+100/span); return `<div class="vac-bar${b>=today?' future':''}" style="left:${l}%;width:${w}%" title="${p.name}: ${fmtDate(a)} – ${fmtDate(b)}"></div>`; }).join('');
+    return `<div class="vac-row"><div class="vac-name">${p.name}${roleOf[sn]?`<small>${roleOf[sn]}</small>`:''}</div><div class="vac-track">${bars}</div></div>`;
+  }).join('');
+  $('grid').innerHTML=`<div class="vac-head"><div class="vac-name"></div><div class="vac-track">${head}${spMarks}</div></div>${rows}${lines}<div class="vac-today" style="left:calc(210px + (100% - 210px) * ${pct(today)/100})" title="Сегодня"></div>`;
+  // ближайшие: отпуска, которые ещё не закончились, + задачи человека, пересекающиеся с отпуском
+  const items=(gv.items||[]).filter(i=>i.type==='task'&&i.category!=='done');
+  const resBySn={}; (gv.resources||[]).forEach(r=>resBySn[(r.name||'').split(' ')[0]]=r.id);
+  const up=[]; people.forEach(p=>(p.periods||[]).forEach(([a,b])=>{ if(b>=today) up.push({p,a,b}); }));
+  up.sort((x,y)=>x.a<y.a?-1:1);
+  $('upcoming').innerHTML=up.length?up.map(({p,a,b})=>{
+    const rid=resBySn[p.name.split(' ')[0]];
+    const ov=items.filter(t=>t.resource===rid&&t.start<=b&&t.end>=a);
+    const days=Math.round((new Date(b)-new Date(a))/86400000)+1;
+    return `<tr><td><b>${p.name}</b></td><td>${fmtDate(a)}</td><td>${fmtDate(b)}</td><td>${days}</td><td style="color:var(--mute)">${ov.length?ov.slice(0,4).map(t=>`<a href="https://btask.beeline.ru/browse/${t.key}" target="_blank" rel="noopener">${t.key}</a> ${(t.summary||'').slice(0,40)}`).join('<br>')+(ov.length>4?`<br>и ещё ${ov.length-4}`:''):'—'}</td></tr>`;
+  }).join(''):'<tr><td colspan="5" style="color:var(--mute)">Запланированных отпусков нет</td></tr>';
+}).catch(e=>{ $('grid').innerHTML=renderEmptyState('Ошибка загрузки данных: '+e.message); });
+</script>
+</body></html>
