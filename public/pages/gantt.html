@@ -1181,7 +1181,7 @@ function renderGanttV2(){
     `<span><span class="g2-type-icon">${TYPE_ICON.epic}</span> Эпик</span>`+
     `<span><span class="g2-type-icon">${TYPE_ICON.story}</span> Стори</span>`+
     `<span><span class="g2-type-icon">${TYPE_ICON.task}</span> Задача</span>`+
-    (GS.colorMode==='status' ? statusLegendHtml()
+    (GS.colorMode==='status' ? statusLegendHtml(true)
       : Object.entries(ROLE_COLOR).map(([r,c])=>`<span><span class="sw" style="background:${c}"></span>${r}</span>`).join(''))+
     `<span style="margin-left:12px"><span class="sw" style="background:transparent;outline:2px solid var(--err)"></span>критический путь (красная обводка)</span>`+
     `<span><span class="sw" style="background:var(--st-over);clip-path:polygon(50% 0,100% 100%,0 100%)"></span>списано больше оценки (+ч в треугольнике)</span>`+

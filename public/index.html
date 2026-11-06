@@ -868,7 +868,7 @@ function renderEpicProgress(data){
       <div class="p-bar"><div class="p-fill" style="width:${sPct}%;background:${STATUS_GROUPS.done.color}"></div></div>
     </div>`;
   }).join('');
-  $('progressEpics').innerHTML=`<h3>Готовность эпиков</h3><div class="st-legend" style="display:flex;flex-wrap:wrap;gap:10px;font-size:10px;color:var(--mute);margin:-4px 0 10px"><span>верхняя шкала — списано часов от оценки;</span>${statusLegendHtml()}</div>${rows}`;
+  $('progressEpics').innerHTML=`<h3>Готовность эпиков</h3><div class="st-legend" style="display:flex;flex-wrap:wrap;gap:10px;font-size:10px;color:var(--mute);margin:-4px 0 10px"><span>серая шкала — списано часов от оценки.</span><span>Полоса «по задачам» (стрелки — как задача движется):</span>${statusLegendHtml(true)}</div>${rows}`;
 }
 
 // ── RISK MATRIX (§3.7: умное размещение маркеров + попап) ────────

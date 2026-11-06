@@ -217,7 +217,7 @@ const STATUS_GROUPS = {
   done:    {label:'Готово',          color:'#2ECC71', css:'st-done',    jira:['Завершена','Waiting for release','Done','Закрыта']},
   test:    {label:'На тестировании', color:'#3D8BFD', css:'st-test',    jira:['Ready for testing','Тестирование','Review ready']},
   wip:     {label:'В работе',        color:'#F5A623', css:'st-wip',     jira:['Разработка','В работе','Анализ','Development','In Progress']},
-  ready:   {label:'Готово к старту', color:'#8FA3BF', css:'st-ready',   jira:['Ready for DEV','Запланирована']},
+  ready:   {label:'Запланировано',   color:'#8FA3BF', css:'st-ready',   jira:['Ready for DEV','Запланирована']},  // проанализирована, ждёт разработки
   backlog: {label:'Бэклог',          color:'#5F6B7A', css:'st-backlog', jira:['Бэклог','Backlog']},
   hold:    {label:'На паузе',        color:'#A569BD', css:'st-hold',    jira:['Удержание','Hold']},
 };
@@ -234,8 +234,13 @@ function statusBadge(status, category){
   const g = STATUS_GROUPS[statusGroup(status, category)];
   return `<span class="st-badge ${g.css}" title="${g.label}">${status || g.label}</span>`;
 }
-function statusLegendHtml(){
-  return STATUS_ORDER.map(g => `<span><span class="sw" style="background:${STATUS_GROUPS[g].color}"></span>${STATUS_GROUPS[g].label}</span>`).join('');
+// Порядок STATUS_ORDER — от завершённого к не начатому (так же идут сегменты полос).
+// arrows=true — легенда цепочкой со стрелками, чтобы порядок читался сразу.
+function statusLegendHtml(arrows){
+  const item = g => `<span><span class="sw" style="background:${STATUS_GROUPS[g].color}"></span>${STATUS_GROUPS[g].label}</span>`;
+  if(!arrows) return STATUS_ORDER.map(item).join('');
+  const chain = STATUS_ORDER.filter(g => g!=='hold');
+  return chain.map(item).join('<span style="opacity:.6">←</span>') + '<span style="margin-left:8px">отдельно:</span>' + item('hold');
 }
 window.STATUS_GROUPS = STATUS_GROUPS; window.STATUS_ORDER = STATUS_ORDER;
 window.statusGroup = statusGroup; window.statusBadge = statusBadge; window.statusLegendHtml = statusLegendHtml;
