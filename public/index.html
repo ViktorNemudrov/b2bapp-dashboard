@@ -1124,12 +1124,13 @@ function renderScopeGrowth(data){
       (SERIES.some(s=>s.key==='hoursTotal')?`<text x="${W-PAD.right+5}" y="${(+y+3).toFixed(1)}" font-size="8" fill="#FFC803" text-anchor="start">${Math.round(hMax*i/4)}ч</text>`:'');
   }).join('');
   const last=sorted[sorted.length-1];
+  // подписи последних значений: разводим по вертикали, чтобы не наезжали
+  const endLbl=SERIES.map(s=>({s, v:last[s.key]||0, y:yOf(s.key,last[s.key]||0)-4})).sort((a,b)=>a.y-b.y);
+  for(let i=1;i<endLbl.length;i++) if(endLbl[i].y-endLbl[i-1].y<11) endLbl[i].y=endLbl[i-1].y+11;
   const svgLines=SERIES.map(s=>{
     const path=sorted.map((p,i)=>`${i===0?'M':'L'}${xScale(new Date(p.date).getTime()).toFixed(1)},${yOf(s.key,p[s.key]||0).toFixed(1)}`).join(' ');
-    const lv=last[s.key]||0, ly=yOf(s.key,lv);
-    return `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2"/>`+
-      `<text x="${(W-PAD.right-3).toFixed(1)}" y="${(ly-4).toFixed(1)}" font-size="9" font-weight="700" fill="${s.color}" text-anchor="end">${lv}${s.key==='hoursTotal'?'ч':''}</text>`;
-  }).join('');
+    return `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2"/>`;
+  }).join('')+endLbl.map(l=>`<text x="${(W-PAD.right-3).toFixed(1)}" y="${l.y.toFixed(1)}" font-size="9" font-weight="700" fill="${l.s.color}" text-anchor="end">${l.v}${l.s.key==='hoursTotal'?'ч':''}</text>`).join('');
 
   // Календарные вехи по неделям (понедельники) — раньше были только две
   // подписи по краям графика, и было не понять, когда именно случился
