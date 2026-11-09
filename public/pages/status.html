@@ -212,6 +212,18 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
   const gs=goals.source||{};
   const pg=gBy[sp.lastClosedSprint], cg=gBy[sp.currentSprint];
   const cnt=s=>s?Object.entries(s.goals.reduce((a,x)=>(a[x.status]=(a[x.status]||0)+1,a),{})).map(([k,v])=>`${GST[k][1]}: ${v}`).join(' · '):'';
+  // «Дополнительно» — статус трека «Виртуальный помощник от Б2С» (data.vpTrack; ведёт Claude Cowork, скилл b2bapp-vp-track-docs)
+  const vp=d.vpTrack||{}, vpItems=vp.items||[];
+  const VP_COL={green:'var(--ok)',amber:'var(--warn)',red:'var(--err)',planned:'var(--blue)',info:'#9b59b6',hold:'#7f8fa6'};
+  const vpList=(cap,a)=>a&&a.length?`<div class="sub" style="font-weight:700;text-transform:uppercase;font-size:10.5px;margin:8px 0 2px">${cap}</div><ul style="margin:0;padding-left:18px;font-size:12.5px;line-height:1.5">${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
+  const vpCard=(it,i)=>{ const c=VP_COL[it.status]||'#7f8fa6';
+    return `<div style="border:1px solid var(--line);border-left:4px solid ${c};border-radius:10px;padding:12px 14px">
+      <div style="font-weight:700;font-size:13.5px;margin-bottom:6px">${i+1}. ${esc(it.title)}</div>
+      ${it.statusLabel?`<span class="tag" style="${softPill(c)};font-weight:700">${esc(it.statusLabel)}</span>`:''}
+      ${it.summary?`<p style="font-size:12.5px;margin:8px 0 0">${esc(it.summary)}</p>`:''}
+      ${vpList('Сделано',it.done)}${vpList('Открыто',it.open)}
+      ${it.target?`<div style="font-size:12.5px;margin-top:8px;padding:6px 9px;border-radius:6px;background:color-mix(in srgb, ${c} 10%, transparent)">🎯 ${esc(it.target)}</div>`:''}
+      ${it.sources&&it.sources.length?`<div class="sub" style="font-size:10.5px;margin-top:6px">Источники: ${esc(it.sources.join(' · '))}</div>`:''}</div>`; };
   $('t1body').innerHTML=`<h2>Обзор по проекту</h2>
     <p class="lead">Общий статус, итоги закрытого спринта и цели текущего, открытые вопросы руководству. Цифры — из Jira на ${fmtDate(d.updated)}; цели спринтов — со страницы «Реализация» в Confluence${gs.version?` (версия ${gs.version} от ${fmtDate(gs.when)})`:''}.</p>
     <div class="g4c" style="margin-bottom:12px">
@@ -228,10 +240,9 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
         ${goalList(cg)}
         ${statTbl(sp.currentSprint,false)}</div>
     </div>
-    <div class="card" style="margin-top:14px"><h3><span class="dot r"></span>Дополнительно</h3>
-      <ol style="margin:0;padding-left:20px;line-height:1.7">
-        <li>Статус по запуску продажи КСС + Виртуального помощника от Б2С</li>
-        <li>Статус по конфликту, который мешает продавать Виртуального помощника от Б2С — ИП</li></ol>
+    <div class="card" style="margin-top:14px"><h3><span class="dot r"></span>Дополнительно${vp.title?` <span class="sub" style="font-weight:400">— ${esc(vp.title)}</span>`:''}</h3>
+      ${vpItems.length?`<div class="g2c">${vpItems.map(vpCard).join('')}</div>
+      <p class="sub" style="margin:10px 0 0">Статус на ${esc(vp.updated||'—')}${vp.detailUrl?` · вся подробная информация — <a href="${esc(vp.detailUrl)}" target="_blank" rel="noopener">B2BAPP-1262. Виртуальный помощник от Б2С (Confluence) →</a>`:''}</p>`:'<div class="empty">Нет данных vpTrack в data.json</div>'}
     </div>`;
 
   // ── 03 Что планируется в MVP — реестр сценариев v.2 ──
@@ -358,7 +369,7 @@ async function exportStandalone(){
     const txt=u=>fetch(u+'?t='+Date.now()).then(r=>{ if(!r.ok) throw new Error(u+': '+r.status); return r.text(); });
     const [src,css,nav]=await Promise.all([txt(location.pathname),txt('../shared.css'),txt('../shared-nav.js')]);
     const g=d.ganttV2||{};
-    const slim={updated:d.updated,refreshedAt:d.refreshedAt,kpi:d.kpi,metrics:d.metrics,
+    const slim={updated:d.updated,refreshedAt:d.refreshedAt,kpi:d.kpi,metrics:d.metrics,vpTrack:d.vpTrack,
       ganttV2:{criticalPathExplained:g.criticalPathExplained,manualPlan:g.manualPlan,resources:g.resources,
                scenarios:g.scenarios,sprints:g.sprints,statusPage:g.statusPage}};
     const safe=t=>t.replace(/<\/(script)/gi,'<\\/$1');  // «</script» внутри встроенного кода закрыл бы тег
