@@ -311,6 +311,9 @@ async function hashPass(p){
 function checkAuth(){
   return new Promise(resolve=>{
     if(sessionStorage.getItem('b2bapp_auth')==='1'){ resolve(); return; }
+    // Локальный предпросмотр (python -m http.server из public/) — без пароля:
+    // Claude Code проверяет вёрстку до/после пуша (Виктор 09.11.2026). На проде гейт как был.
+    if(['localhost','127.0.0.1'].includes(location.hostname)){ resolve(); return; }
     document.body.classList.add('auth-locked');
     const overlay = document.createElement('div');
     overlay.className = 'auth-gate-overlay';
