@@ -245,6 +245,51 @@ function statusLegendHtml(arrows){
 }
 window.STATUS_GROUPS = STATUS_GROUPS; window.STATUS_ORDER = STATUS_ORDER;
 window.statusGroup = statusGroup; window.statusBadge = statusBadge; window.statusLegendHtml = statusLegendHtml;
+// ── Автоссылки (Виктор 09.11.2026: «все ссылки на задачи и страницы Confluence — кликабельные») ──
+// Любой текст на странице (статичный и отрисованный из data.json): ключ Jira (B2BAPP-1340,
+// PFC-1271, B2BAPP-1340/1341) → btask, id страницы Confluence (2577970643, PRODOM/2681750315)
+// → bwiki, голый URL → ссылка. Уже существующие <a>, svg, поля ввода и [data-nolink] не трогаем.
+// Работает через MutationObserver — страницам ничего вызывать не нужно.
+const JIRA_URL = 'https://btask.beeline.ru/browse/', BWIKI = 'https://bwiki.beeline.ru';
+const NOT_JIRA = new Set(['UTF','ISO','SHA','TLS','HTTP','HTTPS','COVID','RFC','GOST','IEC','EN','PDF','TCP','UDP','SSL','API','ID']);
+const LINK_RE = /(https?:\/\/[^\s<>"«»]+)|\b([A-Z][A-Z0-9]{1,11})-(\d{1,6})((?:\/\d{1,6})*)\b|(?:\b([A-Z][A-Z0-9]{1,11})\/)?\b([12]\d{9})\b/g;
+const LINK_SKIP = 'a,script,style,textarea,input,select,option,button,svg,code,[data-nolink],.auth-gate-overlay';
+function linkA(href, text){ const a=document.createElement('a'); a.href=href; a.target='_blank'; a.rel='noopener'; a.className='autolink'; a.textContent=text; return a; }
+function linkifyTextNode(node){
+  const s = node.nodeValue; LINK_RE.lastIndex = 0;
+  if(!LINK_RE.test(s)) return; LINK_RE.lastIndex = 0;
+  const frag = document.createDocumentFragment(); let last = 0, m, changed = false;
+  while((m = LINK_RE.exec(s))){
+    let parts = null;
+    if(m[1]){ const url = m[1].replace(/[.,;:!?)\]]+$/,''); parts = [linkA(url, url)]; LINK_RE.lastIndex = m.index + url.length; m[0] = url; }
+    else if(m[2]){
+      if(NOT_JIRA.has(m[2])) continue;
+      parts = [linkA(JIRA_URL+m[2]+'-'+m[3], m[2]+'-'+m[3])];
+      (m[4]||'').split('/').filter(Boolean).forEach(n => parts.push(document.createTextNode('/'), linkA(JIRA_URL+m[2]+'-'+n, n)));
+    }
+    else if(m[6]){ parts = [linkA(m[5] ? `${BWIKI}/spaces/${m[5]}/pages/${m[6]}` : `${BWIKI}/pages/viewpage.action?pageId=${m[6]}`, m[0])]; }
+    if(!parts) continue;
+    frag.appendChild(document.createTextNode(s.slice(last, m.index))); parts.forEach(p => frag.appendChild(p));
+    last = m.index + m[0].length; changed = true;
+  }
+  if(!changed) return;
+  frag.appendChild(document.createTextNode(s.slice(last)));
+  node.parentNode.replaceChild(frag, node);
+}
+function linkifyIn(root){
+  if(!root || root.nodeType === 3){ if(root && root.parentElement && !root.parentElement.closest(LINK_SKIP)) linkifyTextNode(root); return; }
+  if(root.nodeType !== 1 || root.closest(LINK_SKIP)) return;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {acceptNode: n => n.parentElement && !n.parentElement.closest(LINK_SKIP) && /[A-Z]-\d|\d{10}|https?:/.test(n.nodeValue) ? 1 : 3});
+  const list = []; while(w.nextNode()) list.push(w.currentNode);
+  list.forEach(linkifyTextNode);
+}
+window.linkifyIn = linkifyIn;
+function startAutoLinks(){
+  linkifyIn(document.body);
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(linkifyIn))).observe(document.body, {childList:true, subtree:true});
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startAutoLinks); else startAutoLinks();
+
 function mountFreshness(elId, refreshedAt, fallback){
   const el = document.getElementById(elId);
   if(el) el.innerHTML = renderFreshness(refreshedAt, fallback);

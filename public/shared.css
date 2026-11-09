@@ -204,3 +204,7 @@ body.light-theme .sidebar-burger{background:#fff;border-color:#d0d8e8;color:#1a2
 
 .nav-wip{margin-left:auto;font-size:8.5px;font-weight:700;color:var(--yel);border:1px solid rgba(255,107,61,.45);border-radius:6px;padding:0 5px;line-height:14px;white-space:nowrap}
 body.light-theme .heat-0{background:#eef1f6;color:#9aa6bb}
+
+/* автоссылки на Jira/Confluence (shared-nav.js linkifyIn, 09.11.2026) */
+a.autolink{color:inherit;text-decoration:underline dotted;text-underline-offset:2px}
+a.autolink:hover{color:var(--yel);text-decoration-style:solid}
