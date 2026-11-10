@@ -50,7 +50,7 @@ function teamHtml(d){
     </tr>`;}).join('');
   const nActive=tc.members.filter(m=>m.status==='active').length;
   return `<div class="sec-title">Команда проекта</div>
-  <div style="font-size:11px;color:var(--mute);margin-bottom:8px">Источник: ${tc.source}, снято ${fmt((tc.collectedAt||'').slice(0,10))}. В расчёте ганта ${nActive} исполнителей; ушедшие и незакрытые вакансии в план не входят.</div>
+  <div style="font-size:11px;color:var(--mute);margin-bottom:8px">Источник: ${tc.source}, снято ${fmt((tc.collectedAt||'').slice(0,10))}${staleBadge(tc.collectedAt,14,'состав')}. В расчёте ганта ${nActive} исполнителей; ушедшие и незакрытые вакансии в план не входят.</div>
   <table class="tbl" id="teamTbl"><thead><tr><th>Сотрудник</th><th>Роль</th><th>Участие</th><th>С даты</th><th>Статус</th><th>Задач в плане</th><th>Остаток</th><th>Загружен до</th><th>Комментарий</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 

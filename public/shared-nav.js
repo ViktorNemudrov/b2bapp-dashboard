@@ -188,6 +188,16 @@ function fmtDateTime(v){
 }
 window.fmtDate = fmtDate; window.fmtDateTime = fmtDateTime;
 window.localISO = localISO;
+// Метка «устарело» для ручных блоков (статус трека ВП от Cowork, «Команда
+// проекта» из Confluence): пусто, пока данным не больше maxDays дней.
+function staleBadge(raw, maxDays, what){
+  const dt = parseDataDate(raw);
+  if(!dt) return '';
+  const days = Math.floor((Date.now()-dt.getTime())/86400000);
+  if(days <= maxDays) return '';
+  return ` <span style="display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:rgba(230,162,60,.18);color:#E6A23C;border:1px solid rgba(230,162,60,.5)" title="Последнее обновление ${fmtDate(dt)} — ${days} дн. назад">⚠ ${what||'данные'} устарели: ${days} дн.</span>`;
+}
+window.staleBadge = staleBadge;
 
 // Текущий спринт — одно правило на весь сайт и в build_dashboard.py (sprint_index):
 // пока активный в Jira спринт не кончился по календарю, текущий — он; иначе

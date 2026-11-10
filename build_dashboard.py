@@ -77,6 +77,11 @@ HOLIDAYS = {
 HOURS_PER_DAY = 8
 VACANCY_HIRE_MIN = date(2026, 9, 1)   # вакансии-гипотезы найма не раньше этой даты
 DEADLINE = date(2026, 12, 10)          # веха MVP
+# Ключи data.json, которые никто не читает (аудит 10.11.2026) — сборка их удаляет.
+DEAD_KEYS = ("storyStatuses", "taskStatuses", "roleEstimates", "team", "weekly", "usm",
+             "mvp", "okr_dec", "okr_q", "stakeholders", "dependencies", "acceptance",
+             "okrMilestone", "okrQuarterly", "criticalPath", "latestByRole", "jira_summary",
+             "gantt", "scope_dec", "sprints", "mvpScope")
 
 # Зависимости ролей ВНУТРИ стори (правка Виктора 03.10.2026, заменила строгую
 # цепочку ARC→BA→DS→BE→FE→QA от 21.09): сначала аналитика (BA), она при
@@ -1528,6 +1533,14 @@ def run_gantt(args):
     new["orphanTasks"] = orphan_report
     if vacations:
         new["vacations"] = vacations
+
+    # Аудит 10.11.2026: ключи, которые не читает ни одна страница и ни
+    # build_rag_master.py (старые USM/OKR/реестры, дубли ganttV2, ранняя модель
+    # ганта). Убираем, чтобы data.json был легче и в RAG не уходили устаревшие
+    # факты. Нужен снова — вернуть из git-истории data.json.
+    for k in DEAD_KEYS:
+        new.pop(k, None)
+    new["changelog"] = sorted(new.get("changelog") or [], key=lambda c: c.get("ts") or "")
 
     # ── Ассерты ────────────────────────────────────────────────────────────────
     errs = self_checks(items, ganttV2, mvp_scope, resource_plan, epic_progress)

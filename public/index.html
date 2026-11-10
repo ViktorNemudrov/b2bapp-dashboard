@@ -721,7 +721,7 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
     </div>
     <div class="acc-body" style="max-height:999px">
       <div class="creep-wrap">
-        <h3>Кумулятивный рост скоупа <span style="font-size:10px;font-weight:400;color:var(--mute)">эпики / стори / задачи / часы, по датам создания в Jira</span></h3>
+        <h3>Кумулятивный рост скоупа <span style="font-size:10px;font-weight:400;color:var(--mute)">эпики / стори / задачи / часы MVP по срезам дашборда (с 21.09.26 — 10 согласованных эпиков)</span></h3>
         <div id="scopeGrowthChart"></div>
       </div>
     </div>
@@ -1094,7 +1094,14 @@ function restoreAudience(){
 
 // ── РОСТ СКОУПА (§3.10: scopeGrowth[], inline SVG line chart) ────
 function renderScopeGrowth(data){
-  const pts=data.scopeGrowth||[];
+  // Срезы до 21.09.2026 считали весь бэклог (до 910 задач), позже — только
+  // согласованные эпики MVP: показываем лишь хвост срезов той же методики
+  // (MVP-only, то же число эпиков, что сейчас), иначе график рисует «рост» вниз.
+  const allPts=[...(data.scopeGrowth||[])].sort((a,b)=>a.date<b.date?-1:1);
+  const lastPt=allPts[allPts.length-1]||{};
+  let from=allPts.length;
+  while(from>0&&allPts[from-1].note==='MVP-only'&&allPts[from-1].epics===lastPt.epics) from--;
+  const pts=allPts.slice(from);
   const el=$('scopeGrowthChart');
   if(!pts.length){el.innerHTML=renderEmptyState('Нет данных, запустите обновление');return;}
   // Скилл иногда кладёт часы под ключом estH вместо hoursTotal — нормализуем на входе.
@@ -1173,9 +1180,8 @@ function renderScopeGrowth(data){
 
 function validateData(data){
   const errs=[];
-  if(!data.gantt||!data.gantt.length)errs.push('gantt пуст');
+  if(!data.ganttV2||!(data.ganttV2.items||[]).length)errs.push('ganttV2 пуст');
   if(!data.risks||!data.risks.length)errs.push('risks пуст');
-  if(!data.scope_dec||!data.scope_dec.length)errs.push('scope_dec пуст');
   // Fix date parse: "05.07.2026 04:41" -> new Date(2026,6,5,4,41)
   if(data.updated){
     try{
