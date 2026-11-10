@@ -1289,6 +1289,68 @@ def baseline_item(it, res_name):
     return b
 
 
+def calc_changes(prev, items, res_name, crit_end_iso, today, hours_total, hours_spent):
+    """«Что изменилось с прошлого среза» (Виктор 10.11.2026) — для плашки на
+    странице статуса. prev — последний слепок до сегодняшнего прогона (с items).
+    Считается здесь, фронт только рисует."""
+    if not prev or not prev.get("items"):
+        return None
+    p_items = {i["key"]: i for i in prev["items"]}
+    c_tasks = {i["key"]: i for i in items if i["type"] == "task"}
+    p_tasks = {k: i for k, i in p_items.items() if i.get("type") == "task"}
+
+    def brief(i, extra=None):
+        b = {"key": i["key"], "summary": (i.get("summary") or "")[:90], "role": i.get("role"),
+             "estimateH": i.get("estimateH") or 0,
+             "resource": res_name.get(i.get("resource"), i.get("resourceName") or i.get("resource"))}
+        if extra:
+            b.update(extra)
+        return b
+
+    added = [brief(i) for k, i in c_tasks.items() if k not in p_tasks]
+    removed = [brief(i) for k, i in p_tasks.items() if k not in c_tasks]
+    closed = [brief(i, {"status": i["status"]}) for k, i in c_tasks.items()
+              if i["category"] == "done" and k in p_tasks and p_tasks[k].get("category") != "done"]
+    started = [brief(i, {"status": i["status"]}) for k, i in c_tasks.items()
+               if i["category"] == "in_progress" and k in p_tasks and p_tasks[k].get("category") == "backlog"]
+    # Не успели: по прошлому плану должны были закончиться до сегодня, но не закрыты.
+    missed = [brief(i, {"status": i["status"], "planEnd": p_tasks[k].get("end")}) for k, i in c_tasks.items()
+              if i["category"] != "done" and k in p_tasks and (p_tasks[k].get("end") or "9") < today.isoformat()]
+    overrun = []
+    for k, i in c_tasks.items():
+        pe, ps = (p_tasks.get(k) or {}).get("spentH") or 0, i.get("spentH") or 0
+        if k in p_tasks and ps > (i.get("estimateH") or 0) and ps > pe:
+            overrun.append(brief(i, {"spentH": ps, "deltaH": round(ps - pe, 1)}))
+
+    def ends(rows, name_of):
+        e = {}
+        for i in rows:
+            if i.get("resource") and i.get("end"):
+                r = name_of(i)
+                e[r] = max(e.get(r, ""), i["end"])
+        return e
+    e0 = ends(p_tasks.values(), lambda i: i.get("resourceName") or i["resource"])
+    e1 = ends(c_tasks.values(), lambda i: res_name.get(i["resource"], i["resource"]))
+    res = [{"name": r, "end0": e0.get(r), "end1": e1[r]} for r in e1 if e0.get(r) != e1[r]]
+    res.sort(key=lambda x: x["end1"], reverse=True)
+
+    p_end, c_end = prev.get("criticalEnd"), crit_end_iso
+    shift = 0
+    if p_end and c_end and p_end != c_end:
+        a, b = sorted([date.fromisoformat(p_end), date.fromisoformat(c_end)])
+        shift = sum(1 for _ in workdays_between(a + timedelta(days=1), b)) * (1 if c_end > p_end else -1)
+    hrs = lambda xs: round(sum(x["estimateH"] for x in xs))
+    return {
+        "since": prev.get("ts", "")[:10], "sinceLabel": prev.get("label"),
+        "criticalEnd": [p_end, c_end], "shiftWorkdays": shift,
+        "hoursTotal": [round(prev.get("hoursTotal") or 0), round(hours_total)],
+        "hoursSpent": [round(prev.get("hoursSpent") or 0), round(hours_spent)],
+        "added": added, "addedH": hrs(added), "removed": removed, "removedH": hrs(removed),
+        "closed": closed, "started": started,
+        "missed": missed, "missedH": hrs(missed), "overrun": overrun, "resources": res,
+    }
+
+
 def baselines_path(data_path):
     """Слепки лежат отдельным файлом рядом с data.json: их читает только
     страница Ганта (по требованию), а data.json грузит каждая страница —
@@ -1492,6 +1554,8 @@ def run_gantt(args):
     bl_id = f"bl-{today.isoformat()}"
     bl = [b for b in load_baselines(args.data, old) if b.get("id") != bl_id]
     res_name = {r["id"]: r.get("name") or r["id"] for r in resources}
+    prev_bl = next((b for b in reversed(bl) if b.get("items")), None)
+    new["changes"] = calc_changes(prev_bl, items, res_name, crit_end_iso, today, hours_total, hours_spent)
     bl.append({
         "id": bl_id,
         "ts": now_iso,

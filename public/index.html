@@ -815,8 +815,9 @@ function closeSearch(){$('srchResults').classList.remove('open');}
 
 // ── ОБЗОР ПРОЕКТА (только реальные цифры, см. HTML-комментарий выше) ──────
 function renderOverview(data){
-  const a1=(data.assumptions||[]).find(a=>a.id==='A1');
-  const startDate=a1?(a1.desc.match(/(\d{2}\.\d{2}\.\d{4})/)||[])[1]:null;
+  // Дата старта — из вехи «Старт разработки» (раньше парсилась из допущения A1,
+  // но реестр допущений с 10.11.2026 ведётся в Confluence и A1 там про состав команды).
+  const startDate=((data.milestones||[]).find(m=>/старт разработки/i.test(m.label))||{}).date||null;
   const res=(data.ganttV2&&data.ganttV2.resources)||[];
   const roles=new Set(res.map(r=>r.role));
   const kpi=data.kpi||{};
@@ -913,7 +914,8 @@ function placeRiskMarkers(arr){
   return shown;
 }
 function renderRiskMatrix(data){
-  const risks=data.risks||[];
+  // Снятые риски (статус «СНЯТ…» в реестре Confluence) на матрицу не выносим — они остаются в реестре.
+  const risks=(data.risks||[]).filter(r=>!/^\s*СНЯТ/i.test(r.status||''));
   if(!risks.length){$('riskMatrixGrid').innerHTML=renderEmptyState('Нет данных, запустите обновление');$('riskList').innerHTML='';return;}
   const cells={};
   risks.forEach((r,i)=>{const k=`${r.impact||1}-${r.prob||1}`;(cells[k]=cells[k]||[]).push({...r,_i:i});});
