@@ -956,7 +956,7 @@ function renderStages(gv, data){
   const green=(r,sid,n)=>r.completed||(n<=curN&&['done','passed'].includes((r.state||{})[sid]));
   // Отстаёт: по плану этап уже должен был закончиться (прошёл ПОСЛЕДНИЙ спринт его
   // непрерывного отрезка в «Плане ручном»), а в Jira он не закрыт и следующий не начат.
-  // То же правило — проверка P4 в TASK_CHECKLIST.md / скилле b2bapp-audit.
+  // То же правило — проверка P4 в build_audit.py (страница «Аудит задач»).
   const runEnd=(r,sid,n)=>{ let k=n; while((r.cells[k+1]||[]).includes(sid)) k++; return k; };
   const late=(r,sid,n)=>{ const e=spByN[runEnd(r,sid,n)]; return !green(r,sid,n)&&!!e&&e.end<=todayISO; };
   // Отрезки: подряд идущие спринты с одинаковым составом (роль + зелёная/нет) — одна колбаса.
@@ -1008,7 +1008,7 @@ function renderStages(gv, data){
         const why=r.completed?'сценарий завершён полностью':(WHY[(r.state||{})[sid]]||'')+(lt?` — <b style="color:var(--red)">отстаёт от плана</b>: по плану должен был закончиться к ${fmtDate(e.end)}, в Jira не закрыт и следующий этап не начат`:'');
         const tip=`<strong>${esc(r.code)} · ${esc(m.n)}</strong>${esc(r.name)}<div style="margin-top:5px;font-size:10px">План: ${s.name}${g.to!==g.from?' – '+e.name:''} · ${fmtDate(s.start)} → ${fmtDate(e.end)}</div><div style="font-size:10px">Этап: ${why}${j?` · задач в Jira ${j.done}/${j.tasks}, ${j.estimateH} ч`:' · задач этапа в Jira нет'}</div>${sid==='QA'?'<div style="font-size:10px;color:var(--mute)">QA встроен в задачи Фронта и Бэка (30% оценки)</div>':''}`;
         const fs=per>=3?8:per===2?9.5:11;
-        return `<div class="g2-mp-stripe" style="background:${gr?DONE_GREEN:lt?`repeating-linear-gradient(135deg,${m.c} 0 7px,rgba(13,27,42,.55) 7px 11px)`:m.c};font-size:${fs}px" data-tip-html="${esc(tip)}">${w>40?esc(m.n)+(gr&&w>90?' ✓':lt&&w>90?' ⚠':''):''}</div>`;
+        return `<div class="g2-mp-stripe" style="background:${gr?DONE_GREEN:lt?`repeating-linear-gradient(135deg,${m.c} 0 7px,rgba(13,27,42,.55) 7px 11px)`:m.c};font-size:${fs}px;cursor:pointer" data-pop-html="${esc(tip+stageTasksHtml(j&&j.list))}">${w>40?esc(m.n)+(gr&&w>90?' ✓':lt&&w>90?' ⚠':''):''}</div>`;
       }).join('')+'</div>';
     }).join('')+'</div>';
   }).join('');

@@ -1,0 +1,79 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Аудит задач — B2BAPP</title><link rel="stylesheet" href="../shared.css">
+<style>
+.au-lead{color:var(--mute);font-size:13px;margin:0 0 12px;max-width:980px;line-height:1.45}
+.au-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.au-chip{padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:12.5px}
+.au-chip b{font-size:16px;margin-right:4px}
+.au-sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 16px}
+.au-sec h2{margin:0 0 4px;font-size:17px}
+.au-sec h3{margin:14px 0 6px;font-size:14px}
+.au-sub{color:var(--mute);font-size:12px;margin:0 0 8px}
+.au-sec .tbl td{vertical-align:top}
+.au-jira{display:flex;flex-direction:column;gap:3px}
+.au-jira div{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+.au-sp{font-size:11px;color:var(--mute)}
+.au-sp.no{color:var(--warn);font-weight:600}
+.au-keys{line-height:1.9;font-size:12.5px}
+.au-keys a{white-space:nowrap}
+.au-gl td:first-child{font-weight:700;white-space:nowrap}
+details.au-det summary{cursor:pointer;font-weight:600;font-size:13px;margin:6px 0}
+</style></head><body>
+<div class="layout">
+<div id="sidebar-root"></div>
+<script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  mountFreshness('freshness', d.refreshedAt, d.updated);
+}).catch(()=>{});</script>
+<div class="main">
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🧹 Аудит задач по аналитикам</span></div>
+  <div class="hdr-right">B2BAPP | Аудит на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
+</header>
+<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<script>
+// Страница только рисует public/data/audit.json — его готовит build_audit.py при
+// каждом обновлении дашборда (спецификация Cowork 11.11.2026). В Jira не ходит.
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const jk=k=>`<a href="https://btask.beeline.ru/browse/${encodeURIComponent(k)}" target="_blank" rel="noopener">${esc(k)}</a>`;
+function issuesBlock(o){
+  if(!o.issues.length) return '<p class="au-sub">Правок оформления нет.</p>';
+  // Чистые «без оценки» при большом числе — абзацем ключей, как в документе Cowork; остальное — таблицей.
+  const t6=o.issues.filter(i=>i.check==='T6'), rest=t6.length>8?o.issues.filter(i=>i.check!=='T6'):o.issues;
+  let h='';
+  if(t6.length>8) h+=`<p class="au-keys"><b>Без оценки (T6) — проставить оценку, ${t6.length}:</b> ${t6.map(i=>`${jk(i.key)} <span class="au-sp">(${esc(i.scenario)})</span>`).join(', ')}</p>`;
+  if(rest.length) h+=`<table class="tbl"><thead><tr><th>Ключ</th><th>Сценарий</th><th>Проверка</th><th>Что поправить</th></tr></thead><tbody>${
+    rest.map(i=>`<tr><td>${jk(i.key)}</td><td>${esc(i.scenario)}</td><td><span class="badge badge-blue">${esc(i.check)}</span></td><td>${esc(i.action)}</td></tr>`).join('')}</tbody></table>`;
+  return h;
+}
+function p4Block(o){
+  if(!o.p4.length) return '<p class="au-sub">Отстающих этапов нет.</p>';
+  return `<table class="tbl"><thead><tr><th>Сценарий</th><th>Этап</th><th>План</th><th>Что в Jira (незакрытые)</th><th>Что сделать</th></tr></thead><tbody>${
+    o.p4.map(p=>`<tr><td><b style="color:var(--yel)">${esc(p.scenario)}</b><div class="au-sp">${esc(p.name||'')}</div></td><td>${esc(p.stage)}</td>
+      <td style="white-space:nowrap">${esc(p.plan)}<div class="au-sp">закончился ${fmtDate(p.planEnd)}</div></td>
+      <td>${p.kind==='нет'?'<span class="au-sp no">задач роли нет</span>':`<div class="au-jira">${p.jira.map(x=>`<div>${jk(x.key)} ${statusBadge(x.status)} <span class="au-sp${x.sprint?'':' no'}">${x.sprint?esc(x.sprint):'нет в текущем/будущем спринте'}</span></div>`).join('')}</div>${p.closed?`<div class="au-sp">закрыто ${p.closed} из ${p.total}</div>`:''}`}</td>
+      <td>${esc(p.action)}</td></tr>`).join('')}</tbody></table>`;
+}
+AUTH_READY.then(()=>{
+fetch('../data/audit.json?t='+Date.now()).then(r=>{ if(!r.ok) throw new Error('nodata'); return r.json(); }).then(a=>{
+  document.getElementById('upd').textContent=fmtDate(a.generated_at);
+  if(!a.owners||!a.owners.length){ document.getElementById('root').innerHTML='<div class="empty">Данные аудита ещё не сгенерированы.</div>'; return; }
+  const sc=a.scope||{}, mp=a.manual_plan||{};
+  const chips=a.owners.map(o=>`<div class="au-chip"><b>${o.issues.length}</b>правок · <b>${o.p4.length}</b>этапов P4${o.unlabeled_stories.length?` · <b>${o.unlabeled_stories.length}</b>стори без метки`:''}<div class="au-sp">${esc(o.name)}</div></div>`).join('');
+  document.getElementById('root').innerHTML=`
+    <p class="au-lead">Что поправить в Jira, чтобы гант и этапы сценариев показывали реальную картину — по ответственным аналитикам (владелец сценария в реестре MVP v.2). Охват: ${sc.stories} стори, ${sc.tasks} задач, ${sc.epics} эпиков (без вакантных), данные Jira на ${fmtDate(a.jira_collected_at||a.generated_at)}, текущий — Спринт ${a.current_sprint}. «Отстаёт от плана» (P4) — те же этапы, что заштрихованы на виде <a href="gantt.html?view=stages">«Этапы по сценариям»</a> (${a.p4_total}): спринт этапа по «Плану ручному»${mp.version?` (v${esc(mp.version)})`:''} прошёл, а в Jira он не закрыт — его задачи нужно закрыть либо запланировать в будущий спринт.</p>
+    <div class="au-chips">${chips}</div>
+    ${a.owners.map(o=>`<div class="au-sec" id="o-${o.id}"><h2>${o.id==='V'?'На разбор':'Исправить'} — ${esc(o.short)}</h2>
+      <p class="au-sub">${esc(o.name)}: ${o.issues.length} правок оформления, ${o.p4.length} отстающих этапов${o.unlabeled_stories.length?`, ${o.unlabeled_stories.length} стори без метки сценария`:''}.</p>
+      <h3>Оформление</h3>${issuesBlock(o)}
+      <h3>Отстаёт от плана (P4)</h3>${p4Block(o)}
+      ${o.unlabeled_stories.length?`<h3>Стори без метки сценария — определить сценарий и проставить метку</h3><p class="au-keys">${o.unlabeled_stories.map(jk).join(', ')}</p>`:''}
+    </div>`).join('')}
+    <details class="au-det au-sec"><summary>Глоссарий проверок и как это посчитано</summary>
+      <table class="tbl au-gl"><thead><tr><th>Код</th><th>Что значит</th></tr></thead><tbody>${(a.glossary||[]).map(g=>`<tr><td>${esc(g.code)}</td><td>${esc(g.text)}</td></tr>`).join('')}</tbody></table>
+      <p class="au-sub" style="margin-top:10px">Ответственный — первый в колонке «Владелец» реестра MVP v.2 (${esc(a.registry||'')}): Клейменова → Аня, Шевченко → Костя, остальное и стори без сценария → Виктор. Не флагуем: «Основание» (только при создании через ассистента), перерасход, списание при «Бэклоге», «Waiting for release» в текущем спринте, задачи эпика B2BAPP-1 без префикса. Бек 1 и Бек 2 в плане — одна проверка по всем задачам [BE]; «вся разработка в тесте» = этап пройден. P4 считается по задачам MVP-эпиков с оценкой (как на ганте).</p>
+    </details>`;
+}).catch(e=>{ document.getElementById('root').innerHTML='<div class="empty">Данные аудита ещё не сгенерированы.</div>'; });
+});
+</script></div><!-- /main --></div><!-- /layout -->
+</body></html>

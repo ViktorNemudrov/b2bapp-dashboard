@@ -349,9 +349,14 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
   // Зелёный только в начавшихся спринтах (будущая работа ещё не заведена в Jira) или у завершённого сценария.
   const isGreen=(r,sid,n)=>r.completed||(n<=sp.currentSprint&&['done','passed'].includes((r.state||{})[sid]));
   const pill=(r,sid,n)=>{
-    const c=isGreen(r,sid,n)?DONE_GREEN:STG[sid][1], j=(r.jira||{})[sid]||((sid==='BE1'||sid==='BE2')?(r.jira||{}).BE:null);
-    const why={done:r.completed?'сценарий завершён полностью':'закрыт в Jira',passed:'начался следующий этап',active:'в работе',todo:j?'не начат':'в Jira нет задач этапа'}[(r.state||{})[sid]]||'';
-    return `<span class="pill" style="${softPill(c)}" title="${esc(STG[sid][2])}: ${why}${j?` · задач в Jira ${j.done}/${j.tasks}`:''}">${STG[sid][0]}</span>`;
+    // Три цвета по статусу этапа (Виктор 11.11.2026: «меньше цветов»): готово — зелёный,
+    // в работе — оранжевый, в планах — серый. Роль — подпись на плашке.
+    const st=(r.state||{})[sid], g=isGreen(r,sid,n);
+    const c=g?STATUS_GROUPS.done.color:st==='active'?STATUS_GROUPS.wip.color:STATUS_GROUPS.backlog.color;
+    const j=(r.jira||{})[sid]||((sid==='BE1'||sid==='BE2')?(r.jira||{}).BE:null);
+    const why=g?(r.completed?'сценарий завершён полностью':st==='passed'?'пройден — начался следующий этап':'готово — закрыт в Jira'):st==='active'?'в работе':(j?'в планах, не начат':'в планах, задач этапа в Jira нет');
+    const pop=`<div style="font-weight:700">${esc(r.code)} · ${esc(STG[sid][2])} · Спринт ${n}</div><div style="color:var(--mute)">${esc(r.name)}</div><div style="margin-top:4px">Этап: <b>${why}</b>${j?` · задач в Jira ${j.done}/${j.tasks}`:''}</div>`+stageTasksHtml(j&&j.list);
+    return `<span class="pill" style="${softPill(c)};cursor:pointer" data-pop-html="${esc(pop)}">${STG[sid][0]}</span>`;
   };
   function renderT6(){
     const roleOk=sid=>T6.role==='all'||sid===T6.role||(T6.role==='BE'&&(sid==='BE1'||sid==='BE2'));
@@ -379,12 +384,12 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
     try{ localStorage.setItem('st-t6', JSON.stringify(T6)); }catch(_){}
   }
   $('t6body').innerHTML=`<h2>Дорожная карта — по сценариям MVP</h2>
-    <p class="lead">План команды по спринтам в разрезе сценариев и ролей — «План ручной» аналитиков (<a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2666206915" target="_blank" rel="noopener">Confluence</a>, версия ${esc(src.version||'—')} от ${fmtDate(src.when)}). Цвет — роль; <b>зелёный — этап пройден</b>: закрыт в Jira (Завершена / Waiting for release) или уже начался следующий этап. Светло-зелёные строки — сценарии, по которым работы завершены полностью. По датам — <a href="gantt.html?view=stages">«Этапы по сценариям (упрощённо)» на диаграмме Ганта</a>.</p>
+    <p class="lead">План команды по спринтам в разрезе сценариев и ролей — «План ручной» аналитиков (<a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2666206915" target="_blank" rel="noopener">Confluence</a>, версия ${esc(src.version||'—')} от ${fmtDate(src.when)}). Цвет — статус этапа: <b>зелёный — готово</b> (закрыт в Jira: Завершена / Waiting for release, или уже начался следующий этап), <b>оранжевый — в работе</b>, <b>серый — в планах</b>. Наведите на этап — откроется список задач Jira, по которым определён статус. Светло-зелёные строки — сценарии, по которым работы завершены полностью. По датам — <a href="gantt.html?view=stages">«Этапы по сценариям (упрощённо)» на диаграмме Ганта</a>.</p>
     <div class="t6-ctl" id="t6ctl">
       <span class="t6-lbl">Роль:</span>${Object.entries(ROLE_F).map(([k,v])=>`<button data-role="${k}">${v}</button>`).join('')}
       <span class="t6-lbl" style="margin-left:14px">Порядок:</span><button data-sort="registry">По контурам реестра</button><button data-sort="launch" title="Завершены → план прошёл, работа не закрыта → идут сейчас → впереди; внутри — по первому спринту плана">По времени запуска</button>
     </div>
-    <div class="lgd">${['AN','DS','BE1','BE2','FE','QA'].map(id=>`<span><span class="sw" style="${softPill(STG[id][1])}"></span>${STG[id][2]}</span>`).join('')}<span><span class="sw" style="${softPill(DONE_GREEN)}"></span>этап пройден</span><span><span class="sw" style="background:rgba(0,212,255,.3)"></span>текущий спринт</span></div>
+    <div class="lgd"><span><span class="sw" style="${softPill(STATUS_GROUPS.done.color)}"></span>готово</span><span><span class="sw" style="${softPill(STATUS_GROUPS.wip.color)}"></span>в работе</span><span><span class="sw" style="${softPill(STATUS_GROUPS.backlog.color)}"></span>в планах</span><span><span class="sw" style="background:rgba(0,212,255,.3)"></span>текущий спринт</span></div>
     <div class="gt" id="t6grid"></div>
     <div class="danger">Срок 1-й задачи «запись↔этикетка» (PFC-1271) по контуру «Обращения и клиенты» (OB3/OB4) — снятие на сети в PROD 17.11.2026, затем доп. тест SDM; до этого для ИП/ООО сценарии записи/расшифровки пока заблокированы, доступны только самозанятым. ${ok?'':`По критическому пути к дедлайну <b>10.12.26 не успеваем</b>, прогноз завершения — <b>${fmtDate(crit)}</b>.`}</div>
     <div class="warn">Выход в продуктив (E2E-тестирование, пилот, коммерческий запуск) и контрольные точки — на общей дорожной карте (вкладка 05).</div>`;

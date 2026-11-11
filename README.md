@@ -1,42 +1,38 @@
 # B2BAPP Dashboard
 
-Дашборд проекта мобильного приложения для микробизнеса Билайн.
+Дашборд проекта мобильного приложения «Билайн Бизнес» для микробизнеса: https://b2bapp-dashboard.vercel.app (статический сайт, деплой Vercel из `main`, клиентский пароль-гейт).
 
 ## Структура
 
 ```
 public/
-  index.html          — Главная страница (разводящая)
-  shared.css          — Общие стили
+  index.html            — главная: прогноз, метрики, готовность эпиков, матрица рисков, рост скоупа
+  shared-nav.js         — меню, пароль-гейт, палитра статусов, автоссылки Jira/Confluence, облачко задач этапа
+  shared.css            — общие стили (index.html их не подключает)
   data/
-    data.json         — Данные из Jira + план проекта (обновляется)
+    data.json           — все данные сайта (собирает build_dashboard.py)
+    baselines.json      — слепки плана для сравнения на ганте
+    audit.json          — аудит задач по аналитикам (собирает build_audit.py)
   pages/
-    gantt.html        — Диаграмма Ганта
-    usm.html          — User Story Map
-    resources.html    — Ресурсный план (тепловая карта)
-    mvp.html          — MVP по кварталам
-    scope_dec.html    — Скоуп до 10.12.2026
-    risks.html        — Реестр рисков
-    assumptions.html  — Реестр допущений
-    questions.html    — Открытые вопросы
-    stakeholders.html — Стейкхолдеры + RACI
-    dependencies.html — Внешние зависимости
-    sprints.html      — Бэклог по спринтам
-    acceptance.html   — Критерии приёмки MVP
-    glossary.html     — Глоссарий
-    grooming.html     — Таблица груминга
+    status.html         — «Статус для руководства» (7 вкладок, блок трека ВП, «Что изменилось»)
+    gantt.html          — диаграмма Ганта (виды: эпики / сценарии / этапы по сценариям) + gantt-compare.js
+    resources.html      — команда и загрузка по спринтам/месяцам
+    vacations.html      — график отпусков
+    audit.html          — аудит задач по аналитикам (правки оформления Jira + отстающие этапы P4)
+    risks.html, assumptions.html — реестры из Confluence
 ```
 
-## Обновление данных
+## Сборка
 
-Данные в `public/data/data.json` обновляются тремя способами:
+| Скрипт | Что делает |
+|---|---|
+| `build_dashboard.py` | Jira-дамп + команда + «План ручной» + цели спринтов + реестр сценариев + отпуска → `data.json`, `baselines.json` |
+| `build_audit.py` | полная выгрузка Jira + реестр MVP v.2 + `data.json` → `audit.json` |
+| `import_registers.py` | реестры рисков и допущений из Confluence → `data.json` |
+| `parse_manual_plan.py`, `parse_sprint_goals.py` | разбор страниц Confluence → `manual_plan.json`, `sprint_goals.json` |
+| `check_jira_rollup.py` | проверка статусов и дат стори/эпиков против задач |
+| `build_rag_master.py` (+ `rag_compare.js`) | `rag/MASTER_11_план_работ.md` для RAG |
 
-1. **По запросу в чате** — сказать Claude: «Обнови данные дашборда из Jira»
-2. **Кнопка на сайте** — кнопка «↻ Обновить данные» на главной
-3. **Автоматически** — GitHub Actions (2 раза в день, если Jira доступна)
+Полный порядок обновления (выгрузки из Jira/Confluence через браузер, сборка, проверки, публикация) — скилл Claude Code `b2bapp-dashboard-update`; копия: `Desktop\B2BAPP\13_Скиллы_и_инструкции_Claude\Скиллы_и_память_Claude_актуальные\Claude_Code_скиллы\`. Формат Jira-дампа — `DUMP_FORMAT.md`.
 
-## Деплой
-
-Сайт автоматически деплоится на Vercel при каждом пуше в `main`.
-
-Подключить: Vercel → Import Git Repository → `b2bapp-dashboard`
+Транзитные входные файлы (`jira_dump.json`, `jira_full_dump.json`, `team_dump.json`, `vacations.json`) в git не попадают.

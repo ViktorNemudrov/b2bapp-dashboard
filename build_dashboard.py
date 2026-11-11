@@ -1166,7 +1166,11 @@ def calc_manual_plan(mp, items, resources, reg=None, cur_sprint=0):
                "in_progress" if any(t["category"] != "backlog" or t.get("started") for t in ts) else "backlog")
         return {"category": cat, "tasks": len(ts), "done": done,
                 "estimateH": sum(t["estimateH"] for t in ts),
-                "sprints": sorted({t["sprint"] for t in ts if t.get("sprint") is not None})}
+                "sprints": sorted({t["sprint"] for t in ts if t.get("sprint") is not None}),
+                # Задачи, по которым сделан вывод о статусе этапа (всплывающий список
+                # на «Статусе для руководства» и в Ганте; Виктор 11.11.2026).
+                "list": [{"k": t["key"], "s": t.get("status") or "", "t": (t.get("summary") or "")[:80]}
+                         for t in sorted(ts, key=lambda t: (t["category"] != "done", t["key"]))]}
     rows = []
     for r in mp.get("rows", []):
         kt = [t for t in tasks if t.get("scenario") == r["code"]]

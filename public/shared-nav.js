@@ -12,6 +12,7 @@ const NAV = [
     {label:'Диаграмма Ганта', icon:'📊', href:'/pages/gantt.html'},
     {label:'Ресурсный план', icon:'👥', href:'/pages/resources.html'},
     {label:'График отпусков', icon:'🏖️', href:'/pages/vacations.html'},
+    {label:'Аудит задач', icon:'🧹', href:'/pages/audit.html'},
   ]},
   {group:'Аналитика', items:[
     {label:'Реестр рисков', icon:'⚠️', href:'/pages/risks.html'},
@@ -202,6 +203,49 @@ function regStatus(raw){
   return `<span style="color:${col};font-weight:700">${head}</span>${tail?`<div style="color:var(--mute);margin-top:2px">${tail}</div>`:''}`;
 }
 window.regStatus = regStatus;
+// Список задач этапа: ключи столбиком (кликабельные), статус и название.
+// list = jira[stage].list из билдера: [{k, s, t}].
+function stageTasksHtml(list){
+  if(!list || !list.length) return '<div style="color:var(--mute);margin-top:6px">Задач этапа в Jira нет</div>';
+  return '<div style="margin-top:6px;display:flex;flex-direction:column;gap:3px">'+list.map(x=>
+    `<div style="display:flex;gap:8px;align-items:baseline;white-space:nowrap"><a href="${JIRA_URL}${encodeURIComponent(x.k)}" target="_blank" rel="noopener" style="font-weight:700;min-width:96px">${x.k}</a>${statusBadge(x.s)}<span style="color:var(--mute);overflow:hidden;text-overflow:ellipsis;max-width:300px">${String(x.t||'').replace(/[<>&]/g,'')}</span></div>`).join('')+'</div>';
+}
+window.stageTasksHtml = stageTasksHtml;
+// Облачко со списком задач (Виктор 11.11.2026): открывается КЛИКОМ по элементу с
+// data-pop-html="…"; пока оно открыто, остальная страница заморожена (прозрачная
+// подложка гасит наведение, клики и прокрутку). Закрыть: повторный клик по этапу,
+// ✕, клик мимо облачка, Esc — или увести курсор из облачка обратно на страницу.
+(function initStagePop(){
+  let pop=null, veil=null, body=null, entered=false;
+  const ensure=()=>{ if(pop) return;
+    const st=document.createElement('style');
+    st.textContent='.stage-pop strong{display:block;margin-bottom:2px}.stage-pop a{color:var(--blue,#4472C4)}'
+      +'.stage-pop-x{position:absolute;top:6px;right:8px;border:1px solid var(--line,#253850);background:transparent;color:var(--text,#e8edf5);border-radius:6px;width:22px;height:22px;line-height:18px;cursor:pointer;font-size:13px;padding:0}'
+      +'.stage-pop-x:hover{background:var(--line,#253850)}';
+    document.head.appendChild(st);
+    veil=document.createElement('div');
+    veil.style.cssText='position:fixed;inset:0;z-index:590;display:none;background:rgba(5,10,20,.18);cursor:default';
+    veil.addEventListener('click',hide);
+    veil.addEventListener('wheel',e=>e.preventDefault(),{passive:false});
+    pop=document.createElement('div'); pop.className='stage-pop'; pop.setAttribute('data-nolink','');
+    pop.style.cssText='position:fixed;z-index:600;display:none;max-width:560px;max-height:60vh;overflow:auto;padding:12px 36px 12px 14px;border-radius:12px;background:var(--card,#1a2940);color:var(--text,#e8edf5);border:1px solid var(--line,#253850);box-shadow:0 10px 32px rgba(0,0,0,.5);font-size:12px;line-height:1.35';
+    pop.innerHTML='<button class="stage-pop-x" title="Закрыть (Esc)" aria-label="Закрыть">✕</button><div></div>';
+    body=pop.lastChild;
+    pop.firstChild.addEventListener('click',hide);
+    pop.addEventListener('mouseenter',()=>{ entered=true; });
+    pop.addEventListener('mouseleave',e=>{ if(entered && e.relatedTarget===veil) hide(); });
+    document.body.appendChild(veil); document.body.appendChild(pop); };
+  function hide(){ if(!pop) return; pop.style.display='none'; veil.style.display='none'; entered=false; }
+  function show(el){ ensure(); entered=false;
+    body.innerHTML=el.getAttribute('data-pop-html');
+    veil.style.display='block'; pop.style.display='block';
+    const r=el.getBoundingClientRect(), w=pop.offsetWidth, h=pop.offsetHeight;
+    let x=Math.min(r.left, innerWidth-w-8), y=r.bottom+6; if(y+h>innerHeight-8) y=Math.max(8, r.top-h-6);
+    pop.style.left=Math.max(8,x)+'px'; pop.style.top=y+'px'; }
+  document.addEventListener('click',e=>{ const el=e.target.closest&&e.target.closest('[data-pop-html]');
+    if(el && !(pop&&pop.contains(el))){ e.preventDefault(); show(el); } });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') hide(); });
+})();
 
 // Текущий спринт — одно правило на весь сайт и в build_dashboard.py (sprint_index):
 // пока активный в Jira спринт не кончился по календарю, текущий — он; иначе

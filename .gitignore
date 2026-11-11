@@ -10,3 +10,4 @@ __pycache__/
 *.pyc
 
 vacations.json
+jira_full_dump.json
