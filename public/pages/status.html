@@ -14,7 +14,10 @@
 .st-pane{display:none}.st-pane.active{display:block}
 .st-pane h2{font-size:19px;margin:0 0 4px}
 .lead{color:var(--mute);margin:0 0 16px;font-size:13px;line-height:1.5}
-.g2c{display:grid;grid-template-columns:1fr 1fr;gap:14px}.g3c{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.g4c{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.g2c{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.sp-car{position:relative}.sp-car .g2c{margin:0 26px}
+.sp-arr{position:absolute;top:50%;transform:translateY(-50%);width:24px;height:48px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:8px;cursor:pointer;font-size:16px;padding:0;z-index:2}
+.sp-arr:hover{border-color:var(--yel)}.sp-arr.l{left:-2px}.sp-arr.r{right:-2px}.g3c{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.g4c{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
 .card h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:8px}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--yel);display:inline-block;flex-shrink:0}
@@ -258,10 +261,17 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
       ${chgList('Не успели к сроку по прошлому плану (перенесены вперёд)',chg.missed,tLine)}
       ${chgList('Перерасход часов вырос',chg.overrun,x=>`<li>${esc(x.key)} ${esc(x.summary)} <span class="sub">· списано ${x.spentH} ч при оценке ${x.estimateH} ч (+${x.deltaH} ч)</span></li>`)}
     </div>`;})();
-  // Итоги всех прошлых спринтов (синхрон с аналитиками 12.11.2026) — со страницы «Реализация»;
-  // последний закрытый — карточкой выше, здесь остальные, от новых к старым.
-  const past=(goals.sprints||[]).filter(s=>s.n>0&&s.n<sp.lastClosedSprint&&s.goals.length).sort((a,b)=>b.n-a.n);
-  const pastSprints=!past.length?'':`<div class="card" style="margin-top:14px"><h3><span class="dot g"></span>Итоги прошлых спринтов <span class="sub" style="font-weight:400">— ${past.length} спринт., со страницы «Реализация»</span></h3>${past.map(s=>`<details class="st-more"><summary><b>${esc(s.title)}</b> <span class="sub">— ${cnt(s)}</span></summary>${goalList(s)}</details>`).join('')}</div>`;
+  // Карусель спринтов (Виктор 12.11.2026): по умолчанию — прошлый закрытый и текущий;
+  // стрелка ← сдвигает окно на спринт назад, → — обратно; на краях стрелка пропадает.
+  const spCard=n=>{ const s=spBy[n], gl=gBy[n], isCur=n===sp.currentSprint;
+    const nm=s?esc(s.name)+' ('+dm(s.start)+'–'+dm(s.end)+')':(gl?esc(gl.title):'Спринт '+n);
+    return `<div class="card"><h3><span class="dot ${isCur?'b':'g'}"></span>${isCur?'Фокус':'Итоги'} ${nm}</h3>
+      ${!isCur&&gl?`<div class="sub" style="margin-bottom:4px">${cnt(gl)}</div>`:''}${goalList(gl)}${statTbl(n,!isCur)}</div>`; };
+  const spMin=Math.min(...(goals.sprints||[]).filter(x=>x.n>0&&x.goals.length).map(x=>x.n), sp.currentSprint);
+  let spR=sp.currentSprint;
+  const spCar=()=>{ const el=$('spCar'); if(!el) return;
+    const l=spR-1;
+    el.innerHTML=`${l>spMin?'<button class="sp-arr l" data-d="-1" title="Раньше">‹</button>':''}<div class="g2c">${l>=spMin?spCard(l):''}${spCard(spR)}</div>${spR<sp.currentSprint?'<button class="sp-arr r" data-d="1" title="Позже">›</button>':''}`; };
   window.__vpRoadmap=vp.roadmap||null;
   $('t1body').innerHTML=`<h2>Обзор по проекту</h2>
     <p class="lead">Общий статус, итоги закрытого спринта и цели текущего, открытые вопросы руководству. Цифры — из Jira на ${fmtDate(d.updated)}; цели спринтов — со страницы «Реализация» в Confluence${gs.version?` (версия ${gs.version} от ${fmtDate(gs.when)})`:''}.</p>
@@ -271,19 +281,14 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
       <div class="kpi"><div class="l">Задач (сделано/всего)</div><div class="v">${m.tasksDone??'—'} / ${m.tasksTotal??'—'}</div></div>
       <div class="kpi"><div class="l">Прогноз завершения</div><div class="v ${ok?'ok':'red'}">${dmy(crit)}</div></div>
     </div>${verdict}${changesCard}
-    <div class="g2c">
-      <div class="card"><h3><span class="dot g"></span>Итоги ${prev?esc(prev.name)+' ('+dm(prev.start)+'–'+dm(prev.end)+')':'прошлого спринта'}</h3>
-        ${pg?`<div class="sub" style="margin-bottom:4px">${cnt(pg)}</div>`:''}${goalList(pg)}
-        ${statTbl(sp.lastClosedSprint,true)}</div>
-      <div class="card"><h3><span class="dot b"></span>Фокус ${cur?esc(cur.name)+' ('+dm(cur.start)+'–'+dm(cur.end)+')':'текущего спринта'}</h3>
-        ${goalList(cg)}
-        ${statTbl(sp.currentSprint,false)}</div>
-    </div>
-    ${pastSprints}
+    <div class="sp-car" id="spCar"></div>
     <div class="card" style="margin-top:14px"><h3><span class="dot r"></span>Дополнительно${vp.title?` <span class="sub" style="font-weight:400">— ${esc(vp.title)}</span>`:''}${vp.roadmap?'<a class="vp-rm-open" style="margin-left:auto;font-size:12.5px;font-weight:600" role="button" tabindex="0">🗺 Дорожная карта трека</a>':''}</h3>
       ${vpItems.length?`<div class="g2c">${vpItems.map(vpCard).join('')}</div>
       <p class="sub" style="margin:10px 0 0">Статус на ${esc(vp.updated||'—')}${vp.detailUrl?` · вся подробная информация — <a href="${esc(vp.detailUrl)}" target="_blank" rel="noopener">B2BAPP-1262. Виртуальный помощник от Б2С (Confluence) →</a>`:''}</p>`:'<div class="empty">Нет данных vpTrack в data.json</div>'}
     </div>`;
+
+  spCar();
+  $('spCar').addEventListener('click',e=>{ const b=e.target.closest('.sp-arr'); if(!b) return; spR+=+b.dataset.d; spCar(); });
 
   // ── 03 Что планируется в MVP — реестр сценариев v.2 ──
   const scs=(g.scenarios||[]).filter(s=>s.code!=='PLATFORM');
@@ -367,18 +372,61 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
     const pop=`<div style="font-weight:700">${esc(r.code)} · ${esc(STG[sid][2])} · Спринт ${n}</div><div style="color:var(--mute)">${esc(r.name)}</div><div style="margin-top:4px">Этап: <b>${why}</b>${j?` · задач в Jira ${j.done}/${j.tasks}`:''}</div>${mv!=null?`<div style="margin-top:4px">Незакрытые задачи этапа перенесены в <b>Спринт ${(moved).filter((x,i,a)=>a.indexOf(x)===i).join(', ')}</b> — план в Confluence надо сдвинуть</div>`:''}`+stageTasksHtml(j&&j.list);
     return `<span class="pill" style="${softPill(c)};cursor:pointer" data-pop-html="${esc(pop)}">${STG[sid][0]}${mv!=null?`<span style="font-weight:400;opacity:.85"> →${mv}</span>`:''}</span>`;
   };
-  // Что поменялось в «Плане ручном» с прошлого среза — считает билдер (calc_plan_changes).
-  function planChanges(c){
-    if(!c) return '';
+  // Сравнение «Плана ручного» со слепком — как на Ганте (Виктор 12.11.2026): слепки плана лежат
+  // в baselines.json (manualPlan, один на прогон; грузится по требованию). Выбор слепка —
+  // таблица изменений + подсветка на сетке: добавленный этап — пунктирная рамка, убранный — бледный.
+  const PLAN_STG={AN:'Аналитика',DS:'Дизайн',BE:'Бэк',BE1:'Бэк 1',BE2:'Бэк 2',FE:'Фронт',QA:'QA'};
+  const todayBl='bl-'+new Date().toISOString().slice(0,10);
+  let SNAPS=null;
+  const T6C={sel:null,diff:null};
+  async function loadSnaps(){
+    if(SNAPS) return SNAPS;
+    try{ const j=await (await fetch('../data/baselines.json?t='+Date.now())).json();
+      SNAPS=(j.baselines||[]).filter(b=>b.manualPlan&&b.id!==todayBl).map(b=>({id:b.id,ts:b.ts,mp:b.manualPlan})); }catch(_){ SNAPS=[]; }
+    return SNAPS;
+  }
+  function planDiff(prev){
+    const green=(st,sid)=>['done','passed'].includes((st||{})[sid]);
+    const bySt=cells=>{ const m={}; Object.entries(cells||{}).forEach(([n,a])=>a.forEach(sid=>(m[sid]=m[sid]||[]).push(+n))); return m; };
+    const cur={}; mp.rows.forEach(r=>cur[r.code]={cells:r.cells||{},state:r.state||{},name:r.name});
+    const out={rows:[],done:[],cell:{}};
+    const mark=(code,n,k,sid)=>{ const c=out.cell[code]=out.cell[code]||{}; (c[n]=c[n]||{added:[],removed:[]})[k].push(sid); };
+    for(const code of [...Object.keys(cur),...Object.keys(prev).filter(c=>!cur[c])]){
+      const a=prev[code], b=cur[code];
+      if(!a||!b){ out.rows.push({code,name:(b||a).name,kind:b?'added':'removed',items:[]}); continue; }
+      const sa=bySt(a.cells), sb=bySt(b.cells), its=[];
+      for(const sid of Object.keys(PLAN_STG)){
+        const fa=(sa[sid]||[]).sort((x,y)=>x-y), fb=(sb[sid]||[]).sort((x,y)=>x-y);
+        if(fa.join()!==fb.join()){
+          const kind=!fa.length?'added':!fb.length?'removed':Math.max(...fb)>Math.max(...fa)?'later':Math.max(...fb)<Math.max(...fa)?'earlier':'changed';
+          its.push({stage:PLAN_STG[sid],from:fa,to:fb,kind});
+          fb.filter(n=>!fa.includes(n)).forEach(n=>mark(code,n,'added',sid));
+          fa.filter(n=>!fb.includes(n)).forEach(n=>mark(code,n,'removed',sid));
+        }
+        if(fb.length&&green(b.state,sid)&&!green(a.state,sid)) out.done.push({code,stage:PLAN_STG[sid]});
+      }
+      if(its.length) out.rows.push({code,name:b.name,kind:'changed',items:its});
+    }
+    out.later=out.rows.reduce((x,r)=>x+r.items.filter(i=>i.kind==='later').length,0);
+    return out;
+  }
+  function cmpPanel(){
+    const el=$('t6cmp'); if(!el) return;
+    const opts=(SNAPS||[]).slice().reverse().map(b=>`<option value="${esc(b.id)}"${b.id===T6C.sel?' selected':''}>${fmtDate(b.ts)}</option>`).join('');
+    const c=T6C.diff, b=(SNAPS||[]).find(x=>x.id===T6C.sel);
     const spl=a=>a.length?a.map(x=>'С'+x).join(','):'—';
     const KIND={later:'позже',earlier:'раньше',changed:'изменён',added:'добавлен',removed:'убран'};
-    const ch=c.rows.filter(r=>r.kind==='changed'), ar=c.rows.filter(r=>r.kind!=='changed');
-    const n=ch.reduce((a,r)=>a+r.items.length,0);
-    if(!n&&!ar.length&&!c.done.length) return `<p class="sub">План с прошлого среза (${fmtDate(c.since)}) не менялся.</p>`;
-    return `<details class="st-more" style="margin:0 0 10px"><summary><b>Что поменялось в плане с прошлого среза</b> <span class="sub">${fmtDate(c.since)} → сейчас: этапов сдвинуто ${n}${c.later?` (позже — ${c.later})`:''}${ar.length?`, сценариев добавлено/убрано ${ar.length}`:''}, стали зелёными ${c.done.length}</span></summary>
-      ${ch.length?`<table class="mini"><tr><th>Сценарий</th><th>Этап</th><th>Было</th><th>Стало</th><th></th></tr>${ch.map(r=>r.items.map((i,k)=>`<tr>${k?'<td></td>':`<td><b>${esc(r.code)}</b> ${esc((r.name||'').slice(0,40))}</td>`}<td>${esc(i.stage)}</td><td>${spl(i.from)}</td><td>${spl(i.to)}</td><td style="color:${i.kind==='later'?'var(--err)':i.kind==='earlier'?'var(--ok)':'inherit'}">${KIND[i.kind]}</td></tr>`).join('')).join('')}</table>`:''}
-      ${ar.length?`<p class="sub">${ar.map(r=>`${esc(r.code)} — ${r.kind==='added'?'новый сценарий в плане':'убран из плана'}`).join('; ')}</p>`:''}
-      ${c.done.length?`<p class="sub">Стали зелёными: ${c.done.map(x=>esc(x.code+' '+x.stage)).join(', ')}</p>`:''}</details>`;
+    let body='';
+    if(c){
+      const ch=c.rows.filter(r=>r.kind==='changed'), ar=c.rows.filter(r=>r.kind!=='changed'), n=ch.reduce((a,r)=>a+r.items.length,0);
+      body=!n&&!ar.length&&!c.done.length?`<p class="sub" style="margin:6px 0 0">С ${fmtDate(b.ts)} план не менялся, новых зелёных этапов нет.</p>`
+        :`<p class="sub" style="margin:6px 0">${fmtDate(b.ts)} → сейчас: этапов сдвинуто/изменено ${n}${c.later?` (позже — ${c.later})`:''}${ar.length?`, сценариев добавлено/убрано ${ar.length}`:''}, стали зелёными ${c.done.length}. На сетке: <span class="pill" style="outline:2px dashed var(--yel);outline-offset:-2px">добавлен</span> <span class="pill" style="opacity:.4;text-decoration:line-through">убран</span></p>
+        ${ch.length?`<details class="st-more" open><summary>Сдвиги этапов — ${n}</summary><table class="mini"><tr><th>Сценарий</th><th>Этап</th><th>Было</th><th>Стало</th><th></th></tr>${ch.map(r=>r.items.map((i,k)=>`<tr>${k?'<td></td>':`<td><b>${esc(r.code)}</b> ${esc((r.name||'').slice(0,40))}</td>`}<td>${esc(i.stage)}</td><td>${spl(i.from)}</td><td>${spl(i.to)}</td><td style="color:${i.kind==='later'?'var(--err)':i.kind==='earlier'?'var(--ok)':'inherit'}">${KIND[i.kind]}</td></tr>`).join('')).join('')}</table></details>`:''}
+        ${ar.length?`<p class="sub">${ar.map(r=>`${esc(r.code)} — ${r.kind==='added'?'новый сценарий в плане':'убран из плана'}`).join('; ')}</p>`:''}
+        ${c.done.length?`<details class="st-more"><summary>Стали зелёными — ${c.done.length}</summary><p class="sub">${c.done.map(x=>esc(x.code+' '+x.stage)).join(', ')}</p></details>`:''}`;
+    }
+    el.innerHTML=`<div class="t6-ctl" style="margin:0"><span class="t6-lbl">Сравнить со срезом:</span><select id="t6cmpSel"><option value="">— не сравнивать —</option>${opts}</select>${SNAPS?'':'<span class="sub">загружаю срезы…</span>'}</div>${body}`;
+    $('t6cmpSel').onchange=e=>{ T6C.sel=e.target.value||null; const x=(SNAPS||[]).find(y=>y.id===T6C.sel); T6C.diff=x?planDiff(x.mp):null; cmpPanel(); renderT6(); };
   }
   function renderT6(){
     const roleOk=sid=>T6.role==='all'||sid===T6.role||(T6.role==='BE'&&(sid==='BE1'||sid==='BE2'));
@@ -396,7 +444,9 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
       if(gname!==lastG){ lastG=gname; h+=`<tr><td class="grp" colspan="${sps.length+1}">${esc(gname)}</td></tr>`; }
       h+=`<tr${r.completed?' class="done-row"':''}><td class="lab" title="${esc(r.code+' · '+r.name+' · владелец: '+(r.owner||'—')+(r.team&&r.team!==r.owner?' · исполнители по плану: '+r.team:'')+(r.stories?` · стори закрыто ${r.storiesClosed}/${r.stories}`:''))}"><b style="color:var(--yel)">${esc(r.code)}</b> ${esc(r.name)}${r.completed?' <span class="tag" style="color:var(--ok)" title="все стори сценария закрыты в Jira">завершён</span>':''}</td>`+sps.map(n=>{
         const s=spBy[n]||{}, sts=((r.cells||{})[n]||[]).filter(roleOk);
-        return `<td${s.state==='active'?' class="now"':''} style="text-align:center">${sts.map(sid=>pill(r,sid,n)).join('')}</td>`;}).join('')+'</tr>';
+        const dc=T6C.diff&&(T6C.diff.cell[r.code]||{})[n]||{added:[],removed:[]};
+        const ghost=dc.removed.filter(roleOk).map(sid=>`<span class="pill" style="opacity:.4;text-decoration:line-through" title="было в плане на срезе, убрано">${STG[sid][0]}</span>`).join('');
+        return `<td${s.state==='active'?' class="now"':''} style="text-align:center">${sts.map(sid=>dc.added.includes(sid)?pill(r,sid,n).replace('<span class="pill" style="','<span class="pill" title="добавлено после среза" style="outline:2px dashed var(--yel);outline-offset:-2px;'):pill(r,sid,n)).join('')}${ghost}</td>`;}).join('')+'</tr>';
       return h;}).join('');
     $('t6grid').innerHTML=`<table style="min-width:${300+sps.length*96}px"><colgroup><col style="width:300px">${sps.map(()=>'<col>').join('')}</colgroup>
       <tr><th class="lab">Сценарий</th>${sps.map(n=>{const s=spBy[n];return `<th title="${s?fmtDate(s.start)+' – '+fmtDate(s.end):''}">Спринт ${n}<div style="font-weight:400;font-size:9.5px">${s?(n===0?'до '+fmtDate(s.end):fmtDate(s.start)+'–'+fmtDate(s.end)):''}</div></th>`;}).join('')}</tr>
@@ -412,12 +462,15 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
       <span class="t6-lbl" style="margin-left:14px">Порядок:</span><button data-sort="registry">По контурам реестра</button><button data-sort="launch" title="Завершены → план прошёл, работа не закрыта → идут сейчас → впереди; внутри — по первому спринту плана">По времени запуска</button>
     </div>
     <div class="lgd"><span><span class="sw" style="${softPill(STATUS_GROUPS.done.color)}"></span>готово</span><span><span class="sw" style="${softPill(STATUS_GROUPS.wip.color)}"></span>в работе</span><span><span class="sw" style="${softPill(STATUS_GROUPS.backlog.color)}"></span>в планах</span><span><span class="sw" style="background:rgba(0,212,255,.3)"></span>текущий спринт</span></div>
-    ${planChanges(mp.changes)}
+    <div class="card" id="t6cmp" style="margin:0 0 10px;padding:10px 14px"></div>
     <div class="gt" id="t6grid"></div>
     <div class="danger">Срок 1-й задачи «запись↔этикетка» (PFC-1271) по контуру «Обращения и клиенты» (OB3/OB4) — снятие на сети в PROD 17.11.2026, затем доп. тест SDM; до этого для ИП/ООО сценарии записи/расшифровки пока заблокированы, доступны только самозанятым. ${ok?'':`По критическому пути к дедлайну <b>10.12.26 не успеваем</b>, прогноз завершения — <b>${fmtDate(crit)}</b>.`}</div>
     <div class="warn">Выход в продуктив (E2E-тестирование, пилот, коммерческий запуск) и контрольные точки — на общей дорожной карте (вкладка 05).</div>`;
   $('t6ctl').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; if(b.dataset.role) T6.role=b.dataset.role; if(b.dataset.sort) T6.sort=b.dataset.sort; renderT6(); });
   renderT6();
+  cmpPanel();
+  // по умолчанию — сравнение с последним срезом до сегодняшнего прогона
+  loadSnaps().then(sn=>{ if(sn.length&&T6C.sel==null){ T6C.sel=sn[sn.length-1].id; T6C.diff=planDiff(sn[sn.length-1].mp); } cmpPanel(); renderT6(); });
 }).catch(e=>{ $('t1body').innerHTML='<div class="empty">Не удалось загрузить data.json: '+esc(e.message)+'</div>'; });
 
 // ── Дорожная карта трека ВП (data.vpTrack.roadmap) — SVG во всплывающем окне по клику на «Дорожная карта трека».

@@ -1266,50 +1266,11 @@ def calc_manual_plan(mp, items, resources, reg=None, cur_sprint=0):
             "completedWhy": completed_why}
 
 
-PLAN_STAGE = {"AN": "Аналитика", "DS": "Дизайн", "BE": "Бэк", "BE1": "Бэк 1", "BE2": "Бэк 2", "FE": "Фронт", "QA": "QA"}
-
-
 def plan_snapshot(manual_plan):
-    """Слепок «Плана ручного» для baselines: сетка этапов по спринтам + статус этапа."""
+    """Слепок «Плана ручного» для baselines: сетка этапов по спринтам + статус этапа.
+    Сравнение слепков считает страница «Статус для руководства» (вкладка 06)."""
     return {r["code"]: {"cells": r.get("cells") or {}, "state": r.get("state") or {}, "name": r.get("name")}
             for r in (manual_plan or {}).get("rows", [])}
-
-
-def calc_plan_changes(prev, prev_date, manual_plan, cur_sprint):
-    """Что поменялось в «Плане ручном» с прошлого среза (синхрон с аналитиками 12.11.2026:
-    к дорожной карте по сценариям — то же сравнение слепков, что на Ганте): этапы,
-    переехавшие по спринтам, новые/убранные этапы и сценарии, этапы, ставшие зелёными."""
-    if not prev:
-        return None
-    cur = plan_snapshot(manual_plan)
-    green = lambda st, sid: (st or {}).get(sid) in ("done", "passed")
-
-    def by_stage(cells):
-        m = {}
-        for n, sids in (cells or {}).items():
-            for sid in sids:
-                m.setdefault(sid, set()).add(int(n))
-        return m
-    rows, done = [], []
-    for code in list(cur) + [c for c in prev if c not in cur]:
-        a, b = prev.get(code), cur.get(code)
-        name = (b or a).get("name")
-        if not a or not b:
-            rows.append({"code": code, "name": name, "kind": "added" if b else "removed", "items": []})
-            continue
-        sa, sb, its = by_stage(a["cells"]), by_stage(b["cells"]), []
-        for sid in [x for x in PLAN_STAGE if x in sa or x in sb]:
-            fa, fb = sorted(sa.get(sid, ())), sorted(sb.get(sid, ()))
-            if fa != fb:
-                kind = "added" if not fa else "removed" if not fb else \
-                    "later" if max(fb) > max(fa) else "earlier" if max(fb) < max(fa) else "changed"
-                its.append({"stage": PLAN_STAGE[sid], "from": fa, "to": fb, "kind": kind})
-            if fb and green(b["state"], sid) and not green(a["state"], sid) and min(fb) <= cur_sprint:
-                done.append({"code": code, "stage": PLAN_STAGE[sid]})
-        if its:
-            rows.append({"code": code, "name": name, "kind": "changed", "items": its})
-    return {"since": prev_date, "rows": rows, "done": done,
-            "later": sum(1 for r in rows for i in r["items"] if i["kind"] == "later")}
 
 
 def self_checks(items, gv2, mvp_scope, resource_plan, epic_progress):
@@ -1637,10 +1598,6 @@ def run_gantt(args):
     res_name = {r["id"]: r.get("name") or r["id"] for r in resources}
     prev_bl = next((b for b in reversed(bl) if b.get("items")), None)
     new["changes"] = calc_changes(prev_bl, items, res_name, crit_end_iso, today, hours_total, hours_spent)
-    if manual_plan:
-        prev_mp = next((b for b in reversed(bl) if b.get("manualPlan")), None)
-        manual_plan["changes"] = calc_plan_changes((prev_mp or {}).get("manualPlan"), (prev_mp or {}).get("ts"),
-                                                   manual_plan, sprint_index(today))
     bl.append({
         "id": bl_id,
         "ts": now_iso,

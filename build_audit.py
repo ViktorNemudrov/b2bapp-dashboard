@@ -58,7 +58,6 @@ GLOSSARY = [
     ("T6", "у задачи нет оценки"),
     ("T7", f"оценка больше {MAX_TASK_H} ч (2 рабочих дня) — разбить на задачи меньше; только не взятые в работу "
            "(Бэклог, Ready for DEV, Запланирована, Удержание)"),
-    ("T8", "«Осталось» в Jira не равно «оценка − списано» (Jira не пересчитывает остаток при смене оценки) — поправить"),
     ("T13", "задача лежит в вакантной стори/эпике, но по ней работают (списано время или статус не «Бэклог») — "
             "привязать к рабочей стори и эпику"),
     ("T11", "задача начата, но без даты начала"),
@@ -286,10 +285,6 @@ def main():
             checks.append("T6"); acts.append("проставить оценку")
         if t.get("est", 0) > MAX_TASK_H * 3600 and st.lower() in SPLIT_STATUSES:
             checks.append("T7"); acts.append(f"оценка {round(t['est'] / 3600)} ч > {MAX_TASK_H} ч — разбить на задачи до 2 дней")
-        rem = t.get("rem")
-        want_rem = max(0, (t.get("est") or 0) - (t.get("spent") or 0))
-        if rem is not None and st.lower() not in CLOSED and abs(rem - want_rem) >= 60:
-            checks.append("T8"); acts.append(f"«Осталось» {round(rem / 3600, 1)} ч ≠ оценка − списано = {round(want_rem / 3600, 1)} ч")
         if st.lower() != "бэклог" and not t.get("start"):
             checks.append("T11"); acts.append("проставить «Дату начала»")
         if st.lower() == "завершена" and not t.get("resolved"):

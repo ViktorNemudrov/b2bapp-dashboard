@@ -213,6 +213,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
           <label class="gantt2-line-toggle" title="Отсечки спринтов (2 недели, Спринт 4 = 20.10.26–03.11.26)"><input type="checkbox" id="lineSprints" checked> Спринты</label>
           <select id="colorMode" title="Цвет баров: по статусу задачи (единая палитра сайта) или по роли исполнителя"><option value="status">Цвет: по статусу</option><option value="role">Цвет: по роли</option></select>
           <label class="gantt2-line-toggle" title="Даты выхода членов команды в проект — линия с фамилией; вышедшие раньше начала шкалы перечислены у левого края"><input type="checkbox" id="lineHires"> Выход в проект</label>
+          <label class="gantt2-line-toggle" title="Штриховка отпусков исполнителей на их задачах (график отпусков)"><input type="checkbox" id="lineVac" checked> Отпуска</label>
         </div>
       </div>
       <div class="g2-tb-row">
@@ -1063,7 +1064,8 @@ function renderGanttV2(){
   const RESOURCE_NAME={}; (gv.resources||[]).forEach(r=>{RESOURCE_NAME[r.id]=(r.name||'').split(' ')[0];});
   // Отпуска (data.vacations, lke.beeline.ru) — по фамилии исполнителя
   const VAC_BY_RES={}; const vacPeople=((data.vacations||{}).people)||[];
-  (gv.resources||[]).forEach(r=>{ const sn=(r.name||'').split(' ')[0]; const p=vacPeople.find(v=>v.name.split(' ')[0]===sn); if(p) VAC_BY_RES[r.id]=p.periods; });
+  // чекбокс «Отпуска» (Виктор 12.11.2026) — выключен: штриховку не рисуем
+  if(GS.showVac!==false) (gv.resources||[]).forEach(r=>{ const sn=(r.name||'').split(' ')[0]; const p=vacPeople.find(v=>v.name.split(' ')[0]===sn); if(p) VAC_BY_RES[r.id]=p.periods; });
 
   const items=resourceFilteredItems;
   const tree=GS.view==='scenarios' ? buildScenarioTree(items, anCodes?(gv.scenarios||[]).filter(s=>anCodes.has(s.code)):gv.scenarios) : buildTree(items);
@@ -1314,6 +1316,7 @@ $('viewMode').onchange=e=>{
   renderGanttV2();
 };
 $('lineSprints').onchange=e=>{ GS.showSprints=e.target.checked; renderGanttV2(); };
+$('lineVac').onchange=e=>{ GS.showVac=e.target.checked; renderGanttV2(); };
 $('colorMode').value=GS.colorMode;
 $('colorMode').onchange=e=>{ GS.colorMode=e.target.value; try{ localStorage.setItem('g2-color', GS.colorMode); }catch(_){} renderGanttV2(); };
 $('expandSelect').onchange=e=>{
