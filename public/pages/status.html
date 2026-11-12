@@ -258,6 +258,10 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
       ${chgList('Не успели к сроку по прошлому плану (перенесены вперёд)',chg.missed,tLine)}
       ${chgList('Перерасход часов вырос',chg.overrun,x=>`<li>${esc(x.key)} ${esc(x.summary)} <span class="sub">· списано ${x.spentH} ч при оценке ${x.estimateH} ч (+${x.deltaH} ч)</span></li>`)}
     </div>`;})();
+  // Итоги всех прошлых спринтов (синхрон с аналитиками 12.11.2026) — со страницы «Реализация»;
+  // последний закрытый — карточкой выше, здесь остальные, от новых к старым.
+  const past=(goals.sprints||[]).filter(s=>s.n>0&&s.n<sp.lastClosedSprint&&s.goals.length).sort((a,b)=>b.n-a.n);
+  const pastSprints=!past.length?'':`<div class="card" style="margin-top:14px"><h3><span class="dot g"></span>Итоги прошлых спринтов <span class="sub" style="font-weight:400">— ${past.length} спринт., со страницы «Реализация»</span></h3>${past.map(s=>`<details class="st-more"><summary><b>${esc(s.title)}</b> <span class="sub">— ${cnt(s)}</span></summary>${goalList(s)}</details>`).join('')}</div>`;
   window.__vpRoadmap=vp.roadmap||null;
   $('t1body').innerHTML=`<h2>Обзор по проекту</h2>
     <p class="lead">Общий статус, итоги закрытого спринта и цели текущего, открытые вопросы руководству. Цифры — из Jira на ${fmtDate(d.updated)}; цели спринтов — со страницы «Реализация» в Confluence${gs.version?` (версия ${gs.version} от ${fmtDate(gs.when)})`:''}.</p>
@@ -275,6 +279,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
         ${goalList(cg)}
         ${statTbl(sp.currentSprint,false)}</div>
     </div>
+    ${pastSprints}
     <div class="card" style="margin-top:14px"><h3><span class="dot r"></span>Дополнительно${vp.title?` <span class="sub" style="font-weight:400">— ${esc(vp.title)}</span>`:''}${vp.roadmap?'<a class="vp-rm-open" style="margin-left:auto;font-size:12.5px;font-weight:600" role="button" tabindex="0">🗺 Дорожная карта трека</a>':''}</h3>
       ${vpItems.length?`<div class="g2c">${vpItems.map(vpCard).join('')}</div>
       <p class="sub" style="margin:10px 0 0">Статус на ${esc(vp.updated||'—')}${vp.detailUrl?` · вся подробная информация — <a href="${esc(vp.detailUrl)}" target="_blank" rel="noopener">B2BAPP-1262. Виртуальный помощник от Б2С (Confluence) →</a>`:''}</p>`:'<div class="empty">Нет данных vpTrack в data.json</div>'}
@@ -354,10 +359,27 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
     const st=(r.state||{})[sid], g=isGreen(r,sid,n);
     const c=g?STATUS_GROUPS.done.color:st==='active'?STATUS_GROUPS.wip.color:STATUS_GROUPS.backlog.color;
     const j=(r.jira||{})[sid]||((sid==='BE1'||sid==='BE2')?(r.jira||{}).BE:null);
-    const why=g?(r.completed?'сценарий завершён полностью':st==='passed'?'пройден — начался следующий этап':'готово — закрыт в Jira'):st==='active'?'в работе':(j?'в планах, не начат':'в планах, задач этапа в Jira нет');
-    const pop=`<div style="font-weight:700">${esc(r.code)} · ${esc(STG[sid][2])} · Спринт ${n}</div><div style="color:var(--mute)">${esc(r.name)}</div><div style="margin-top:4px">Этап: <b>${why}</b>${j?` · задач в Jira ${j.done}/${j.tasks}`:''}</div>`+stageTasksHtml(j&&j.list);
-    return `<span class="pill" style="${softPill(c)};cursor:pointer" data-pop-html="${esc(pop)}">${STG[sid][0]}</span>`;
+    const why=g?(r.completed?'сценарий завершён — все стори закрыты':st==='passed'?'пройден — начался следующий этап':'готово — закрыт в Jira'):st==='active'?'в работе':(j?'в планах, не начат':'в планах, задач этапа в Jira нет');
+    // Спринт плана прошёл, а незакрытые задачи этапа стоят в спринте позже — показываем куда
+    // (синхрон 12.11.2026: «серое в прошлом» без объяснения вызывает вопросы у руководства).
+    const moved=!g&&n<sp.currentSprint&&j&&(j.openSprints||[]).filter(x=>x>n);
+    const mv=moved&&moved.length?Math.min(...moved):null;
+    const pop=`<div style="font-weight:700">${esc(r.code)} · ${esc(STG[sid][2])} · Спринт ${n}</div><div style="color:var(--mute)">${esc(r.name)}</div><div style="margin-top:4px">Этап: <b>${why}</b>${j?` · задач в Jira ${j.done}/${j.tasks}`:''}</div>${mv!=null?`<div style="margin-top:4px">Незакрытые задачи этапа перенесены в <b>Спринт ${(moved).filter((x,i,a)=>a.indexOf(x)===i).join(', ')}</b> — план в Confluence надо сдвинуть</div>`:''}`+stageTasksHtml(j&&j.list);
+    return `<span class="pill" style="${softPill(c)};cursor:pointer" data-pop-html="${esc(pop)}">${STG[sid][0]}${mv!=null?`<span style="font-weight:400;opacity:.85"> →${mv}</span>`:''}</span>`;
   };
+  // Что поменялось в «Плане ручном» с прошлого среза — считает билдер (calc_plan_changes).
+  function planChanges(c){
+    if(!c) return '';
+    const spl=a=>a.length?a.map(x=>'С'+x).join(','):'—';
+    const KIND={later:'позже',earlier:'раньше',changed:'изменён',added:'добавлен',removed:'убран'};
+    const ch=c.rows.filter(r=>r.kind==='changed'), ar=c.rows.filter(r=>r.kind!=='changed');
+    const n=ch.reduce((a,r)=>a+r.items.length,0);
+    if(!n&&!ar.length&&!c.done.length) return `<p class="sub">План с прошлого среза (${fmtDate(c.since)}) не менялся.</p>`;
+    return `<details class="st-more" style="margin:0 0 10px"><summary><b>Что поменялось в плане с прошлого среза</b> <span class="sub">${fmtDate(c.since)} → сейчас: этапов сдвинуто ${n}${c.later?` (позже — ${c.later})`:''}${ar.length?`, сценариев добавлено/убрано ${ar.length}`:''}, стали зелёными ${c.done.length}</span></summary>
+      ${ch.length?`<table class="mini"><tr><th>Сценарий</th><th>Этап</th><th>Было</th><th>Стало</th><th></th></tr>${ch.map(r=>r.items.map((i,k)=>`<tr>${k?'<td></td>':`<td><b>${esc(r.code)}</b> ${esc((r.name||'').slice(0,40))}</td>`}<td>${esc(i.stage)}</td><td>${spl(i.from)}</td><td>${spl(i.to)}</td><td style="color:${i.kind==='later'?'var(--err)':i.kind==='earlier'?'var(--ok)':'inherit'}">${KIND[i.kind]}</td></tr>`).join('')).join('')}</table>`:''}
+      ${ar.length?`<p class="sub">${ar.map(r=>`${esc(r.code)} — ${r.kind==='added'?'новый сценарий в плане':'убран из плана'}`).join('; ')}</p>`:''}
+      ${c.done.length?`<p class="sub">Стали зелёными: ${c.done.map(x=>esc(x.code+' '+x.stage)).join(', ')}</p>`:''}</details>`;
+  }
   function renderT6(){
     const roleOk=sid=>T6.role==='all'||sid===T6.role||(T6.role==='BE'&&(sid==='BE1'||sid==='BE2'));
     let rows=mp.rows.slice(), groupOf;
@@ -372,7 +394,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
       let h='';
       const gname=groupOf(r);
       if(gname!==lastG){ lastG=gname; h+=`<tr><td class="grp" colspan="${sps.length+1}">${esc(gname)}</td></tr>`; }
-      h+=`<tr${r.completed?' class="done-row"':''}><td class="lab" title="${esc(r.code+' · '+r.name+' · владелец: '+r.owner)}"><b style="color:var(--yel)">${esc(r.code)}</b> ${esc(r.name)}${r.completed?' <span class="tag" style="color:var(--ok)">завершён</span>':''}</td>`+sps.map(n=>{
+      h+=`<tr${r.completed?' class="done-row"':''}><td class="lab" title="${esc(r.code+' · '+r.name+' · владелец: '+(r.owner||'—')+(r.team&&r.team!==r.owner?' · исполнители по плану: '+r.team:'')+(r.stories?` · стори закрыто ${r.storiesClosed}/${r.stories}`:''))}"><b style="color:var(--yel)">${esc(r.code)}</b> ${esc(r.name)}${r.completed?' <span class="tag" style="color:var(--ok)" title="все стори сценария закрыты в Jira">завершён</span>':''}</td>`+sps.map(n=>{
         const s=spBy[n]||{}, sts=((r.cells||{})[n]||[]).filter(roleOk);
         return `<td${s.state==='active'?' class="now"':''} style="text-align:center">${sts.map(sid=>pill(r,sid,n)).join('')}</td>`;}).join('')+'</tr>';
       return h;}).join('');
@@ -384,12 +406,13 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
     try{ localStorage.setItem('st-t6', JSON.stringify(T6)); }catch(_){}
   }
   $('t6body').innerHTML=`<h2>Дорожная карта — по сценариям MVP</h2>
-    <p class="lead">План команды по спринтам в разрезе сценариев и ролей — «План ручной» аналитиков (<a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2666206915" target="_blank" rel="noopener">Confluence</a>, версия ${esc(src.version||'—')} от ${fmtDate(src.when)}). Цвет — статус этапа: <b>зелёный — готово</b> (закрыт в Jira: Завершена / Waiting for release, или уже начался следующий этап), <b>оранжевый — в работе</b>, <b>серый — в планах</b>. Наведите на этап — откроется список задач Jira, по которым определён статус. Светло-зелёные строки — сценарии, по которым работы завершены полностью. По датам — <a href="gantt.html?view=stages">«Этапы по сценариям (упрощённо)» на диаграмме Ганта</a>.</p>
+    <p class="lead">План команды по спринтам в разрезе сценариев и ролей — «План ручной» аналитиков (<a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2666206915" target="_blank" rel="noopener">Confluence</a>, версия ${esc(src.version||'—')} от ${fmtDate(src.when)}). Цвет — статус этапа: <b>зелёный — готово</b> (закрыт в Jira: Завершена / Waiting for release, или уже начался следующий этап), <b>оранжевый — в работе</b>, <b>серый — в планах</b>. Наведите на этап — откроется список задач Jira, по которым определён статус. Светло-зелёные строки — завершённые сценарии: все их стори в Jira закрыты (Waiting for release / Завершена) — аналитик закрывает стори, когда трек завершён. Пометка «→6» на этапе прошлого спринта — его незакрытые задачи стоят в Спринте 6. Наведите на название сценария — владелец (реестр MVP v.2). По датам — <a href="gantt.html?view=stages">«Этапы по сценариям (упрощённо)» на диаграмме Ганта</a>.</p>
     <div class="t6-ctl" id="t6ctl">
       <span class="t6-lbl">Роль:</span>${Object.entries(ROLE_F).map(([k,v])=>`<button data-role="${k}">${v}</button>`).join('')}
       <span class="t6-lbl" style="margin-left:14px">Порядок:</span><button data-sort="registry">По контурам реестра</button><button data-sort="launch" title="Завершены → план прошёл, работа не закрыта → идут сейчас → впереди; внутри — по первому спринту плана">По времени запуска</button>
     </div>
     <div class="lgd"><span><span class="sw" style="${softPill(STATUS_GROUPS.done.color)}"></span>готово</span><span><span class="sw" style="${softPill(STATUS_GROUPS.wip.color)}"></span>в работе</span><span><span class="sw" style="${softPill(STATUS_GROUPS.backlog.color)}"></span>в планах</span><span><span class="sw" style="background:rgba(0,212,255,.3)"></span>текущий спринт</span></div>
+    ${planChanges(mp.changes)}
     <div class="gt" id="t6grid"></div>
     <div class="danger">Срок 1-й задачи «запись↔этикетка» (PFC-1271) по контуру «Обращения и клиенты» (OB3/OB4) — снятие на сети в PROD 17.11.2026, затем доп. тест SDM; до этого для ИП/ООО сценарии записи/расшифровки пока заблокированы, доступны только самозанятым. ${ok?'':`По критическому пути к дедлайну <b>10.12.26 не успеваем</b>, прогноз завершения — <b>${fmtDate(crit)}</b>.`}</div>
     <div class="warn">Выход в продуктив (E2E-тестирование, пилот, коммерческий запуск) и контрольные точки — на общей дорожной карте (вкладка 05).</div>`;

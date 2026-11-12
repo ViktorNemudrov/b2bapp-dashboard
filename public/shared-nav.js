@@ -208,7 +208,7 @@ window.regStatus = regStatus;
 function stageTasksHtml(list){
   if(!list || !list.length) return '<div style="color:var(--mute);margin-top:6px">Задач этапа в Jira нет</div>';
   return '<div style="margin-top:6px;display:flex;flex-direction:column;gap:3px">'+list.map(x=>
-    `<div style="display:flex;gap:8px;align-items:baseline;white-space:nowrap"><a href="${JIRA_URL}${encodeURIComponent(x.k)}" target="_blank" rel="noopener" style="font-weight:700;min-width:96px">${x.k}</a>${statusBadge(x.s)}<span style="color:var(--mute);overflow:hidden;text-overflow:ellipsis;max-width:300px">${String(x.t||'').replace(/[<>&]/g,'')}</span></div>`).join('')+'</div>';
+    `<div style="display:flex;gap:8px;align-items:baseline;white-space:nowrap"><a href="${JIRA_URL}${encodeURIComponent(x.k)}" target="_blank" rel="noopener" style="font-weight:700;min-width:96px">${x.k}</a>${statusBadge(x.s)}${x.sp!=null?`<span style="font-size:11px;color:var(--mute)">Спринт ${x.sp}</span>`:''}<span style="color:var(--mute);overflow:hidden;text-overflow:ellipsis;max-width:300px">${String(x.t||'').replace(/[<>&]/g,'')}</span></div>`).join('')+'</div>';
 }
 window.stageTasksHtml = stageTasksHtml;
 // Облачко со списком задач (Виктор 11.11.2026): открывается КЛИКОМ по элементу с

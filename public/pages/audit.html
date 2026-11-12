@@ -18,6 +18,14 @@
 .au-keys a{white-space:nowrap}
 .au-gl td:first-child{font-weight:700;white-space:nowrap}
 details.au-det summary{cursor:pointer;font-weight:600;font-size:13px;margin:6px 0}
+.au-toc{position:sticky;top:52px;z-index:5;background:var(--dark);border-bottom:1px solid var(--line);padding:8px 0;margin:0 0 14px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;font-size:12.5px}
+.au-toc b{margin-right:2px}
+.au-toc .au-t{display:inline-flex;gap:6px;align-items:baseline}
+.au-toc .au-t a.m{font-weight:700}
+.au-toc .au-t a.s{font-size:11.5px;color:var(--mute)}
+.au-sec,.au-sec h3{scroll-margin-top:100px}
+.main{overflow-x:clip}  /* hidden делает .main контейнером прокрутки — sticky-оглавление не липнет */
+.au-up{float:right;font-size:12px;font-weight:400}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -46,6 +54,12 @@ function issuesBlock(o){
     rest.map(i=>`<tr><td>${jk(i.key)}${i.outside_mvp?' <span class="au-sp" title="эпик вне 10 согласованных MVP-эпиков">вне MVP</span>':''}</td><td>${esc(i.scenario)}</td><td><span class="badge badge-blue">${esc(i.check)}</span></td><td>${esc(i.action)}</td></tr>`).join('')}</tbody></table>`;
   return h;
 }
+function scBlock(o){
+  const c=o.scenario_checks||[];
+  if(!c.length) return '';
+  return `<h3 id="${o.id}-sc">Сценарии: отметка о завершении</h3><table class="tbl"><thead><tr><th>Сценарий</th><th>Проверка</th><th>Что сделать</th><th>Ключи</th></tr></thead><tbody>${
+    c.map(x=>`<tr><td><b>${esc(x.scenario)}</b></td><td><span class="badge badge-blue">${esc(x.check)}</span></td><td>${esc(x.action)}</td><td class="au-keys">${x.keys.slice(0,12).map(jk).join(', ')}${x.keys.length>12?` и ещё ${x.keys.length-12}`:''}</td></tr>`).join('')}</tbody></table>`;
+}
 function p4Block(o){
   if(!o.p4.length) return '<p class="au-sub">Отстающих этапов нет.</p>';
   return `<table class="tbl"><thead><tr><th>Сценарий</th><th>Этап</th><th>План</th><th>Что в Jira (незакрытые)</th><th>Что сделать</th></tr></thead><tbody>${
@@ -60,20 +74,26 @@ fetch('../data/audit.json?t='+Date.now()).then(r=>{ if(!r.ok) throw new Error('n
   if(!a.owners||!a.owners.length){ document.getElementById('root').innerHTML='<div class="empty">Данные аудита ещё не сгенерированы.</div>'; return; }
   const sc=a.scope||{}, mp=a.manual_plan||{};
   const chips=a.owners.map(o=>`<a class="au-chip" href="#${o.id}" style="color:inherit;text-decoration:none"><b>${o.issues.length}</b>правок · <b>${o.p4.length}</b>этапов P4${o.unlabeled_stories.length?` · <b>${o.unlabeled_stories.length}</b>стори без метки`:''}<div class="au-sp">${esc(o.name)}${o.fallback?' · на разбор':''}</div></a>`).join('');
+  // Оглавление (Виктор 12.11.2026) — закреплено сверху: к человеку и сразу к его разделу.
+  const sub=(o,id,t,n)=>n?`<a class="s" href="#${o.id}-${id}">${t} ${n}</a>`:'';
+  const toc=`<nav class="au-toc" id="toc"><b>Оглавление:</b>${a.owners.map(o=>`<span class="au-t"><a class="m" href="#${o.id}">${esc(o.short)}${o.fallback?' (на разбор)':''}</a>${sub(o,'fmt','оформление',o.issues.length)}${sub(o,'sc','сценарии',(o.scenario_checks||[]).length)}${sub(o,'p4','P4',o.p4.length)}${sub(o,'unl','без метки',o.unlabeled_stories.length)}</span>`).join('')}<span class="au-t"><a class="m" href="#gloss">Глоссарий</a></span></nav>`;
   const own=a.owners.filter(o=>o.scenarios&&o.scenarios.length).map(o=>`${esc(o.name)} — ${o.scenarios.map(esc).join(', ')}`).join('; ');
   document.getElementById('root').innerHTML=`
-    <p class="au-lead">Что поправить в Jira, чтобы гант и этапы сценариев показывали реальную картину — по ответственным за сценарий (колонка «Владелец» реестра MVP v.2; задача относится к ответственному за сценарий своей стори). Охват: ${sc.stories} стори, ${sc.tasks} задач, ${sc.epics} эпиков (без вакантных), данные Jira на ${fmtDate(a.jira_collected_at||a.generated_at)}, текущий — Спринт ${a.current_sprint}. «Отстаёт от плана» (P4) — те же этапы, что заштрихованы на виде <a href="gantt.html?view=stages">«Этапы по сценариям»</a> (${a.p4_total}): спринт этапа по «Плану ручному»${mp.version?` (v${esc(mp.version)})`:''} прошёл, а в Jira он не закрыт — его задачи нужно закрыть либо запланировать в будущий спринт.</p>
-    <div class="au-chips">${chips}</div>
-    ${a.owners.map(o=>`<div class="au-sec" id="${o.id}"><h2>${o.fallback?'На разбор':'Исправить'} — ${esc(o.short)}</h2>
+    <p class="au-lead">Что поправить в Jira, чтобы гант и этапы сценариев показывали реальную картину — по ответственным за сценарий (колонка «Владелец» реестра MVP v.2; задача относится к ответственному за сценарий своей стори, а если сценарий за РП или его нет — к аналитику-исполнителю задачи). <b>${esc(a.deadline_note||'')}</b>. Охват — только MVP: ${sc.stories} стори, ${sc.tasks} задач${sc.excluded_tasks!=null?` (вне MVP не проверяем: пропущено ${sc.excluded_stories} стори и ${sc.excluded_tasks} задач — метки «вне_MVP», SH и эпики вне 10 MVP-эпиков)`:''}, данные Jira на ${fmtDate(a.jira_collected_at||a.generated_at)}, текущий — Спринт ${a.current_sprint}. «Отстаёт от плана» (P4) — те же этапы, что заштрихованы на виде <a href="gantt.html?view=stages">«Этапы по сценариям»</a> (${a.p4_total}): спринт этапа по «Плану ручному»${mp.version?` (v${esc(mp.version)})`:''} прошёл, а в Jira он не закрыт — его задачи нужно закрыть либо запланировать в будущий спринт.</p>
+    ${toc}<div class="au-chips">${chips}</div>
+    ${a.owners.map(o=>`<div class="au-sec" id="${o.id}"><h2>${o.fallback?'На разбор':'Исправить'} — ${esc(o.short)}<a class="au-up" href="#toc">↑ оглавление</a></h2>
       <p class="au-sub">${esc(o.name)}: ${o.issues.length} правок оформления, ${o.p4.length} отстающих этапов${o.unlabeled_stories.length?`, ${o.unlabeled_stories.length} стори без метки сценария`:''}.${o.scenarios&&o.scenarios.length?` Сценарии: ${o.scenarios.map(esc).join(', ')}.`:''}${o.fallback?' Сюда же — задачи без сценария и стори вне реестра.':''}</p>
-      <h3>Оформление</h3>${issuesBlock(o)}
-      <h3>Отстаёт от плана (P4)</h3>${p4Block(o)}
-      ${o.unlabeled_stories.length?`<h3>Стори без метки сценария — определить сценарий и проставить метку</h3><p class="au-keys">${o.unlabeled_stories.map(jk).join(', ')}</p>`:''}
+      <h3 id="${o.id}-fmt">Оформление</h3>${issuesBlock(o)}
+      ${scBlock(o)}
+      <h3 id="${o.id}-p4">Отстаёт от плана (P4)</h3>${p4Block(o)}
+      ${o.unlabeled_stories.length?`<h3 id="${o.id}-unl">Стори без метки сценария — определить сценарий и проставить метку</h3><p class="au-keys">${o.unlabeled_stories.map(jk).join(', ')}</p>`:''}
     </div>`).join('')}
-    <details class="au-det au-sec"><summary>Глоссарий проверок и как это посчитано</summary>
+    <details class="au-det au-sec" id="gloss"><summary>Глоссарий проверок и как это посчитано</summary>
       <table class="tbl au-gl"><thead><tr><th>Код</th><th>Что значит</th></tr></thead><tbody>${(a.glossary||[]).map(g=>`<tr><td>${esc(g.code)}</td><td>${esc(g.text)}</td></tr>`).join('')}</tbody></table>
-      <p class="au-sub" style="margin-top:10px">Ответственный — колонка «Владелец» реестра MVP v.2 (${esc(a.registry||'')}): ${own}. Задачи без сценария и стори вне реестра — на разбор РП. T7 — задачи с оценкой больше ${a.max_task_h||16} ч в статусах «Бэклог», «Ready for DEV», «Запланирована», «Удержание», «Анализ», «Разработка», «В работе»; в тестировании и закрытые не проверяем. Не флагуем: «Основание» (только при создании через ассистента), перерасход, списание при «Бэклоге», «Waiting for release» в текущем спринте, задачи эпика B2BAPP-1 без префикса. Бек 1 и Бек 2 в плане — одна проверка по всем задачам [BE]; «вся разработка в тесте» = этап пройден. P4 считается по задачам MVP-эпиков с оценкой (как на ганте).</p>
+      <p class="au-sub" style="margin-top:10px">Ответственный — колонка «Владелец» реестра MVP v.2 (${esc(a.registry||'')}): ${own}. Если сценарий за РП или без сценария — находка уходит аналитику-исполнителю задачи, иначе аналитику, который последним менял её привязку, иначе исполнителю стори; кого не нашли — на разбор РП. Стори без метки сценария — вопрос исполнителю стори. Вне MVP (метка «вне_MVP» — дерево эпика B2BAPP-23, сценарий SH — договоры/счета/платежи, эпики вне 10 MVP-эпиков) не проверяем. T7 — задачи с оценкой больше ${a.max_task_h||16} ч, ещё не взятые в работу («Бэклог», «Ready for DEV», «Запланирована», «Удержание»); начатые, в тестировании и закрытые не дробим (синхрон с аналитиками 12.11.2026). Сценарий зелёный на «Статусе для руководства», когда все его стори закрыты (Waiting for release / Завершена). Не флагуем: «Основание» (только при создании через ассистента), перерасход, списание при «Бэклоге», «Waiting for release» в текущем спринте, задачи эпика B2BAPP-1 без префикса. Бек 1 и Бек 2 в плане — одна проверка по всем задачам [BE]; «вся разработка в тесте» = этап пройден. P4 считается по задачам MVP-эпиков с оценкой (как на ганте).</p>
     </details>`;
+  // ссылка с якорем (#o4) — прокрутить после отрисовки: при загрузке раздела ещё нет
+  if(location.hash){ const t=document.getElementById(location.hash.slice(1)); if(t) t.scrollIntoView(); }
 }).catch(e=>{ document.getElementById('root').innerHTML='<div class="empty">Данные аудита ещё не сгенерированы.</div>'; });
 });
 </script></div><!-- /main --></div><!-- /layout -->

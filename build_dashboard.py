@@ -295,6 +295,7 @@ def normalize_issue(raw):
     labels = f.get("labels") or []
     # Part-связи и явные Blocks
     part_parent = None      # для задачи: ключ её истории
+    part_parents = []       # все стори задачи: одна задача на несколько стори — норма (Виктор 12.11.2026)
     blocks_deps = []        # ключи, которые блокируют этот issue
     for lk in (f.get("issuelinks") or []):
         t = (lk.get("type") or {})
@@ -306,6 +307,7 @@ def normalize_issue(raw):
             # У стори — наоборот (outwardIssue = задача), но нам это не нужно:
             # родителя мы всегда резолвим от задачи вверх.
             part_parent = lk["inwardIssue"].get("key")
+            part_parents.append(part_parent)
         if name in ("Blocks", "Dependency", "Blocked"):
             inw = lk.get("inwardIssue")
             if inw and t.get("inward", "").lower().startswith(("is blocked", "блок")):
@@ -348,6 +350,7 @@ def normalize_issue(raw):
         "epicLink": f.get("customfield_10901"),      # story → epic
         "epicName": f.get("customfield_10903"),       # у эпика — имя
         "partParent": part_parent,                     # task → story
+        "partParents": part_parents,
         "blocksDeps": blocks_deps,
         "role": role_from_summary(summary) if itype == "task" else None,
         "priority": prio_from_summary(summary),
@@ -450,6 +453,11 @@ def plan_gantt(issues, resources, today=None, manual=None, story_scenario=None):
     # согласованными эпиками (после чистки Леонида), так что скоуп = все
     # стори, которые реально пришли в дампе, без отдельного лейбл-фильтра.
     mvp_story_keys = set(stories.keys())
+    # Задача на несколько стори: родитель — первая стори из скоупа (а не последняя связь,
+    # которая может вести в эпик вне MVP, — тогда задача ложно считалась сиротой).
+    for t in tasks:
+        if t["partParent"] not in mvp_story_keys:
+            t["partParent"] = next((k for k in t.get("partParents") or [] if k in mvp_story_keys), t["partParent"])
     mvp_tasks = [t for t in tasks if t["partParent"] in mvp_story_keys]
 
     # "Сироты": задача без Part-связи на стори вообще (или связанной со стори
@@ -815,7 +823,7 @@ def plan_gantt(issues, resources, today=None, manual=None, story_scenario=None):
               else ("in_progress" if any(it["category"] != "backlog" or it.get("started") for it in kids) else "backlog")
         items.append({
             "key": sk, "type": "story", "parent": s["epicLink"], "epic": s["epicLink"],
-            "summary": s["summary"], "priority": s["priority"],
+            "summary": s["summary"], "priority": s["priority"], "status": s["status"],
             "estimateH": sum(it["estimateH"] for it in kids),
             "spentH": sum(it["spentH"] for it in kids),
             "start": start, "end": end, "category": cat,
@@ -1020,6 +1028,12 @@ def assign_scenarios(items, issues, reg):
     for it in items:
         if it["type"] == "task":
             it["scenario"] = story_sc.get(it["parent"], "PLATFORM")
+            # Задача, привязанная к стори разных сценариев (дизайн на 3 стори), считается
+            # в этапах каждого из них (синхрон с аналитиками 12.11.2026).
+            extra = sorted({story_sc[k] for k in (by_key.get(it["key"]) or {}).get("partParents") or []
+                            if k in story_sc} - {it["scenario"]})
+            if extra:
+                it["alsoScenarios"] = extra
 
 QA_SHARE = 0.30          # доля QA внутри оценки задач [FE]/[BE]: 70% разработка, 30% QA (Виктор 26.10.2026; было 35% с 20.10)
 QA_STATUSES = {"ready for testing", "тестирование"}   # разработка готова, идёт QA
@@ -1157,8 +1171,13 @@ def calc_manual_plan(mp, items, resources, reg=None, cur_sprint=0):
     задачи Фронта/Бэка (30% оценки), поэтому этап QA = задачи [QA] + [FE] +
     [BE]: в работе — есть задачи в «Ready for testing»/«Тестирование»."""
     tasks = [it for it in items if it["type"] == "task"]
-    cs = (reg or {}).get("completedScenarios") or {}
-    completed_codes, completed_why = set(cs.get("codes") or []), cs.get("why")
+    stories = [it for it in items if it["type"] == "story"]
+    reg_sc = {x["code"]: x for x in (reg or {}).get("scenarios", [])}
+    # Сценарий завершён, когда все его стори закрыты в Jira (Waiting for release /
+    # Завершена) — договорились на синхроне с аналитиками 12.11.2026; раньше был
+    # ручной список completedScenarios, и PL1 горел зелёным при открытых задачах.
+    completed_why = ("все стори сценария закрыты в Jira (Waiting for release / Завершена) — "
+                     "аналитик закрывает стори, когда трек завершён")
 
     def stat(ts):
         done = sum(1 for t in ts if t["category"] == "done")
@@ -1167,13 +1186,16 @@ def calc_manual_plan(mp, items, resources, reg=None, cur_sprint=0):
         return {"category": cat, "tasks": len(ts), "done": done,
                 "estimateH": sum(t["estimateH"] for t in ts),
                 "sprints": sorted({t["sprint"] for t in ts if t.get("sprint") is not None}),
+                # спринты, где сейчас стоят незакрытые задачи этапа — «перенесено в Спринт N»
+                "openSprints": sorted({t["sprint"] for t in ts if t["category"] != "done" and t.get("sprint") is not None}),
                 # Задачи, по которым сделан вывод о статусе этапа (всплывающий список
                 # на «Статусе для руководства» и в Ганте; Виктор 11.11.2026).
-                "list": [{"k": t["key"], "s": t.get("status") or "", "t": (t.get("summary") or "")[:80]}
+                "list": [{"k": t["key"], "s": t.get("status") or "", "t": (t.get("summary") or "")[:80],
+                          **({"sp": t["sprint"]} if t["category"] != "done" and t.get("sprint") is not None else {})}
                          for t in sorted(ts, key=lambda t: (t["category"] != "done", t["key"]))]}
     rows = []
     for r in mp.get("rows", []):
-        kt = [t for t in tasks if t.get("scenario") == r["code"]]
+        kt = [t for t in tasks if t.get("scenario") == r["code"] or r["code"] in (t.get("alsoScenarios") or [])]
         be = [t for t in kt if t["role"] == "BE"]
         by = {"AN": [t for t in kt if t["role"] in ("BA", "ARC")],
               "DS": [t for t in kt if t["role"] == "DS"],
@@ -1195,14 +1217,16 @@ def calc_manual_plan(mp, items, resources, reg=None, cur_sprint=0):
         # Состояние этапа для цвета (Виктор 26.10.2026): done — закрыт в Jira;
         # passed — начался следующий этап (Аналитика → Дизайн/Бэк/Фронт;
         # Дизайн → Фронт; Бэк/Фронт — все задачи уже в тестировании или
-        # закрыты); оба = зелёный. Сценарий из completedScenarios — весь зелёный.
+        # закрыты); оба = зелёный. Завершённый сценарий (все стори закрыты) — весь зелёный.
         def started(sid):
             j = jira.get(sid)
             return bool(j) and j["category"] != "backlog"
         def dev_passed(ts):
             return bool(ts) and all(t["category"] == "done" or
                                     (t.get("status") or "").strip().lower() in QA_STATUSES for t in ts)
-        completed = r["code"] in completed_codes
+        ks = [x for x in stories if x.get("scenario") == r["code"]]
+        completed = bool(ks) and all((x.get("status") or "").strip().lower() in ("waiting for release", "завершена")
+                                     for x in ks)
         state = {}
         for sid in ("AN", "DS", "BE", "BE1", "BE2", "FE", "QA"):
             j = jira.get(sid)
@@ -1229,10 +1253,63 @@ def calc_manual_plan(mp, items, resources, reg=None, cur_sprint=0):
         phase = ("completed" if completed or all_green else
                  "next" if first is None or first > cur_sprint else
                  "overdue" if last < cur_sprint else "now")
-        rows.append({**r, "jira": jira, "state": state, "completed": completed,
+        rg = reg_sc.get(r["code"]) or {}
+        # Владелец — колонка «Владелец» реестра MVP v.2 (один человек на сценарий, с 12.11.2026);
+        # в «Плане ручном» колонка — исполнители этапов, она остаётся в team.
+        rows.append({**r, "owner": rg.get("owner") or r.get("owner"), "team": r.get("owner"),
+                     "registryStatus": rg.get("registryStatus"),
+                     "stories": len(ks), "storiesClosed": sum(1 for x in ks if (x.get("status") or "").strip().lower()
+                                                                in ("waiting for release", "завершена")),
+                     "jira": jira, "state": state, "completed": completed,
                      "firstSprint": first, "lastSprint": last, "phase": phase})
     return {"source": mp.get("source"), "sprints": mp.get("sprints"), "rows": rows,
             "completedWhy": completed_why}
+
+
+PLAN_STAGE = {"AN": "Аналитика", "DS": "Дизайн", "BE": "Бэк", "BE1": "Бэк 1", "BE2": "Бэк 2", "FE": "Фронт", "QA": "QA"}
+
+
+def plan_snapshot(manual_plan):
+    """Слепок «Плана ручного» для baselines: сетка этапов по спринтам + статус этапа."""
+    return {r["code"]: {"cells": r.get("cells") or {}, "state": r.get("state") or {}, "name": r.get("name")}
+            for r in (manual_plan or {}).get("rows", [])}
+
+
+def calc_plan_changes(prev, prev_date, manual_plan, cur_sprint):
+    """Что поменялось в «Плане ручном» с прошлого среза (синхрон с аналитиками 12.11.2026:
+    к дорожной карте по сценариям — то же сравнение слепков, что на Ганте): этапы,
+    переехавшие по спринтам, новые/убранные этапы и сценарии, этапы, ставшие зелёными."""
+    if not prev:
+        return None
+    cur = plan_snapshot(manual_plan)
+    green = lambda st, sid: (st or {}).get(sid) in ("done", "passed")
+
+    def by_stage(cells):
+        m = {}
+        for n, sids in (cells or {}).items():
+            for sid in sids:
+                m.setdefault(sid, set()).add(int(n))
+        return m
+    rows, done = [], []
+    for code in list(cur) + [c for c in prev if c not in cur]:
+        a, b = prev.get(code), cur.get(code)
+        name = (b or a).get("name")
+        if not a or not b:
+            rows.append({"code": code, "name": name, "kind": "added" if b else "removed", "items": []})
+            continue
+        sa, sb, its = by_stage(a["cells"]), by_stage(b["cells"]), []
+        for sid in [x for x in PLAN_STAGE if x in sa or x in sb]:
+            fa, fb = sorted(sa.get(sid, ())), sorted(sb.get(sid, ()))
+            if fa != fb:
+                kind = "added" if not fa else "removed" if not fb else \
+                    "later" if max(fb) > max(fa) else "earlier" if max(fb) < max(fa) else "changed"
+                its.append({"stage": PLAN_STAGE[sid], "from": fa, "to": fb, "kind": kind})
+            if fb and green(b["state"], sid) and not green(a["state"], sid) and min(fb) <= cur_sprint:
+                done.append({"code": code, "stage": PLAN_STAGE[sid]})
+        if its:
+            rows.append({"code": code, "name": name, "kind": "changed", "items": its})
+    return {"since": prev_date, "rows": rows, "done": done,
+            "later": sum(1 for r in rows for i in r["items"] if i["kind"] == "later")}
 
 
 def self_checks(items, gv2, mvp_scope, resource_plan, epic_progress):
@@ -1560,6 +1637,10 @@ def run_gantt(args):
     res_name = {r["id"]: r.get("name") or r["id"] for r in resources}
     prev_bl = next((b for b in reversed(bl) if b.get("items")), None)
     new["changes"] = calc_changes(prev_bl, items, res_name, crit_end_iso, today, hours_total, hours_spent)
+    if manual_plan:
+        prev_mp = next((b for b in reversed(bl) if b.get("manualPlan")), None)
+        manual_plan["changes"] = calc_plan_changes((prev_mp or {}).get("manualPlan"), (prev_mp or {}).get("ts"),
+                                                   manual_plan, sprint_index(today))
     bl.append({
         "id": bl_id,
         "ts": now_iso,
@@ -1572,8 +1653,9 @@ def run_gantt(args):
         # слепков, запрос Виктора 03.10.2026). Раньше тут были только задачи
         # с start/end — у стори/эпиков на свёрнутом ганте сравнивать было нечего.
         "items": [baseline_item(it, res_name) for it in items],
+        **({"manualPlan": plan_snapshot(manual_plan)} if manual_plan else {}),
     })
-    new["baselines"] = [{k: v for k, v in b.items() if k != "items"} | {"nItems": len(b.get("items") or [])}
+    new["baselines"] = [{k: v for k, v in b.items() if k not in ("items", "manualPlan")} | {"nItems": len(b.get("items") or [])}
                         for b in bl]
 
     # milestones: обновить статус вехи дедлайна

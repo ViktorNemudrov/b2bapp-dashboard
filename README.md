@@ -26,6 +26,7 @@ public/
 
 | Скрипт | Что делает |
 |---|---|
+| `fetch_jira_dumps.js` | выгрузка из Jira (в консоли залогиненной вкладки btask) → `jira_full_dump.json` и `jira_dump.json` |
 | `build_dashboard.py` | Jira-дамп + команда + «План ручной» + цели спринтов + реестр сценариев + отпуска → `data.json`, `baselines.json` |
 | `build_audit.py` | полная выгрузка Jira + реестр MVP v.2 + `data.json` → `audit.json` |
 | `import_registers.py` | реестры рисков и допущений из Confluence → `data.json` |
