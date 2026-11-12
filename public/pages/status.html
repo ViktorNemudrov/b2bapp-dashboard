@@ -354,7 +354,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
   const src=mp.source||{};
   const ROLE_F={all:'Все роли',AN:'Аналитика',DS:'Дизайн',BE:'Бэк',FE:'Фронт',QA:'QA'};
   const PHASE={completed:'Завершены',overdue:'План прошёл, работа не закрыта',now:'Идут сейчас по плану',next:'Впереди'};
-  const T6={role:'all',sort:'registry'};
+  const T6={role:'all',sort:'registry',moves:false};
   try{ Object.assign(T6, JSON.parse(localStorage.getItem('st-t6')||'{}')); }catch(_){}
   // Зелёный только в начавшихся спринтах (будущая работа ещё не заведена в Jira) или у завершённого сценария.
   const isGreen=(r,sid,n)=>r.completed||(n<=sp.currentSprint&&['done','passed'].includes((r.state||{})[sid]));
@@ -367,7 +367,8 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
     const why=g?(r.completed?'сценарий завершён — все стори закрыты':st==='passed'?'пройден — начался следующий этап':'готово — закрыт в Jira'):st==='active'?'в работе':(j?'в планах, не начат':'в планах, задач этапа в Jira нет');
     // Спринт плана прошёл, а незакрытые задачи этапа стоят в спринте позже — показываем куда
     // (синхрон 12.11.2026: «серое в прошлом» без объяснения вызывает вопросы у руководства).
-    const moved=!g&&n<sp.currentSprint&&j&&(j.openSprints||[]).filter(x=>x>n);
+    // Показываются только с включённым чекбоксом «Переносы задач» (Виктор 12.11.2026).
+    const moved=T6.moves&&!g&&n<sp.currentSprint&&j&&(j.openSprints||[]).filter(x=>x>n);
     const mv=moved&&moved.length?Math.min(...moved):null;
     const pop=`<div style="font-weight:700">${esc(r.code)} · ${esc(STG[sid][2])} · Спринт ${n}</div><div style="color:var(--mute)">${esc(r.name)}</div><div style="margin-top:4px">Этап: <b>${why}</b>${j?` · задач в Jira ${j.done}/${j.tasks}`:''}</div>${mv!=null?`<div style="margin-top:4px">Незакрытые задачи этапа перенесены в <b>Спринт ${(moved).filter((x,i,a)=>a.indexOf(x)===i).join(', ')}</b> — план в Confluence надо сдвинуть</div>`:''}`+stageTasksHtml(j&&j.list);
     return `<span class="pill" style="${softPill(c)};cursor:pointer" data-pop-html="${esc(pop)}">${STG[sid][0]}${mv!=null?`<span style="font-weight:400;opacity:.85"> →${mv}</span>`:''}</span>`;
@@ -416,16 +417,16 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
     const c=T6C.diff, b=(SNAPS||[]).find(x=>x.id===T6C.sel);
     const spl=a=>a.length?a.map(x=>'С'+x).join(','):'—';
     const KIND={later:'позже',earlier:'раньше',changed:'изменён',added:'добавлен',removed:'убран'};
-    let body='';
+    let body='', line='';
     if(c){
       const ch=c.rows.filter(r=>r.kind==='changed'), ar=c.rows.filter(r=>r.kind!=='changed'), n=ch.reduce((a,r)=>a+r.items.length,0);
-      body=!n&&!ar.length&&!c.done.length?`<p class="sub" style="margin:6px 0 0">С ${fmtDate(b.ts)} план не менялся, новых зелёных этапов нет.</p>`
-        :`<p class="sub" style="margin:6px 0">${fmtDate(b.ts)} → сейчас: этапов сдвинуто/изменено ${n}${c.later?` (позже — ${c.later})`:''}${ar.length?`, сценариев добавлено/убрано ${ar.length}`:''}, стали зелёными ${c.done.length}. На сетке: <span class="pill" style="outline:2px dashed var(--yel);outline-offset:-2px">добавлен</span> <span class="pill" style="opacity:.4;text-decoration:line-through">убран</span></p>
-        ${ch.length?`<details class="st-more" open><summary>Сдвиги этапов — ${n}</summary><table class="mini"><tr><th>Сценарий</th><th>Этап</th><th>Было</th><th>Стало</th><th></th></tr>${ch.map(r=>r.items.map((i,k)=>`<tr>${k?'<td></td>':`<td><b>${esc(r.code)}</b> ${esc((r.name||'').slice(0,40))}</td>`}<td>${esc(i.stage)}</td><td>${spl(i.from)}</td><td>${spl(i.to)}</td><td style="color:${i.kind==='later'?'var(--err)':i.kind==='earlier'?'var(--ok)':'inherit'}">${KIND[i.kind]}</td></tr>`).join('')).join('')}</table></details>`:''}
+      line=!n&&!ar.length&&!c.done.length?`<span class="sub">план не менялся, новых зелёных этапов нет</span>`
+        :`<span class="sub">сдвинуто ${n}${c.later?` (позже — ${c.later})`:''}${ar.length?` · сценариев +/− ${ar.length}`:''} · стали зелёными ${c.done.length} · на сетке: <span class="pill" style="outline:2px dashed var(--yel);outline-offset:-2px">добавлен</span><span class="pill" style="opacity:.4;text-decoration:line-through">убран</span></span>`;
+      body=`${ch.length?`<details class="st-more"><summary>Сдвиги этапов — ${n}</summary><table class="mini"><tr><th>Сценарий</th><th>Этап</th><th>Было</th><th>Стало</th><th></th></tr>${ch.map(r=>r.items.map((i,k)=>`<tr>${k?'<td></td>':`<td><b>${esc(r.code)}</b> ${esc((r.name||'').slice(0,40))}</td>`}<td>${esc(i.stage)}</td><td>${spl(i.from)}</td><td>${spl(i.to)}</td><td style="color:${i.kind==='later'?'var(--err)':i.kind==='earlier'?'var(--ok)':'inherit'}">${KIND[i.kind]}</td></tr>`).join('')).join('')}</table></details>`:''}
         ${ar.length?`<p class="sub">${ar.map(r=>`${esc(r.code)} — ${r.kind==='added'?'новый сценарий в плане':'убран из плана'}`).join('; ')}</p>`:''}
         ${c.done.length?`<details class="st-more"><summary>Стали зелёными — ${c.done.length}</summary><p class="sub">${c.done.map(x=>esc(x.code+' '+x.stage)).join(', ')}</p></details>`:''}`;
     }
-    el.innerHTML=`<div class="t6-ctl" style="margin:0"><span class="t6-lbl">Сравнить со срезом:</span><select id="t6cmpSel"><option value="">— не сравнивать —</option>${opts}</select>${SNAPS?'':'<span class="sub">загружаю срезы…</span>'}</div>${body}`;
+    el.innerHTML=`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="t6-lbl">Сравнить со срезом:</span><select id="t6cmpSel"><option value="">— не сравнивать —</option>${opts}</select>${SNAPS?line:'<span class="sub">загружаю срезы…</span>'}</div>${body}`;
     $('t6cmpSel').onchange=e=>{ T6C.sel=e.target.value||null; const x=(SNAPS||[]).find(y=>y.id===T6C.sel); T6C.diff=x?planDiff(x.mp):null; cmpPanel(); renderT6(); };
   }
   function renderT6(){
@@ -456,16 +457,19 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
     try{ localStorage.setItem('st-t6', JSON.stringify(T6)); }catch(_){}
   }
   $('t6body').innerHTML=`<h2>Дорожная карта — по сценариям MVP</h2>
-    <p class="lead">План команды по спринтам в разрезе сценариев и ролей — «План ручной» аналитиков (<a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2666206915" target="_blank" rel="noopener">Confluence</a>, версия ${esc(src.version||'—')} от ${fmtDate(src.when)}). Цвет — статус этапа: <b>зелёный — готово</b> (закрыт в Jira: Завершена / Waiting for release, или уже начался следующий этап), <b>оранжевый — в работе</b>, <b>серый — в планах</b>. Наведите на этап — откроется список задач Jira, по которым определён статус. Светло-зелёные строки — завершённые сценарии: все их стори в Jira закрыты (Waiting for release / Завершена) — аналитик закрывает стори, когда трек завершён. Пометка «→6» на этапе прошлого спринта — его незакрытые задачи стоят в Спринте 6. Наведите на название сценария — владелец (реестр MVP v.2). По датам — <a href="gantt.html?view=stages">«Этапы по сценариям (упрощённо)» на диаграмме Ганта</a>.</p>
+    <p class="lead">План команды по спринтам в разрезе сценариев и ролей — «План ручной» аналитиков (<a href="https://bwiki.beeline.ru/spaces/B2BAPP/pages/2666206915" target="_blank" rel="noopener">Confluence</a>, версия ${esc(src.version||'—')} от ${fmtDate(src.when)}). Цвет — статус этапа: <b>зелёный — готово</b> (закрыт в Jira: Завершена / Waiting for release, или уже начался следующий этап), <b>оранжевый — в работе</b>, <b>серый — в планах</b>. Наведите на этап — откроется список задач Jira, по которым определён статус. Светло-зелёные строки — завершённые сценарии: все их стори в Jira закрыты (Waiting for release / Завершена) — аналитик закрывает стори, когда трек завершён. С галочкой «Переносы задач» у этапа прошлого спринта видно «→6» — его незакрытые задачи стоят в Спринте 6. Наведите на название сценария — владелец (реестр MVP v.2). По датам — <a href="gantt.html?view=stages">«Этапы по сценариям (упрощённо)» на диаграмме Ганта</a>.</p>
     <div class="t6-ctl" id="t6ctl">
       <span class="t6-lbl">Роль:</span>${Object.entries(ROLE_F).map(([k,v])=>`<button data-role="${k}">${v}</button>`).join('')}
       <span class="t6-lbl" style="margin-left:14px">Порядок:</span><button data-sort="registry">По контурам реестра</button><button data-sort="launch" title="Завершены → план прошёл, работа не закрыта → идут сейчас → впереди; внутри — по первому спринту плана">По времени запуска</button>
+      <label class="t6-lbl" style="margin-left:14px;cursor:pointer" title="У этапа прошлого спринта — «→N»: его незакрытые задачи стоят в Спринте N"><input type="checkbox" id="t6moves"> Переносы задач</label>
     </div>
     <div class="lgd"><span><span class="sw" style="${softPill(STATUS_GROUPS.done.color)}"></span>готово</span><span><span class="sw" style="${softPill(STATUS_GROUPS.wip.color)}"></span>в работе</span><span><span class="sw" style="${softPill(STATUS_GROUPS.backlog.color)}"></span>в планах</span><span><span class="sw" style="background:rgba(0,212,255,.3)"></span>текущий спринт</span></div>
-    <div class="card" id="t6cmp" style="margin:0 0 10px;padding:10px 14px"></div>
+    <div class="card" id="t6cmp" style="margin:0 0 10px;padding:8px 12px;display:inline-block;max-width:100%"></div>
     <div class="gt" id="t6grid"></div>
     <div class="danger">Срок 1-й задачи «запись↔этикетка» (PFC-1271) по контуру «Обращения и клиенты» (OB3/OB4) — снятие на сети в PROD 17.11.2026, затем доп. тест SDM; до этого для ИП/ООО сценарии записи/расшифровки пока заблокированы, доступны только самозанятым. ${ok?'':`По критическому пути к дедлайну <b>10.12.26 не успеваем</b>, прогноз завершения — <b>${fmtDate(crit)}</b>.`}</div>
     <div class="warn">Выход в продуктив (E2E-тестирование, пилот, коммерческий запуск) и контрольные точки — на общей дорожной карте (вкладка 05).</div>`;
+  $('t6moves').checked=!!T6.moves;
+  $('t6moves').onchange=e=>{ T6.moves=e.target.checked; renderT6(); };
   $('t6ctl').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; if(b.dataset.role) T6.role=b.dataset.role; if(b.dataset.sort) T6.sort=b.dataset.sort; renderT6(); });
   renderT6();
   cmpPanel();

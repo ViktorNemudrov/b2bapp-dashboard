@@ -184,6 +184,13 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
           <label>Аналитик</label>
           <select id="analystFilter"><option value="">Все</option></select>
         </div>
+        <div class="gantt2-toolbar-group" id="grpOrder" title="Порядок строк на виде «Этапы по сценариям» — как на «Дорожной карте по сценариям» (Статус для руководства)">
+          <label>Порядок</label>
+          <select id="stagesOrder">
+            <option value="registry">По контурам реестра</option>
+            <option value="launch">По времени запуска</option>
+          </select>
+        </div>
         <div class="gantt2-toolbar-group" id="grpExpand">
           <label>Дерево</label>
           <select id="expandSelect">
@@ -917,6 +924,7 @@ function applyViewChrome(){
   const v=GS.view;
   ['grpLevel','grpExpand','grpResource','grpBaseline'].forEach(id=>$(id).classList.toggle('g2-off', v==='stages'));
   $('grpPri').classList.toggle('g2-off', v!=='epics');
+  $('grpOrder').classList.toggle('g2-off', v!=='stages');
   $('ganttTreeHeader').textContent = v==='stages' ? 'Сценарий · приоритет · владелец' : v==='scenarios' ? 'Сценарий / Стори / Задача (роль)' : 'Эпик / Стори / Задача (роль)';
   const top=v==='scenarios'?'Сценарии':'Эпики', lf=$('levelFilter').options;
   lf[0].text=`${top} ▸ Стори ▸ Задачи`; lf[1].text=`${top} ▸ Стори`; lf[2].text=`Только ${top.toLowerCase()}`;
@@ -973,8 +981,17 @@ function renderStages(gv, data){
     return out;
   };
   const anC=analystCodes(gv, GS.analystFilter), mpRows=anC?mp.rows.filter(r=>anC.has(r.code)):mp.rows;
+  // Порядок «по времени запуска» (Виктор 12.11.2026) — как на «Дорожной карте по сценариям»:
+  // завершены → план прошёл, работа не закрыта → идут сейчас → впереди; внутри — по первому спринту.
+  const PHASE={completed:'Завершены',overdue:'План прошёл, работа не закрыта',now:'Идут сейчас по плану',next:'Впереди'};
+  let ordered=mpRows, groupOf=r=>r.contour;
+  if(GS.stagesOrder==='launch'){
+    const ord={completed:0,overdue:1,now:2,next:3};
+    ordered=mpRows.slice().sort((a,b)=>(ord[a.phase]-ord[b.phase])||((a.firstSprint??99)-(b.firstSprint??99))||((a.lastSprint??99)-(b.lastSprint??99)));
+    groupOf=r=>PHASE[r.phase]||r.phase;
+  }
   const rows=[]; let lastContour=null;
-  mpRows.forEach(r=>{ if(r.contour!==lastContour){ rows.push({group:r.contour}); lastContour=r.contour; } rows.push({r}); });
+  ordered.forEach(r=>{ const g=groupOf(r); if(g!==lastContour){ rows.push({group:g}); lastContour=g; } rows.push({r}); });
   const ds=[new Date(), new Date('2026-12-15')];
   mpRows.forEach(r=>segsOf(r).forEach(g=>{ ds.push(new Date(spByN[g.from].start), new Date(spByN[g.to].end)); }));
   const minD=new Date(Math.min(...ds)); minD.setDate(minD.getDate()-3);
@@ -1307,6 +1324,8 @@ document.querySelectorAll('.gantt2-toolbar-group button[data-scale]').forEach(bt
 $('zoomIn').onclick=()=>zoomTo(GS.pxPerDay+2);
 $('zoomOut').onclick=()=>zoomTo(GS.pxPerDay-2);
 $('levelFilter').onchange=e=>{ GS.level=e.target.value; renderGanttV2(); };
+$('stagesOrder').onchange=e=>{ GS.stagesOrder=e.target.value; try{ localStorage.setItem('g2-stages-order', GS.stagesOrder); }catch(_){} renderGanttV2(); };
+try{ const o=localStorage.getItem('g2-stages-order'); if(o==='launch'||o==='registry'){ GS.stagesOrder=o; $('stagesOrder').value=o; } }catch(_){}
 $('viewMode').onchange=e=>{
   if(PRI_MODE && e.target.value!=='epics') togglePriorityMode();
   GS.view=e.target.value; GS._scrolledToToday=false;

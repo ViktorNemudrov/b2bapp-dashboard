@@ -1190,8 +1190,7 @@ def calc_manual_plan(mp, items, resources, reg=None, cur_sprint=0):
                 "openSprints": sorted({t["sprint"] for t in ts if t["category"] != "done" and t.get("sprint") is not None}),
                 # Задачи, по которым сделан вывод о статусе этапа (всплывающий список
                 # на «Статусе для руководства» и в Ганте; Виктор 11.11.2026).
-                "list": [{"k": t["key"], "s": t.get("status") or "", "t": (t.get("summary") or "")[:80],
-                          **({"sp": t["sprint"]} if t["category"] != "done" and t.get("sprint") is not None else {})}
+                "list": [{"k": t["key"], "s": t.get("status") or "", "t": (t.get("summary") or "")[:80]}
                          for t in sorted(ts, key=lambda t: (t["category"] != "done", t["key"]))]}
     rows = []
     for r in mp.get("rows", []):
