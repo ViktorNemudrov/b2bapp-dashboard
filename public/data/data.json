@@ -1,27 +1,27 @@
 {
-  "updated": "11.11.2026",
-  "refreshedAt": "2026-11-11T23:34:53+03:00",
+  "updated": "12.11.2026",
+  "refreshedAt": "2026-11-12T12:28:22+03:00",
   "project": "B2BAPP",
-  "totalIssues": 363,
+  "totalIssues": 364,
   "summary": {
     "epics": 10,
     "stories": 67,
-    "tasks": 283,
+    "tasks": 284,
     "storiesDone": 12,
-    "tasksDone": 114,
-    "hoursTotal": 6508,
-    "hoursSpent": 4295,
-    "completionPct": 66.0,
+    "tasksDone": 116,
+    "hoursTotal": 6532,
+    "hoursSpent": 4319,
+    "completionPct": 66.1,
     "scope": "MVP-only (метка mvp); postMVP и Вакантные исключены"
   },
   "kpi": {
     "totalStories": 67,
-    "totalTasks": 283,
+    "totalTasks": 284,
     "totalEpics": 10,
-    "hoursTotal": 6508,
-    "hoursSpent": 4295,
-    "completionPct": 66.0,
-    "daysToDeadline": 29,
+    "hoursTotal": 6532,
+    "hoursSpent": 4319,
+    "completionPct": 66.1,
+    "daysToDeadline": 28,
     "criticalEnd": "2027-02-02",
     "mvpReachable": false
   },
@@ -572,7 +572,7 @@
     }
   ],
   "ganttV2": {
-    "generatedAt": "2026-11-11T23:34:53+03:00",
+    "generatedAt": "2026-11-12T12:28:22+03:00",
     "workCalendar": {
       "holidays": [
         "2026-01-01",
@@ -944,7 +944,7 @@
         "status": "Анализ",
         "category": "in_progress",
         "start": "2026-10-06",
-        "end": "2026-11-03",
+        "end": "2026-11-05",
         "actualStart": "2026-10-01",
         "started": true,
         "resource": "BA-1",
@@ -1084,8 +1084,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-12-02",
-        "end": "2026-12-04",
+        "start": "2026-12-01",
+        "end": "2026-12-03",
         "started": false,
         "resource": "BE-1",
         "onCriticalPath": false,
@@ -1130,7 +1130,7 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-12-10",
+        "start": "2026-12-09",
         "end": "2026-12-10",
         "started": false,
         "resource": "BE-2",
@@ -1153,8 +1153,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-12-09",
-        "end": "2026-12-10",
+        "start": "2026-12-08",
+        "end": "2026-12-09",
         "started": false,
         "resource": "BE-2",
         "onCriticalPath": false,
@@ -1176,8 +1176,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-23",
-        "end": "2026-11-25",
+        "start": "2026-11-24",
+        "end": "2026-11-26",
         "started": false,
         "resource": "BE-2",
         "onCriticalPath": false,
@@ -1220,18 +1220,18 @@
         "priority": 9999,
         "estimateH": 16,
         "spentH": 16,
-        "status": "Тестирование",
+        "status": "Разработка",
         "category": "in_progress",
         "start": "2026-10-06",
-        "end": "2026-11-26",
+        "end": "2026-11-06",
         "actualStart": "2026-09-22",
         "started": true,
-        "resource": "QA-1",
+        "resource": "BE-2",
         "onCriticalPath": false,
         "deps": [],
-        "sprint": 6,
+        "sprint": 5,
         "sprintFrom": 3,
-        "planSource": "jira+",
+        "planSource": "jira",
         "scenario": "NAI"
       },
       {
@@ -1294,7 +1294,7 @@
         "status": "Бэклог",
         "category": "backlog",
         "start": "2026-12-02",
-        "end": "2026-12-09",
+        "end": "2026-12-08",
         "started": false,
         "resource": "BE-2",
         "onCriticalPath": false,
@@ -1363,7 +1363,7 @@
         "status": "Бэклог",
         "category": "backlog",
         "start": "2026-11-19",
-        "end": "2026-11-23",
+        "end": "2026-11-24",
         "started": false,
         "resource": "BE-2",
         "onCriticalPath": false,
@@ -1408,7 +1408,7 @@
         "spentH": 16,
         "status": "Ready for testing",
         "category": "in_progress",
-        "start": "2026-12-09",
+        "start": "2026-12-08",
         "end": "2026-12-09",
         "actualStart": "2026-11-03",
         "started": true,
@@ -1433,7 +1433,7 @@
         "status": "Ready for testing",
         "category": "in_progress",
         "start": "2026-10-20",
-        "end": "2026-12-09",
+        "end": "2026-12-08",
         "actualStart": "2026-10-26",
         "started": true,
         "resource": "QA-1",
@@ -1528,7 +1528,7 @@
         "spentH": 0,
         "status": "Разработка",
         "category": "in_progress",
-        "start": "2026-11-11",
+        "start": "2026-11-10",
         "end": "2026-11-17",
         "actualStart": "2026-10-19",
         "started": true,
@@ -1765,7 +1765,7 @@
         "status": "Ready for testing",
         "category": "in_progress",
         "start": "2026-10-20",
-        "end": "2026-12-08",
+        "end": "2026-12-07",
         "actualStart": "2026-09-24",
         "started": true,
         "resource": "QA-1",
@@ -1789,7 +1789,7 @@
         "status": "Ready for testing",
         "category": "in_progress",
         "start": "2026-10-20",
-        "end": "2026-12-07",
+        "end": "2026-12-04",
         "actualStart": "2026-09-24",
         "started": true,
         "resource": "QA-1",
@@ -1860,7 +1860,7 @@
         "status": "Ready for testing",
         "category": "in_progress",
         "start": "2026-09-22",
-        "end": "2026-12-04",
+        "end": "2026-12-03",
         "actualStart": "2026-10-20",
         "started": true,
         "resource": "QA-1",
@@ -1930,15 +1930,15 @@
         "spentH": 0,
         "status": "Ready for DEV",
         "category": "backlog",
-        "start": "2026-12-01",
-        "end": "2026-12-02",
+        "start": "2026-11-30",
+        "end": "2026-12-01",
         "actualStart": "2026-09-25",
         "started": true,
         "resource": "BE-1",
         "onCriticalPath": false,
         "deps": [],
         "sprint": 7,
-        "sprintFrom": 7,
+        "sprintFrom": 6,
         "planSource": "manual",
         "scenario": "PL16"
       },
@@ -2002,16 +2002,16 @@
         "spentH": 0,
         "status": "Ready for DEV",
         "category": "backlog",
-        "start": "2026-11-23",
-        "end": "2026-12-01",
+        "start": "2026-11-20",
+        "end": "2026-11-24",
         "actualStart": "2026-09-25",
         "started": true,
         "resource": "BE-1",
         "onCriticalPath": false,
         "deps": [],
-        "sprint": 7,
+        "sprint": 6,
         "sprintFrom": 6,
-        "planSource": "jira+",
+        "planSource": "jira",
         "scenario": "PL16"
       },
       {
@@ -2027,7 +2027,7 @@
         "status": "Разработка",
         "category": "in_progress",
         "start": "2026-10-20",
-        "end": "2026-11-09",
+        "end": "2026-11-03",
         "actualStart": "2026-10-25",
         "started": true,
         "resource": "BE-1",
@@ -2564,7 +2564,7 @@
         "end": "2026-11-03",
         "actualStart": "2026-09-28",
         "started": true,
-        "resource": "BA-1",
+        "resource": "BE-1",
         "onCriticalPath": false,
         "deps": [],
         "sprint": 5,
@@ -2930,7 +2930,7 @@
         "status": "Бэклог",
         "category": "backlog",
         "start": "2026-11-17",
-        "end": "2026-11-20",
+        "end": "2026-11-19",
         "started": false,
         "resource": "BE-1",
         "onCriticalPath": false,
@@ -3115,7 +3115,7 @@
         "status": "Бэклог",
         "category": "backlog",
         "start": "2026-10-20",
-        "end": "2026-11-05",
+        "end": "2026-11-06",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -3185,7 +3185,7 @@
         "status": "Удержание",
         "category": "backlog",
         "start": "2026-09-22",
-        "end": "2026-11-11",
+        "end": "2026-11-12",
         "actualStart": "2026-09-29",
         "started": true,
         "resource": "BA-1",
@@ -3652,7 +3652,7 @@
         "status": "Анализ",
         "category": "in_progress",
         "start": "2026-10-06",
-        "end": "2026-11-05",
+        "end": "2026-11-06",
         "actualStart": "2026-09-17",
         "started": true,
         "resource": "BA-1",
@@ -3716,12 +3716,11 @@
         "role": "BA",
         "priority": 9999,
         "estimateH": 4,
-        "spentH": 0,
-        "status": "В работе",
-        "category": "in_progress",
+        "spentH": 8,
+        "status": "Завершена",
+        "category": "done",
         "start": "2026-11-03",
-        "end": "2026-11-05",
-        "actualStart": "2026-11-11",
+        "end": "2026-11-03",
         "started": true,
         "resource": "BA-1",
         "onCriticalPath": false,
@@ -3859,8 +3858,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-27",
-        "end": "2026-12-01",
+        "start": "2026-11-30",
+        "end": "2026-12-02",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -3976,8 +3975,8 @@
         "spentH": 4,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-11-03",
-        "end": "2026-11-03",
+        "start": "2026-11-05",
+        "end": "2026-11-06",
         "actualStart": "2026-09-25",
         "started": true,
         "resource": "BA-1",
@@ -4277,8 +4276,8 @@
         "spentH": 40,
         "status": "В работе",
         "category": "in_progress",
-        "start": "2026-11-03",
-        "end": "2026-11-03",
+        "start": "2026-11-05",
+        "end": "2026-11-05",
         "actualStart": "2026-10-01",
         "started": true,
         "resource": "BA-1",
@@ -4464,7 +4463,7 @@
         "status": "Ready for testing",
         "category": "in_progress",
         "start": "2026-10-20",
-        "end": "2026-12-03",
+        "end": "2026-12-02",
         "actualStart": "2026-10-15",
         "started": true,
         "resource": "QA-1",
@@ -4556,7 +4555,7 @@
         "status": "Ready for testing",
         "category": "in_progress",
         "start": "2026-09-08",
-        "end": "2026-12-02",
+        "end": "2026-12-01",
         "actualStart": "2026-09-14",
         "started": true,
         "resource": "QA-1",
@@ -4580,13 +4579,13 @@
         "status": "Ready for testing",
         "category": "in_progress",
         "start": "2026-09-22",
-        "end": "2026-12-01",
+        "end": "2026-11-26",
         "actualStart": "2026-09-22",
         "started": true,
         "resource": "QA-1",
         "onCriticalPath": false,
         "deps": [],
-        "sprint": 7,
+        "sprint": 6,
         "sprintFrom": 2,
         "planSource": "jira+",
         "scenario": "RB3"
@@ -4648,8 +4647,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-26",
-        "end": "2026-11-26",
+        "start": "2026-11-27",
+        "end": "2026-11-27",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -4657,6 +4656,29 @@
         "sprint": 6,
         "sprintFrom": 6,
         "planSource": "jira+",
+        "scenario": "IB"
+      },
+      {
+        "key": "B2BAPP-797",
+        "type": "task",
+        "parent": "B2BAPP-193",
+        "epic": "B2BAPP-134",
+        "summary": "[ORG] Критичные E2E-сценарии B2B: заявить, назначить ответственных, оценить критичность и описать (после запуска MVP)",
+        "role": "ORG",
+        "priority": 9999,
+        "estimateH": 16,
+        "spentH": 0,
+        "status": "Бэклог",
+        "category": "backlog",
+        "start": "2026-12-21",
+        "end": "2026-12-23",
+        "started": false,
+        "resource": "ORG-1",
+        "onCriticalPath": false,
+        "deps": [],
+        "sprint": 8,
+        "sprintFrom": 8,
+        "planSource": "auto",
         "scenario": "IB"
       },
       {
@@ -4697,7 +4719,7 @@
         "end": "2026-11-03",
         "actualStart": "2026-11-09",
         "started": true,
-        "resource": "BE-1",
+        "resource": "ORG-1",
         "onCriticalPath": false,
         "deps": [],
         "sprint": 5,
@@ -4991,7 +5013,7 @@
         "status": "Разработка",
         "category": "in_progress",
         "start": "2026-09-08",
-        "end": "2026-11-11",
+        "end": "2026-11-10",
         "actualStart": "2026-06-26",
         "started": true,
         "resource": "BE-1",
@@ -5107,13 +5129,13 @@
         "status": "Ready for testing",
         "category": "in_progress",
         "start": "2026-10-20",
-        "end": "2026-12-23",
+        "end": "2026-12-09",
         "actualStart": "2026-10-19",
         "started": true,
         "resource": "QA-1",
         "onCriticalPath": false,
         "deps": [],
-        "sprint": 8,
+        "sprint": 7,
         "sprintFrom": 4,
         "planSource": "jira+",
         "scenario": "OB1"
@@ -5218,11 +5240,11 @@
         "summary": "[BE] Реализовать формирование отчетка Сводка дня",
         "role": "BE",
         "priority": 9999,
-        "estimateH": 24,
+        "estimateH": 32,
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-12-04",
+        "start": "2026-12-03",
         "end": "2026-12-08",
         "started": false,
         "resource": "BE-1",
@@ -5521,8 +5543,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-25",
-        "end": "2026-11-26",
+        "start": "2026-11-26",
+        "end": "2026-11-27",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -5567,7 +5589,7 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-09",
+        "start": "2026-11-10",
         "end": "2026-11-19",
         "started": false,
         "resource": "BE-2",
@@ -5590,8 +5612,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-20",
-        "end": "2026-11-23",
+        "start": "2026-11-19",
+        "end": "2026-11-20",
         "started": false,
         "resource": "BE-1",
         "onCriticalPath": false,
@@ -5610,12 +5632,12 @@
         "role": "BA",
         "priority": 9999,
         "estimateH": 8,
-        "spentH": 0,
-        "status": "Бэклог",
-        "category": "backlog",
-        "start": "2026-11-11",
-        "end": "2026-11-12",
-        "started": false,
+        "spentH": 8,
+        "status": "Завершена",
+        "category": "done",
+        "start": "2026-11-03",
+        "end": "2026-11-05",
+        "started": true,
         "resource": "BA-1",
         "onCriticalPath": false,
         "deps": [],
@@ -5819,8 +5841,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-12-16",
-        "end": "2026-12-18",
+        "start": "2026-12-17",
+        "end": "2026-12-21",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -5888,8 +5910,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-24",
-        "end": "2026-11-25",
+        "start": "2026-11-25",
+        "end": "2026-11-26",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -5911,8 +5933,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-19",
-        "end": "2026-11-23",
+        "start": "2026-11-20",
+        "end": "2026-11-24",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -5934,8 +5956,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-18",
-        "end": "2026-11-19",
+        "start": "2026-11-19",
+        "end": "2026-11-20",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -6074,8 +6096,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-12-11",
-        "end": "2026-12-16",
+        "start": "2026-12-14",
+        "end": "2026-12-17",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -6097,8 +6119,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-12-08",
-        "end": "2026-12-11",
+        "start": "2026-12-09",
+        "end": "2026-12-14",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -6120,8 +6142,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-12-04",
-        "end": "2026-12-08",
+        "start": "2026-12-07",
+        "end": "2026-12-09",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -6256,8 +6278,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-13",
-        "end": "2026-11-18",
+        "start": "2026-11-16",
+        "end": "2026-11-19",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -6279,8 +6301,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-13",
-        "end": "2026-11-13",
+        "start": "2026-11-16",
+        "end": "2026-11-16",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -6348,8 +6370,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-12-01",
-        "end": "2026-12-04",
+        "start": "2026-12-02",
+        "end": "2026-12-07",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -6371,8 +6393,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-12",
-        "end": "2026-11-12",
+        "start": "2026-11-13",
+        "end": "2026-11-13",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -6417,8 +6439,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-11",
-        "end": "2026-11-12",
+        "start": "2026-11-12",
+        "end": "2026-11-13",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -6486,8 +6508,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-10",
-        "end": "2026-11-11",
+        "start": "2026-11-11",
+        "end": "2026-11-12",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -6502,22 +6524,23 @@
         "type": "task",
         "parent": "B2BAPP-568",
         "epic": "B2BAPP-465",
-        "summary": "[BE] Ассистент: ответ по договорённостям из звонков - элемент next_steps в чате (OB5)",
+        "summary": "[BE] Ассистент: ответ по договорённостям из звонков - элементы для договоренностей в чате (OB5)",
         "role": "BE",
         "priority": 9999,
         "estimateH": 16,
-        "spentH": 0,
-        "status": "Бэклог",
-        "category": "backlog",
-        "start": "2026-11-27",
-        "end": "2026-11-30",
-        "started": false,
+        "spentH": 8,
+        "status": "Разработка",
+        "category": "in_progress",
+        "start": "2026-11-09",
+        "end": "2026-11-10",
+        "actualStart": "2026-11-12",
+        "started": true,
         "resource": "BE-2",
         "onCriticalPath": false,
         "deps": [],
-        "sprint": 6,
-        "sprintFrom": 6,
-        "planSource": "jira+",
+        "sprint": 5,
+        "sprintFrom": 5,
+        "planSource": "jira",
         "scenario": "OB5"
       },
       {
@@ -6555,8 +6578,8 @@
         "spentH": 0,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-25",
-        "end": "2026-11-27",
+        "start": "2026-11-26",
+        "end": "2026-11-30",
         "started": false,
         "resource": "BE-2",
         "onCriticalPath": false,
@@ -6603,7 +6626,7 @@
         "status": "Разработка",
         "category": "in_progress",
         "start": "2026-09-08",
-        "end": "2026-11-09",
+        "end": "2026-11-03",
         "actualStart": "2026-09-22",
         "started": true,
         "resource": "BE-1",
@@ -6838,7 +6861,7 @@
         "spentH": 0,
         "status": "Ready for DEV",
         "category": "backlog",
-        "start": "2026-11-25",
+        "start": "2026-11-26",
         "end": "2026-12-02",
         "actualStart": "2026-09-24",
         "started": true,
@@ -7091,7 +7114,7 @@
         "status": "Ready for DEV",
         "category": "backlog",
         "start": "2026-12-10",
-        "end": "2026-12-11",
+        "end": "2026-12-10",
         "actualStart": "2026-09-24",
         "started": true,
         "resource": "BE-2",
@@ -7136,8 +7159,8 @@
         "spentH": 5,
         "status": "Бэклог",
         "category": "backlog",
-        "start": "2026-11-06",
-        "end": "2026-11-09",
+        "start": "2026-11-09",
+        "end": "2026-11-10",
         "started": false,
         "resource": "ORG-1",
         "onCriticalPath": false,
@@ -7161,7 +7184,7 @@
         "status": "В работе",
         "category": "in_progress",
         "start": "2026-10-20",
-        "end": "2026-11-05",
+        "end": "2026-11-06",
         "actualStart": "2026-10-23",
         "started": true,
         "resource": "BA-1",
@@ -7268,310 +7291,40 @@
         "scenario": "PLATFORM"
       },
       {
-        "key": "B2BAPP-1187",
+        "key": "B2BAPP-1188",
         "type": "story",
         "parent": "B2BAPP-21",
         "epic": "B2BAPP-21",
-        "summary": "PL13. Как пользователь, я хочу давать системные разрешения контекстно и по делу, чтобы функции с биометрией, пушами и календарём работали",
+        "summary": "PL12. Как система, я хочу проверять права доступа на каждый запрос, чтобы каждый видел ровно то, что ему положено",
         "priority": 9999,
-        "estimateH": 56,
-        "spentH": 0,
-        "start": "2026-10-20",
-        "end": "2027-01-12",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": true,
+        "estimateH": 57,
+        "spentH": 16,
+        "start": "2026-12-07",
+        "end": "2026-12-16",
+        "category": "backlog",
+        "started": false,
+        "onCriticalPath": false,
         "deps": [],
-        "scenario": "PL13",
+        "scenario": "PL12",
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-540",
+        "key": "B2BAPP-544",
         "type": "story",
         "parent": "B2BAPP-484",
         "epic": "B2BAPP-484",
-        "summary": "RB5. Как клиент, я хочу видеть звонки по часам, чтобы понять, когда бизнес теряет звонки, и получить решение",
+        "summary": "RB1. Как пользователь, я хочу анализ отрасли из открытых источников, чтобы понимать контекст рынка без самостоятельного поиска",
         "priority": 9999,
-        "estimateH": 40,
-        "spentH": 40,
-        "start": "2026-09-22",
-        "end": "2026-12-02",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "RB5",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-1186",
-        "type": "story",
-        "parent": "B2BAPP-1241",
-        "epic": "B2BAPP-1241",
-        "summary": "PL14. Как новый пользователь, я хочу пройти онбординг, чтобы понять, как пользоваться приложением с первого экрана",
-        "priority": 9999,
-        "estimateH": 89,
-        "spentH": 36,
-        "start": "2026-06-30",
-        "end": "2027-01-13",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": true,
-        "deps": [],
-        "scenario": "PL14",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-72",
-        "type": "story",
-        "parent": "B2BAPP-22",
-        "epic": "B2BAPP-22",
-        "summary": "MD2. Как пользователь, я хочу видеть карточку ежедневной сводки на главном экране, чтобы за 5 секунд получить понимание состояния своего бизнеса за день",
-        "priority": 9999,
-        "estimateH": 40,
-        "spentH": 40,
-        "start": "2026-05-28",
-        "end": "2026-06-26",
-        "category": "done",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "MD2",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-538",
-        "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "PL18. Как продуктовая команда, я хочу анализ запросов и самоулучшение, чтобы строить бэклог на реальном спросе пользователей",
-        "priority": 9999,
-        "estimateH": 8,
-        "spentH": 4,
-        "start": "2026-11-03",
-        "end": "2026-11-03",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "PL18",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-30",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB6. Как предприниматель, я хочу спрашивать ассистента о своих звонках обычными фразами, чтобы находить и открывать их прямо в чате",
-        "priority": 9999,
-        "estimateH": 16,
-        "spentH": 0,
-        "start": "2026-11-09",
-        "end": "2026-11-09",
-        "category": "done",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "OB6",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-572",
-        "type": "story",
-        "parent": "B2BAPP-134",
-        "epic": "B2BAPP-134",
-        "summary": "PL17. Как пользователь, я хочу получать пуш-уведомления только с моего согласия, чтобы важные события доходили до устройства",
-        "priority": 9999,
-        "estimateH": 32,
-        "spentH": 28,
-        "start": "2026-09-22",
-        "end": "2026-11-11",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "PL17",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-543",
-        "type": "story",
-        "parent": "B2BAPP-484",
-        "epic": "B2BAPP-484",
-        "summary": "RB2. Как пользователь, я хочу сравнить свой сайт с конкурентами и видеть спрос, чтобы не отставать и привлекать клиентов",
-        "priority": 9999,
-        "estimateH": 85,
-        "spentH": 120,
+        "estimateH": 67,
+        "spentH": 98,
         "start": "2026-09-08",
         "end": "2026-12-02",
         "category": "in_progress",
         "started": true,
         "onCriticalPath": false,
         "deps": [],
-        "scenario": "RB2",
+        "scenario": "RB1",
         "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-542",
-        "type": "story",
-        "parent": "B2BAPP-484",
-        "epic": "B2BAPP-484",
-        "summary": "RB4. Как пользователь, я хочу видеть индекс цифровой зрелости, чтобы понять, где я и что подключить для роста",
-        "priority": 9999,
-        "estimateH": 32,
-        "spentH": 48,
-        "start": "2026-09-08",
-        "end": "2026-11-24",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "RB4",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-554",
-        "type": "story",
-        "parent": "B2BAPP-134",
-        "epic": "B2BAPP-134",
-        "summary": "PL7. Как продукт, я хочу собирать метрики использования, чтобы принимать решения на данных, а не на догадках",
-        "priority": 9999,
-        "estimateH": 32,
-        "spentH": 24,
-        "start": "2026-10-20",
-        "end": "2026-11-06",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "PL7",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-40",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB5. Как предприниматель, я хочу видеть подсказки следующих действий после ответа о звонках, чтобы продолжать работу без лишних запросов",
-        "priority": 9999,
-        "estimateH": 16,
-        "spentH": 0,
-        "start": "2026-11-11",
-        "end": "2026-11-11",
-        "category": "done",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "OB5",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-566",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB11. Как пользователь, я хочу работать с календарём из приложения, чтобы договорённости из звонков сразу становились встречами",
-        "priority": 9999,
-        "estimateH": 115,
-        "spentH": 49,
-        "start": "2026-09-22",
-        "end": "2026-11-30",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "OB11",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-1282",
-        "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "B2C. Как команда B2BAPP, я хочу определить, какие MCP-инструменты beeGPT можно переиспользовать без обязательного B2C-токена, чтобы ускорить ближайшие MVP-сценарии без зависимости от аутентификации и USSS B2C",
-        "priority": 9999,
-        "estimateH": 83,
-        "spentH": 0,
-        "start": "2026-11-09",
-        "end": "2026-11-20",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "B2C",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-545",
-        "type": "story",
-        "parent": "B2BAPP-21",
-        "epic": "B2BAPP-21",
-        "summary": "PL11. Как пользователь, я хочу бесшовно переходить в маркетплейс или веб-ЛК без повторного входа, чтобы решать операционные вопросы",
-        "priority": 9999,
-        "estimateH": 117,
-        "spentH": 101,
-        "start": "2026-09-22",
-        "end": "2026-12-07",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "PL11",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-1128",
-        "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "PL1. Как пользователь, я хочу общаться с приложением через единый ИИ-диалог (чипы, карточки, списки), чтобы не искать функции по экранам и меню",
-        "priority": 9999,
-        "estimateH": 743,
-        "spentH": 256,
-        "start": "2026-05-28",
-        "end": "2027-01-13",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": true,
-        "deps": [],
-        "scenario": "PL1",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-548",
-        "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "PL4. Как пользователь, я хочу получать понятный ответ и путь дальше по вопросам вне скоупа, чтобы не попадать в тупик",
-        "priority": 9999,
-        "estimateH": 38,
-        "spentH": 0,
-        "start": "2026-10-20",
-        "end": "2026-12-11",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": true,
-        "deps": [],
-        "scenario": "PL4",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-1354",
-        "type": "story",
-        "parent": "B2BAPP-484",
-        "epic": "B2BAPP-484",
-        "summary": "NAI. Как пользователь я хочу, чтобы ИИ-ассистенты выполняли рутинные задачи моего бизнеса, чтобы управлять бизнесом без дополнительных сотрудников",
-        "priority": 9999,
-        "estimateH": 99,
-        "spentH": 112,
-        "start": "2026-09-08",
-        "end": "2027-01-20",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": true,
-        "deps": [],
-        "scenario": "NAI",
-        "scenarioSource": "префикс названия"
       },
       {
         "key": "B2BAPP-555",
@@ -7589,132 +7342,6 @@
         "onCriticalPath": true,
         "deps": [],
         "scenario": "PL10",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-146",
-        "type": "story",
-        "parent": "B2BAPP-21",
-        "epic": "B2BAPP-21",
-        "summary": "PL9. Как пользователь я хочу завершить сеанс (Logout) с гарантированным удаление идентификатора сессии",
-        "priority": 9999,
-        "estimateH": 0,
-        "spentH": 0,
-        "start": "2026-06-11",
-        "end": "2026-06-11",
-        "category": "backlog",
-        "started": false,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "PL9",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-4",
-        "type": "story",
-        "parent": "B2BAPP-1242",
-        "epic": "B2BAPP-1242",
-        "summary": "YD. Дизайн-фундамент: макеты (профиль, стратегия продукта) и коридорные исследования",
-        "priority": 9999,
-        "estimateH": 0,
-        "spentH": 0,
-        "start": "2026-04-20",
-        "end": "2026-04-20",
-        "category": "backlog",
-        "started": false,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "YD",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-544",
-        "type": "story",
-        "parent": "B2BAPP-484",
-        "epic": "B2BAPP-484",
-        "summary": "RB1. Как пользователь, я хочу анализ отрасли из открытых источников, чтобы понимать контекст рынка без самостоятельного поиска",
-        "priority": 9999,
-        "estimateH": 67,
-        "spentH": 98,
-        "start": "2026-09-08",
-        "end": "2026-12-03",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "RB1",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-39",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB4. Как предприниматель, я хочу задать имя, которым помощник меня представляет, чтобы клиенты понимали, куда попали",
-        "priority": 9999,
-        "estimateH": 24,
-        "spentH": 0,
-        "start": "2026-11-30",
-        "end": "2026-12-03",
-        "category": "backlog",
-        "started": false,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "OB4",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-1373",
-        "type": "story",
-        "parent": "B2BAPP-491",
-        "epic": "B2BAPP-491",
-        "summary": "PL14. Как пользователь мобильного приложения, я хочу видеть актуальную оферту прямо в приложении, чтобы ознакомиться с условиями и принять их без перехода на внешние ресурсы",
-        "priority": 9999,
-        "estimateH": 16,
-        "spentH": 22,
-        "start": "2026-10-06",
-        "end": "2026-11-03",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "PL14",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-570",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB3. Как клиент, я хочу прослушать свой звонок и прочитать расшифровку, чтобы понять суть разговора за секунды",
-        "priority": 9999,
-        "estimateH": 50,
-        "spentH": 0,
-        "start": "2026-09-22",
-        "end": "2027-01-26",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": true,
-        "deps": [],
-        "scenario": "OB3",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-32",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB2. Как предприниматель, я хочу получать уведомление о звонке, на который ответил помощник, чтобы сразу узнать, что мне звонили",
-        "priority": 9999,
-        "estimateH": 0,
-        "spentH": 0,
-        "start": "2026-05-25",
-        "end": "2026-05-25",
-        "category": "backlog",
-        "started": false,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "OB2",
         "scenarioSource": "метка Jira"
       },
       {
@@ -7736,21 +7363,93 @@
         "scenarioSource": "префикс названия"
       },
       {
-        "key": "B2BAPP-63",
+        "key": "B2BAPP-1354",
         "type": "story",
-        "parent": "B2BAPP-1242",
-        "epic": "B2BAPP-1242",
-        "summary": "PL16. Как пользователь, я хочу редактировать базовые поля профиля (имя, email) прямо в приложении, чтобы быстро обновлять контактные данные без перехода в ЕЛК",
+        "parent": "B2BAPP-484",
+        "epic": "B2BAPP-484",
+        "summary": "NAI. Как пользователь я хочу, чтобы ИИ-ассистенты выполняли рутинные задачи моего бизнеса, чтобы управлять бизнесом без дополнительных сотрудников",
         "priority": 9999,
-        "estimateH": 21,
-        "spentH": 8,
+        "estimateH": 99,
+        "spentH": 112,
         "start": "2026-09-08",
-        "end": "2026-10-07",
-        "category": "done",
+        "end": "2027-01-20",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "NAI",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-551",
+        "type": "story",
+        "parent": "B2BAPP-484",
+        "epic": "B2BAPP-484",
+        "summary": "MD2. Как клиент, я хочу получать сводку дня по бизнесу, чтобы заметить важное без явных «сделай»",
+        "priority": 9999,
+        "estimateH": 91,
+        "spentH": 24,
+        "start": "2026-10-06",
+        "end": "2027-01-21",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "MD2",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-75",
+        "type": "story",
+        "parent": "B2BAPP-22",
+        "epic": "B2BAPP-22",
+        "summary": "PL1. Как пользователь, я хочу видеть на главном экране кнопки-чипсы с частыми действиями, чтобы запускать нужный сценарий одним тапом без набора текста",
+        "priority": 9999,
+        "estimateH": 78,
+        "spentH": 114,
+        "start": "2026-07-13",
+        "end": "2026-11-05",
+        "category": "in_progress",
         "started": true,
         "onCriticalPath": false,
         "deps": [],
-        "scenario": "PL16",
+        "scenario": "PL1",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-1288",
+        "type": "story",
+        "parent": "B2BAPP-134",
+        "epic": "B2BAPP-134",
+        "summary": "IB. Как команда, я хочу опубликовать приложение в App Store, Google Play, RuStore и AppGallery, чтобы пользователи могли его установить",
+        "priority": 9999,
+        "estimateH": 136,
+        "spentH": 9,
+        "start": "2026-10-14",
+        "end": "2026-12-10",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "IB",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-572",
+        "type": "story",
+        "parent": "B2BAPP-134",
+        "epic": "B2BAPP-134",
+        "summary": "PL17. Как пользователь, я хочу получать пуш-уведомления только с моего согласия, чтобы важные события доходили до устройства",
+        "priority": 9999,
+        "estimateH": 32,
+        "spentH": 28,
+        "start": "2026-09-22",
+        "end": "2026-11-12",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "PL17",
         "scenarioSource": "метка Jira"
       },
       {
@@ -7772,40 +7471,22 @@
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-1216",
+        "key": "B2BAPP-553",
         "type": "story",
-        "parent": "B2BAPP-21",
-        "epic": "B2BAPP-21",
-        "summary": "PL9. Как пользователь, я хочу входить в приложение при первом запуске, чтобы получить доступ к своим данным",
+        "parent": "B2BAPP-134",
+        "epic": "B2BAPP-134",
+        "summary": "PL8. Как система, я хочу вести логирование, чтобы понимать, что, когда и у кого происходило",
         "priority": 9999,
-        "estimateH": 341,
-        "spentH": 378,
-        "start": "2026-06-26",
-        "end": "2026-12-23",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": true,
-        "deps": [],
-        "scenario": "PL9",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-119",
-        "type": "story",
-        "parent": "B2BAPP-22",
-        "epic": "B2BAPP-22",
-        "summary": "MD1. Как пользователь, я хочу видеть на главном экране карточку-сигнал о важном событии, чтобы быть в курсе срочных ситуаций без необходимости что-либо спрашивать у AI",
-        "priority": 9999,
-        "estimateH": 21,
-        "spentH": 20,
-        "start": "2026-07-20",
-        "end": "2026-07-31",
-        "category": "done",
-        "started": true,
+        "estimateH": 0,
+        "spentH": 0,
+        "start": "2026-10-07",
+        "end": "2026-10-07",
+        "category": "backlog",
+        "started": false,
         "onCriticalPath": false,
         "deps": [],
-        "scenario": "MD1",
-        "scenarioSource": "префикс названия"
+        "scenario": "PL8",
+        "scenarioSource": "метка Jira"
       },
       {
         "key": "B2BAPP-547",
@@ -7826,129 +7507,21 @@
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-1240",
+        "key": "B2BAPP-1187",
         "type": "story",
-        "parent": "B2BAPP-134",
-        "epic": "B2BAPP-134",
-        "summary": "YD. Как команда разработки, я хочу иметь готовый технический каркас приложения (монорепо, сборка, транспорт, темизация), чтобы вести разработку фич на единой технической основе",
+        "parent": "B2BAPP-21",
+        "epic": "B2BAPP-21",
+        "summary": "PL13. Как пользователь, я хочу давать системные разрешения контекстно и по делу, чтобы функции с биометрией, пушами и календарём работали",
         "priority": 9999,
-        "estimateH": 231,
-        "spentH": 250,
-        "start": "2026-09-08",
-        "end": "2026-12-22",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": true,
-        "deps": [],
-        "scenario": "YD",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-551",
-        "type": "story",
-        "parent": "B2BAPP-484",
-        "epic": "B2BAPP-484",
-        "summary": "MD2. Как клиент, я хочу получать сводку дня по бизнесу, чтобы заметить важное без явных «сделай»",
-        "priority": 9999,
-        "estimateH": 83,
-        "spentH": 24,
-        "start": "2026-10-06",
-        "end": "2027-01-21",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": true,
-        "deps": [],
-        "scenario": "MD2",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-567",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB10. Как клиент, я хочу создавать напоминания из звонка и вручную, чтобы не забыть обещанное",
-        "priority": 9999,
-        "estimateH": 32,
+        "estimateH": 56,
         "spentH": 0,
-        "start": "2026-11-25",
-        "end": "2026-12-11",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "OB10",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-42",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB8. Как предприниматель, я хочу видеть предупреждение, если номер в простое, чтобы вовремя пополнить баланс и не терять клиентов",
-        "priority": 9999,
-        "estimateH": 16,
-        "spentH": 0,
-        "start": "2026-11-24",
-        "end": "2026-11-25",
-        "category": "backlog",
-        "started": false,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "OB8",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-78",
-        "type": "story",
-        "parent": "B2BAPP-22",
-        "epic": "B2BAPP-22",
-        "summary": "PL1. Как пользователь, я хочу видеть строку ввода AI-чата прямо на главном экране, чтобы начать диалог одним тапом без перехода в отдельный раздел",
-        "priority": 9999,
-        "estimateH": 142,
-        "spentH": 153,
-        "start": "2026-09-08",
-        "end": "2026-11-05",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "PL1",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-1290",
-        "type": "story",
-        "parent": "B2BAPP-134",
-        "epic": "B2BAPP-134",
-        "summary": "B2C. Как команда разработки, я хочу понять, как переиспользовать и встроиться в хернесы/сценарии B2C, чтобы не изобретать велосипед по звонкам и ИИ",
-        "priority": 9999,
-        "estimateH": 21,
-        "spentH": 24,
-        "start": "2026-09-08",
-        "end": "2026-09-09",
-        "category": "done",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "B2C",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-1274",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB1. Как предприниматель, я хочу видеть в одной истории звонки помощника и свои разговоры с отбором по типу, периоду и номеру, чтобы быстро найти нужный звонок",
-        "priority": 9999,
-        "estimateH": 256,
-        "spentH": 124,
-        "start": "2026-09-22",
-        "end": "2027-01-18",
+        "start": "2026-10-20",
+        "end": "2027-01-12",
         "category": "in_progress",
         "started": true,
         "onCriticalPath": true,
         "deps": [],
-        "scenario": "OB1",
+        "scenario": "PL13",
         "scenarioSource": "метка Jira"
       },
       {
@@ -7970,238 +7543,76 @@
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-1188",
+        "key": "B2BAPP-39",
         "type": "story",
-        "parent": "B2BAPP-21",
-        "epic": "B2BAPP-21",
-        "summary": "PL12. Как система, я хочу проверять права доступа на каждый запрос, чтобы каждый видел ровно то, что ему положено",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "OB4. Как предприниматель, я хочу задать имя, которым помощник меня представляет, чтобы клиенты понимали, куда попали",
         "priority": 9999,
-        "estimateH": 57,
-        "spentH": 16,
-        "start": "2026-12-07",
-        "end": "2026-12-16",
-        "category": "backlog",
-        "started": false,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "PL12",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-553",
-        "type": "story",
-        "parent": "B2BAPP-134",
-        "epic": "B2BAPP-134",
-        "summary": "PL8. Как система, я хочу вести логирование, чтобы понимать, что, когда и у кого происходило",
-        "priority": 9999,
-        "estimateH": 0,
+        "estimateH": 24,
         "spentH": 0,
-        "start": "2026-10-07",
-        "end": "2026-10-07",
+        "start": "2026-11-30",
+        "end": "2026-12-03",
         "category": "backlog",
         "started": false,
         "onCriticalPath": false,
         "deps": [],
-        "scenario": "PL8",
+        "scenario": "OB4",
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-539",
+        "key": "B2BAPP-568",
         "type": "story",
-        "parent": "B2BAPP-484",
-        "epic": "B2BAPP-484",
-        "summary": "RB3. Как пользователь, я хочу видеть трафик мимо точки бизнеса, чтобы оценить упущенный поток клиентов",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "OB5. Как предприниматель, я хочу видеть краткое содержание звонка и что из него нужно сделать и ставить по этим делам напоминания, чтобы не терять договорённости",
         "priority": 9999,
-        "estimateH": 40,
-        "spentH": 56,
-        "start": "2026-09-22",
-        "end": "2026-12-01",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "RB3",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-561",
-        "type": "story",
-        "parent": "B2BAPP-25",
-        "epic": "B2BAPP-25",
-        "summary": "PL3. Как клиент, я хочу написать в поддержку и попасть к оператору, чтобы не остаться без ответа, если ИИ не справился",
-        "priority": 9999,
-        "estimateH": 312,
-        "spentH": 40,
-        "start": "2026-09-22",
-        "end": "2027-02-02",
+        "estimateH": 108,
+        "spentH": 96,
+        "start": "2026-10-20",
+        "end": "2026-12-15",
         "category": "in_progress",
         "started": true,
         "onCriticalPath": true,
         "deps": [],
-        "scenario": "PL3",
+        "scenario": "OB5",
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-128",
-        "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "PL1. Как система, я хочу MCP-сервер для ЕЛК, чтобы AI Orchestrator мог получать данные по договорам и счетам пользователя",
-        "priority": 9999,
-        "estimateH": 0,
-        "spentH": 0,
-        "start": "2026-05-08",
-        "end": "2026-05-08",
-        "category": "backlog",
-        "started": false,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "PL1",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-2",
+        "key": "B2BAPP-554",
         "type": "story",
         "parent": "B2BAPP-134",
         "epic": "B2BAPP-134",
-        "summary": "YD. Инфраструктура и вычислительные среды (Prod/E2E), IDP-доступы",
+        "summary": "PL7. Как продукт, я хочу собирать метрики использования, чтобы принимать решения на данных, а не на догадках",
         "priority": 9999,
-        "estimateH": 126,
-        "spentH": 101,
-        "start": "2026-01-12",
-        "end": "2026-10-05",
-        "category": "done",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "YD",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-44",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB8. Как предприниматель, я хочу видеть название компании, которая мне звонила, чтобы понимать, кто это, без прослушивания",
-        "priority": 9999,
-        "estimateH": 0,
-        "spentH": 0,
-        "start": "2026-05-25",
-        "end": "2026-05-25",
-        "category": "backlog",
-        "started": false,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "OB8",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-522",
-        "type": "story",
-        "parent": "B2BAPP-134",
-        "epic": "B2BAPP-134",
-        "summary": "YD. Как команда, я хочу иметь тестовую среду (стенд) для интеграционного тестирования B2BAPP, чтобы проверять сценарии до выхода в прод",
-        "priority": 9999,
-        "estimateH": 61,
-        "spentH": 42,
-        "start": "2026-09-08",
-        "end": "2026-11-23",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "YD",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-549",
-        "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB7. Как клиент, я хочу получать проактивные инсайты по звонкам, чтобы замечать проблемы и тренды, не анализируя цифры сам",
-        "priority": 9999,
-        "estimateH": 48,
+        "estimateH": 32,
         "spentH": 24,
-        "start": "2026-11-05",
-        "end": "2026-11-25",
+        "start": "2026-10-20",
+        "end": "2026-11-06",
         "category": "in_progress",
         "started": true,
         "onCriticalPath": false,
         "deps": [],
-        "scenario": "OB7",
+        "scenario": "PL7",
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-923",
+        "key": "B2BAPP-119",
         "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "PL6. Как система, я хочу хранить историю диалогов, чтобы обеспечить непрерывность общения и персонализацию",
+        "parent": "B2BAPP-22",
+        "epic": "B2BAPP-22",
+        "summary": "MD1. Как пользователь, я хочу видеть на главном экране карточку-сигнал о важном событии, чтобы быть в курсе срочных ситуаций без необходимости что-либо спрашивать у AI",
         "priority": 9999,
-        "estimateH": 68,
-        "spentH": 40,
-        "start": "2026-10-06",
-        "end": "2026-11-02",
+        "estimateH": 21,
+        "spentH": 20,
+        "start": "2026-07-20",
+        "end": "2026-07-31",
         "category": "done",
         "started": true,
         "onCriticalPath": false,
-        "deps": [],
-        "scenario": "PL6",
-        "scenarioSource": "метка Jira"
-      },
-      {
-        "key": "B2BAPP-41",
-        "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "PL6. Как пользователь, я хочу управлять историей своих диалогов с AI (переключаться, удалять, переименовывать), чтобы легко возвращаться к нужным разговорам",
-        "priority": 9999,
-        "estimateH": 112,
-        "spentH": 0,
-        "start": "2026-12-23",
-        "end": "2027-01-15",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": true,
-        "deps": [],
-        "scenario": "PL6",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-1207",
-        "type": "story",
-        "parent": "B2BAPP-491",
-        "epic": "B2BAPP-491",
-        "summary": "PK1. Как пользователь, я хочу при запуске приложения видеть экран загрузки с логотипом и названием, чтобы понимать, что приложение запускается",
-        "priority": 9999,
-        "estimateH": 31,
-        "spentH": 124,
-        "start": "2026-08-11",
-        "end": "2026-09-09",
-        "category": "done",
-        "started": true,
-        "onCriticalPath": false,
-        "deps": [],
-        "scenario": "PK1",
-        "scenarioSource": "префикс названия"
-      },
-      {
-        "key": "B2BAPP-552",
-        "type": "story",
-        "parent": "B2BAPP-484",
-        "epic": "B2BAPP-484",
-        "summary": "MD1. Как клиент, я хочу видеть топ актуальных задач и событий по всему бизнесу, чтобы понимать, что требует действия прямо сейчас",
-        "priority": 9999,
-        "estimateH": 61,
-        "spentH": 40,
-        "start": "2026-09-08",
-        "end": "2027-01-20",
-        "category": "in_progress",
-        "started": true,
-        "onCriticalPath": true,
         "deps": [],
         "scenario": "MD1",
-        "scenarioSource": "метка Jira"
+        "scenarioSource": "префикс названия"
       },
       {
         "key": "B2BAPP-29",
@@ -8240,57 +7651,291 @@
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-569",
+        "key": "B2BAPP-1290",
+        "type": "story",
+        "parent": "B2BAPP-134",
+        "epic": "B2BAPP-134",
+        "summary": "B2C. Как команда разработки, я хочу понять, как переиспользовать и встроиться в хернесы/сценарии B2C, чтобы не изобретать велосипед по звонкам и ИИ",
+        "priority": 9999,
+        "estimateH": 21,
+        "spentH": 24,
+        "start": "2026-09-08",
+        "end": "2026-09-09",
+        "category": "done",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "B2C",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-30",
         "type": "story",
         "parent": "B2BAPP-465",
         "epic": "B2BAPP-465",
-        "summary": "OB4. Как предприниматель, я хочу прочитать расшифровку звонка, принятого виртуальным помощником чтобы понять суть разговора без прослушивания",
+        "summary": "OB6. Как предприниматель, я хочу спрашивать ассистента о своих звонках обычными фразами, чтобы находить и открывать их прямо в чате",
         "priority": 9999,
         "estimateH": 16,
+        "spentH": 0,
+        "start": "2026-11-09",
+        "end": "2026-11-09",
+        "category": "done",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "OB6",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-549",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "OB7. Как клиент, я хочу получать проактивные инсайты по звонкам, чтобы замечать проблемы и тренды, не анализируя цифры сам",
+        "priority": 9999,
+        "estimateH": 48,
         "spentH": 24,
-        "start": "2026-10-09",
-        "end": "2026-12-09",
+        "start": "2026-11-05",
+        "end": "2026-11-26",
         "category": "in_progress",
         "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "OB7",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-44",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "OB8. Как предприниматель, я хочу видеть название компании, которая мне звонила, чтобы понимать, кто это, без прослушивания",
+        "priority": 9999,
+        "estimateH": 0,
+        "spentH": 0,
+        "start": "2026-05-25",
+        "end": "2026-05-25",
+        "category": "backlog",
+        "started": false,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "OB8",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-41",
+        "type": "story",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "PL6. Как пользователь, я хочу управлять историей своих диалогов с AI (переключаться, удалять, переименовывать), чтобы легко возвращаться к нужным разговорам",
+        "priority": 9999,
+        "estimateH": 112,
+        "spentH": 0,
+        "start": "2026-12-23",
+        "end": "2027-01-15",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "PL6",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-4",
+        "type": "story",
+        "parent": "B2BAPP-1242",
+        "epic": "B2BAPP-1242",
+        "summary": "YD. Дизайн-фундамент: макеты (профиль, стратегия продукта) и коридорные исследования",
+        "priority": 9999,
+        "estimateH": 0,
+        "spentH": 0,
+        "start": "2026-04-20",
+        "end": "2026-04-20",
+        "category": "backlog",
+        "started": false,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "YD",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-561",
+        "type": "story",
+        "parent": "B2BAPP-25",
+        "epic": "B2BAPP-25",
+        "summary": "PL3. Как клиент, я хочу написать в поддержку и попасть к оператору, чтобы не остаться без ответа, если ИИ не справился",
+        "priority": 9999,
+        "estimateH": 312,
+        "spentH": 40,
+        "start": "2026-09-22",
+        "end": "2027-02-02",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "PL3",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-72",
+        "type": "story",
+        "parent": "B2BAPP-22",
+        "epic": "B2BAPP-22",
+        "summary": "MD2. Как пользователь, я хочу видеть карточку ежедневной сводки на главном экране, чтобы за 5 секунд получить понимание состояния своего бизнеса за день",
+        "priority": 9999,
+        "estimateH": 40,
+        "spentH": 40,
+        "start": "2026-05-28",
+        "end": "2026-06-26",
+        "category": "done",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "MD2",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-127",
+        "type": "story",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "PL1. Как система, я хочу микросервис AI Orchestrator, чтобы обрабатывать запросы пользователей через LLM и MCP-инструменты и возвращать ответы в чат",
+        "priority": 9999,
+        "estimateH": 40,
+        "spentH": 74,
+        "start": "2026-07-13",
+        "end": "2026-09-11",
+        "category": "done",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "PL1",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-566",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "OB11. Как пользователь, я хочу работать с календарём из приложения, чтобы договорённости из звонков сразу становились встречами",
+        "priority": 9999,
+        "estimateH": 115,
+        "spentH": 49,
+        "start": "2026-09-22",
+        "end": "2026-11-30",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "OB11",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-78",
+        "type": "story",
+        "parent": "B2BAPP-22",
+        "epic": "B2BAPP-22",
+        "summary": "PL1. Как пользователь, я хочу видеть строку ввода AI-чата прямо на главном экране, чтобы начать диалог одним тапом без перехода в отдельный раздел",
+        "priority": 9999,
+        "estimateH": 142,
+        "spentH": 153,
+        "start": "2026-09-08",
+        "end": "2026-11-05",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "PL1",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-545",
+        "type": "story",
+        "parent": "B2BAPP-21",
+        "epic": "B2BAPP-21",
+        "summary": "PL11. Как пользователь, я хочу бесшовно переходить в маркетплейс или веб-ЛК без повторного входа, чтобы решать операционные вопросы",
+        "priority": 9999,
+        "estimateH": 117,
+        "spentH": 101,
+        "start": "2026-09-22",
+        "end": "2026-12-07",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "PL11",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-63",
+        "type": "story",
+        "parent": "B2BAPP-1242",
+        "epic": "B2BAPP-1242",
+        "summary": "PL16. Как пользователь, я хочу редактировать базовые поля профиля (имя, email) прямо в приложении, чтобы быстро обновлять контактные данные без перехода в ЕЛК",
+        "priority": 9999,
+        "estimateH": 21,
+        "spentH": 8,
+        "start": "2026-09-08",
+        "end": "2026-10-07",
+        "category": "done",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "PL16",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-38",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "OB4. Как предприниматель, я хочу выбрать, в каких случаях помощник отвечает за меня, чтобы он не перехватывал звонки, на которые я отвечу сам",
+        "priority": 9999,
+        "estimateH": 0,
+        "spentH": 0,
+        "start": "2026-05-25",
+        "end": "2026-05-25",
+        "category": "backlog",
+        "started": false,
         "onCriticalPath": false,
         "deps": [],
         "scenario": "OB4",
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-193",
+        "key": "B2BAPP-542",
         "type": "story",
-        "parent": "B2BAPP-134",
-        "epic": "B2BAPP-134",
-        "summary": "IB. Как команда я хочу вывести в продуктив приложение: инфраструктура, среды, соответствие ИБ и НФТ",
+        "parent": "B2BAPP-484",
+        "epic": "B2BAPP-484",
+        "summary": "RB4. Как пользователь, я хочу видеть индекс цифровой зрелости, чтобы понять, где я и что подключить для роста",
         "priority": 9999,
-        "estimateH": 885,
-        "spentH": 601,
-        "start": "2026-08-05",
-        "end": "2026-12-18",
+        "estimateH": 32,
+        "spentH": 48,
+        "start": "2026-09-08",
+        "end": "2026-11-24",
         "category": "in_progress",
         "started": true,
-        "onCriticalPath": true,
+        "onCriticalPath": false,
         "deps": [],
-        "scenario": "IB",
-        "scenarioSource": "префикс названия"
+        "scenario": "RB4",
+        "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-546",
+        "key": "B2BAPP-543",
         "type": "story",
-        "parent": "B2BAPP-1242",
-        "epic": "B2BAPP-1242",
-        "summary": "PL16. Как пользователь, я хочу управлять настройками (тема, пуши, безопасность), чтобы приложение подстраивалось под меня",
+        "parent": "B2BAPP-484",
+        "epic": "B2BAPP-484",
+        "summary": "RB2. Как пользователь, я хочу сравнить свой сайт с конкурентами и видеть спрос, чтобы не отставать и привлекать клиентов",
         "priority": 9999,
-        "estimateH": 240,
-        "spentH": 98,
+        "estimateH": 85,
+        "spentH": 120,
         "start": "2026-09-08",
-        "end": "2027-01-20",
+        "end": "2026-12-01",
         "category": "in_progress",
         "started": true,
-        "onCriticalPath": true,
+        "onCriticalPath": false,
         "deps": [],
-        "scenario": "PL16",
+        "scenario": "RB2",
         "scenarioSource": "метка Jira"
       },
       {
@@ -8312,57 +7957,129 @@
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-568",
+        "key": "B2BAPP-538",
         "type": "story",
-        "parent": "B2BAPP-465",
-        "epic": "B2BAPP-465",
-        "summary": "OB5. Как предприниматель, я хочу видеть краткое содержание звонка и что из него нужно сделать и ставить по этим делам напоминания, чтобы не терять договорённости",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "PL18. Как продуктовая команда, я хочу анализ запросов и самоулучшение, чтобы строить бэклог на реальном спросе пользователей",
         "priority": 9999,
-        "estimateH": 108,
-        "spentH": 88,
-        "start": "2026-10-20",
-        "end": "2026-12-15",
+        "estimateH": 8,
+        "spentH": 4,
+        "start": "2026-11-05",
+        "end": "2026-11-06",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "PL18",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-1128",
+        "type": "story",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "PL1. Как пользователь, я хочу общаться с приложением через единый ИИ-диалог (чипы, карточки, списки), чтобы не искать функции по экранам и меню",
+        "priority": 9999,
+        "estimateH": 743,
+        "spentH": 256,
+        "start": "2026-05-28",
+        "end": "2027-01-13",
         "category": "in_progress",
         "started": true,
         "onCriticalPath": true,
         "deps": [],
-        "scenario": "OB5",
+        "scenario": "PL1",
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-75",
+        "key": "B2BAPP-546",
         "type": "story",
-        "parent": "B2BAPP-22",
-        "epic": "B2BAPP-22",
-        "summary": "PL1. Как пользователь, я хочу видеть на главном экране кнопки-чипсы с частыми действиями, чтобы запускать нужный сценарий одним тапом без набора текста",
+        "parent": "B2BAPP-1242",
+        "epic": "B2BAPP-1242",
+        "summary": "PL16. Как пользователь, я хочу управлять настройками (тема, пуши, безопасность), чтобы приложение подстраивалось под меня",
         "priority": 9999,
-        "estimateH": 78,
-        "spentH": 114,
-        "start": "2026-07-13",
-        "end": "2026-11-03",
+        "estimateH": 240,
+        "spentH": 98,
+        "start": "2026-09-08",
+        "end": "2027-01-20",
         "category": "in_progress",
         "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "PL16",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-1274",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "OB1. Как предприниматель, я хочу видеть в одной истории звонки помощника и свои разговоры с отбором по типу, периоду и номеру, чтобы быстро найти нужный звонок",
+        "priority": 9999,
+        "estimateH": 256,
+        "spentH": 124,
+        "start": "2026-09-22",
+        "end": "2027-01-18",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "OB1",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-128",
+        "type": "story",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "PL1. Как система, я хочу MCP-сервер для ЕЛК, чтобы AI Orchestrator мог получать данные по договорам и счетам пользователя",
+        "priority": 9999,
+        "estimateH": 0,
+        "spentH": 0,
+        "start": "2026-05-08",
+        "end": "2026-05-08",
+        "category": "backlog",
+        "started": false,
         "onCriticalPath": false,
         "deps": [],
         "scenario": "PL1",
         "scenarioSource": "префикс названия"
       },
       {
-        "key": "B2BAPP-1288",
+        "key": "B2BAPP-539",
         "type": "story",
-        "parent": "B2BAPP-134",
-        "epic": "B2BAPP-134",
-        "summary": "IB. Как команда, я хочу опубликовать приложение в App Store, Google Play, RuStore и AppGallery, чтобы пользователи могли его установить",
+        "parent": "B2BAPP-484",
+        "epic": "B2BAPP-484",
+        "summary": "RB3. Как пользователь, я хочу видеть трафик мимо точки бизнеса, чтобы оценить упущенный поток клиентов",
         "priority": 9999,
-        "estimateH": 136,
-        "spentH": 9,
-        "start": "2026-10-14",
-        "end": "2026-12-10",
+        "estimateH": 40,
+        "spentH": 56,
+        "start": "2026-09-22",
+        "end": "2026-11-26",
         "category": "in_progress",
         "started": true,
-        "onCriticalPath": true,
+        "onCriticalPath": false,
         "deps": [],
-        "scenario": "IB",
+        "scenario": "RB3",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-1373",
+        "type": "story",
+        "parent": "B2BAPP-491",
+        "epic": "B2BAPP-491",
+        "summary": "PL14. Как пользователь мобильного приложения, я хочу видеть актуальную оферту прямо в приложении, чтобы ознакомиться с условиями и принять их без перехода на внешние ресурсы",
+        "priority": 9999,
+        "estimateH": 16,
+        "spentH": 22,
+        "start": "2026-10-06",
+        "end": "2026-11-05",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "PL14",
         "scenarioSource": "префикс названия"
       },
       {
@@ -8384,6 +8101,60 @@
         "scenarioSource": "префикс названия"
       },
       {
+        "key": "B2BAPP-1216",
+        "type": "story",
+        "parent": "B2BAPP-21",
+        "epic": "B2BAPP-21",
+        "summary": "PL9. Как пользователь, я хочу входить в приложение при первом запуске, чтобы получить доступ к своим данным",
+        "priority": 9999,
+        "estimateH": 341,
+        "spentH": 378,
+        "start": "2026-06-26",
+        "end": "2026-12-23",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "PL9",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-146",
+        "type": "story",
+        "parent": "B2BAPP-21",
+        "epic": "B2BAPP-21",
+        "summary": "PL9. Как пользователь я хочу завершить сеанс (Logout) с гарантированным удаление идентификатора сессии",
+        "priority": 9999,
+        "estimateH": 0,
+        "spentH": 0,
+        "start": "2026-06-11",
+        "end": "2026-06-11",
+        "category": "backlog",
+        "started": false,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "PL9",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-42",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "OB8. Как предприниматель, я хочу видеть предупреждение, если номер в простое, чтобы вовремя пополнить баланс и не терять клиентов",
+        "priority": 9999,
+        "estimateH": 16,
+        "spentH": 0,
+        "start": "2026-11-24",
+        "end": "2026-11-25",
+        "category": "backlog",
+        "started": false,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "OB8",
+        "scenarioSource": "метка Jira"
+      },
+      {
         "key": "B2BAPP-924",
         "type": "story",
         "parent": "B2BAPP-27",
@@ -8402,39 +8173,39 @@
         "scenarioSource": "метка Jira"
       },
       {
-        "key": "B2BAPP-127",
+        "key": "B2BAPP-1207",
         "type": "story",
-        "parent": "B2BAPP-27",
-        "epic": "B2BAPP-27",
-        "summary": "PL1. Как система, я хочу микросервис AI Orchestrator, чтобы обрабатывать запросы пользователей через LLM и MCP-инструменты и возвращать ответы в чат",
+        "parent": "B2BAPP-491",
+        "epic": "B2BAPP-491",
+        "summary": "PK1. Как пользователь, я хочу при запуске приложения видеть экран загрузки с логотипом и названием, чтобы понимать, что приложение запускается",
         "priority": 9999,
-        "estimateH": 40,
-        "spentH": 74,
-        "start": "2026-07-13",
-        "end": "2026-09-11",
+        "estimateH": 31,
+        "spentH": 124,
+        "start": "2026-08-11",
+        "end": "2026-09-09",
         "category": "done",
         "started": true,
         "onCriticalPath": false,
         "deps": [],
-        "scenario": "PL1",
+        "scenario": "PK1",
         "scenarioSource": "префикс названия"
       },
       {
-        "key": "B2BAPP-38",
+        "key": "B2BAPP-40",
         "type": "story",
         "parent": "B2BAPP-465",
         "epic": "B2BAPP-465",
-        "summary": "OB4. Как предприниматель, я хочу выбрать, в каких случаях помощник отвечает за меня, чтобы он не перехватывал звонки, на которые я отвечу сам",
+        "summary": "OB5. Как предприниматель, я хочу видеть подсказки следующих действий после ответа о звонках, чтобы продолжать работу без лишних запросов",
         "priority": 9999,
-        "estimateH": 0,
+        "estimateH": 16,
         "spentH": 0,
-        "start": "2026-05-25",
-        "end": "2026-05-25",
-        "category": "backlog",
-        "started": false,
+        "start": "2026-11-11",
+        "end": "2026-11-11",
+        "category": "done",
+        "started": true,
         "onCriticalPath": false,
         "deps": [],
-        "scenario": "OB4",
+        "scenario": "OB5",
         "scenarioSource": "метка Jira"
       },
       {
@@ -8447,13 +8218,67 @@
         "estimateH": 84,
         "spentH": 86,
         "start": "2026-09-22",
-        "end": "2026-12-08",
+        "end": "2026-12-07",
         "category": "in_progress",
         "started": true,
         "onCriticalPath": false,
         "deps": [],
         "scenario": "OB2",
         "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-522",
+        "type": "story",
+        "parent": "B2BAPP-134",
+        "epic": "B2BAPP-134",
+        "summary": "YD. Как команда, я хочу иметь тестовую среду (стенд) для интеграционного тестирования B2BAPP, чтобы проверять сценарии до выхода в прод",
+        "priority": 9999,
+        "estimateH": 61,
+        "spentH": 42,
+        "start": "2026-09-08",
+        "end": "2026-11-23",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "YD",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-923",
+        "type": "story",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "PL6. Как система, я хочу хранить историю диалогов, чтобы обеспечить непрерывность общения и персонализацию",
+        "priority": 9999,
+        "estimateH": 68,
+        "spentH": 40,
+        "start": "2026-10-06",
+        "end": "2026-11-02",
+        "category": "done",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "PL6",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-1282",
+        "type": "story",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "B2C. Как команда B2BAPP, я хочу определить, какие MCP-инструменты beeGPT можно переиспользовать без обязательного B2C-токена, чтобы ускорить ближайшие MVP-сценарии без зависимости от аутентификации и USSS B2C",
+        "priority": 9999,
+        "estimateH": 83,
+        "spentH": 0,
+        "start": "2026-11-09",
+        "end": "2026-11-19",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "B2C",
+        "scenarioSource": "префикс названия"
       },
       {
         "key": "B2BAPP-71",
@@ -8474,21 +8299,202 @@
         "scenarioSource": "префикс названия"
       },
       {
-        "key": "B2BAPP-465",
-        "type": "epic",
-        "parent": null,
+        "key": "B2BAPP-569",
+        "type": "story",
+        "parent": "B2BAPP-465",
         "epic": "B2BAPP-465",
-        "summary": "10. Общение и звонки",
-        "priority": 10,
-        "estimateH": 961,
-        "spentH": 435,
+        "summary": "OB4. Как предприниматель, я хочу прочитать расшифровку звонка, принятого виртуальным помощником чтобы понять суть разговора без прослушивания",
+        "priority": 9999,
+        "estimateH": 16,
+        "spentH": 24,
+        "start": "2026-10-09",
+        "end": "2026-12-08",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "OB4",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-32",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "OB2. Как предприниматель, я хочу получать уведомление о звонке, на который ответил помощник, чтобы сразу узнать, что мне звонили",
+        "priority": 9999,
+        "estimateH": 0,
+        "spentH": 0,
+        "start": "2026-05-25",
+        "end": "2026-05-25",
+        "category": "backlog",
+        "started": false,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "OB2",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-548",
+        "type": "story",
+        "parent": "B2BAPP-27",
+        "epic": "B2BAPP-27",
+        "summary": "PL4. Как пользователь, я хочу получать понятный ответ и путь дальше по вопросам вне скоупа, чтобы не попадать в тупик",
+        "priority": 9999,
+        "estimateH": 38,
+        "spentH": 8,
+        "start": "2026-10-20",
+        "end": "2026-12-11",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "PL4",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-540",
+        "type": "story",
+        "parent": "B2BAPP-484",
+        "epic": "B2BAPP-484",
+        "summary": "RB5. Как клиент, я хочу видеть звонки по часам, чтобы понять, когда бизнес теряет звонки, и получить решение",
+        "priority": 9999,
+        "estimateH": 40,
+        "spentH": 40,
+        "start": "2026-09-22",
+        "end": "2026-12-02",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "RB5",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-1240",
+        "type": "story",
+        "parent": "B2BAPP-134",
+        "epic": "B2BAPP-134",
+        "summary": "YD. Как команда разработки, я хочу иметь готовый технический каркас приложения (монорепо, сборка, транспорт, темизация), чтобы вести разработку фич на единой технической основе",
+        "priority": 9999,
+        "estimateH": 231,
+        "spentH": 250,
+        "start": "2026-09-08",
+        "end": "2026-12-22",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "YD",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-1186",
+        "type": "story",
+        "parent": "B2BAPP-1241",
+        "epic": "B2BAPP-1241",
+        "summary": "PL14. Как новый пользователь, я хочу пройти онбординг, чтобы понять, как пользоваться приложением с первого экрана",
+        "priority": 9999,
+        "estimateH": 89,
+        "spentH": 36,
+        "start": "2026-06-30",
+        "end": "2027-01-13",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "PL14",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-570",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "OB3. Как клиент, я хочу прослушать свой звонок и прочитать расшифровку, чтобы понять суть разговора за секунды",
+        "priority": 9999,
+        "estimateH": 50,
+        "spentH": 0,
         "start": "2026-09-22",
         "end": "2027-01-26",
         "category": "in_progress",
+        "started": true,
         "onCriticalPath": true,
-        "storiesTotal": 17,
-        "storiesDone": 2,
-        "deps": []
+        "deps": [],
+        "scenario": "OB3",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-2",
+        "type": "story",
+        "parent": "B2BAPP-134",
+        "epic": "B2BAPP-134",
+        "summary": "YD. Инфраструктура и вычислительные среды (Prod/E2E), IDP-доступы",
+        "priority": 9999,
+        "estimateH": 126,
+        "spentH": 101,
+        "start": "2026-01-12",
+        "end": "2026-10-05",
+        "category": "done",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "YD",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-193",
+        "type": "story",
+        "parent": "B2BAPP-134",
+        "epic": "B2BAPP-134",
+        "summary": "IB. Как команда я хочу вывести в продуктив приложение: инфраструктура, среды, соответствие ИБ и НФТ",
+        "priority": 9999,
+        "estimateH": 901,
+        "spentH": 609,
+        "start": "2026-08-05",
+        "end": "2026-12-23",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "IB",
+        "scenarioSource": "префикс названия"
+      },
+      {
+        "key": "B2BAPP-567",
+        "type": "story",
+        "parent": "B2BAPP-465",
+        "epic": "B2BAPP-465",
+        "summary": "OB10. Как клиент, я хочу создавать напоминания из звонка и вручную, чтобы не забыть обещанное",
+        "priority": 9999,
+        "estimateH": 32,
+        "spentH": 0,
+        "start": "2026-11-26",
+        "end": "2026-12-10",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": false,
+        "deps": [],
+        "scenario": "OB10",
+        "scenarioSource": "метка Jira"
+      },
+      {
+        "key": "B2BAPP-552",
+        "type": "story",
+        "parent": "B2BAPP-484",
+        "epic": "B2BAPP-484",
+        "summary": "MD1. Как клиент, я хочу видеть топ актуальных задач и событий по всему бизнесу, чтобы понимать, что требует действия прямо сейчас",
+        "priority": 9999,
+        "estimateH": 61,
+        "spentH": 40,
+        "start": "2026-09-08",
+        "end": "2027-01-20",
+        "category": "in_progress",
+        "started": true,
+        "onCriticalPath": true,
+        "deps": [],
+        "scenario": "MD1",
+        "scenarioSource": "метка Jira"
       },
       {
         "key": "B2BAPP-484",
@@ -8497,7 +8503,7 @@
         "epic": "B2BAPP-484",
         "summary": "9. AI-отчёты и аналитика",
         "priority": 9,
-        "estimateH": 611,
+        "estimateH": 619,
         "spentH": 675,
         "start": "2026-05-08",
         "end": "2027-01-21",
@@ -8508,20 +8514,71 @@
         "deps": []
       },
       {
-        "key": "B2BAPP-22",
+        "key": "B2BAPP-134",
         "type": "epic",
         "parent": null,
-        "epic": "B2BAPP-22",
-        "summary": "6. Главная страница",
-        "priority": 6,
-        "estimateH": 507,
-        "spentH": 375,
-        "start": "2026-05-28",
-        "end": "2026-11-05",
+        "epic": "B2BAPP-134",
+        "summary": "2. Инфраструктура и платформа",
+        "priority": 2,
+        "estimateH": 1612,
+        "spentH": 1200,
+        "start": "2026-01-12",
+        "end": "2026-12-23",
         "category": "in_progress",
-        "onCriticalPath": false,
-        "storiesTotal": 7,
+        "onCriticalPath": true,
+        "storiesTotal": 13,
         "storiesDone": 4,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-27",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-27",
+        "summary": "7. ИИ-движок",
+        "priority": 7,
+        "estimateH": 1155,
+        "spentH": 422,
+        "start": "2026-05-28",
+        "end": "2027-01-15",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "storiesTotal": 11,
+        "storiesDone": 2,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-465",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-465",
+        "summary": "10. Общение и звонки",
+        "priority": 10,
+        "estimateH": 961,
+        "spentH": 443,
+        "start": "2026-09-22",
+        "end": "2027-01-26",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "storiesTotal": 17,
+        "storiesDone": 2,
+        "deps": []
+      },
+      {
+        "key": "B2BAPP-1242",
+        "type": "epic",
+        "parent": null,
+        "epic": "B2BAPP-1242",
+        "summary": "8. Профиль",
+        "priority": 8,
+        "estimateH": 524,
+        "spentH": 369,
+        "start": "2026-07-30",
+        "end": "2027-01-20",
+        "category": "in_progress",
+        "onCriticalPath": true,
+        "storiesTotal": 4,
+        "storiesDone": 1,
         "deps": []
       },
       {
@@ -8539,23 +8596,6 @@
         "onCriticalPath": true,
         "storiesTotal": 6,
         "storiesDone": 0,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-134",
-        "type": "epic",
-        "parent": null,
-        "epic": "B2BAPP-134",
-        "summary": "2. Инфраструктура и платформа",
-        "priority": 2,
-        "estimateH": 1596,
-        "spentH": 1192,
-        "start": "2026-01-12",
-        "end": "2026-12-22",
-        "category": "in_progress",
-        "onCriticalPath": true,
-        "storiesTotal": 13,
-        "storiesDone": 4,
         "deps": []
       },
       {
@@ -8593,37 +8633,20 @@
         "deps": []
       },
       {
-        "key": "B2BAPP-27",
+        "key": "B2BAPP-22",
         "type": "epic",
         "parent": null,
-        "epic": "B2BAPP-27",
-        "summary": "7. ИИ-движок",
-        "priority": 7,
-        "estimateH": 1155,
-        "spentH": 414,
+        "epic": "B2BAPP-22",
+        "summary": "6. Главная страница",
+        "priority": 6,
+        "estimateH": 507,
+        "spentH": 375,
         "start": "2026-05-28",
-        "end": "2027-01-15",
+        "end": "2026-11-05",
         "category": "in_progress",
-        "onCriticalPath": true,
-        "storiesTotal": 11,
-        "storiesDone": 2,
-        "deps": []
-      },
-      {
-        "key": "B2BAPP-1242",
-        "type": "epic",
-        "parent": null,
-        "epic": "B2BAPP-1242",
-        "summary": "8. Профиль",
-        "priority": 8,
-        "estimateH": 524,
-        "spentH": 369,
-        "start": "2026-07-30",
-        "end": "2027-01-20",
-        "category": "in_progress",
-        "onCriticalPath": true,
-        "storiesTotal": 4,
-        "storiesDone": 1,
+        "onCriticalPath": false,
+        "storiesTotal": 7,
+        "storiesDone": 4,
         "deps": []
       },
       {
@@ -8768,8 +8791,8 @@
         "stories": [
           "B2BAPP-61",
           "B2BAPP-119",
-          "B2BAPP-552",
-          "B2BAPP-28"
+          "B2BAPP-28",
+          "B2BAPP-552"
         ],
         "tasks": 9,
         "tasksDone": 5,
@@ -8809,8 +8832,8 @@
           {
             "id": "BE",
             "name": "Бэк",
-            "start": "2026-12-02",
-            "end": "2026-12-03",
+            "start": "2026-12-01",
+            "end": "2026-12-02",
             "estimateH": 13,
             "doneH": 0,
             "tasks": 1,
@@ -8861,13 +8884,13 @@
         "epic": "B2BAPP-22",
         "registryStatus": "В работе",
         "stories": [
-          "B2BAPP-72",
           "B2BAPP-551",
+          "B2BAPP-72",
           "B2BAPP-71"
         ],
         "tasks": 5,
         "tasksDone": 1,
-        "estimateH": 123,
+        "estimateH": 131,
         "spentH": 64,
         "start": "2026-05-28",
         "end": "2027-01-21",
@@ -8878,7 +8901,7 @@
             "id": "AN",
             "name": "Аналитика",
             "start": "2026-05-28",
-            "end": "2026-11-05",
+            "end": "2026-11-06",
             "estimateH": 64,
             "doneH": 40,
             "tasks": 2,
@@ -8903,9 +8926,9 @@
           {
             "id": "BE",
             "name": "Бэк",
-            "start": "2026-12-04",
+            "start": "2026-12-03",
             "end": "2026-12-07",
-            "estimateH": 17,
+            "estimateH": 22,
             "doneH": 0,
             "tasks": 1,
             "tasksDone": 0,
@@ -8931,14 +8954,14 @@
             "name": "QA",
             "start": "2026-12-07",
             "end": "2027-01-21",
-            "estimateH": 8,
+            "estimateH": 10,
             "doneH": 0,
             "tasks": 2,
             "tasksDone": 0,
             "category": "backlog",
             "startSprint": 7,
             "endSprint": 9,
-            "embeddedQaH": 8
+            "embeddedQaH": 10
           }
         ],
         "current": "Аналитика, Дизайн",
@@ -9021,7 +9044,7 @@
           {
             "id": "QA",
             "name": "QA",
-            "start": "2026-11-12",
+            "start": "2026-11-11",
             "end": "2027-01-18",
             "estimateH": 40,
             "doneH": 0,
@@ -9047,15 +9070,15 @@
         "epic": "B2BAPP-465",
         "registryStatus": "В работе",
         "stories": [
-          "B2BAPP-32",
-          "B2BAPP-571"
+          "B2BAPP-571",
+          "B2BAPP-32"
         ],
         "tasks": 4,
         "tasksDone": 2,
         "estimateH": 84,
         "spentH": 86,
         "start": "2026-09-22",
-        "end": "2026-12-08",
+        "end": "2026-12-07",
         "category": "in_progress",
         "onCriticalPath": false,
         "stages": [
@@ -9102,7 +9125,7 @@
             "id": "FE",
             "name": "Фронт",
             "start": "2026-10-20",
-            "end": "2026-11-23",
+            "end": "2026-11-20",
             "estimateH": 11,
             "doneH": 11,
             "tasks": 1,
@@ -9114,8 +9137,8 @@
           {
             "id": "QA",
             "name": "QA",
-            "start": "2026-11-23",
-            "end": "2026-12-08",
+            "start": "2026-11-20",
+            "end": "2026-12-07",
             "estimateH": 10,
             "doneH": 0,
             "tasks": 2,
@@ -9167,7 +9190,7 @@
           {
             "id": "BE",
             "name": "Бэк",
-            "start": "2026-12-09",
+            "start": "2026-12-08",
             "end": "2026-12-10",
             "estimateH": 11,
             "doneH": 0,
@@ -9193,7 +9216,7 @@
           {
             "id": "QA",
             "name": "QA",
-            "start": "2026-12-10",
+            "start": "2026-12-09",
             "end": "2027-01-26",
             "estimateH": 10,
             "doneH": 0,
@@ -9220,15 +9243,15 @@
         "registryStatus": "В работе",
         "stories": [
           "B2BAPP-39",
-          "B2BAPP-569",
-          "B2BAPP-38"
+          "B2BAPP-38",
+          "B2BAPP-569"
         ],
         "tasks": 3,
         "tasksDone": 1,
         "estimateH": 40,
         "spentH": 24,
         "start": "2026-10-09",
-        "end": "2026-12-09",
+        "end": "2026-12-08",
         "category": "in_progress",
         "onCriticalPath": false,
         "stages": [
@@ -9262,7 +9285,7 @@
             "id": "FE",
             "name": "Фронт",
             "start": "2026-10-20",
-            "end": "2026-11-24",
+            "end": "2026-11-23",
             "estimateH": 6,
             "doneH": 6,
             "tasks": 1,
@@ -9274,8 +9297,8 @@
           {
             "id": "QA",
             "name": "QA",
-            "start": "2026-11-24",
-            "end": "2026-12-09",
+            "start": "2026-11-23",
+            "end": "2026-12-08",
             "estimateH": 2,
             "doneH": 0,
             "tasks": 1,
@@ -9302,13 +9325,13 @@
         "epic": "B2BAPP-465",
         "registryStatus": "В работе",
         "stories": [
-          "B2BAPP-40",
-          "B2BAPP-568"
+          "B2BAPP-568",
+          "B2BAPP-40"
         ],
         "tasks": 6,
         "tasksDone": 2,
         "estimateH": 124,
-        "spentH": 88,
+        "spentH": 96,
         "start": "2026-10-20",
         "end": "2026-12-15",
         "category": "in_progress",
@@ -9343,14 +9366,14 @@
           {
             "id": "BE",
             "name": "Бэк",
-            "start": "2026-11-27",
+            "start": "2026-11-09",
             "end": "2026-12-09",
             "estimateH": 22,
             "doneH": 11,
             "tasks": 2,
             "tasksDone": 1,
             "category": "in_progress",
-            "startSprint": 6,
+            "startSprint": 5,
             "endSprint": 7
           },
           {
@@ -9369,14 +9392,14 @@
           {
             "id": "QA",
             "name": "QA",
-            "start": "2026-11-29",
+            "start": "2026-11-10",
             "end": "2026-12-15",
             "estimateH": 13,
             "doneH": 0,
             "tasks": 3,
             "tasksDone": 0,
             "category": "in_progress",
-            "startSprint": 6,
+            "startSprint": 5,
             "endSprint": 7,
             "embeddedQaH": 13
           }
@@ -9424,7 +9447,7 @@
             "id": "BE",
             "name": "Бэк",
             "start": "2026-11-19",
-            "end": "2026-11-22",
+            "end": "2026-11-23",
             "estimateH": 17,
             "doneH": 0,
             "tasks": 1,
@@ -9449,7 +9472,7 @@
           {
             "id": "QA",
             "name": "QA",
-            "start": "2026-11-22",
+            "start": "2026-11-23",
             "end": "2026-12-17",
             "estimateH": 14,
             "doneH": 0,
@@ -9482,7 +9505,7 @@
         "estimateH": 48,
         "spentH": 24,
         "start": "2026-11-05",
-        "end": "2026-11-25",
+        "end": "2026-11-26",
         "category": "in_progress",
         "onCriticalPath": false,
         "stages": [
@@ -9502,8 +9525,8 @@
           {
             "id": "BE",
             "name": "Бэк",
-            "start": "2026-11-23",
-            "end": "2026-11-24",
+            "start": "2026-11-24",
+            "end": "2026-11-25",
             "estimateH": 17,
             "doneH": 0,
             "tasks": 1,
@@ -9515,8 +9538,8 @@
           {
             "id": "QA",
             "name": "QA",
-            "start": "2026-11-24",
-            "end": "2026-11-25",
+            "start": "2026-11-25",
+            "end": "2026-11-26",
             "estimateH": 7,
             "doneH": 0,
             "tasks": 1,
@@ -9541,9 +9564,9 @@
         "epic": "B2BAPP-465",
         "registryStatus": "В работе",
         "stories": [
-          "B2BAPP-42",
           "B2BAPP-541",
-          "B2BAPP-44"
+          "B2BAPP-44",
+          "B2BAPP-42"
         ],
         "tasks": 5,
         "tasksDone": 0,
@@ -9584,7 +9607,7 @@
             "id": "BE",
             "name": "Бэк",
             "start": "2026-12-02",
-            "end": "2026-12-07",
+            "end": "2026-12-06",
             "estimateH": 35,
             "doneH": 0,
             "tasks": 1,
@@ -9609,7 +9632,7 @@
           {
             "id": "QA",
             "name": "QA",
-            "start": "2026-12-07",
+            "start": "2026-12-06",
             "end": "2027-01-22",
             "estimateH": 20,
             "doneH": 0,
@@ -9641,16 +9664,16 @@
         "tasksDone": 0,
         "estimateH": 32,
         "spentH": 0,
-        "start": "2026-11-25",
-        "end": "2026-12-11",
+        "start": "2026-11-26",
+        "end": "2026-12-10",
         "category": "in_progress",
         "onCriticalPath": false,
         "stages": [
           {
             "id": "BE",
             "name": "Бэк",
-            "start": "2026-11-25",
-            "end": "2026-12-11",
+            "start": "2026-11-26",
+            "end": "2026-12-10",
             "estimateH": 22,
             "doneH": 0,
             "tasks": 2,
@@ -9663,7 +9686,7 @@
             "id": "QA",
             "name": "QA",
             "start": "2026-11-30",
-            "end": "2026-12-11",
+            "end": "2026-12-10",
             "estimateH": 10,
             "doneH": 0,
             "tasks": 2,
@@ -9679,7 +9702,7 @@
           "AN"
         ],
         "readySprint": 7,
-        "onTime": false
+        "onTime": true
       },
       {
         "order": 12,
@@ -9789,7 +9812,7 @@
         "estimateH": 67,
         "spentH": 98,
         "start": "2026-09-08",
-        "end": "2026-12-03",
+        "end": "2026-12-02",
         "category": "in_progress",
         "onCriticalPath": false,
         "stages": [
@@ -9836,7 +9859,7 @@
             "id": "FE",
             "name": "Фронт",
             "start": "2026-10-20",
-            "end": "2026-11-20",
+            "end": "2026-11-19",
             "estimateH": 2,
             "doneH": 2,
             "tasks": 1,
@@ -9849,7 +9872,7 @@
             "id": "QA",
             "name": "QA",
             "start": "2026-11-09",
-            "end": "2026-12-03",
+            "end": "2026-12-02",
             "estimateH": 8,
             "doneH": 0,
             "tasks": 2,
@@ -9881,7 +9904,7 @@
         "estimateH": 85,
         "spentH": 120,
         "start": "2026-09-08",
-        "end": "2026-12-02",
+        "end": "2026-12-01",
         "category": "in_progress",
         "onCriticalPath": false,
         "stages": [
@@ -9941,20 +9964,20 @@
             "id": "QA",
             "name": "QA",
             "start": "2026-10-23",
-            "end": "2026-12-02",
+            "end": "2026-12-01",
             "estimateH": 10,
             "doneH": 2,
             "tasks": 2,
             "tasksDone": 1,
             "category": "in_progress",
             "startSprint": 4,
-            "endSprint": 7,
+            "endSprint": 6,
             "embeddedQaH": 10
           }
         ],
         "current": "QA",
         "missingStages": [],
-        "readySprint": 7,
+        "readySprint": 6,
         "onTime": true
       },
       {
@@ -9973,7 +9996,7 @@
         "estimateH": 40,
         "spentH": 56,
         "start": "2026-09-22",
-        "end": "2026-12-01",
+        "end": "2026-11-26",
         "category": "in_progress",
         "onCriticalPath": false,
         "stages": [
@@ -9981,7 +10004,7 @@
             "id": "BE",
             "name": "Бэк",
             "start": "2026-09-22",
-            "end": "2026-11-10",
+            "end": "2026-11-07",
             "estimateH": 17,
             "doneH": 17,
             "tasks": 1,
@@ -10006,8 +10029,8 @@
           {
             "id": "QA",
             "name": "QA",
-            "start": "2026-11-10",
-            "end": "2026-12-01",
+            "start": "2026-11-07",
+            "end": "2026-11-26",
             "estimateH": 12,
             "doneH": 0,
             "tasks": 2,
@@ -10170,11 +10193,11 @@
         "epic": "B2BAPP-27",
         "registryStatus": "В работе, отдельной задачи нет, потому что все задачи в рамках эпика 27 решают эту строку",
         "stories": [
-          "B2BAPP-1128",
-          "B2BAPP-78",
-          "B2BAPP-128",
           "B2BAPP-75",
-          "B2BAPP-127"
+          "B2BAPP-127",
+          "B2BAPP-78",
+          "B2BAPP-1128",
+          "B2BAPP-128"
         ],
         "tasks": 25,
         "tasksDone": 16,
@@ -10372,7 +10395,7 @@
           {
             "id": "BE",
             "name": "Бэк",
-            "start": "2026-11-11",
+            "start": "2026-11-10",
             "end": "2027-01-21",
             "estimateH": 78,
             "doneH": 0,
@@ -10427,9 +10450,9 @@
           "B2BAPP-548"
         ],
         "tasks": 4,
-        "tasksDone": 0,
+        "tasksDone": 1,
         "estimateH": 38,
-        "spentH": 0,
+        "spentH": 8,
         "start": "2026-10-20",
         "end": "2026-12-11",
         "category": "in_progress",
@@ -10439,20 +10462,20 @@
             "id": "AN",
             "name": "Аналитика",
             "start": "2026-11-03",
-            "end": "2026-11-05",
+            "end": "2026-11-03",
             "estimateH": 4,
-            "doneH": 0,
+            "doneH": 4,
             "tasks": 1,
-            "tasksDone": 0,
-            "category": "in_progress",
-            "startSprint": 5,
-            "endSprint": 5
+            "tasksDone": 1,
+            "category": "done",
+            "startSprint": 4,
+            "endSprint": 4
           },
           {
             "id": "BE",
             "name": "Бэк",
             "start": "2026-10-20",
-            "end": "2026-11-22",
+            "end": "2026-11-20",
             "estimateH": 18,
             "doneH": 11,
             "tasks": 2,
@@ -10489,7 +10512,7 @@
             "embeddedQaH": 10
           }
         ],
-        "current": "Аналитика, Бэк, QA",
+        "current": "Бэк, QA",
         "missingStages": [],
         "readySprint": 7,
         "onTime": false
@@ -10533,8 +10556,8 @@
         "epic": "B2BAPP-134",
         "registryStatus": "Реализовано",
         "stories": [
-          "B2BAPP-923",
-          "B2BAPP-41"
+          "B2BAPP-41",
+          "B2BAPP-923"
         ],
         "tasks": 7,
         "tasksDone": 2,
@@ -10697,8 +10720,8 @@
         "epic": "B2BAPP-21",
         "registryStatus": "В работе",
         "stories": [
-          "B2BAPP-146",
-          "B2BAPP-1216"
+          "B2BAPP-1216",
+          "B2BAPP-146"
         ],
         "tasks": 15,
         "tasksDone": 7,
@@ -10739,7 +10762,7 @@
             "id": "BE",
             "name": "Бэк",
             "start": "2026-09-08",
-            "end": "2026-10-23",
+            "end": "2026-10-22",
             "estimateH": 76,
             "doneH": 0,
             "tasks": 2,
@@ -10831,7 +10854,7 @@
             "id": "BE",
             "name": "Бэк",
             "start": "2026-10-20",
-            "end": "2026-11-03",
+            "end": "2026-11-01",
             "estimateH": 17,
             "doneH": 11,
             "tasks": 2,
@@ -10856,7 +10879,7 @@
           {
             "id": "QA",
             "name": "QA",
-            "start": "2026-11-01",
+            "start": "2026-10-30",
             "end": "2026-12-24",
             "estimateH": 12,
             "doneH": 0,
@@ -11059,8 +11082,8 @@
         "epic": "B2BAPP-1241",
         "registryStatus": "В работе",
         "stories": [
-          "B2BAPP-1186",
-          "B2BAPP-1373"
+          "B2BAPP-1373",
+          "B2BAPP-1186"
         ],
         "tasks": 6,
         "tasksDone": 2,
@@ -11262,14 +11285,14 @@
             "id": "BE",
             "name": "Бэк",
             "start": "2026-10-06",
-            "end": "2026-12-02",
+            "end": "2026-12-01",
             "estimateH": 98,
             "doneH": 74,
             "tasks": 7,
             "tasksDone": 5,
             "category": "in_progress",
             "startSprint": 3,
-            "endSprint": 7
+            "endSprint": 6
           },
           {
             "id": "FE",
@@ -11320,7 +11343,7 @@
         "estimateH": 32,
         "spentH": 28,
         "start": "2026-09-22",
-        "end": "2026-11-11",
+        "end": "2026-11-12",
         "category": "in_progress",
         "onCriticalPath": false,
         "stages": [
@@ -11328,7 +11351,7 @@
             "id": "AN",
             "name": "Аналитика",
             "start": "2026-09-22",
-            "end": "2026-11-11",
+            "end": "2026-11-12",
             "estimateH": 32,
             "doneH": 0,
             "tasks": 1,
@@ -11361,23 +11384,23 @@
         "tasksDone": 0,
         "estimateH": 8,
         "spentH": 4,
-        "start": "2026-11-03",
-        "end": "2026-11-03",
+        "start": "2026-11-05",
+        "end": "2026-11-06",
         "category": "in_progress",
         "onCriticalPath": false,
         "stages": [
           {
             "id": "AN",
             "name": "Аналитика",
-            "start": "2026-11-03",
-            "end": "2026-11-03",
+            "start": "2026-11-05",
+            "end": "2026-11-06",
             "estimateH": 8,
             "doneH": 0,
             "tasks": 1,
             "tasksDone": 0,
             "category": "in_progress",
-            "startSprint": 4,
-            "endSprint": 4
+            "startSprint": 5,
+            "endSprint": 5
           }
         ],
         "current": "Аналитика",
@@ -11385,7 +11408,7 @@
           "BE",
           "QA"
         ],
-        "readySprint": 4,
+        "readySprint": 5,
         "onTime": true
       },
       {
@@ -11397,8 +11420,8 @@
         "epic": "B2BAPP-484",
         "registryStatus": "В работе",
         "stories": [
-          "B2BAPP-1207",
-          "B2BAPP-29"
+          "B2BAPP-29",
+          "B2BAPP-1207"
         ],
         "tasks": 5,
         "tasksDone": 4,
@@ -11461,15 +11484,15 @@
         "order": 40,
         "contour": "Платформа/Ядро",
         "code": "YD",
-        "name": "Сценарий фундамента",
+        "name": "Сценарии фундамента",
         "priority": "P0",
         "epic": null,
         "registryStatus": "В работе",
         "stories": [
           "B2BAPP-4",
+          "B2BAPP-522",
           "B2BAPP-1240",
-          "B2BAPP-2",
-          "B2BAPP-522"
+          "B2BAPP-2"
         ],
         "tasks": 15,
         "tasksDone": 11,
@@ -11537,15 +11560,15 @@
         "epic": "B2BAPP-134",
         "registryStatus": "В работе, отдельно не оцениваем, т.к. надо по сценарно идти в процессе работы",
         "stories": [
-          "B2BAPP-1282",
-          "B2BAPP-1290"
+          "B2BAPP-1290",
+          "B2BAPP-1282"
         ],
         "tasks": 4,
         "tasksDone": 1,
         "estimateH": 104,
         "spentH": 24,
         "start": "2026-09-08",
-        "end": "2026-11-20",
+        "end": "2026-11-19",
         "category": "in_progress",
         "onCriticalPath": false,
         "stages": [
@@ -11566,7 +11589,7 @@
             "id": "BE",
             "name": "Бэк",
             "start": "2026-09-08",
-            "end": "2026-11-19",
+            "end": "2026-11-18",
             "estimateH": 36,
             "doneH": 15,
             "tasks": 2,
@@ -11579,7 +11602,7 @@
             "id": "QA",
             "name": "QA",
             "start": "2026-09-09",
-            "end": "2026-11-20",
+            "end": "2026-11-19",
             "estimateH": 16,
             "doneH": 6,
             "tasks": 2,
@@ -11599,7 +11622,7 @@
         "order": 38,
         "contour": "Доп. группы",
         "code": "NAI",
-        "name": "Аналоги AI-продуктов (GPTunnel и т.п.)",
+        "name": "Аналоги AI-продуктов (GPTunnel, Альфа и т.п.)",
         "priority": "P3",
         "epic": "B2BAPP-27",
         "registryStatus": "В работе",
@@ -11645,14 +11668,14 @@
             "id": "BE",
             "name": "Бэк",
             "start": "2026-10-06",
-            "end": "2026-11-11",
+            "end": "2026-11-03",
             "estimateH": 28,
-            "doneH": 11,
+            "doneH": 0,
             "tasks": 2,
-            "tasksDone": 1,
+            "tasksDone": 0,
             "category": "in_progress",
             "startSprint": 3,
-            "endSprint": 5
+            "endSprint": 4
           },
           {
             "id": "FE",
@@ -11670,19 +11693,19 @@
           {
             "id": "QA",
             "name": "QA",
-            "start": "2026-11-03",
+            "start": "2026-10-28",
             "end": "2027-01-20",
             "estimateH": 13,
             "doneH": 0,
             "tasks": 3,
             "tasksDone": 0,
-            "category": "in_progress",
-            "startSprint": 5,
+            "category": "backlog",
+            "startSprint": 4,
             "endSprint": 9,
             "embeddedQaH": 13
           }
         ],
-        "current": "Дизайн, Бэк, QA",
+        "current": "Дизайн, Бэк",
         "missingStages": [],
         "readySprint": 9,
         "onTime": false
@@ -11696,15 +11719,15 @@
         "epic": "B2BAPP-134",
         "registryStatus": "В работе",
         "stories": [
-          "B2BAPP-193",
-          "B2BAPP-1288"
+          "B2BAPP-1288",
+          "B2BAPP-193"
         ],
-        "tasks": 56,
-        "tasksDone": 20,
-        "estimateH": 1021,
-        "spentH": 610,
+        "tasks": 57,
+        "tasksDone": 21,
+        "estimateH": 1037,
+        "spentH": 618,
         "start": "2026-08-05",
-        "end": "2026-12-18",
+        "end": "2026-12-23",
         "category": "in_progress",
         "onCriticalPath": true,
         "stages": [
@@ -11714,9 +11737,9 @@
             "start": "2026-08-28",
             "end": "2026-12-04",
             "estimateH": 310,
-            "doneH": 173,
+            "doneH": 181,
             "tasks": 17,
-            "tasksDone": 9,
+            "tasksDone": 10,
             "category": "in_progress",
             "startSprint": 0,
             "endSprint": 7
@@ -11781,7 +11804,7 @@
         "estimateH": 192,
         "spentH": 266,
         "start": "2026-05-08",
-        "end": "2026-11-09",
+        "end": "2026-11-10",
         "category": "in_progress",
         "onCriticalPath": false,
         "stages": [
@@ -11789,7 +11812,7 @@
             "id": "AN",
             "name": "Аналитика",
             "start": "2026-05-08",
-            "end": "2026-11-05",
+            "end": "2026-11-06",
             "estimateH": 66,
             "doneH": 50,
             "tasks": 2,
@@ -12148,7 +12171,7 @@
               "category": "backlog",
               "tasks": 1,
               "done": 0,
-              "estimateH": 24,
+              "estimateH": 32,
               "sprints": [
                 7
               ],
@@ -12164,7 +12187,7 @@
               "category": "backlog",
               "tasks": 1,
               "done": 0,
-              "estimateH": 24,
+              "estimateH": 32,
               "sprints": [
                 7
               ],
@@ -12180,7 +12203,7 @@
               "category": "backlog",
               "tasks": 1,
               "done": 0,
-              "estimateH": 24,
+              "estimateH": 32,
               "sprints": [
                 7
               ],
@@ -12212,7 +12235,7 @@
               "category": "backlog",
               "tasks": 2,
               "done": 0,
-              "estimateH": 27,
+              "estimateH": 35,
               "sprints": [
                 7,
                 9
@@ -12329,7 +12352,6 @@
               "sprints": [
                 6,
                 7,
-                8,
                 9
               ],
               "list": [
@@ -12368,7 +12390,6 @@
               "sprints": [
                 6,
                 7,
-                8,
                 9
               ],
               "list": [
@@ -12407,7 +12428,6 @@
               "sprints": [
                 6,
                 7,
-                8,
                 9
               ],
               "list": [
@@ -12472,7 +12492,6 @@
               "sprints": [
                 6,
                 7,
-                8,
                 9
               ],
               "list": [
@@ -13021,7 +13040,7 @@
               "done": 0,
               "estimateH": 32,
               "sprints": [
-                6,
+                5,
                 7
               ],
               "list": [
@@ -13032,8 +13051,8 @@
                 },
                 {
                   "k": "B2BAPP-187",
-                  "s": "Бэклог",
-                  "t": "[BE] Ассистент: ответ по договорённостям из звонков - элемент next_steps в чате "
+                  "s": "Разработка",
+                  "t": "[BE] Ассистент: ответ по договорённостям из звонков - элементы для договоренност"
                 }
               ]
             },
@@ -13043,7 +13062,7 @@
               "done": 0,
               "estimateH": 32,
               "sprints": [
-                6,
+                5,
                 7
               ],
               "list": [
@@ -13054,8 +13073,8 @@
                 },
                 {
                   "k": "B2BAPP-187",
-                  "s": "Бэклог",
-                  "t": "[BE] Ассистент: ответ по договорённостям из звонков - элемент next_steps в чате "
+                  "s": "Разработка",
+                  "t": "[BE] Ассистент: ответ по договорённостям из звонков - элементы для договоренност"
                 }
               ]
             },
@@ -13065,7 +13084,7 @@
               "done": 0,
               "estimateH": 32,
               "sprints": [
-                6,
+                5,
                 7
               ],
               "list": [
@@ -13076,8 +13095,8 @@
                 },
                 {
                   "k": "B2BAPP-187",
-                  "s": "Бэклог",
-                  "t": "[BE] Ассистент: ответ по договорённостям из звонков - элемент next_steps в чате "
+                  "s": "Разработка",
+                  "t": "[BE] Ассистент: ответ по договорённостям из звонков - элементы для договоренност"
                 }
               ]
             },
@@ -13103,7 +13122,7 @@
               "done": 0,
               "estimateH": 44,
               "sprints": [
-                6,
+                5,
                 7,
                 8
               ],
@@ -13120,8 +13139,8 @@
                 },
                 {
                   "k": "B2BAPP-187",
-                  "s": "Бэклог",
-                  "t": "[BE] Ассистент: ответ по договорённостям из звонков - элемент next_steps в чате "
+                  "s": "Разработка",
+                  "t": "[BE] Ассистент: ответ по договорённостям из звонков - элементы для договоренност"
                 }
               ]
             }
@@ -14200,7 +14219,7 @@
               "done": 0,
               "estimateH": 24,
               "sprints": [
-                7
+                6
               ],
               "list": [
                 {
@@ -14216,7 +14235,7 @@
               "done": 0,
               "estimateH": 24,
               "sprints": [
-                7
+                6
               ],
               "list": [
                 {
@@ -14232,7 +14251,7 @@
               "done": 0,
               "estimateH": 24,
               "sprints": [
-                7
+                6
               ],
               "list": [
                 {
@@ -14264,8 +14283,7 @@
               "done": 0,
               "estimateH": 40,
               "sprints": [
-                6,
-                7
+                6
               ],
               "list": [
                 {
@@ -15288,9 +15306,9 @@
           },
           "jira": {
             "AN": {
-              "category": "in_progress",
+              "category": "done",
               "tasks": 1,
-              "done": 0,
+              "done": 1,
               "estimateH": 4,
               "sprints": [
                 5
@@ -15298,7 +15316,7 @@
               "list": [
                 {
                   "k": "B2BAPP-1149",
-                  "s": "В работе",
+                  "s": "Завершена",
                   "t": "[BA] Аналитика: Сценарии-редиректы (карта переадресации)"
                 }
               ]
@@ -15415,7 +15433,7 @@
             }
           },
           "state": {
-            "AN": "passed",
+            "AN": "done",
             "DS": "todo",
             "BE": "active",
             "BE1": "active",
@@ -17550,13 +17568,12 @@
               "done": 0,
               "estimateH": 40,
               "sprints": [
-                5,
-                6
+                5
               ],
               "list": [
                 {
                   "k": "B2BAPP-1355",
-                  "s": "Тестирование",
+                  "s": "Разработка",
                   "t": "[BE] Реализовать сценарии ии-ассистентов через апи ai beeline"
                 },
                 {
@@ -17572,13 +17589,12 @@
               "done": 0,
               "estimateH": 40,
               "sprints": [
-                5,
-                6
+                5
               ],
               "list": [
                 {
                   "k": "B2BAPP-1355",
-                  "s": "Тестирование",
+                  "s": "Разработка",
                   "t": "[BE] Реализовать сценарии ии-ассистентов через апи ai beeline"
                 },
                 {
@@ -17594,13 +17610,12 @@
               "done": 0,
               "estimateH": 40,
               "sprints": [
-                5,
-                6
+                5
               ],
               "list": [
                 {
                   "k": "B2BAPP-1355",
-                  "s": "Тестирование",
+                  "s": "Разработка",
                   "t": "[BE] Реализовать сценарии ии-ассистентов через апи ai beeline"
                 },
                 {
@@ -17627,19 +17642,18 @@
               ]
             },
             "QA": {
-              "category": "in_progress",
+              "category": "backlog",
               "tasks": 3,
               "done": 0,
               "estimateH": 43,
               "sprints": [
                 5,
-                6,
                 9
               ],
               "list": [
                 {
                   "k": "B2BAPP-1355",
-                  "s": "Тестирование",
+                  "s": "Разработка",
                   "t": "[BE] Реализовать сценарии ии-ассистентов через апи ai beeline"
                 },
                 {
@@ -17662,7 +17676,7 @@
             "BE1": "active",
             "BE2": "active",
             "FE": "todo",
-            "QA": "active"
+            "QA": "todo"
           },
           "completed": false,
           "firstSprint": 2,
@@ -17699,7 +17713,7 @@
             "AN": {
               "category": "in_progress",
               "tasks": 17,
-              "done": 9,
+              "done": 10,
               "estimateH": 310,
               "sprints": [
                 0,
@@ -17756,6 +17770,11 @@
                   "t": "[ARC] Создать диаграмму развертывания"
                 },
                 {
+                  "k": "B2BAPP-247",
+                  "s": "Завершена",
+                  "t": "[BA] Актуализировать страницу реестра логов (убрать лишнее)"
+                },
+                {
                   "k": "B2BAPP-1326",
                   "s": "Бэклог",
                   "t": "[ARC] Верификация ИБ-документов: Порядок безопасного администрирования + DRP B2B"
@@ -17769,11 +17788,6 @@
                   "k": "B2BAPP-194",
                   "s": "Бэклог",
                   "t": "[ARC] Актуализировать сетевую схему и диаграмму развёртывания под замечания ИБ"
-                },
-                {
-                  "k": "B2BAPP-247",
-                  "s": "Бэклог",
-                  "t": "[BA] Актуализировать страницу реестра логов (убрать лишнее)"
                 },
                 {
                   "k": "B2BAPP-262",
@@ -18523,7 +18537,7 @@
           },
           {
             "code": "YD",
-            "name": "Сценарий фундамента",
+            "name": "Сценарии фундамента",
             "tasks": 2,
             "done": 1,
             "inQa": 1,
@@ -18532,11 +18546,11 @@
           },
           {
             "code": "NAI",
-            "name": "Аналоги AI-продуктов (GPTunnel и т.п.)",
+            "name": "Аналоги AI-продуктов (GPTunnel, Альфа и т.п.)",
             "tasks": 3,
             "done": 0,
-            "inQa": 1,
-            "inProgress": 1,
+            "inQa": 0,
+            "inProgress": 2,
             "estimateH": 80
           },
           {
@@ -18607,11 +18621,11 @@
           {
             "code": "OB5",
             "name": "Выявление задач и след. шагов по звонку",
-            "tasks": 2,
+            "tasks": 3,
             "done": 1,
             "inQa": 0,
-            "inProgress": 1,
-            "estimateH": 56
+            "inProgress": 2,
+            "estimateH": 72
           },
           {
             "code": "OB6",
@@ -18725,9 +18739,9 @@
             "code": "PL4",
             "name": "Сценарии-редиректы + замоканные",
             "tasks": 3,
-            "done": 0,
+            "done": 1,
             "inQa": 1,
-            "inProgress": 1,
+            "inProgress": 0,
             "estimateH": 28
           },
           {
@@ -18822,7 +18836,7 @@
           },
           {
             "code": "YD",
-            "name": "Сценарий фундамента",
+            "name": "Сценарии фундамента",
             "tasks": 2,
             "done": 0,
             "inQa": 1,
@@ -18840,18 +18854,18 @@
           },
           {
             "code": "NAI",
-            "name": "Аналоги AI-продуктов (GPTunnel и т.п.)",
+            "name": "Аналоги AI-продуктов (GPTunnel, Альфа и т.п.)",
             "tasks": 3,
             "done": 0,
-            "inQa": 1,
-            "inProgress": 1,
+            "inQa": 0,
+            "inProgress": 2,
             "estimateH": 80
           },
           {
             "code": "IB",
             "name": "Выход в продуктив",
             "tasks": 19,
-            "done": 1,
+            "done": 2,
             "inQa": 4,
             "inProgress": 4,
             "estimateH": 331
@@ -18871,94 +18885,9 @@
     "mvpScope": {
       "inStories": [
         {
-          "key": "B2BAPP-540",
-          "name": "RB5. Как клиент, я хочу видеть звонки по часам, чтобы понять, когда бизнес теряет звонки, и получить решение",
-          "readyDate": "2026-12-02"
-        },
-        {
-          "key": "B2BAPP-72",
-          "name": "MD2. Как пользователь, я хочу видеть карточку ежедневной сводки на главном экране, чтобы за 5 секунд получить понимание состояния своего бизнеса за день",
-          "readyDate": "2026-06-26"
-        },
-        {
-          "key": "B2BAPP-538",
-          "name": "PL18. Как продуктовая команда, я хочу анализ запросов и самоулучшение, чтобы строить бэклог на реальном спросе пользователей",
-          "readyDate": "2026-11-03"
-        },
-        {
-          "key": "B2BAPP-30",
-          "name": "OB6. Как предприниматель, я хочу спрашивать ассистента о своих звонках обычными фразами, чтобы находить и открывать их прямо в чате",
-          "readyDate": "2026-11-09"
-        },
-        {
-          "key": "B2BAPP-572",
-          "name": "PL17. Как пользователь, я хочу получать пуш-уведомления только с моего согласия, чтобы важные события доходили до устройства",
-          "readyDate": "2026-11-11"
-        },
-        {
-          "key": "B2BAPP-543",
-          "name": "RB2. Как пользователь, я хочу сравнить свой сайт с конкурентами и видеть спрос, чтобы не отставать и привлекать клиентов",
-          "readyDate": "2026-12-02"
-        },
-        {
-          "key": "B2BAPP-542",
-          "name": "RB4. Как пользователь, я хочу видеть индекс цифровой зрелости, чтобы понять, где я и что подключить для роста",
-          "readyDate": "2026-11-24"
-        },
-        {
-          "key": "B2BAPP-554",
-          "name": "PL7. Как продукт, я хочу собирать метрики использования, чтобы принимать решения на данных, а не на догадках",
-          "readyDate": "2026-11-06"
-        },
-        {
-          "key": "B2BAPP-40",
-          "name": "OB5. Как предприниматель, я хочу видеть подсказки следующих действий после ответа о звонках, чтобы продолжать работу без лишних запросов",
-          "readyDate": "2026-11-11"
-        },
-        {
-          "key": "B2BAPP-566",
-          "name": "OB11. Как пользователь, я хочу работать с календарём из приложения, чтобы договорённости из звонков сразу становились встречами",
-          "readyDate": "2026-11-30"
-        },
-        {
-          "key": "B2BAPP-1282",
-          "name": "B2C. Как команда B2BAPP, я хочу определить, какие MCP-инструменты beeGPT можно переиспользовать без обязательного B2C-токена, чтобы ускорить ближайшие MVP-сценарии без зависимости от аутентификации и USSS B2C",
-          "readyDate": "2026-11-20"
-        },
-        {
-          "key": "B2BAPP-545",
-          "name": "PL11. Как пользователь, я хочу бесшовно переходить в маркетплейс или веб-ЛК без повторного входа, чтобы решать операционные вопросы",
-          "readyDate": "2026-12-07"
-        },
-        {
-          "key": "B2BAPP-146",
-          "name": "PL9. Как пользователь я хочу завершить сеанс (Logout) с гарантированным удаление идентификатора сессии",
-          "readyDate": "2026-06-11"
-        },
-        {
-          "key": "B2BAPP-4",
-          "name": "YD. Дизайн-фундамент: макеты (профиль, стратегия продукта) и коридорные исследования",
-          "readyDate": "2026-04-20"
-        },
-        {
           "key": "B2BAPP-544",
           "name": "RB1. Как пользователь, я хочу анализ отрасли из открытых источников, чтобы понимать контекст рынка без самостоятельного поиска",
-          "readyDate": "2026-12-03"
-        },
-        {
-          "key": "B2BAPP-39",
-          "name": "OB4. Как предприниматель, я хочу задать имя, которым помощник меня представляет, чтобы клиенты понимали, куда попали",
-          "readyDate": "2026-12-03"
-        },
-        {
-          "key": "B2BAPP-1373",
-          "name": "PL14. Как пользователь мобильного приложения, я хочу видеть актуальную оферту прямо в приложении, чтобы ознакомиться с условиями и принять их без перехода на внешние ресурсы",
-          "readyDate": "2026-11-03"
-        },
-        {
-          "key": "B2BAPP-32",
-          "name": "OB2. Как предприниматель, я хочу получать уведомление о звонке, на который ответил помощник, чтобы сразу узнать, что мне звонили",
-          "readyDate": "2026-05-25"
+          "readyDate": "2026-12-02"
         },
         {
           "key": "B2BAPP-61",
@@ -18966,89 +18895,9 @@
           "readyDate": "2026-09-10"
         },
         {
-          "key": "B2BAPP-63",
-          "name": "PL16. Как пользователь, я хочу редактировать базовые поля профиля (имя, email) прямо в приложении, чтобы быстро обновлять контактные данные без перехода в ЕЛК",
-          "readyDate": "2026-10-07"
-        },
-        {
-          "key": "B2BAPP-119",
-          "name": "MD1. Как пользователь, я хочу видеть на главном экране карточку-сигнал о важном событии, чтобы быть в курсе срочных ситуаций без необходимости что-либо спрашивать у AI",
-          "readyDate": "2026-07-31"
-        },
-        {
-          "key": "B2BAPP-42",
-          "name": "OB8. Как предприниматель, я хочу видеть предупреждение, если номер в простое, чтобы вовремя пополнить баланс и не терять клиентов",
-          "readyDate": "2026-11-25"
-        },
-        {
-          "key": "B2BAPP-78",
-          "name": "PL1. Как пользователь, я хочу видеть строку ввода AI-чата прямо на главном экране, чтобы начать диалог одним тапом без перехода в отдельный раздел",
-          "readyDate": "2026-11-05"
-        },
-        {
-          "key": "B2BAPP-1290",
-          "name": "B2C. Как команда разработки, я хочу понять, как переиспользовать и встроиться в хернесы/сценарии B2C, чтобы не изобретать велосипед по звонкам и ИИ",
-          "readyDate": "2026-09-09"
-        },
-        {
-          "key": "B2BAPP-553",
-          "name": "PL8. Как система, я хочу вести логирование, чтобы понимать, что, когда и у кого происходило",
-          "readyDate": "2026-10-07"
-        },
-        {
-          "key": "B2BAPP-539",
-          "name": "RB3. Как пользователь, я хочу видеть трафик мимо точки бизнеса, чтобы оценить упущенный поток клиентов",
-          "readyDate": "2026-12-01"
-        },
-        {
-          "key": "B2BAPP-128",
-          "name": "PL1. Как система, я хочу MCP-сервер для ЕЛК, чтобы AI Orchestrator мог получать данные по договорам и счетам пользователя",
-          "readyDate": "2026-05-08"
-        },
-        {
-          "key": "B2BAPP-2",
-          "name": "YD. Инфраструктура и вычислительные среды (Prod/E2E), IDP-доступы",
-          "readyDate": "2026-10-05"
-        },
-        {
-          "key": "B2BAPP-44",
-          "name": "OB8. Как предприниматель, я хочу видеть название компании, которая мне звонила, чтобы понимать, кто это, без прослушивания",
-          "readyDate": "2026-05-25"
-        },
-        {
-          "key": "B2BAPP-522",
-          "name": "YD. Как команда, я хочу иметь тестовую среду (стенд) для интеграционного тестирования B2BAPP, чтобы проверять сценарии до выхода в прод",
-          "readyDate": "2026-11-23"
-        },
-        {
-          "key": "B2BAPP-549",
-          "name": "OB7. Как клиент, я хочу получать проактивные инсайты по звонкам, чтобы замечать проблемы и тренды, не анализируя цифры сам",
-          "readyDate": "2026-11-25"
-        },
-        {
-          "key": "B2BAPP-923",
-          "name": "PL6. Как система, я хочу хранить историю диалогов, чтобы обеспечить непрерывность общения и персонализацию",
-          "readyDate": "2026-11-02"
-        },
-        {
-          "key": "B2BAPP-1207",
-          "name": "PK1. Как пользователь, я хочу при запуске приложения видеть экран загрузки с логотипом и названием, чтобы понимать, что приложение запускается",
-          "readyDate": "2026-09-09"
-        },
-        {
-          "key": "B2BAPP-19",
-          "name": "PL5. Как администратор, я хочу управлять промптами AI через админ-панель, чтобы менять поведение ассистента без релиза",
-          "readyDate": "2026-10-30"
-        },
-        {
-          "key": "B2BAPP-569",
-          "name": "OB4. Как предприниматель, я хочу прочитать расшифровку звонка, принятого виртуальным помощником чтобы понять суть разговора без прослушивания",
-          "readyDate": "2026-12-09"
-        },
-        {
           "key": "B2BAPP-75",
           "name": "PL1. Как пользователь, я хочу видеть на главном экране кнопки-чипсы с частыми действиями, чтобы запускать нужный сценарий одним тапом без набора текста",
-          "readyDate": "2026-11-03"
+          "readyDate": "2026-11-05"
         },
         {
           "key": "B2BAPP-1288",
@@ -19056,14 +18905,64 @@
           "readyDate": "2026-12-10"
         },
         {
-          "key": "B2BAPP-28",
-          "name": "MD1. Как владелец нескольких организаций, я хочу переключаться между ними одним тапом, чтобы управлять каждым бизнесом без повторного входа",
-          "readyDate": "2026-09-24"
+          "key": "B2BAPP-572",
+          "name": "PL17. Как пользователь, я хочу получать пуш-уведомления только с моего согласия, чтобы важные события доходили до устройства",
+          "readyDate": "2026-11-12"
         },
         {
-          "key": "B2BAPP-924",
-          "name": "PL5. Как пользователь, я хочу предсказуемых и безопасных ответов ИИ в едином тоне, чтобы ассистент не выходил за пределы допустимого",
-          "readyDate": "2026-07-12"
+          "key": "B2BAPP-553",
+          "name": "PL8. Как система, я хочу вести логирование, чтобы понимать, что, когда и у кого происходило",
+          "readyDate": "2026-10-07"
+        },
+        {
+          "key": "B2BAPP-39",
+          "name": "OB4. Как предприниматель, я хочу задать имя, которым помощник меня представляет, чтобы клиенты понимали, куда попали",
+          "readyDate": "2026-12-03"
+        },
+        {
+          "key": "B2BAPP-554",
+          "name": "PL7. Как продукт, я хочу собирать метрики использования, чтобы принимать решения на данных, а не на догадках",
+          "readyDate": "2026-11-06"
+        },
+        {
+          "key": "B2BAPP-119",
+          "name": "MD1. Как пользователь, я хочу видеть на главном экране карточку-сигнал о важном событии, чтобы быть в курсе срочных ситуаций без необходимости что-либо спрашивать у AI",
+          "readyDate": "2026-07-31"
+        },
+        {
+          "key": "B2BAPP-19",
+          "name": "PL5. Как администратор, я хочу управлять промптами AI через админ-панель, чтобы менять поведение ассистента без релиза",
+          "readyDate": "2026-10-30"
+        },
+        {
+          "key": "B2BAPP-1290",
+          "name": "B2C. Как команда разработки, я хочу понять, как переиспользовать и встроиться в хернесы/сценарии B2C, чтобы не изобретать велосипед по звонкам и ИИ",
+          "readyDate": "2026-09-09"
+        },
+        {
+          "key": "B2BAPP-30",
+          "name": "OB6. Как предприниматель, я хочу спрашивать ассистента о своих звонках обычными фразами, чтобы находить и открывать их прямо в чате",
+          "readyDate": "2026-11-09"
+        },
+        {
+          "key": "B2BAPP-549",
+          "name": "OB7. Как клиент, я хочу получать проактивные инсайты по звонкам, чтобы замечать проблемы и тренды, не анализируя цифры сам",
+          "readyDate": "2026-11-26"
+        },
+        {
+          "key": "B2BAPP-44",
+          "name": "OB8. Как предприниматель, я хочу видеть название компании, которая мне звонила, чтобы понимать, кто это, без прослушивания",
+          "readyDate": "2026-05-25"
+        },
+        {
+          "key": "B2BAPP-4",
+          "name": "YD. Дизайн-фундамент: макеты (профиль, стратегия продукта) и коридорные исследования",
+          "readyDate": "2026-04-20"
+        },
+        {
+          "key": "B2BAPP-72",
+          "name": "MD2. Как пользователь, я хочу видеть карточку ежедневной сводки на главном экране, чтобы за 5 секунд получить понимание состояния своего бизнеса за день",
+          "readyDate": "2026-06-26"
         },
         {
           "key": "B2BAPP-127",
@@ -19071,46 +18970,146 @@
           "readyDate": "2026-09-11"
         },
         {
+          "key": "B2BAPP-566",
+          "name": "OB11. Как пользователь, я хочу работать с календарём из приложения, чтобы договорённости из звонков сразу становились встречами",
+          "readyDate": "2026-11-30"
+        },
+        {
+          "key": "B2BAPP-78",
+          "name": "PL1. Как пользователь, я хочу видеть строку ввода AI-чата прямо на главном экране, чтобы начать диалог одним тапом без перехода в отдельный раздел",
+          "readyDate": "2026-11-05"
+        },
+        {
+          "key": "B2BAPP-545",
+          "name": "PL11. Как пользователь, я хочу бесшовно переходить в маркетплейс или веб-ЛК без повторного входа, чтобы решать операционные вопросы",
+          "readyDate": "2026-12-07"
+        },
+        {
+          "key": "B2BAPP-63",
+          "name": "PL16. Как пользователь, я хочу редактировать базовые поля профиля (имя, email) прямо в приложении, чтобы быстро обновлять контактные данные без перехода в ЕЛК",
+          "readyDate": "2026-10-07"
+        },
+        {
           "key": "B2BAPP-38",
           "name": "OB4. Как предприниматель, я хочу выбрать, в каких случаях помощник отвечает за меня, чтобы он не перехватывал звонки, на которые я отвечу сам",
           "readyDate": "2026-05-25"
         },
         {
+          "key": "B2BAPP-542",
+          "name": "RB4. Как пользователь, я хочу видеть индекс цифровой зрелости, чтобы понять, где я и что подключить для роста",
+          "readyDate": "2026-11-24"
+        },
+        {
+          "key": "B2BAPP-543",
+          "name": "RB2. Как пользователь, я хочу сравнить свой сайт с конкурентами и видеть спрос, чтобы не отставать и привлекать клиентов",
+          "readyDate": "2026-12-01"
+        },
+        {
+          "key": "B2BAPP-538",
+          "name": "PL18. Как продуктовая команда, я хочу анализ запросов и самоулучшение, чтобы строить бэклог на реальном спросе пользователей",
+          "readyDate": "2026-11-06"
+        },
+        {
+          "key": "B2BAPP-128",
+          "name": "PL1. Как система, я хочу MCP-сервер для ЕЛК, чтобы AI Orchestrator мог получать данные по договорам и счетам пользователя",
+          "readyDate": "2026-05-08"
+        },
+        {
+          "key": "B2BAPP-539",
+          "name": "RB3. Как пользователь, я хочу видеть трафик мимо точки бизнеса, чтобы оценить упущенный поток клиентов",
+          "readyDate": "2026-11-26"
+        },
+        {
+          "key": "B2BAPP-1373",
+          "name": "PL14. Как пользователь мобильного приложения, я хочу видеть актуальную оферту прямо в приложении, чтобы ознакомиться с условиями и принять их без перехода на внешние ресурсы",
+          "readyDate": "2026-11-05"
+        },
+        {
+          "key": "B2BAPP-28",
+          "name": "MD1. Как владелец нескольких организаций, я хочу переключаться между ними одним тапом, чтобы управлять каждым бизнесом без повторного входа",
+          "readyDate": "2026-09-24"
+        },
+        {
+          "key": "B2BAPP-146",
+          "name": "PL9. Как пользователь я хочу завершить сеанс (Logout) с гарантированным удаление идентификатора сессии",
+          "readyDate": "2026-06-11"
+        },
+        {
+          "key": "B2BAPP-42",
+          "name": "OB8. Как предприниматель, я хочу видеть предупреждение, если номер в простое, чтобы вовремя пополнить баланс и не терять клиентов",
+          "readyDate": "2026-11-25"
+        },
+        {
+          "key": "B2BAPP-924",
+          "name": "PL5. Как пользователь, я хочу предсказуемых и безопасных ответов ИИ в едином тоне, чтобы ассистент не выходил за пределы допустимого",
+          "readyDate": "2026-07-12"
+        },
+        {
+          "key": "B2BAPP-1207",
+          "name": "PK1. Как пользователь, я хочу при запуске приложения видеть экран загрузки с логотипом и названием, чтобы понимать, что приложение запускается",
+          "readyDate": "2026-09-09"
+        },
+        {
+          "key": "B2BAPP-40",
+          "name": "OB5. Как предприниматель, я хочу видеть подсказки следующих действий после ответа о звонках, чтобы продолжать работу без лишних запросов",
+          "readyDate": "2026-11-11"
+        },
+        {
           "key": "B2BAPP-571",
           "name": "OB2. Как предприниматель, я хочу открыть звонок и прослушать запись, чтобы вспомнить, кто звонил и о чём шла речь",
-          "readyDate": "2026-12-08"
+          "readyDate": "2026-12-07"
+        },
+        {
+          "key": "B2BAPP-522",
+          "name": "YD. Как команда, я хочу иметь тестовую среду (стенд) для интеграционного тестирования B2BAPP, чтобы проверять сценарии до выхода в прод",
+          "readyDate": "2026-11-23"
+        },
+        {
+          "key": "B2BAPP-923",
+          "name": "PL6. Как система, я хочу хранить историю диалогов, чтобы обеспечить непрерывность общения и персонализацию",
+          "readyDate": "2026-11-02"
+        },
+        {
+          "key": "B2BAPP-1282",
+          "name": "B2C. Как команда B2BAPP, я хочу определить, какие MCP-инструменты beeGPT можно переиспользовать без обязательного B2C-токена, чтобы ускорить ближайшие MVP-сценарии без зависимости от аутентификации и USSS B2C",
+          "readyDate": "2026-11-19"
         },
         {
           "key": "B2BAPP-71",
           "name": "MD2. Как пользователь, я хочу видеть на главном экране смарт-карточки (сводка дня, сигнал, рекомендация), чтобы сразу при открытии приложения понимать, на что обратить внимание",
           "readyDate": "2026-05-28"
+        },
+        {
+          "key": "B2BAPP-569",
+          "name": "OB4. Как предприниматель, я хочу прочитать расшифровку звонка, принятого виртуальным помощником чтобы понять суть разговора без прослушивания",
+          "readyDate": "2026-12-08"
+        },
+        {
+          "key": "B2BAPP-32",
+          "name": "OB2. Как предприниматель, я хочу получать уведомление о звонке, на который ответил помощник, чтобы сразу узнать, что мне звонили",
+          "readyDate": "2026-05-25"
+        },
+        {
+          "key": "B2BAPP-540",
+          "name": "RB5. Как клиент, я хочу видеть звонки по часам, чтобы понять, когда бизнес теряет звонки, и получить решение",
+          "readyDate": "2026-12-02"
+        },
+        {
+          "key": "B2BAPP-2",
+          "name": "YD. Инфраструктура и вычислительные среды (Prod/E2E), IDP-доступы",
+          "readyDate": "2026-10-05"
+        },
+        {
+          "key": "B2BAPP-567",
+          "name": "OB10. Как клиент, я хочу создавать напоминания из звонка и вручную, чтобы не забыть обещанное",
+          "readyDate": "2026-12-10"
         }
       ],
       "outStories": [
         {
-          "key": "B2BAPP-1187",
-          "name": "PL13. Как пользователь, я хочу давать системные разрешения контекстно и по делу, чтобы функции с биометрией, пушами и календарём работали",
-          "readyDate": "2027-01-12"
-        },
-        {
-          "key": "B2BAPP-1186",
-          "name": "PL14. Как новый пользователь, я хочу пройти онбординг, чтобы понять, как пользоваться приложением с первого экрана",
-          "readyDate": "2027-01-13"
-        },
-        {
-          "key": "B2BAPP-1128",
-          "name": "PL1. Как пользователь, я хочу общаться с приложением через единый ИИ-диалог (чипы, карточки, списки), чтобы не искать функции по экранам и меню",
-          "readyDate": "2027-01-13"
-        },
-        {
-          "key": "B2BAPP-548",
-          "name": "PL4. Как пользователь, я хочу получать понятный ответ и путь дальше по вопросам вне скоупа, чтобы не попадать в тупик",
-          "readyDate": "2026-12-11"
-        },
-        {
-          "key": "B2BAPP-1354",
-          "name": "NAI. Как пользователь я хочу, чтобы ИИ-ассистенты выполняли рутинные задачи моего бизнеса, чтобы управлять бизнесом без дополнительных сотрудников",
-          "readyDate": "2027-01-20"
+          "key": "B2BAPP-1188",
+          "name": "PL12. Как система, я хочу проверять права доступа на каждый запрос, чтобы каждый видел ровно то, что ему положено",
+          "readyDate": "2026-12-16"
         },
         {
           "key": "B2BAPP-555",
@@ -19118,29 +19117,9 @@
           "readyDate": "2026-12-24"
         },
         {
-          "key": "B2BAPP-570",
-          "name": "OB3. Как клиент, я хочу прослушать свой звонок и прочитать расшифровку, чтобы понять суть разговора за секунды",
-          "readyDate": "2027-01-26"
-        },
-        {
-          "key": "B2BAPP-564",
-          "name": "PL2. Как система, я хочу формировать память бизнеса, чтобы персонализировать ответы ИИ-слоя",
-          "readyDate": "2026-12-21"
-        },
-        {
-          "key": "B2BAPP-1216",
-          "name": "PL9. Как пользователь, я хочу входить в приложение при первом запуске, чтобы получить доступ к своим данным",
-          "readyDate": "2026-12-23"
-        },
-        {
-          "key": "B2BAPP-547",
-          "name": "PL15. Как пользователь, я хочу видеть свой профиль, чтобы понимать, кто я в системе",
+          "key": "B2BAPP-1354",
+          "name": "NAI. Как пользователь я хочу, чтобы ИИ-ассистенты выполняли рутинные задачи моего бизнеса, чтобы управлять бизнесом без дополнительных сотрудников",
           "readyDate": "2027-01-20"
-        },
-        {
-          "key": "B2BAPP-1240",
-          "name": "YD. Как команда разработки, я хочу иметь готовый технический каркас приложения (монорепо, сборка, транспорт, темизация), чтобы вести разработку фич на единой технической основе",
-          "readyDate": "2026-12-22"
         },
         {
           "key": "B2BAPP-551",
@@ -19148,14 +19127,19 @@
           "readyDate": "2027-01-21"
         },
         {
-          "key": "B2BAPP-567",
-          "name": "OB10. Как клиент, я хочу создавать напоминания из звонка и вручную, чтобы не забыть обещанное",
-          "readyDate": "2026-12-11"
+          "key": "B2BAPP-564",
+          "name": "PL2. Как система, я хочу формировать память бизнеса, чтобы персонализировать ответы ИИ-слоя",
+          "readyDate": "2026-12-21"
         },
         {
-          "key": "B2BAPP-1274",
-          "name": "OB1. Как предприниматель, я хочу видеть в одной истории звонки помощника и свои разговоры с отбором по типу, периоду и номеру, чтобы быстро найти нужный звонок",
-          "readyDate": "2027-01-18"
+          "key": "B2BAPP-547",
+          "name": "PL15. Как пользователь, я хочу видеть свой профиль, чтобы понимать, кто я в системе",
+          "readyDate": "2027-01-20"
+        },
+        {
+          "key": "B2BAPP-1187",
+          "name": "PL13. Как пользователь, я хочу давать системные разрешения контекстно и по делу, чтобы функции с биометрией, пушами и календарём работали",
+          "readyDate": "2027-01-12"
         },
         {
           "key": "B2BAPP-541",
@@ -19163,24 +19147,9 @@
           "readyDate": "2027-01-22"
         },
         {
-          "key": "B2BAPP-1188",
-          "name": "PL12. Как система, я хочу проверять права доступа на каждый запрос, чтобы каждый видел ровно то, что ему положено",
-          "readyDate": "2026-12-16"
-        },
-        {
-          "key": "B2BAPP-561",
-          "name": "PL3. Как клиент, я хочу написать в поддержку и попасть к оператору, чтобы не остаться без ответа, если ИИ не справился",
-          "readyDate": "2027-02-02"
-        },
-        {
-          "key": "B2BAPP-41",
-          "name": "PL6. Как пользователь, я хочу управлять историей своих диалогов с AI (переключаться, удалять, переименовывать), чтобы легко возвращаться к нужным разговорам",
-          "readyDate": "2027-01-15"
-        },
-        {
-          "key": "B2BAPP-552",
-          "name": "MD1. Как клиент, я хочу видеть топ актуальных задач и событий по всему бизнесу, чтобы понимать, что требует действия прямо сейчас",
-          "readyDate": "2027-01-20"
+          "key": "B2BAPP-568",
+          "name": "OB5. Как предприниматель, я хочу видеть краткое содержание звонка и что из него нужно сделать и ставить по этим делам напоминания, чтобы не терять договорённости",
+          "readyDate": "2026-12-15"
         },
         {
           "key": "B2BAPP-29",
@@ -19188,14 +19157,14 @@
           "readyDate": "2027-01-28"
         },
         {
-          "key": "B2BAPP-193",
-          "name": "IB. Как команда я хочу вывести в продуктив приложение: инфраструктура, среды, соответствие ИБ и НФТ",
-          "readyDate": "2026-12-18"
+          "key": "B2BAPP-41",
+          "name": "PL6. Как пользователь, я хочу управлять историей своих диалогов с AI (переключаться, удалять, переименовывать), чтобы легко возвращаться к нужным разговорам",
+          "readyDate": "2027-01-15"
         },
         {
-          "key": "B2BAPP-546",
-          "name": "PL16. Как пользователь, я хочу управлять настройками (тема, пуши, безопасность), чтобы приложение подстраивалось под меня",
-          "readyDate": "2027-01-20"
+          "key": "B2BAPP-561",
+          "name": "PL3. Как клиент, я хочу написать в поддержку и попасть к оператору, чтобы не остаться без ответа, если ИИ не справился",
+          "readyDate": "2027-02-02"
         },
         {
           "key": "B2BAPP-550",
@@ -19203,9 +19172,54 @@
           "readyDate": "2026-12-17"
         },
         {
-          "key": "B2BAPP-568",
-          "name": "OB5. Как предприниматель, я хочу видеть краткое содержание звонка и что из него нужно сделать и ставить по этим делам напоминания, чтобы не терять договорённости",
-          "readyDate": "2026-12-15"
+          "key": "B2BAPP-1128",
+          "name": "PL1. Как пользователь, я хочу общаться с приложением через единый ИИ-диалог (чипы, карточки, списки), чтобы не искать функции по экранам и меню",
+          "readyDate": "2027-01-13"
+        },
+        {
+          "key": "B2BAPP-546",
+          "name": "PL16. Как пользователь, я хочу управлять настройками (тема, пуши, безопасность), чтобы приложение подстраивалось под меня",
+          "readyDate": "2027-01-20"
+        },
+        {
+          "key": "B2BAPP-1274",
+          "name": "OB1. Как предприниматель, я хочу видеть в одной истории звонки помощника и свои разговоры с отбором по типу, периоду и номеру, чтобы быстро найти нужный звонок",
+          "readyDate": "2027-01-18"
+        },
+        {
+          "key": "B2BAPP-1216",
+          "name": "PL9. Как пользователь, я хочу входить в приложение при первом запуске, чтобы получить доступ к своим данным",
+          "readyDate": "2026-12-23"
+        },
+        {
+          "key": "B2BAPP-548",
+          "name": "PL4. Как пользователь, я хочу получать понятный ответ и путь дальше по вопросам вне скоупа, чтобы не попадать в тупик",
+          "readyDate": "2026-12-11"
+        },
+        {
+          "key": "B2BAPP-1240",
+          "name": "YD. Как команда разработки, я хочу иметь готовый технический каркас приложения (монорепо, сборка, транспорт, темизация), чтобы вести разработку фич на единой технической основе",
+          "readyDate": "2026-12-22"
+        },
+        {
+          "key": "B2BAPP-1186",
+          "name": "PL14. Как новый пользователь, я хочу пройти онбординг, чтобы понять, как пользоваться приложением с первого экрана",
+          "readyDate": "2027-01-13"
+        },
+        {
+          "key": "B2BAPP-570",
+          "name": "OB3. Как клиент, я хочу прослушать свой звонок и прочитать расшифровку, чтобы понять суть разговора за секунды",
+          "readyDate": "2027-01-26"
+        },
+        {
+          "key": "B2BAPP-193",
+          "name": "IB. Как команда я хочу вывести в продуктив приложение: инфраструктура, среды, соответствие ИБ и НФТ",
+          "readyDate": "2026-12-23"
+        },
+        {
+          "key": "B2BAPP-552",
+          "name": "MD1. Как клиент, я хочу видеть топ актуальных задач и событий по всему бизнесу, чтобы понимать, что требует действия прямо сейчас",
+          "readyDate": "2027-01-20"
         }
       ],
       "rationale": "Отсечка 10.12.2026. Только MVP-стори."
@@ -19214,7 +19228,7 @@
       "method": "Критический путь = цепочка задач до max(end) по ресурсу-хвосту.",
       "endDate": "2027-02-02",
       "resource": "FE-1",
-      "parallelEnd": "2026-12-18",
+      "parallelEnd": "2026-12-23",
       "conclusion": "НЕ успеваем: критпуть до 02.02.27, дедлайн 10.12.26",
       "steps": [
         "Весь бэклог из выгрузки по 10 согласованным эпикам; вакантные ставки не учитываются вообще",
@@ -19222,11 +19236,11 @@
         "Бэклог без спринта — в будущие спринты по «Плану ручному» (Confluence 2666206915; Бек 1 = Попов, Бек 2 = Григоркин) с учётом ёмкости 2 недели × 8ч × FTE; не влезло — в следующий спринт",
         "Зависимости ролей внутри стори — по спринтам: BA → (ARC) → DS и BE → FE не раньше DS и BE → QA; + явные Blocks",
         "Хвост критпути: ресурс FE-1, окончание 02.02.27",
-        "Срок MVP задают аналитика, дизайн, бэк, фронт и QA; архитектура, оргзадачи и DevOps — параллельные треки, на срок не влияют (заканчиваются 18.12.26)"
+        "Срок MVP задают аналитика, дизайн, бэк, фронт и QA; архитектура, оргзадачи и DevOps — параллельные треки, на срок не влияют (заканчиваются 23.12.26)"
       ]
     },
     "ganttAssumptions": {
-      "dataSource": "Jira B2BAPP 2026-11-11T23:34:53+03:00 (динамически)",
+      "dataSource": "Jira B2BAPP 2026-11-12T12:28:22+03:00 (динамически)",
       "teamSource": "Confluence 1562745210 + сверка Jira assignee",
       "ganttType": "per_task_v4_sprints",
       "calendar": "Производственный календарь РФ",
@@ -19248,19 +19262,9 @@
     },
     "epicProgress": [
       {
-        "epicKey": "B2BAPP-465",
-        "epicName": "10. Общение и звонки",
-        "hoursTotal": 961,
-        "hoursSpent": 435,
-        "storiesTotal": 17,
-        "storiesDone": 2,
-        "start": "2026-09-22",
-        "end": "2027-01-26"
-      },
-      {
         "epicKey": "B2BAPP-484",
         "epicName": "9. AI-отчёты и аналитика",
-        "hoursTotal": 611,
+        "hoursTotal": 619,
         "hoursSpent": 675,
         "storiesTotal": 10,
         "storiesDone": 2,
@@ -19268,14 +19272,44 @@
         "end": "2027-01-21"
       },
       {
-        "epicKey": "B2BAPP-22",
-        "epicName": "6. Главная страница",
-        "hoursTotal": 507,
-        "hoursSpent": 375,
-        "storiesTotal": 7,
+        "epicKey": "B2BAPP-134",
+        "epicName": "2. Инфраструктура и платформа",
+        "hoursTotal": 1612,
+        "hoursSpent": 1200,
+        "storiesTotal": 13,
         "storiesDone": 4,
+        "start": "2026-01-12",
+        "end": "2026-12-23"
+      },
+      {
+        "epicKey": "B2BAPP-27",
+        "epicName": "7. ИИ-движок",
+        "hoursTotal": 1155,
+        "hoursSpent": 422,
+        "storiesTotal": 11,
+        "storiesDone": 2,
         "start": "2026-05-28",
-        "end": "2026-11-05"
+        "end": "2027-01-15"
+      },
+      {
+        "epicKey": "B2BAPP-465",
+        "epicName": "10. Общение и звонки",
+        "hoursTotal": 961,
+        "hoursSpent": 443,
+        "storiesTotal": 17,
+        "storiesDone": 2,
+        "start": "2026-09-22",
+        "end": "2027-01-26"
+      },
+      {
+        "epicKey": "B2BAPP-1242",
+        "epicName": "8. Профиль",
+        "hoursTotal": 524,
+        "hoursSpent": 369,
+        "storiesTotal": 4,
+        "storiesDone": 1,
+        "start": "2026-07-30",
+        "end": "2027-01-20"
       },
       {
         "epicKey": "B2BAPP-21",
@@ -19286,16 +19320,6 @@
         "storiesDone": 0,
         "start": "2026-06-26",
         "end": "2027-01-12"
-      },
-      {
-        "epicKey": "B2BAPP-134",
-        "epicName": "2. Инфраструктура и платформа",
-        "hoursTotal": 1596,
-        "hoursSpent": 1192,
-        "storiesTotal": 13,
-        "storiesDone": 4,
-        "start": "2026-01-12",
-        "end": "2026-12-22"
       },
       {
         "epicKey": "B2BAPP-25",
@@ -19318,24 +19342,14 @@
         "end": "2027-01-28"
       },
       {
-        "epicKey": "B2BAPP-27",
-        "epicName": "7. ИИ-движок",
-        "hoursTotal": 1155,
-        "hoursSpent": 414,
-        "storiesTotal": 11,
-        "storiesDone": 2,
+        "epicKey": "B2BAPP-22",
+        "epicName": "6. Главная страница",
+        "hoursTotal": 507,
+        "hoursSpent": 375,
+        "storiesTotal": 7,
+        "storiesDone": 4,
         "start": "2026-05-28",
-        "end": "2027-01-15"
-      },
-      {
-        "epicKey": "B2BAPP-1242",
-        "epicName": "8. Профиль",
-        "hoursTotal": 524,
-        "hoursSpent": 369,
-        "storiesTotal": 4,
-        "storiesDone": 1,
-        "start": "2026-07-30",
-        "end": "2027-01-20"
+        "end": "2026-11-05"
       },
       {
         "epicKey": "B2BAPP-1241",
@@ -19356,8 +19370,8 @@
         "fte": 1.0,
         "from": "2026-02-02",
         "vacant": false,
-        "taskCount": 23,
-        "hoursTotal": 367,
+        "taskCount": 25,
+        "hoursTotal": 391,
         "months": [
           {
             "month": "2026-01",
@@ -19403,21 +19417,21 @@
           },
           {
             "month": "2026-10",
-            "hoursPlanned": 77,
+            "hoursPlanned": 82,
             "normHours": 176,
-            "loadPct": 44
+            "loadPct": 47
           },
           {
             "month": "2026-11",
-            "hoursPlanned": 138,
+            "hoursPlanned": 133,
             "normHours": 160,
-            "loadPct": 86
+            "loadPct": 83
           },
           {
             "month": "2026-12",
-            "hoursPlanned": 112,
+            "hoursPlanned": 135,
             "normHours": 184,
-            "loadPct": 61
+            "loadPct": 73
           }
         ],
         "sprints": [
@@ -19453,9 +19467,9 @@
           },
           {
             "n": 8,
-            "hours": 30.0,
+            "hours": 54.0,
             "capacity": 80.0,
-            "loadPct": 38
+            "loadPct": 68
           }
         ]
       },
@@ -19668,8 +19682,8 @@
         "fte": 1.0,
         "from": "2026-08-12",
         "vacant": false,
-        "taskCount": 34,
-        "hoursTotal": 757,
+        "taskCount": 33,
+        "hoursTotal": 749,
         "months": [
           {
             "month": "2026-05",
@@ -19691,21 +19705,21 @@
           },
           {
             "month": "2026-09",
-            "hoursPlanned": 143,
+            "hoursPlanned": 141,
             "normHours": 176,
-            "loadPct": 81
+            "loadPct": 80
           },
           {
             "month": "2026-10",
-            "hoursPlanned": 148,
+            "hoursPlanned": 140,
             "normHours": 176,
-            "loadPct": 84
+            "loadPct": 80
           },
           {
             "month": "2026-11",
-            "hoursPlanned": 109,
+            "hoursPlanned": 111,
             "normHours": 160,
-            "loadPct": 68
+            "loadPct": 69
           },
           {
             "month": "2026-12",
@@ -19747,9 +19761,9 @@
           },
           {
             "n": 5,
-            "hours": 61.0,
+            "hours": 60.0,
             "capacity": 64.0,
-            "loadPct": 95
+            "loadPct": 94
           },
           {
             "n": 6,
@@ -19957,31 +19971,31 @@
         "from": "2026-07-24",
         "vacant": false,
         "taskCount": 22,
-        "hoursTotal": 717,
+        "hoursTotal": 725,
         "months": [
           {
             "month": "2026-09",
-            "hoursPlanned": 186,
+            "hoursPlanned": 190,
             "normHours": 176,
-            "loadPct": 106
+            "loadPct": 108
           },
           {
             "month": "2026-10",
-            "hoursPlanned": 156,
+            "hoursPlanned": 159,
             "normHours": 176,
-            "loadPct": 89
+            "loadPct": 90
           },
           {
             "month": "2026-11",
-            "hoursPlanned": 177,
+            "hoursPlanned": 182,
             "normHours": 160,
-            "loadPct": 111
+            "loadPct": 114
           },
           {
             "month": "2026-12",
-            "hoursPlanned": 172,
+            "hoursPlanned": 169,
             "normHours": 184,
-            "loadPct": 93
+            "loadPct": 92
           },
           {
             "month": "2027-01",
@@ -20029,9 +20043,9 @@
           },
           {
             "n": 7,
-            "hours": 42.8,
+            "hours": 41.4,
             "capacity": 80.0,
-            "loadPct": 53
+            "loadPct": 52
           },
           {
             "n": 8,
@@ -20054,8 +20068,8 @@
         "fte": 1.0,
         "from": "2026-09-07",
         "vacant": false,
-        "taskCount": 22,
-        "hoursTotal": 607,
+        "taskCount": 23,
+        "hoursTotal": 623,
         "months": [
           {
             "month": "2026-06",
@@ -20083,21 +20097,21 @@
           },
           {
             "month": "2026-10",
-            "hoursPlanned": 111,
+            "hoursPlanned": 124,
             "normHours": 176,
-            "loadPct": 63
+            "loadPct": 70
           },
           {
             "month": "2026-11",
-            "hoursPlanned": 184,
+            "hoursPlanned": 185,
             "normHours": 160,
-            "loadPct": 115
+            "loadPct": 116
           },
           {
             "month": "2026-12",
-            "hoursPlanned": 152,
+            "hoursPlanned": 154,
             "normHours": 184,
-            "loadPct": 83
+            "loadPct": 84
           },
           {
             "month": "2027-01",
@@ -20133,9 +20147,9 @@
           },
           {
             "n": 7,
-            "hours": 67.5,
+            "hours": 62.6,
             "capacity": 80.0,
-            "loadPct": 84
+            "loadPct": 78
           },
           {
             "n": 8,
@@ -20158,32 +20172,32 @@
         "fte": 1.0,
         "from": "2026-07-22",
         "vacant": false,
-        "taskCount": 44,
-        "hoursTotal": 874,
+        "taskCount": 43,
+        "hoursTotal": 858,
         "months": [
           {
             "month": "2026-09",
-            "hoursPlanned": 147,
+            "hoursPlanned": 148,
             "normHours": 176,
             "loadPct": 84
           },
           {
             "month": "2026-10",
-            "hoursPlanned": 337,
+            "hoursPlanned": 331,
             "normHours": 176,
-            "loadPct": 191
+            "loadPct": 188
           },
           {
             "month": "2026-11",
-            "hoursPlanned": 295,
+            "hoursPlanned": 290,
             "normHours": 160,
-            "loadPct": 184
+            "loadPct": 181
           },
           {
             "month": "2026-12",
-            "hoursPlanned": 71,
+            "hoursPlanned": 66,
             "normHours": 184,
-            "loadPct": 39
+            "loadPct": 36
           },
           {
             "month": "2027-01",
@@ -20219,9 +20233,9 @@
           },
           {
             "n": 5,
-            "hours": 74.4,
+            "hours": 77.1,
             "capacity": 72.0,
-            "loadPct": 103
+            "loadPct": 107
           },
           {
             "n": 6,
@@ -20231,15 +20245,15 @@
           },
           {
             "n": 7,
-            "hours": 146.3,
+            "hours": 142.9,
             "capacity": 80.0,
-            "loadPct": 183
+            "loadPct": 179
           },
           {
             "n": 8,
-            "hours": 97.8,
+            "hours": 94.0,
             "capacity": 80.0,
-            "loadPct": 122
+            "loadPct": 118
           },
           {
             "n": 9,
@@ -20261,7 +20275,7 @@
     "method": "Критический путь = цепочка задач до max(end) по ресурсу-хвосту.",
     "endDate": "2027-02-02",
     "resource": "FE-1",
-    "parallelEnd": "2026-12-18",
+    "parallelEnd": "2026-12-23",
     "conclusion": "НЕ успеваем: критпуть до 02.02.27, дедлайн 10.12.26",
     "steps": [
       "Весь бэклог из выгрузки по 10 согласованным эпикам; вакантные ставки не учитываются вообще",
@@ -20269,11 +20283,11 @@
       "Бэклог без спринта — в будущие спринты по «Плану ручному» (Confluence 2666206915; Бек 1 = Попов, Бек 2 = Григоркин) с учётом ёмкости 2 недели × 8ч × FTE; не влезло — в следующий спринт",
       "Зависимости ролей внутри стори — по спринтам: BA → (ARC) → DS и BE → FE не раньше DS и BE → QA; + явные Blocks",
       "Хвост критпути: ресурс FE-1, окончание 02.02.27",
-      "Срок MVP задают аналитика, дизайн, бэк, фронт и QA; архитектура, оргзадачи и DevOps — параллельные треки, на срок не влияют (заканчиваются 18.12.26)"
+      "Срок MVP задают аналитика, дизайн, бэк, фронт и QA; архитектура, оргзадачи и DevOps — параллельные треки, на срок не влияют (заканчиваются 23.12.26)"
     ]
   },
   "ganttAssumptions": {
-    "dataSource": "Jira B2BAPP 2026-11-11T23:34:53+03:00 (динамически)",
+    "dataSource": "Jira B2BAPP 2026-11-12T12:28:22+03:00 (динамически)",
     "teamSource": "Confluence 1562745210 + сверка Jira assignee",
     "ganttType": "per_task_v4_sprints",
     "calendar": "Производственный календарь РФ",
@@ -20460,6 +20474,14 @@
       "stories": 67,
       "tasks": 283,
       "hoursTotal": 6508,
+      "note": "MVP-only"
+    },
+    {
+      "date": "2026-11-12",
+      "epics": 10,
+      "stories": 67,
+      "tasks": 284,
+      "hoursTotal": 6532,
       "note": "MVP-only"
     }
   ],
@@ -20856,6 +20878,11 @@
       "ts": "2026-11-11T23:34:53+03:00",
       "area": "gantt",
       "text": "gantt-прогон: Jira 363 issue, 283 MVP-задач, критпуть до 2027-02-02"
+    },
+    {
+      "ts": "2026-11-12T12:28:22+03:00",
+      "area": "gantt",
+      "text": "gantt-прогон: Jira 364 issue, 284 MVP-задач, критпуть до 2027-02-02"
     }
   ],
   "baselines": [
@@ -21030,18 +21057,28 @@
       "hoursTotal": 6508,
       "hoursSpent": 4295,
       "nItems": 360
+    },
+    {
+      "id": "bl-2026-11-12",
+      "ts": "2026-11-12T12:28:22+03:00",
+      "label": "Refresh 12.11.2026 (MVP-only)",
+      "criticalEnd": "2027-02-02",
+      "criticalResource": "FE-1",
+      "hoursTotal": 6532,
+      "hoursSpent": 4319,
+      "nItems": 361
     }
   ],
   "metrics": {
     "epicsTotal": 10,
     "storiesTotal": 67,
     "storiesDone": 12,
-    "tasksTotal": 283,
-    "tasksDone": 114,
-    "hoursTotal": 6508,
-    "hoursSpent": 4295,
-    "mvpStoriesIn": 43,
-    "mvpStoriesOut": 24,
+    "tasksTotal": 284,
+    "tasksDone": 116,
+    "hoursTotal": 6532,
+    "hoursSpent": 4319,
+    "mvpStoriesIn": 44,
+    "mvpStoriesOut": 23,
     "criticalPathEnd": "2027-02-02",
     "openQuestions": 4
   },
@@ -21185,19 +21222,9 @@
   ],
   "epicProgress": [
     {
-      "epicKey": "B2BAPP-465",
-      "epicName": "10. Общение и звонки",
-      "hoursTotal": 961,
-      "hoursSpent": 435,
-      "storiesTotal": 17,
-      "storiesDone": 2,
-      "start": "2026-09-22",
-      "end": "2027-01-26"
-    },
-    {
       "epicKey": "B2BAPP-484",
       "epicName": "9. AI-отчёты и аналитика",
-      "hoursTotal": 611,
+      "hoursTotal": 619,
       "hoursSpent": 675,
       "storiesTotal": 10,
       "storiesDone": 2,
@@ -21205,14 +21232,44 @@
       "end": "2027-01-21"
     },
     {
-      "epicKey": "B2BAPP-22",
-      "epicName": "6. Главная страница",
-      "hoursTotal": 507,
-      "hoursSpent": 375,
-      "storiesTotal": 7,
+      "epicKey": "B2BAPP-134",
+      "epicName": "2. Инфраструктура и платформа",
+      "hoursTotal": 1612,
+      "hoursSpent": 1200,
+      "storiesTotal": 13,
       "storiesDone": 4,
+      "start": "2026-01-12",
+      "end": "2026-12-23"
+    },
+    {
+      "epicKey": "B2BAPP-27",
+      "epicName": "7. ИИ-движок",
+      "hoursTotal": 1155,
+      "hoursSpent": 422,
+      "storiesTotal": 11,
+      "storiesDone": 2,
       "start": "2026-05-28",
-      "end": "2026-11-05"
+      "end": "2027-01-15"
+    },
+    {
+      "epicKey": "B2BAPP-465",
+      "epicName": "10. Общение и звонки",
+      "hoursTotal": 961,
+      "hoursSpent": 443,
+      "storiesTotal": 17,
+      "storiesDone": 2,
+      "start": "2026-09-22",
+      "end": "2027-01-26"
+    },
+    {
+      "epicKey": "B2BAPP-1242",
+      "epicName": "8. Профиль",
+      "hoursTotal": 524,
+      "hoursSpent": 369,
+      "storiesTotal": 4,
+      "storiesDone": 1,
+      "start": "2026-07-30",
+      "end": "2027-01-20"
     },
     {
       "epicKey": "B2BAPP-21",
@@ -21223,16 +21280,6 @@
       "storiesDone": 0,
       "start": "2026-06-26",
       "end": "2027-01-12"
-    },
-    {
-      "epicKey": "B2BAPP-134",
-      "epicName": "2. Инфраструктура и платформа",
-      "hoursTotal": 1596,
-      "hoursSpent": 1192,
-      "storiesTotal": 13,
-      "storiesDone": 4,
-      "start": "2026-01-12",
-      "end": "2026-12-22"
     },
     {
       "epicKey": "B2BAPP-25",
@@ -21255,24 +21302,14 @@
       "end": "2027-01-28"
     },
     {
-      "epicKey": "B2BAPP-27",
-      "epicName": "7. ИИ-движок",
-      "hoursTotal": 1155,
-      "hoursSpent": 414,
-      "storiesTotal": 11,
-      "storiesDone": 2,
+      "epicKey": "B2BAPP-22",
+      "epicName": "6. Главная страница",
+      "hoursTotal": 507,
+      "hoursSpent": 375,
+      "storiesTotal": 7,
+      "storiesDone": 4,
       "start": "2026-05-28",
-      "end": "2027-01-15"
-    },
-    {
-      "epicKey": "B2BAPP-1242",
-      "epicName": "8. Профиль",
-      "hoursTotal": 524,
-      "hoursSpent": 369,
-      "storiesTotal": 4,
-      "storiesDone": 1,
-      "start": "2026-07-30",
-      "end": "2027-01-20"
+      "end": "2026-11-05"
     },
     {
       "epicKey": "B2BAPP-1241",
@@ -21293,8 +21330,8 @@
       "fte": 1.0,
       "from": "2026-02-02",
       "vacant": false,
-      "taskCount": 23,
-      "hoursTotal": 367,
+      "taskCount": 25,
+      "hoursTotal": 391,
       "months": [
         {
           "month": "2026-01",
@@ -21340,21 +21377,21 @@
         },
         {
           "month": "2026-10",
-          "hoursPlanned": 77,
+          "hoursPlanned": 82,
           "normHours": 176,
-          "loadPct": 44
+          "loadPct": 47
         },
         {
           "month": "2026-11",
-          "hoursPlanned": 138,
+          "hoursPlanned": 133,
           "normHours": 160,
-          "loadPct": 86
+          "loadPct": 83
         },
         {
           "month": "2026-12",
-          "hoursPlanned": 112,
+          "hoursPlanned": 135,
           "normHours": 184,
-          "loadPct": 61
+          "loadPct": 73
         }
       ],
       "sprints": [
@@ -21390,9 +21427,9 @@
         },
         {
           "n": 8,
-          "hours": 30.0,
+          "hours": 54.0,
           "capacity": 80.0,
-          "loadPct": 38
+          "loadPct": 68
         }
       ]
     },
@@ -21605,8 +21642,8 @@
       "fte": 1.0,
       "from": "2026-08-12",
       "vacant": false,
-      "taskCount": 34,
-      "hoursTotal": 757,
+      "taskCount": 33,
+      "hoursTotal": 749,
       "months": [
         {
           "month": "2026-05",
@@ -21628,21 +21665,21 @@
         },
         {
           "month": "2026-09",
-          "hoursPlanned": 143,
+          "hoursPlanned": 141,
           "normHours": 176,
-          "loadPct": 81
+          "loadPct": 80
         },
         {
           "month": "2026-10",
-          "hoursPlanned": 148,
+          "hoursPlanned": 140,
           "normHours": 176,
-          "loadPct": 84
+          "loadPct": 80
         },
         {
           "month": "2026-11",
-          "hoursPlanned": 109,
+          "hoursPlanned": 111,
           "normHours": 160,
-          "loadPct": 68
+          "loadPct": 69
         },
         {
           "month": "2026-12",
@@ -21684,9 +21721,9 @@
         },
         {
           "n": 5,
-          "hours": 61.0,
+          "hours": 60.0,
           "capacity": 64.0,
-          "loadPct": 95
+          "loadPct": 94
         },
         {
           "n": 6,
@@ -21894,31 +21931,31 @@
       "from": "2026-07-24",
       "vacant": false,
       "taskCount": 22,
-      "hoursTotal": 717,
+      "hoursTotal": 725,
       "months": [
         {
           "month": "2026-09",
-          "hoursPlanned": 186,
+          "hoursPlanned": 190,
           "normHours": 176,
-          "loadPct": 106
+          "loadPct": 108
         },
         {
           "month": "2026-10",
-          "hoursPlanned": 156,
+          "hoursPlanned": 159,
           "normHours": 176,
-          "loadPct": 89
+          "loadPct": 90
         },
         {
           "month": "2026-11",
-          "hoursPlanned": 177,
+          "hoursPlanned": 182,
           "normHours": 160,
-          "loadPct": 111
+          "loadPct": 114
         },
         {
           "month": "2026-12",
-          "hoursPlanned": 172,
+          "hoursPlanned": 169,
           "normHours": 184,
-          "loadPct": 93
+          "loadPct": 92
         },
         {
           "month": "2027-01",
@@ -21966,9 +22003,9 @@
         },
         {
           "n": 7,
-          "hours": 42.8,
+          "hours": 41.4,
           "capacity": 80.0,
-          "loadPct": 53
+          "loadPct": 52
         },
         {
           "n": 8,
@@ -21991,8 +22028,8 @@
       "fte": 1.0,
       "from": "2026-09-07",
       "vacant": false,
-      "taskCount": 22,
-      "hoursTotal": 607,
+      "taskCount": 23,
+      "hoursTotal": 623,
       "months": [
         {
           "month": "2026-06",
@@ -22020,21 +22057,21 @@
         },
         {
           "month": "2026-10",
-          "hoursPlanned": 111,
+          "hoursPlanned": 124,
           "normHours": 176,
-          "loadPct": 63
+          "loadPct": 70
         },
         {
           "month": "2026-11",
-          "hoursPlanned": 184,
+          "hoursPlanned": 185,
           "normHours": 160,
-          "loadPct": 115
+          "loadPct": 116
         },
         {
           "month": "2026-12",
-          "hoursPlanned": 152,
+          "hoursPlanned": 154,
           "normHours": 184,
-          "loadPct": 83
+          "loadPct": 84
         },
         {
           "month": "2027-01",
@@ -22070,9 +22107,9 @@
         },
         {
           "n": 7,
-          "hours": 67.5,
+          "hours": 62.6,
           "capacity": 80.0,
-          "loadPct": 84
+          "loadPct": 78
         },
         {
           "n": 8,
@@ -22095,32 +22132,32 @@
       "fte": 1.0,
       "from": "2026-07-22",
       "vacant": false,
-      "taskCount": 44,
-      "hoursTotal": 874,
+      "taskCount": 43,
+      "hoursTotal": 858,
       "months": [
         {
           "month": "2026-09",
-          "hoursPlanned": 147,
+          "hoursPlanned": 148,
           "normHours": 176,
           "loadPct": 84
         },
         {
           "month": "2026-10",
-          "hoursPlanned": 337,
+          "hoursPlanned": 331,
           "normHours": 176,
-          "loadPct": 191
+          "loadPct": 188
         },
         {
           "month": "2026-11",
-          "hoursPlanned": 295,
+          "hoursPlanned": 290,
           "normHours": 160,
-          "loadPct": 184
+          "loadPct": 181
         },
         {
           "month": "2026-12",
-          "hoursPlanned": 71,
+          "hoursPlanned": 66,
           "normHours": 184,
-          "loadPct": 39
+          "loadPct": 36
         },
         {
           "month": "2027-01",
@@ -22156,9 +22193,9 @@
         },
         {
           "n": 5,
-          "hours": 74.4,
+          "hours": 77.1,
           "capacity": 72.0,
-          "loadPct": 103
+          "loadPct": 107
         },
         {
           "n": 6,
@@ -22168,15 +22205,15 @@
         },
         {
           "n": 7,
-          "hours": 146.3,
+          "hours": 142.9,
           "capacity": 80.0,
-          "loadPct": 183
+          "loadPct": 179
         },
         {
           "n": 8,
-          "hours": 97.8,
+          "hours": 94.0,
           "capacity": 80.0,
-          "loadPct": 122
+          "loadPct": 118
         },
         {
           "n": 9,
@@ -22193,7 +22230,7 @@
       ]
     }
   ],
-  "generatedAt": "2026-11-11T23:34:53+03:00",
+  "generatedAt": "2026-11-12T12:28:22+03:00",
   "orphanTasks": [
     {
       "key": "B2BAPP-1388",
@@ -22735,125 +22772,71 @@
     "collectedAt": "2026-11-10"
   },
   "changes": {
-    "since": "2026-11-10",
-    "sinceLabel": "Refresh 10.11.2026 (MVP-only)",
+    "since": "2026-11-11",
+    "sinceLabel": "Refresh 11.11.2026 (MVP-only)",
     "criticalEnd": [
       "2027-02-02",
       "2027-02-02"
     ],
     "shiftWorkdays": 0,
     "hoursTotal": [
-      6480,
-      6508
+      6508,
+      6532
     ],
     "hoursSpent": [
-      4238,
-      4295
+      4295,
+      4319
     ],
     "added": [
       {
-        "key": "B2BAPP-802",
-        "summary": "[BA] Страница-реестр по ИИ-ассистенту: модель и состав ответов (для вопросов ИБ)",
-        "role": "BA",
-        "estimateH": 8,
-        "resource": "Клейменова Анна Андреевна"
-      },
-      {
-        "key": "B2BAPP-800",
-        "summary": "[ORG] Заказать 2 балансировщика (ЛБ) B2B под Ваф и домен",
+        "key": "B2BAPP-797",
+        "summary": "[ORG] Критичные E2E-сценарии B2B: заявить, назначить ответственных, оценить критичность и ",
         "role": "ORG",
-        "estimateH": 4,
+        "estimateH": 16,
         "resource": "Немудров Виктор Викторович"
       }
     ],
-    "addedH": 12,
+    "addedH": 16,
     "removed": [],
     "removedH": 0,
     "closed": [
-      {
-        "key": "B2BAPP-1153",
-        "summary": "[BA] Аналитика OB6: статистика звонков в чате",
-        "role": "BA",
-        "estimateH": 24,
-        "resource": "Шевченко Константин Иванович",
-        "status": "Завершена"
-      },
-      {
-        "key": "B2BAPP-1150",
-        "summary": "[BA] Аналитика OB7: еженедельная сводка по звонкам",
-        "role": "BA",
-        "estimateH": 24,
-        "resource": "Шевченко Константин Иванович",
-        "status": "Завершена"
-      },
-      {
-        "key": "B2BAPP-1077",
-        "summary": "[BA] Описание бесшовной аутентификации с про.билайн/ЛК",
-        "role": "BA",
-        "estimateH": 16,
-        "resource": "Шевченко Константин Иванович",
-        "status": "Завершена"
-      },
-      {
-        "key": "B2BAPP-314",
-        "summary": "[BA] Согласование набора чипов ВП (стори 191)",
-        "role": "BA",
-        "estimateH": 16,
-        "resource": "Шевченко Константин Иванович",
-        "status": "Завершена"
-      }
-    ],
-    "started": [
-      {
-        "key": "B2BAPP-1382",
-        "summary": "[DS] Макеты: работа с календарем ",
-        "role": "DS",
-        "estimateH": 40,
-        "resource": "Балашов Владислав Евгеньевич",
-        "status": "Анализ"
-      },
-      {
-        "key": "B2BAPP-1353",
-        "summary": "[DS] Макет карточки контакта (OB8)",
-        "role": "DS",
-        "estimateH": 24,
-        "resource": "Балашов Владислав Евгеньевич",
-        "status": "Анализ"
-      },
-      {
-        "key": "B2BAPP-1340",
-        "summary": "[BE] Реализовать интеграцию с ботом тех.поддержки ДОКК",
-        "role": "BE",
-        "estimateH": 56,
-        "resource": "Попов Сергей Владимирович",
-        "status": "Разработка"
-      },
-      {
-        "key": "B2BAPP-1202",
-        "summary": "[BE] Маскирование/хэширование ПДн в логах",
-        "role": "BE",
-        "estimateH": 31,
-        "resource": "Григоркин Константин Александрович",
-        "status": "Разработка"
-      },
       {
         "key": "B2BAPP-1149",
         "summary": "[BA] Аналитика: Сценарии-редиректы (карта переадресации)",
         "role": "BA",
         "estimateH": 4,
         "resource": "Клейменова Анна Андреевна",
-        "status": "В работе"
+        "status": "Завершена"
       },
       {
-        "key": "B2BAPP-369",
-        "summary": "[DS] Типографика и гайдлайны: привести к принятым в компании документам дизайн",
-        "role": "DS",
-        "estimateH": 10,
-        "resource": "Балашов Владислав Евгеньевич",
-        "status": "В работе"
+        "key": "B2BAPP-247",
+        "summary": "[BA] Актуализировать страницу реестра логов (убрать лишнее)",
+        "role": "BA",
+        "estimateH": 8,
+        "resource": "Клейменова Анна Андреевна",
+        "status": "Завершена"
+      }
+    ],
+    "started": [
+      {
+        "key": "B2BAPP-187",
+        "summary": "[BE] Ассистент: ответ по договорённостям из звонков - элементы для договоренностей в чате ",
+        "role": "BE",
+        "estimateH": 16,
+        "resource": "Григоркин Константин Александрович",
+        "status": "Разработка"
       }
     ],
     "missed": [
+      {
+        "key": "B2BAPP-1386",
+        "summary": "[BE] Реализовать интеграцию mcp-инструментов WebSearch",
+        "role": "BE",
+        "estimateH": 24,
+        "resource": "Григоркин Константин Александрович",
+        "status": "Разработка",
+        "planEnd": "2026-11-09"
+      },
       {
         "key": "B2BAPP-1385",
         "summary": "[BE] Реализовать логику формирования следующих шагов после ответа ассистента",
@@ -22861,7 +22844,7 @@
         "estimateH": 16,
         "resource": "Алпатов Максим Вадимович",
         "status": "Тестирование",
-        "planEnd": "2026-11-06"
+        "planEnd": "2026-11-09"
       },
       {
         "key": "B2BAPP-1381",
@@ -22882,13 +22865,13 @@
         "planEnd": "2026-11-03"
       },
       {
-        "key": "B2BAPP-1345",
-        "summary": "[BE] Разбор звонка: саммари и договорённости по звонку",
-        "role": "BE",
-        "estimateH": 16,
-        "resource": "Алпатов Максим Вадимович",
-        "status": "Ready for testing",
-        "planEnd": "2026-11-06"
+        "key": "B2BAPP-1353",
+        "summary": "[DS] Макет карточки контакта (OB8)",
+        "role": "DS",
+        "estimateH": 24,
+        "resource": "Балашов Владислав Евгеньевич",
+        "status": "Анализ",
+        "planEnd": "2026-11-10"
       },
       {
         "key": "B2BAPP-1312",
@@ -22904,7 +22887,7 @@
         "summary": "[DVO] Создать стенды E2E и prod (заказ ресурсов/namespace для сетевой схемы ИБ)",
         "role": "DVO",
         "estimateH": 8,
-        "resource": "Клейменова Анна Андреевна",
+        "resource": "Попов Сергей Владимирович",
         "status": "В работе",
         "planEnd": "2026-11-03"
       },
@@ -22924,7 +22907,7 @@
         "estimateH": 21,
         "resource": "Шевченко Константин Иванович",
         "status": "Анализ",
-        "planEnd": "2026-11-09"
+        "planEnd": "2026-11-11"
       },
       {
         "key": "B2BAPP-1204",
@@ -22934,6 +22917,24 @@
         "resource": "Немудров Виктор Викторович",
         "status": "Бэклог",
         "planEnd": "2026-11-05"
+      },
+      {
+        "key": "B2BAPP-1202",
+        "summary": "[BE] Маскирование/хэширование ПДн в логах",
+        "role": "BE",
+        "estimateH": 31,
+        "resource": "Григоркин Константин Александрович",
+        "status": "Разработка",
+        "planEnd": "2026-11-06"
+      },
+      {
+        "key": "B2BAPP-1199",
+        "summary": "[BA] Аналитика: Отправка пуш-уведомлений",
+        "role": "BA",
+        "estimateH": 32,
+        "resource": "Клейменова Анна Андреевна",
+        "status": "Удержание",
+        "planEnd": "2026-11-11"
       },
       {
         "key": "B2BAPP-1190",
@@ -22972,15 +22973,6 @@
         "planEnd": "2026-11-03"
       },
       {
-        "key": "B2BAPP-1157",
-        "summary": "[BA] Аналитика: Топ актуальных задач и событий по всему бизнесу",
-        "role": "BA",
-        "estimateH": 16,
-        "resource": "Шевченко Константин Иванович",
-        "status": "Анализ",
-        "planEnd": "2026-11-10"
-      },
-      {
         "key": "B2BAPP-1154",
         "summary": "[BA] Аналитика: Сводка дня по бизнесу",
         "role": "BA",
@@ -22988,15 +22980,6 @@
         "resource": "Клейменова Анна Андреевна",
         "status": "Анализ",
         "planEnd": "2026-11-05"
-      },
-      {
-        "key": "B2BAPP-1120",
-        "summary": "[BA] Аналитика: Карточка контакта по номеру телефона",
-        "role": "BA",
-        "estimateH": 16,
-        "resource": "Шевченко Константин Иванович",
-        "status": "В работе",
-        "planEnd": "2026-11-10"
       },
       {
         "key": "B2BAPP-1111",
@@ -23014,7 +22997,7 @@
         "estimateH": 40,
         "resource": "Алпатов Максим Вадимович",
         "status": "В работе",
-        "planEnd": "2026-11-10"
+        "planEnd": "2026-11-11"
       },
       {
         "key": "B2BAPP-954",
@@ -23032,14 +23015,14 @@
         "estimateH": 16,
         "resource": "Алпатов Максим Вадимович",
         "status": "Ready for testing",
-        "planEnd": "2026-11-09"
+        "planEnd": "2026-11-06"
       },
       {
         "key": "B2BAPP-794",
         "summary": "[DVO] Получить SSL-сертификат (цепочку) для поддомена B2BAPP — фикс установки на Android",
         "role": "DVO",
         "estimateH": 8,
-        "resource": "Попов Сергей Владимирович",
+        "resource": "Немудров Виктор Викторович",
         "status": "В работе",
         "planEnd": "2026-11-03"
       },
@@ -23059,6 +23042,15 @@
         "estimateH": 54,
         "resource": "Попов Сергей Владимирович",
         "status": "Разработка",
+        "planEnd": "2026-11-11"
+      },
+      {
+        "key": "B2BAPP-369",
+        "summary": "[DS] Типографика и гайдлайны: привести к принятым в компании документам дизайн",
+        "role": "DS",
+        "estimateH": 10,
+        "resource": "Балашов Владислав Евгеньевич",
+        "status": "В работе",
         "planEnd": "2026-11-05"
       },
       {
@@ -23080,13 +23072,22 @@
         "planEnd": "2026-11-05"
       },
       {
+        "key": "B2BAPP-190",
+        "summary": "[ORG] Заказать боевой B2B-домен",
+        "role": "ORG",
+        "estimateH": 10,
+        "resource": "Немудров Виктор Викторович",
+        "status": "Бэклог",
+        "planEnd": "2026-11-11"
+      },
+      {
         "key": "B2BAPP-181",
         "summary": "[BA] Продуктовая аналитика MVP: метрики, дополнения к дашборду  (стори PL7)",
         "role": "BA",
         "estimateH": 32,
         "resource": "Шевченко Константин Иванович",
         "status": "Анализ",
-        "planEnd": "2026-11-03"
+        "planEnd": "2026-11-06"
       },
       {
         "key": "B2BAPP-179",
@@ -23095,24 +23096,6 @@
         "estimateH": 54,
         "resource": "Попов Сергей Владимирович",
         "status": "Разработка",
-        "planEnd": "2026-11-03"
-      },
-      {
-        "key": "B2BAPP-172",
-        "summary": "[DS] Макет: разбор звонка — «Кратко / Что сделать», напоминание и календарь из шага, видже",
-        "role": "DS",
-        "estimateH": 40,
-        "resource": "Балашов Владислав Евгеньевич",
-        "status": "В работе",
-        "planEnd": "2026-11-09"
-      },
-      {
-        "key": "B2BAPP-141",
-        "summary": "[BE] Спайка: RP ID и Origin для Capacitor и тестовых стендов ",
-        "role": "BE",
-        "estimateH": 12,
-        "resource": "Алпатов Максим Вадимович",
-        "status": "Ready for testing",
         "planEnd": "2026-11-09"
       },
       {
@@ -23131,31 +23114,26 @@
         "estimateH": 16,
         "resource": "Клейменова Анна Андреевна",
         "status": "В работе",
-        "planEnd": "2026-11-03"
+        "planEnd": "2026-11-05"
       }
     ],
-    "missedH": 691,
+    "missedH": 722,
     "overrun": [
       {
-        "key": "B2BAPP-172",
-        "summary": "[DS] Макет: разбор звонка — «Кратко / Что сделать», напоминание и календарь из шага, видже",
-        "role": "DS",
-        "estimateH": 40,
-        "resource": "Балашов Владислав Евгеньевич",
-        "spentH": 48,
-        "deltaH": 40
+        "key": "B2BAPP-1149",
+        "summary": "[BA] Аналитика: Сценарии-редиректы (карта переадресации)",
+        "role": "BA",
+        "estimateH": 4,
+        "resource": "Клейменова Анна Андреевна",
+        "spentH": 8,
+        "deltaH": 8
       }
     ],
     "resources": [
       {
-        "name": "Попов Сергей Владимирович",
-        "end0": "2027-01-15",
-        "end1": "2027-01-13"
-      },
-      {
-        "name": "Шевченко Константин Иванович",
-        "end0": "2026-11-27",
-        "end1": "2026-11-25"
+        "name": "Немудров Виктор Викторович",
+        "end0": "2026-12-18",
+        "end1": "2026-12-23"
       }
     ]
   }

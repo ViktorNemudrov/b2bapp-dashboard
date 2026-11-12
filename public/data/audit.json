@@ -1,10 +1,10 @@
 {
- "generated_at": "2026-11-11",
- "jira_collected_at": "2026-11-11",
+ "generated_at": "2026-11-12",
+ "jira_collected_at": "2026-11-12",
  "current_sprint": 5,
  "scope": {
   "stories": 89,
-  "tasks": 404,
+  "tasks": 405,
   "epics": 16
  },
  "sprint_calendar": {
@@ -20,7 +20,7 @@
   "9": "2027-01-26",
   "10": "2027-02-09"
  },
- "registry": "cf_registry_0611b.json",
+ "registry": "cf_registry_1211.json",
  "manual_plan": {
   "pageId": "2666206915",
   "title": "План ручной",
@@ -57,6 +57,10 @@
    "text": "у задачи нет оценки"
   },
   {
+   "code": "T7",
+   "text": "оценка больше 16 ч (2 рабочих дня) — разбить на задачи меньше; только не начатые и в работе"
+  },
+  {
    "code": "T11",
    "text": "задача начата, но без даты начала"
   },
@@ -71,9 +75,31 @@
  ],
  "owners": [
   {
-   "id": "A",
+   "id": "o1",
    "name": "Клейменова Анна",
    "short": "Аня",
+   "fallback": false,
+   "scenarios": [
+    "MD1",
+    "MD2",
+    "NAI",
+    "OB11",
+    "PK1",
+    "PL2",
+    "PL3",
+    "PL4",
+    "PL6",
+    "PL8",
+    "PL13",
+    "PL14",
+    "PL17",
+    "PL18",
+    "RB1",
+    "RB2",
+    "RB3",
+    "RB4",
+    "RB5"
+   ],
    "issues": [
     {
      "key": "B2BAPP-538",
@@ -92,6 +118,150 @@
      "scenario": "PL14",
      "check": "S6",
      "action": "только [BA] — добавить задачи разработки"
+    },
+    {
+     "key": "B2BAPP-1322",
+     "scenario": "PL17",
+     "check": "T6",
+     "action": "проставить оценку"
+    },
+    {
+     "key": "B2BAPP-137",
+     "scenario": "OB11",
+     "check": "T7",
+     "action": "оценка 32 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-138",
+     "scenario": "OB11",
+     "check": "T7",
+     "action": "оценка 48 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-328",
+     "scenario": "PL3",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-355",
+     "scenario": "MD2",
+     "check": "T7",
+     "action": "оценка 32 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-362",
+     "scenario": "PL3",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-366",
+     "scenario": "PL3",
+     "check": "T7",
+     "action": "оценка 29 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-379",
+     "scenario": "PL6",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-576",
+     "scenario": "PL6",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-911",
+     "scenario": "PL3",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-940",
+     "scenario": "PL6",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1016",
+     "scenario": "MD2",
+     "check": "T7",
+     "action": "оценка 32 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1029",
+     "scenario": "PK1",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1075",
+     "scenario": "PL3",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1076",
+     "scenario": "PL3",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1105",
+     "scenario": "PL3",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1154",
+     "scenario": "MD2",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1199",
+     "scenario": "PL17",
+     "check": "T7",
+     "action": "оценка 32 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1246",
+     "scenario": "NAI",
+     "check": "T7",
+     "action": "оценка 40 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1340",
+     "scenario": "PL3",
+     "check": "T7",
+     "action": "оценка 56 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1364",
+     "scenario": "MD1",
+     "check": "T7",
+     "action": "оценка 18 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1367",
+     "scenario": "PK1",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1382",
+     "scenario": "OB11",
+     "check": "T7",
+     "action": "оценка 40 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1386",
+     "scenario": "NAI",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
     }
    ],
    "p4": [
@@ -119,6 +289,25 @@
      "closed": 0,
      "total": 2,
      "action": "задачи без спринта: закрыть или запланировать в будущий спринт"
+    },
+    {
+     "scenario": "PL17",
+     "name": "Отправка пуш-уведомлений",
+     "stage": "Аналитика",
+     "plan": "Спринт 3,4",
+     "planEnd": "2026-11-03",
+     "kind": "открыт",
+     "jira": [
+      {
+       "key": "B2BAPP-1199",
+       "status": "Удержание",
+       "summary": "[BA] Аналитика: Отправка пуш-уведомлений",
+       "sprint": "в Спринте 5 (текущий)"
+      }
+     ],
+     "closed": 0,
+     "total": 1,
+     "action": "задачи запланированы в спринт — перенести этап в «Плане ручном» на этот спринт"
     },
     {
      "scenario": "PK1",
@@ -154,7 +343,7 @@
      "jira": [
       {
        "key": "B2BAPP-1355",
-       "status": "Тестирование",
+       "status": "Разработка",
        "summary": "[BE] Реализовать сценарии ии-ассистентов через апи ai beeline",
        "sprint": "в Спринте 5 (текущий)"
       },
@@ -173,9 +362,27 @@
    "unlabeled_stories": []
   },
   {
-   "id": "K",
+   "id": "o2",
    "name": "Шевченко Константин",
    "short": "Костя",
+   "fallback": false,
+   "scenarios": [
+    "B2C",
+    "OB1",
+    "OB2",
+    "OB3",
+    "OB4",
+    "OB5",
+    "OB6",
+    "OB7",
+    "OB8",
+    "OB10",
+    "PL7",
+    "PL10",
+    "PL11",
+    "PL15",
+    "PL16"
+   ],
    "issues": [
     {
      "key": "B2BAPP-63",
@@ -298,6 +505,12 @@
      "action": "проставить оценку"
     },
     {
+     "key": "B2BAPP-927",
+     "scenario": "PL7",
+     "check": "T6",
+     "action": "проставить оценку"
+    },
+    {
      "key": "B2BAPP-1302",
      "scenario": "PL15",
      "check": "T6",
@@ -338,6 +551,144 @@
      "scenario": "OB7",
      "check": "T6",
      "action": "проставить оценку"
+    },
+    {
+     "key": "B2BAPP-136",
+     "scenario": "OB10",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-172",
+     "scenario": "OB5",
+     "check": "T7",
+     "action": "оценка 40 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-181",
+     "scenario": "PL7",
+     "check": "T7",
+     "action": "оценка 32 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-184",
+     "scenario": "OB6",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-237",
+     "scenario": "OB4",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1064",
+     "scenario": "PL15",
+     "check": "T7",
+     "action": "оценка 40 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1189",
+     "scenario": "PL11",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1210",
+     "scenario": "B2C",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1221",
+     "scenario": "B2C",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1222",
+     "scenario": "B2C",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1259",
+     "scenario": "PL16",
+     "check": "T7",
+     "action": "оценка 26 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1315",
+     "scenario": "PL16",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1318",
+     "scenario": "PL16",
+     "check": "T7",
+     "action": "оценка 32 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1321",
+     "scenario": "PL16",
+     "check": "T7",
+     "action": "оценка 18 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1347",
+     "scenario": "OB6",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1348",
+     "scenario": "OB6",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1351",
+     "scenario": "OB8",
+     "check": "T7",
+     "action": "оценка 50 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1352",
+     "scenario": "OB8",
+     "check": "T7",
+     "action": "оценка 18 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1353",
+     "scenario": "OB8",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1357",
+     "scenario": "OB7",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1362",
+     "scenario": "OB3",
+     "check": "T7",
+     "action": "оценка 18 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1368",
+     "scenario": "OB1",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1375",
+     "scenario": "OB1",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
     }
    ],
    "p4": [
@@ -539,6 +890,25 @@
      "action": "завести задачи [DS] или убрать этап из «Плана ручного»"
     },
     {
+     "scenario": "PL7",
+     "name": "Продуктовая аналитика",
+     "stage": "Аналитика",
+     "plan": "Спринт 4",
+     "planEnd": "2026-11-03",
+     "kind": "открыт",
+     "jira": [
+      {
+       "key": "B2BAPP-181",
+       "status": "Анализ",
+       "summary": "[BA] Продуктовая аналитика MVP: метрики, дополнения к дашборду  (стори PL7)",
+       "sprint": null
+      }
+     ],
+     "closed": 0,
+     "total": 1,
+     "action": "задачи без спринта: закрыть или запланировать в будущий спринт"
+    },
+    {
      "scenario": "PL10",
      "name": "Вторичная аутентификация (биометрия/код)",
      "stage": "Фронт",
@@ -666,22 +1036,14 @@
    "unlabeled_stories": []
   },
   {
-   "id": "V",
-   "name": "Немудров Виктор",
-   "short": "Виктор",
+   "id": "o4",
+   "name": "Алпатов Максим",
+   "short": "Максим",
+   "fallback": false,
+   "scenarios": [
+    "PL5"
+   ],
    "issues": [
-    {
-     "key": "B2BAPP-90",
-     "scenario": "—",
-     "check": "S5, S6",
-     "action": "нет метки сценария; только [BA] — добавить задачи разработки"
-    },
-    {
-     "key": "B2BAPP-151",
-     "scenario": "—",
-     "check": "S5, S6",
-     "action": "нет метки сценария; только [BA] — добавить задачи разработки"
-    },
     {
      "key": "B2BAPP-19",
      "scenario": "PL5",
@@ -695,16 +1057,47 @@
      "action": "только [BA] — добавить задачи разработки"
     },
     {
-     "key": "B2BAPP-271",
-     "scenario": "IB",
-     "check": "T1",
-     "action": "добавить префикс роли"
+     "key": "B2BAPP-1201",
+     "scenario": "PL5",
+     "check": "T6",
+     "action": "проставить оценку"
+    }
+   ],
+   "p4": [],
+   "unlabeled_stories": []
+  },
+  {
+   "id": "o3",
+   "name": "Немудров Виктор",
+   "short": "Виктор",
+   "fallback": true,
+   "scenarios": [
+    "IB",
+    "PL1",
+    "PL9",
+    "PL12",
+    "YD"
+   ],
+   "issues": [
+    {
+     "key": "B2BAPP-90",
+     "scenario": "—",
+     "check": "S5, S6",
+     "action": "нет метки сценария; только [BA] — добавить задачи разработки",
+     "outside_mvp": true
     },
     {
-     "key": "B2BAPP-57",
-     "scenario": "PL1",
-     "check": "T3",
-     "action": "тип [FE] → Development"
+     "key": "B2BAPP-151",
+     "scenario": "—",
+     "check": "S5, S6",
+     "action": "нет метки сценария; только [BA] — добавить задачи разработки",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-271",
+     "scenario": "IB",
+     "check": "T1, T7",
+     "action": "добавить префикс роли; оценка 42 ч > 16 ч — разбить на задачи до 2 дней"
     },
     {
      "key": "B2BAPP-227",
@@ -719,10 +1112,17 @@
      "action": "тип [BE] → Development; привязать Part к стори"
     },
     {
+     "key": "B2BAPP-57",
+     "scenario": "PL1",
+     "check": "T3, T7",
+     "action": "тип [FE] → Development; оценка 31 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
      "key": "B2BAPP-1316",
      "scenario": "—",
      "check": "T4",
-     "action": "привязать Part к стори"
+     "action": "привязать Part к стори",
+     "outside_mvp": true
     },
     {
      "key": "B2BAPP-1387",
@@ -735,12 +1135,6 @@
      "scenario": "—",
      "check": "T4",
      "action": "привязать Part к стори"
-    },
-    {
-     "key": "B2BAPP-927",
-     "scenario": "PL7",
-     "check": "T6",
-     "action": "проставить оценку"
     },
     {
      "key": "B2BAPP-1081",
@@ -779,12 +1173,6 @@
      "action": "проставить оценку"
     },
     {
-     "key": "B2BAPP-1201",
-     "scenario": "PL5",
-     "check": "T6",
-     "action": "проставить оценку"
-    },
-    {
      "key": "B2BAPP-1212",
      "scenario": "PL1",
      "check": "T6",
@@ -797,52 +1185,432 @@
      "action": "проставить оценку"
     },
     {
-     "key": "B2BAPP-1322",
-     "scenario": "PL17",
-     "check": "T6",
-     "action": "проставить оценку"
-    }
-   ],
-   "p4": [
-    {
-     "scenario": "PL7",
-     "name": "Продуктовая аналитика",
-     "stage": "Аналитика",
-     "plan": "Спринт 4",
-     "planEnd": "2026-11-03",
-     "kind": "открыт",
-     "jira": [
-      {
-       "key": "B2BAPP-181",
-       "status": "Анализ",
-       "summary": "[BA] Продуктовая аналитика MVP: метрики, дополнения к дашборду  (стори PL7)",
-       "sprint": null
-      }
-     ],
-     "closed": 0,
-     "total": 1,
-     "action": "задачи без спринта: закрыть или запланировать в будущий спринт"
+     "key": "B2BAPP-132",
+     "scenario": "PL12",
+     "check": "T7",
+     "action": "оценка 36 ч > 16 ч — разбить на задачи до 2 дней"
     },
     {
-     "scenario": "PL17",
-     "name": "Отправка пуш-уведомлений",
-     "stage": "Аналитика",
-     "plan": "Спринт 3,4",
-     "planEnd": "2026-11-03",
-     "kind": "открыт",
-     "jira": [
-      {
-       "key": "B2BAPP-1199",
-       "status": "Удержание",
-       "summary": "[BA] Аналитика: Отправка пуш-уведомлений",
-       "sprint": "в Спринте 5 (текущий)"
-      }
-     ],
-     "closed": 0,
-     "total": 1,
-     "action": "задачи запланированы в спринт — перенести этап в «Плане ручном» на этот спринт"
+     "key": "B2BAPP-177",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 56 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-179",
+     "scenario": "PL9",
+     "check": "T7",
+     "action": "оценка 54 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-183",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 22 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-188",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-191",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-199",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-203",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-209",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-210",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-211",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-212",
+     "scenario": "PL1",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-218",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-224",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-249",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 62 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-255",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 27 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-256",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 52 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-257",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-258",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 27 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-259",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 42 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-262",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-263",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-269",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-318",
+     "scenario": "PL1",
+     "check": "T7",
+     "action": "оценка 135 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-319",
+     "scenario": "PL1",
+     "check": "T7",
+     "action": "оценка 70 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-340",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-341",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-342",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 19 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-343",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 32 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-364",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 22 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-371",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 42 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-376",
+     "scenario": "PL1",
+     "check": "T7",
+     "action": "оценка 62 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-405",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-414",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-487",
+     "scenario": "PL9",
+     "check": "T7",
+     "action": "оценка 54 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-490",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-573",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-738",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-790",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 40 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-813",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-814",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 128 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-894",
+     "scenario": "YD",
+     "check": "T7",
+     "action": "оценка 40 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-954",
+     "scenario": "PL1",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-963",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-964",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-965",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-1026",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-1072",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-1073",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-1107",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1116",
+     "scenario": "PL12",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1127",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1133",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-1145",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-1146",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-1147",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-1148",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-1202",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1225",
+     "scenario": "PL9",
+     "check": "T7",
+     "action": "оценка 31 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1239",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-1260",
+     "scenario": "YD",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1263",
+     "scenario": "PL9",
+     "check": "T7",
+     "action": "оценка 42 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1266",
+     "scenario": "PL1",
+     "check": "T7",
+     "action": "оценка 32 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1326",
+     "scenario": "IB",
+     "check": "T7",
+     "action": "оценка 21 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-1389",
+     "scenario": "—",
+     "check": "T7",
+     "action": "оценка 528 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
     }
    ],
+   "p4": [],
    "unlabeled_stories": [
     "B2BAPP-31",
     "B2BAPP-33",
@@ -866,5 +1634,6 @@
    ]
   }
  ],
+ "max_task_h": 16,
  "p4_total": 20
 }

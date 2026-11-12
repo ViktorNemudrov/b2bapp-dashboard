@@ -33,7 +33,16 @@ SC_LABEL_RE = re.compile(r"^(MD|OB|RB|PL|PK|NAI|B2C|YD|IB)\d*$", re.I)
 SC_PREFIX_RE = re.compile(r"^\s*((?:MD|OB|RB|PL|PK|NAI|B2C|YD|IB)\d*)\s*[.:]", re.I)
 STAGE_NAME = {"AN": "Аналитика", "DS": "Дизайн", "BE": "Бек", "BE1": "Бек", "BE2": "Бек", "FE": "Фронт", "QA": "QA"}
 STAGE_ROLES = {"AN": "[BA]/[ARC]", "DS": "[DS]", "BE": "[BE]", "BE1": "[BE]", "BE2": "[BE]", "FE": "[FE]", "QA": "[FE]/[BE]/[QA]"}
-OWNERS = [("A", "Клейменова Анна", "Аня"), ("K", "Шевченко Константин", "Костя"), ("V", "Немудров Виктор", "Виктор")]
+# Ответственный за сценарий — колонка «Владелец» реестра MVP v.2. С 12.11.2026 там один
+# человек на сценарий, упоминанием @пользователь (не обязательно аналитик: PL5 — Алпатов).
+# Без сценария или вне реестра — РП (на разбор).
+FALLBACK = "Немудров Виктор"
+SHORT = {"Клейменова Анна": "Аня", "Шевченко Константин": "Костя", "Немудров Виктор": "Виктор"}
+# Задача длиннее 2 рабочих дней — разбить (Виктор 12.11.2026). Только не начатые и
+# в работе: в тестировании и закрытые не трогаем.
+MAX_TASK_H = 16
+SPLIT_STATUSES = {"бэклог", "backlog", "ready for dev", "запланирована", "удержание",
+                  "разработка", "в работе", "анализ", "development", "in progress"}
 GLOSSARY = [
     ("S4", "стори без привязки к эпику (Epic Link)"),
     ("S5", "у стори нет метки сценария — определить и проставить"),
@@ -42,6 +51,7 @@ GLOSSARY = [
     ("T3", "тип задачи не совпадает с ролью в префиксе"),
     ("T4", "у задачи нет Part-связи со стори"),
     ("T6", "у задачи нет оценки"),
+    ("T7", f"оценка больше {MAX_TASK_H} ч (2 рабочих дня) — разбить на задачи меньше; только не начатые и в работе"),
     ("T11", "задача начата, но без даты начала"),
     ("T12", "задача закрыта без даты решения"),
     ("P4", "этап сценария отстаёт от «Плана ручного»: последний спринт этапа прошёл, а в Jira он не закрыт — "
@@ -49,13 +59,24 @@ GLOSSARY = [
 ]
 
 
-def owner_id(name):
-    """Первый в колонке «Владелец» реестра; по первым 3 буквам — в реестре бывают опечатки."""
-    first = re.split(r"[/(,+]", name or "")[0].strip().lower()
-    return "A" if first.startswith("кле") else "K" if first.startswith("шев") else "V"
+def person(cell, team):
+    """«Фамилия Имя» первого человека в ячейке «Владелец». Упоминания в выгрузке уже
+    заменены на ФИО; старый текстовый формат («Шевченок/Самойло») сопоставляется с
+    командой по первым 3 буквам фамилии (в реестре бывают опечатки)."""
+    first = re.split(r"\s*[/(,+]\s*", (cell or "").strip())[0].strip()
+    if not first:
+        return None
+    words = first.split()
+    if len(words) >= 2:
+        return " ".join(words[:2])
+    key = words[0][:3].lower()
+    for full in team:
+        if full.lower().startswith(key):
+            return full
+    return words[0]
 
 
-def load_owner_map(path):
+def load_owner_map(path, team):
     reg = json.load(open(path, encoding="utf-8"))
     m = {}
     for t in reg.get("tables", []):
@@ -64,7 +85,9 @@ def load_owner_map(path):
         ci, co = t[0].index("№"), t[0].index("Владелец")
         for r in t[1:]:
             if len(r) > max(ci, co) and r[ci].strip():
-                m[r[ci].strip().upper()] = owner_id(r[co])
+                who = person(r[co], team)
+                if who:
+                    m[r[ci].strip().upper()] = who
     return m
 
 
@@ -103,9 +126,11 @@ def main():
     ap.add_argument("--out", default="public/data/audit.json")
     a = ap.parse_args()
     reg_path = a.registry or max(glob.glob("cf/cf_registry_*.json"), key=os.path.getmtime)
-    own = load_owner_map(reg_path)
     full = json.load(open(a.jira_full, encoding="utf-8"))
     data = json.load(open(a.data, encoding="utf-8"))
+    team = [" ".join(m["name"].split()[:2]) for m in (data.get("teamConfluence") or {}).get("members", [])
+            if m.get("status") != "vacant"]
+    own = load_owner_map(reg_path, team)
     gv = data.get("ganttV2") or {}
     today = date.today().isoformat()
 
@@ -128,10 +153,27 @@ def main():
         if p:
             story_tasks.setdefault(p, []).append(t)
 
-    owners = {oid: {"id": oid, "name": n, "short": sh, "issues": [], "p4": [], "unlabeled_stories": []} for oid, n, sh in OWNERS}
+    owners = {}
 
-    def add(oid, key, scen, check, action):
-        owners[oid]["issues"].append({"key": key, "scenario": scen or "—", "check": check, "action": action})
+    def owner(name):
+        name = name or FALLBACK
+        if name not in owners:
+            owners[name] = {"id": f"o{len(owners) + 1}", "name": name, "short": SHORT.get(name, name.split()[-1]),
+                            "fallback": name == FALLBACK, "scenarios": [], "issues": [], "p4": [], "unlabeled_stories": []}
+        return owners[name]
+
+    for code, name in own.items():
+        owner(name)["scenarios"].append(code)
+    owner(FALLBACK)
+
+    mvp_epics = {e["epicKey"] for e in data.get("epicProgress") or []}
+
+    def add(oname, key, scen, check, action):
+        it = {"key": key, "scenario": scen or "—", "check": check, "action": action}
+        ep = (by_key.get(key) or {}).get("epic")
+        if mvp_epics and ep not in mvp_epics and by_key.get(key, {}).get("type") != T_EPIC:
+            it["outside_mvp"] = True   # эпик вне 10 согласованных MVP-эпиков — пометка на странице
+        owner(oname)["issues"].append(it)
 
     # ── Стори ──
     for s in stories:
@@ -139,12 +181,12 @@ def main():
         if k in SERVICE_STORIES:
             continue
         scen = sc[k]
-        oid = own.get(scen, "V") if scen else "V"
+        oid = own.get(scen, FALLBACK) if scen else FALLBACK
         checks, acts = [], []
         if not s.get("epic"):
             checks.append("S4"); acts.append("привязать к эпику (Epic Link)")
         if not scen and s.get("epic") != EXEMPT_EPIC:
-            owners["V"]["unlabeled_stories"].append(k)
+            owner(FALLBACK)["unlabeled_stories"].append(k)
         roles = {role_of(t["summary"]) for t in story_tasks.get(k, [])}
         if roles and roles <= {"BA"}:
             checks.append("S6"); acts.append("только [BA] — добавить задачи разработки")
@@ -158,7 +200,7 @@ def main():
         k, st = t["key"], (t.get("status") or "").strip()
         p = parent_story(t)
         scen = sc.get(p) if p else None
-        oid = own.get(scen, "V") if scen else "V"
+        oid = own.get(scen, FALLBACK) if scen else FALLBACK
         exempt = t.get("epic") == EXEMPT_EPIC or (p and by_key[p].get("epic") == EXEMPT_EPIC)
         role = role_of(t["summary"])
         checks, acts = [], []
@@ -172,6 +214,8 @@ def main():
             checks.append("T4"); acts.append("привязать Part к стори")
         if not t.get("est") and st.lower() not in CLOSED:
             checks.append("T6"); acts.append("проставить оценку")
+        if t.get("est", 0) > MAX_TASK_H * 3600 and st.lower() in SPLIT_STATUSES:
+            checks.append("T7"); acts.append(f"оценка {round(t['est'] / 3600)} ч > {MAX_TASK_H} ч — разбить на задачи до 2 дней")
         if st.lower() != "бэклог" and not t.get("start"):
             checks.append("T11"); acts.append("проставить «Дату начала»")
         if st.lower() == "завершена" and not t.get("resolved"):
@@ -228,8 +272,7 @@ def main():
                     kind, action = "открыт", "задачи запланированы в спринт — перенести этап в «Плане ручном» на этот спринт"
                 else:
                     kind, action = "открыт", "задачи без спринта: закрыть или запланировать в будущий спринт"
-                oid = own.get(r["code"].upper(), "V")
-                owners[oid]["p4"].append({
+                owner(own.get(r["code"].upper(), FALLBACK))["p4"].append({
                     "scenario": r["code"], "name": r.get("name"), "stage": stage,
                     "plan": "Спринт " + ",".join(str(n) for n in run),
                     "planEnd": end, "kind": kind, "jira": rows,
@@ -237,6 +280,7 @@ def main():
                 n_p4 += 1
 
     for o in owners.values():
+        o["scenarios"].sort(key=lambda c: (re.sub(r"\d+", "", c), int(re.sub(r"\D", "", c) or 0)))
         o["issues"].sort(key=lambda x: (x["check"], int(x["key"].split("-")[1])))
         o["unlabeled_stories"].sort(key=lambda k: int(k.split("-")[1]))
 
@@ -249,13 +293,15 @@ def main():
         "registry": os.path.basename(reg_path),
         "manual_plan": (mp.get("source") or {}),
         "glossary": [{"code": c, "text": t} for c, t in GLOSSARY],
-        "owners": [owners[o[0]] for o in OWNERS],
+        # РП («на разбор») — последним; остальные — по числу сценариев
+        "owners": sorted(owners.values(), key=lambda o: (o["fallback"], -len(o["scenarios"]), o["name"])),
+        "max_task_h": MAX_TASK_H,
         "p4_total": n_p4,
     }
     json.dump(out, open(a.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"OK {a.out}: стори {len(stories)}, задач {len(tasks)}, эпиков {len(epics)}; "
           + "; ".join(f"{o['short']}: {len(o['issues'])} правок, P4 {len(o['p4'])}" for o in out["owners"])
-          + f"; без метки {len(owners['V']['unlabeled_stories'])}; P4 всего {n_p4} (реестр {out['registry']})")
+          + f"; без метки {len(owner(FALLBACK)['unlabeled_stories'])}; P4 всего {n_p4} (реестр {out['registry']})")
 
 
 if __name__ == "__main__":
