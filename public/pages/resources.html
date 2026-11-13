@@ -76,7 +76,8 @@ if(!rp.length){
     let monthly=r.monthly;
     if(!monthly && Array.isArray(r.months)){
       monthly={};
-      r.months.forEach(m=>{const cap=8*WORK_DAYS_PER_MONTH*fteForMonth(m.month);monthly[m.month]=Math.round(m.hoursPlanned/cap*100);});
+      // loadPct считает билдер (13.11.2026): часы из раскладки по спринтам, ёмкость без отпусков и до даты выхода
+      r.months.forEach(m=>{const cap=8*WORK_DAYS_PER_MONTH*fteForMonth(m.month);monthly[m.month]=m.loadPct!==undefined?m.loadPct:Math.round(m.hoursPlanned/cap*100);});
     } else if(!monthly && r.months && typeof r.months==='object'){
       monthly=r.months;
     }
@@ -115,6 +116,8 @@ if(!rp.length){
     <span style="color:#e67e22">■ 70-99% — напряжённо</span>
     <span style="color:#e74c3c">■ ≥100% — перегруз</span>
     <span style="color:var(--mute)">■ · — не в проекте (в т.ч. до даты выхода)</span>
+  </div>
+  <div style="margin-top:6px;font-size:11px;color:var(--mute)">Часы — из той же раскладки, что «Загрузка по спринтам»: у начатых задач — остаток, 30% оценки фронта и бэка — у QA; часы спринта делятся по месяцам по рабочим дням. Закрытое до спринтов — по фактическим датам. Ёмкость — рабочие дни с даты выхода, без отпусков × 8 ч × FTE.
   </div>`;
   // Загрузка по спринтам (спринтовая модель 26.10.2026): часы задач в спринте
   // против ёмкости 2 недели × 8ч × FTE — всё посчитано в build_dashboard.py.

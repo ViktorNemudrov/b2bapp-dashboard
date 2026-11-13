@@ -3,7 +3,8 @@
 // результат в window.__FULL, ошибка в window.__FERR; затем dl() скачивает два файла:
 //   jira_full_dump.json — весь проект (для build_audit.py): + rem (остаток), linkedBy
 //     (кто последним менял привязку задачи без рабочей стори), vacatedBy (кто отправил
-//     задачу в вакантные — переименовал в «Вакантная» / перенёс в эпик B2BAPP-135);
+//     задачу в вакантные — переименовал в «Вакантная» / перенёс в эпик B2BAPP-135); vacantBad —
+//     вакантная со списаниями или бывшая закрытая (+ vacatedAt, vacatedFrom, statusBeforeVacant);
 //   jira_dump.json — 10 MVP-эпиков, их стори и задачи с оценкой (для build_dashboard.py).
 window.__FULL = null; window.__FERR = null;
 (async () => { try {
@@ -38,6 +39,20 @@ window.__FULL = null; window.__FERR = null;
     const vc = h.filter(x => x.items.some(i => (i.field === 'summary' && /акантн/.test(i.toString || '')) || (i.field === 'Epic Link' && i.toString === 'B2BAPP-135'))).pop();
     if (lk) t.linkedBy = nm(lk.author);
     if (vc) t.vacatedBy = nm(vc.author);
+  }
+  // Вакантить нельзя задачу/стори со списаниями или уже закрытую (Виктор 13.11.2026): такие вакантные —
+  // vacantBad + кто, когда, из какого названия и статуса перевёл (проверка V1 в build_audit.py).
+  const badQ = 'project=B2BAPP AND summary~"Вакантная" AND (timespent > 0 OR status WAS IN ("Завершена","Waiting for release","Ready for release"))';
+  const bad = ((await (await fetch('/rest/api/2/search?maxResults=500&fields=summary&jql=' + encodeURIComponent(badQ))).json()).issues || []);
+  for (const b of bad) {
+    const t = full.find(x => x.key === b.key); if (!t) continue;
+    const h = ((await (await fetch('/rest/api/2/issue/' + t.key + '?fields=summary&expand=changelog')).json()).changelog.histories || []);
+    const vc = h.filter(x => x.items.some(i => i.field === 'summary' && /акантн/.test(i.toString || '') && !/акантн/.test(i.fromString || ''))).pop();
+    t.vacantBad = true;
+    if (vc) {
+      let st = null; for (const x of h) { if (x.created > vc.created) break; for (const i of x.items) if (i.field === 'status') st = i.toString; }
+      Object.assign(t, {vacatedBy: nm(vc.author), vacatedAt: d10(vc.created), vacatedFrom: (vc.items.find(i => i.field === 'summary') || {}).fromString || null, statusBeforeVacant: st});
+    }
   }
   const bs = await (await fetch('/rest/agile/1.0/board/23111/sprint?maxResults=100')).json();
   const sprints = (bs.values || []).map(x => ({id: x.id, name: x.name, state: (x.state || '').toUpperCase(), startDate: d10(x.startDate), endDate: d10(x.endDate), completeDate: d10(x.completeDate)}));

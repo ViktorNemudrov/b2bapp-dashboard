@@ -593,9 +593,7 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
     <div style="font-size:13px;font-weight:700;color:#fff">Мобильное приложение для микробизнеса</div>
     <div class="hdr-right">
       <div class="upd-label">
-        <span class="upd-dot" id="updDot"></span>
         <span id="updTime" style="font-size:11px;color:var(--mute)">загрузка...</span>
-        <span id="freshness" class="freshness freshness-gray" style="margin-left:6px"></span>
       </div>
       <button class="pdf-btn" onclick="exportPDF()" title="Экспорт в PDF">⬇ PDF</button>
       <button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:0">🌙</button>
@@ -1205,33 +1203,19 @@ function validateData(data){
 
 
 // ── SMART TIME ────────────────────────────────────────────────
-function setSmartTime(updStr){
-  if(!updStr||updStr==='—'){$('updTime').textContent='Нет данных об обновлении';return;}
+// «Данные: вчера, 12.11.26 18:13» — просто текст, без цвета и мигающего кружка (Виктор 13.11.2026).
+function setSmartTime(refreshedAt, updStr){
+  const dt=refreshedAt?new Date(refreshedAt):null;
+  if(!dt||isNaN(dt)){$('updTime').textContent=updStr&&updStr!=='—'?'Данные на '+updStr:'Нет данных об обновлении';return;}
   function fmt(){
-    try{
-      // Format: DD.MM.YYYY HH:MM
-      const parts=updStr.split(' ');
-      const dp=parts[0].split('.');
-      const tp=(parts[1]||'00:00').split(':');
-      const dt=new Date(dp[2],dp[1]-1,dp[0],tp[0],tp[1]);
-      const diff=Date.now()-dt;
-      const mins=Math.floor(diff/60000);
-      const hrs=Math.floor(diff/3600000);
-      const days=Math.floor(diff/86400000);
-      let ago;
-      if(mins<2)ago='только что';
-      else if(mins<60)ago=`${mins} мин. назад`;
-      else if(hrs<24)ago=`${hrs} ч. назад`;
-      else if(days===1)ago='вчера';
-      else if(days<7)ago=`${days} дн. назад`;
-      else ago=updStr;
-      const stale=days>=3;
-      $('updTime').innerHTML=`Данные: <span style="color:${stale?'#e67e22':'#7f8fa6'}">${ago}</span>`;
-      $('updDot').style.background=stale?'#e67e22':'#27ae60';
-    }catch{$('updTime').textContent='Обновлено: '+updStr;}
+    const diff=Date.now()-dt, mins=Math.floor(diff/60000), hrs=Math.floor(diff/3600000);
+    const day0=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
+    const days=Math.round((day0(new Date())-day0(dt))/86400000);
+    const ago=mins<2?'только что':mins<60?`${mins} мин. назад`:days===0?`${hrs} ч. назад`:days===1?'вчера':`${days} дн. назад`;
+    $('updTime').textContent=`Данные: ${ago}, ${fmtDateTime(refreshedAt)}`;
   }
   fmt();
-  setInterval(fmt,60000); // refresh every minute
+  setInterval(fmt,60000);
 }
 
 // ── THEME (системная + переключатель) ────────────────────────
@@ -1289,9 +1273,7 @@ function init(data){
   renderEpicProgress(data);
   renderRiskMatrix(data);
   renderScopeGrowth(data);
-  mountFreshness('freshness', data.refreshedAt, data.updated);
-  const upd=data.updated||'—';
-  setSmartTime(upd);
+  setSmartTime(data.refreshedAt, data.updated||'—');
   setTimeout(()=>{initGlossaryTooltips(data.glossary);restoreAccordions();},100);
   renderSprintsLeft(data);
 }

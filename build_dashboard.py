@@ -900,23 +900,51 @@ def plan_gantt(issues, resources, today=None, manual=None, story_scenario=None):
 # ─────────────────────────────────────────────────────────────────────────────
 #  Производные секции из items[]
 # ─────────────────────────────────────────────────────────────────────────────
-def calc_resource_plan(items, resources):
-    """resourcePlan[] в реальной форме дашборда: months[] с loadPct."""
+def calc_resource_plan(items, resources, sprint_load=None):
+    """resourcePlan[]: загрузка по месяцам — из той же раскладки по спринтам, что и
+    «Загрузка по спринтам» (Виктор 13.11.2026: месяцы считались по-старому — полная
+    оценка по всему бару задачи от «Даты начала», без доли QA и отпусков).
+    Часы спринта (с остатком у начатых и 30% QA у тестировщика) делятся по месяцам
+    пропорционально рабочим дням спринта; работа, закрытая до спринтовой модели
+    (planSource=fact), — по фактическим датам. Ёмкость месяца = рабочие дни с даты
+    выхода, без отпусков × 8 ч × FTE."""
     plan = []
+    by_res = defaultdict(dict)
+    for k, v in (sprint_load or {}).items():
+        rid, n = k.split("|")
+        by_res[rid][int(n)] = v["hours"]
     for r in resources:
         rid = r["id"]
         tasks = [it for it in items if it["type"] == "task" and it["resource"] == rid]
-        if not tasks:
+        if not tasks and not by_res.get(rid):
             continue
+        vd = vac_days(r)
+        frm = date.fromisoformat(r["from"]) if r.get("from") else date(2000, 1, 1)
+        def avail(d):
+            return d >= frm and d not in vd
         month_hours = defaultdict(float)
         for it in tasks:
+            if it.get("planSource") != "fact":
+                continue
             a = date.fromisoformat(it["start"]); b = date.fromisoformat(it["end"])
             wdays = list(workdays_between(a, b))
+            # «Дата начала» у закрытых часто = дню закрытия (ставит переход статуса):
+            # растягиваем назад от закрытия на столько рабочих дней, сколько нужно по оценке
+            need = -(-it["estimateH"] // (HOURS_PER_DAY * (r["fte"] or 1)))
+            d = wdays[0] if wdays else b
+            while len(wdays) < need:
+                d -= timedelta(days=1)
+                if is_workday(d):
+                    wdays.insert(0, d)
             if not wdays:
                 continue
             per = it["estimateH"] / len(wdays)
             for d in wdays:
                 month_hours[f"{d.year:04d}-{d.month:02d}"] += per
+        for n, h in by_res.get(rid, {}).items():
+            days = [d for d in sprint_workdays(n) if avail(d)] or sprint_workdays(n)
+            for d in days:
+                month_hours[f"{d.year:04d}-{d.month:02d}"] += h / len(days)
         months = []
         for mkey in sorted(month_hours):
             y, m = int(mkey[:4]), int(mkey[5:7])
@@ -924,10 +952,14 @@ def calc_resource_plan(items, resources):
             if r.get("fteFull") and r.get("fromFull") and mkey >= r["fromFull"][:7]:
                 fte = r["fteFull"]
             norm = month_normhours(y, m)
+            d, avail_days = date(y, m, 1), 0
+            while d.month == m:
+                avail_days += 1 if is_workday(d) and avail(d) else 0
+                d += timedelta(days=1)
+            cap = avail_days * HOURS_PER_DAY * fte
             hp = round(month_hours[mkey])
-            months.append({"month": mkey, "hoursPlanned": hp,
-                           "normHours": norm,
-                           "loadPct": round(hp / (norm * fte) * 100) if norm * fte else 0})
+            months.append({"month": mkey, "hoursPlanned": hp, "normHours": norm, "capacity": round(cap),
+                           "loadPct": round(hp / cap * 100) if cap else None})
         plan.append({
             "resourceId": rid, "role": r["role"], "name": r["name"],
             "fte": r["fte"], "from": r["from"], "vacant": r.get("vacant", False),
@@ -1458,7 +1490,7 @@ def run_gantt(args):
     sprints = sprint_calendar(max(end_date or today, DEADLINE), today, jira_sprints)
 
     mvp_scope = calc_mvp_scope(items)
-    resource_plan = calc_resource_plan(items, resources)
+    resource_plan = calc_resource_plan(items, resources, sprint_load)
     # Загрузка по спринтам (часы / ёмкость 2 недели × 8ч × FTE) — для
     # страницы ресурсов; перегруз >100% = задач в спринте больше, чем влезает.
     for rp in resource_plan:

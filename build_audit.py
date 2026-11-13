@@ -63,6 +63,9 @@ GLOSSARY = [
            "«Бэклог» и «Ready for DEV»"),
     ("T13", "задача лежит в вакантной стори/эпике, но по ней работают (списано время или статус не «Бэклог») — "
             "привязать к рабочей стори и эпику"),
+    ("V1", "в вакантные переведена задача/стори, по которой уже списано время или которая была закрыта "
+           "(Завершена / Waiting for release / Ready for release) — так нельзя: вернуть прежние данные по истории "
+           "изменений; вакантить можно только не начатое и без списаний"),
     ("T11", "задача начата, но без даты начала"),
     ("T12", "задача закрыта без даты решения"),
     ("SC1", "в реестре MVP v.2 сценарий отмечен «Готово/Реализовано», а в Jira есть незакрытые задачи — "
@@ -294,6 +297,25 @@ def main():
             checks.append("T12"); acts.append("закрыта без даты решения — переоткрыть и закрыть заново")
         if checks:
             add(oid, k, scen, ", ".join(checks), "; ".join(acts))
+
+    # ── V1: неправильно завакантили (Виктор 13.11.2026) — находка тому, кто перевёл в вакантные ──
+    for t in full["issues"]:
+        if not t.get("vacantBad"):
+            continue
+        who = " ".join((t.get("vacatedBy") or "").split()[:2])
+        why = []
+        if t.get("spent"):
+            why.append(f"списано {round(t['spent'] / 3600, 1)} ч")
+        if (t.get("statusBeforeVacant") or "").strip().lower() in CLOSED | {"done"}:
+            why.append(f"была в статусе «{t['statusBeforeVacant']}»")
+        elif t.get("statusBeforeVacant") and t["statusBeforeVacant"].strip().lower() not in ("бэклог", "backlog"):
+            why.append(f"была в работе («{t['statusBeforeVacant']}»)")
+        va = t.get("vacatedAt") or ""
+        va = f"{va[8:10]}.{va[5:7]}.{va[2:4]}" if len(va) == 10 else va
+        m = SC_PREFIX_RE.match(t.get("vacatedFrom") or "")
+        add(who if who in analysts else FALLBACK, t["key"], m.group(1).upper() if m else "—", "V1",
+            f"переведена в вакантные {va} ({who or 'автор не найден'}): {', '.join(why) or 'закрывалась'} — "
+            f"вернуть «{(t.get('vacatedFrom') or '')[:60]}», эпик, связи и статус по истории изменений")
 
     # ── Сценарии: отметка о завершении и закрытие стори (синхрон 12.11.2026) ──
     reg_status = load_reg_status(reg_path)
