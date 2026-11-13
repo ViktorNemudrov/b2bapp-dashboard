@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Что нового — B2BAPP</title><link rel="stylesheet" href="../shared.css">
+<style>
+.cl-lead{color:var(--mute);font-size:13px;margin:0 0 14px;line-height:1.45}
+.cl-ver{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 14px}
+.cl-ver.cur{border-color:var(--yel)}
+.cl-ver h2{margin:0 0 2px;font-size:17px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.cl-ver h2 .v{color:var(--yel)}
+.cl-date{color:var(--mute);font-size:12px;font-weight:400}
+.cl-ver h3{margin:10px 0 4px;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+.cl-ver ul{margin:0;padding-left:20px;font-size:13px;line-height:1.5}
+.cl-add{color:var(--ok)}.cl-chg{color:var(--blue)}.cl-del{color:var(--mute)}.cl-fix{color:var(--warn)}
+</style></head><body>
+<div class="layout">
+<div id="sidebar-root"></div>
+<script src="../shared-nav.js"></script><script>renderSidebar(); initTheme();</script>
+<div class="main">
+<header class="hdr">
+  <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🆕 Что нового</span></div>
+  <div class="hdr-right">B2BAPP | Версия <span id="upd">—</span><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
+</header>
+<div class="content" id="root"><div class="empty">Загрузка...</div></div>
+<script>
+// История версий дашборда (Виктор 13.11.2026). Страница только рисует public/data/changelog.json —
+// при каждом выпуске правок на сайт добавлять туда запись сверху.
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KIND=[['added','Добавили','cl-add'],['changed','Изменили','cl-chg'],['removed','Убрали','cl-del'],['fixed','Исправили','cl-fix']];
+const dts=d=>String(d).split(' – ').map(fmtDate).join(' – ');
+AUTH_READY.then(()=>{
+fetch('../data/changelog.json?t='+Date.now()).then(r=>r.json()).then(c=>{
+  const vs=c.versions||[];
+  document.getElementById('upd').textContent=vs.length?vs[0].version+' от '+dts(vs[0].date):'—';
+  document.getElementById('root').innerHTML=`<p class="cl-lead">История развития дашборда: что появилось, поменялось и ушло в каждой версии. Сейчас — <b>версия ${esc(vs[0]&&vs[0].version)}</b>. Версии до 13.11.2026 восстановлены по истории изменений сайта.</p>`+
+    vs.map((v,i)=>`<div class="cl-ver${i?'':' cur'}" id="v${esc(v.version)}"><h2><span class="v">${esc(v.version)}</span>${esc(v.title)}<span class="cl-date">${dts(v.date)}${i?'':' · текущая'}</span></h2>${
+      KIND.filter(([k])=>(v[k]||[]).length).map(([k,t,cls])=>`<h3 class="${cls}">${t}</h3><ul>${v[k].map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`).join('')}</div>`).join('');
+}).catch(()=>{ document.getElementById('root').innerHTML='<div class="empty">Не удалось загрузить историю версий.</div>'; });
+});
+</script></div><!-- /main --></div><!-- /layout -->
+</body></html>

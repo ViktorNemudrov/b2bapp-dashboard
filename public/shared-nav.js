@@ -12,11 +12,15 @@ const NAV = [
     {label:'Диаграмма Ганта', icon:'📊', href:'/pages/gantt.html'},
     {label:'Ресурсный план', icon:'👥', href:'/pages/resources.html'},
     {label:'График отпусков', icon:'🏖️', href:'/pages/vacations.html'},
-    {label:'Аудит задач', icon:'🧹', href:'/pages/audit.html'},
   ]},
   {group:'Аналитика', items:[
     {label:'Реестр рисков', icon:'⚠️', href:'/pages/risks.html'},
     {label:'Реестр допущений', icon:'📌', href:'/pages/assumptions.html'},
+  ]},
+  // Сервис (Виктор 13.11.2026): рабочие инструменты команды и история дашборда
+  {group:'Сервис', items:[
+    {label:'Аудит задач', icon:'🧹', href:'/pages/audit.html'},
+    {label:'Что нового', icon:'🆕', href:'/pages/changelog.html'},
   ]},
 ];
 window.NAV = NAV;

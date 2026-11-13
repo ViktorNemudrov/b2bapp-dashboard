@@ -13,12 +13,14 @@ public/
     data.json           — все данные сайта (собирает build_dashboard.py)
     baselines.json      — слепки плана для сравнения на ганте
     audit.json          — аудит задач по аналитикам (собирает build_audit.py)
+    changelog.json      — история версий дашборда (ведётся вручную)
   pages/
     status.html         — «Статус для руководства» (7 вкладок, блок трека ВП, «Что изменилось»)
     gantt.html          — диаграмма Ганта (виды: эпики / сценарии / этапы по сценариям) + gantt-compare.js
     resources.html      — команда и загрузка по спринтам/месяцам
     vacations.html      — график отпусков
     audit.html          — аудит задач по аналитикам (правки оформления Jira + отстающие этапы P4)
+    changelog.html      — «Что нового»: история версий дашборда (рисует data/changelog.json; запись сверху при каждом выпуске)
     risks.html, assumptions.html — реестры из Confluence
 ```
 
