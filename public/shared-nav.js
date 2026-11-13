@@ -167,7 +167,7 @@ function renderFreshness(refreshedAt, fallback){
   const cls = days<=3 ? 'freshness-ok' : days<=7 ? 'freshness-warn' : 'freshness-err';
   const dd = String(dt.getDate()).padStart(2,'0'), mo = String(dt.getMonth()+1).padStart(2,'0');
   const hh = String(dt.getHours()).padStart(2,'0'), mi = String(dt.getMinutes()).padStart(2,'0');
-  return `<span class="freshness ${cls}">Данные актуальны на ${dd}.${mo}.${String(dt.getFullYear()).slice(2)} ${hh}:${mi}</span>`;
+  return `<span class="freshness ${cls}" title="цвет — свежесть: зелёный до 3 дней, оранжевый до недели">${dd}.${mo}.${String(dt.getFullYear()).slice(2)} ${hh}:${mi}</span>`;
 }
 window.renderFreshness = renderFreshness;
 // Единый формат дат на сайте — дд.мм.гг (Виктор 26.10.2026). Принимает
@@ -351,6 +351,9 @@ if(document.readyState === 'loading') document.addEventListener('DOMContentLoade
 function mountFreshness(elId, refreshedAt, fallback){
   const el = document.getElementById(elId);
   if(el) el.innerHTML = renderFreshness(refreshedAt, fallback);
+  // В шапке одно значение «Данные на дд.мм.гг чч:мм» (Виктор 13.11.2026): дата без времени (#upd) не нужна.
+  const u = document.getElementById('upd');
+  if(el && u && parseDataDate(refreshedAt)) u.style.display = 'none';
 }
 window.mountFreshness = mountFreshness;
 

@@ -20,7 +20,7 @@
 .gantt2-toolbar-group select{background:#1e2d3d;border:1px solid var(--line);color:var(--text);border-radius:5px;padding:3px 8px;font-size:11px;max-width:180px}
 .gantt2-toolbar-group button{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--mute);border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer}
 .gantt2-toolbar-group button.on{background:rgba(255,107,61,.15);border-color:var(--yel);color:var(--yel)}
-.gantt2-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;font-size:10px;color:var(--mute)}
+.gantt2-legend{display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:4px;font-size:10px;color:var(--mute)}
 .gantt2-legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
 .gantt2-body{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
 .gantt2-tree{width:var(--g2-tree-w,340px);flex-shrink:0;border-right:1px solid var(--line)}
@@ -184,7 +184,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
           <label>Аналитик</label>
           <select id="analystFilter"><option value="">Все</option></select>
         </div>
-        <div class="gantt2-toolbar-group" id="grpOrder" title="Порядок строк на виде «Этапы по сценариям» — как на «Дорожной карте по сценариям» (Статус для руководства)">
+        <div class="gantt2-toolbar-group" id="grpOrder" title="Порядок строк — как на «Дорожной карте по сценариям» (Статус для руководства): по контурам/приоритету или по времени запуска">
           <label>Порядок</label>
           <select id="stagesOrder">
             <option value="registry">По контурам реестра</option>
@@ -399,6 +399,18 @@ function buildScenarioTree(items, scenarios){
       summary:`${sc.code} · ${sc.name}`, start:sc.start, end:sc.end, category:sc.category,
       estimateH:sc.estimateH, spentH:sc.spentH, onCriticalPath:sc.onCriticalPath, status:sc.current, children};
   }).filter(Boolean);
+}
+// «Порядок: по времени запуска» на видах «По эпикам» / «По сценариям» (Виктор 13.11.2026).
+// Сценарий — по фазе из «Плана ручного», как на виде «Этапы» (завершены → план прошёл, работа
+// не закрыта → идут сейчас → впереди), внутри — по первому спринту; эпик и сценарий вне плана —
+// готовые первыми, дальше по дате начала. Стори и задачи внутри — тоже по дате начала.
+function sortTreeByLaunch(tree, gv){
+  const ord={completed:0,overdue:1,now:2,next:3}, ph={};
+  ((gv.manualPlan||{}).rows||[]).forEach(r=>ph[r.code]=r);
+  const key=n=>{ const r=n.type==='scenario'?ph[n.code]:null;
+    return [r?(ord[r.phase]??4):(n.category==='done'?0:n.category==='in_progress'?2:3), r?(r.firstSprint??99):0, n.start||'9999', n.end||'9999']; };
+  const cmp=(a,b)=>{ const x=key(a), y=key(b); for(let i=0;i<x.length;i++){ if(x[i]<y[i]) return -1; if(x[i]>y[i]) return 1; } return 0; };
+  (function w(ns){ ns.sort(cmp); ns.forEach(n=>n.children&&w(n.children)); })(tree);
 }
 function treeExpandableKeys(tree){
   const s=[]; (function w(ns){ ns.forEach(n=>{ if(n.children&&n.children.length){ s.push(n.key); w(n.children); } }); })(tree); return s;
@@ -924,7 +936,6 @@ function applyViewChrome(){
   const v=GS.view;
   ['grpLevel','grpExpand','grpResource','grpBaseline'].forEach(id=>$(id).classList.toggle('g2-off', v==='stages'));
   $('grpPri').classList.toggle('g2-off', v!=='epics');
-  $('grpOrder').classList.toggle('g2-off', v!=='stages');
   $('ganttTreeHeader').textContent = v==='stages' ? 'Сценарий · приоритет · владелец' : v==='scenarios' ? 'Сценарий / Стори / Задача (роль)' : 'Эпик / Стори / Задача (роль)';
   const top=v==='scenarios'?'Сценарии':'Эпики', lf=$('levelFilter').options;
   lf[0].text=`${top} ▸ Стори ▸ Задачи`; lf[1].text=`${top} ▸ Стори`; lf[2].text=`Только ${top.toLowerCase()}`;
@@ -1038,7 +1049,7 @@ function renderStages(gv, data){
   }
   legend.innerHTML=['AN','DS','BE1','BE2','FE','QA'].map(id=>`<span><span class="sw" style="background:${MP_STAGE[id].c}"></span>${MP_STAGE[id].n}</span>`).join('')+
     `<span style="margin-left:12px"><span class="sw" style="background:${DONE_GREEN}"></span>этап пройден (закрыт в Jira или начался следующий)</span>`+
-    `<span><span class="sw" style="background:repeating-linear-gradient(135deg,${MP_STAGE.AN.c} 0 3px,rgba(13,27,42,.55) 3px 5px)"></span>отстаёт: спринт прошёл, этап в Jira не закрыт</span>`+
+    `<span><span class="sw" style="background:repeating-linear-gradient(135deg,${MP_STAGE.AN.c} 0 3px,rgba(13,27,42,.55) 3px 5px)"></span>⚠ штриховка — этап отстаёт от плана: его спринт прошёл, а в Jira он не закрыт и следующий этап не начат</span>`+
     `<span><span class="sw" style="background:rgba(46,204,113,.18)"></span>сценарий завершён полностью</span>`+
     `<span><span class="sw" style="border:1px dashed var(--mute);background:transparent"></span>отсечка спринта</span>`+
     `<span><span class="sw" style="background:#00d4ff"></span>сегодня</span>`+
@@ -1086,6 +1097,7 @@ function renderGanttV2(){
 
   const items=resourceFilteredItems;
   const tree=GS.view==='scenarios' ? buildScenarioTree(items, anCodes?(gv.scenarios||[]).filter(s=>anCodes.has(s.code)):gv.scenarios) : buildTree(items);
+  if(GS.stagesOrder==='launch' && !PRI_MODE) sortTreeByLaunch(tree, gv);
   GS._tree=tree;
   // new Date(null) не даёт NaN (превращается в эпоху 1970-01-01), поэтому пустые
   // start/end (стори без дочерних задач — у скилла такое бывает) сначала
