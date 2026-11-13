@@ -54,6 +54,20 @@ window.__FULL = null; window.__FERR = null;
       Object.assign(t, {vacatedBy: nm(vc.author), vacatedAt: d10(vc.created), vacatedFrom: (vc.items.find(i => i.field === 'summary') || {}).fromString || null, statusBeforeVacant: st});
     }
   }
+  // Подзадачи и статус «Отклонена» в проекте запрещены (Виктор 13.11.2026) — список с автором
+  // (кто создал / кто отклонил) для проверок J1/J2 в build_audit.py.
+  const spQ = 'project=B2BAPP AND (issuetype in subTaskIssueTypes() OR status in ("Отклонена","Отклонено","Rejected"))';
+  const special = [];
+  for (const i of ((await (await fetch('/rest/api/2/search?maxResults=500&fields=summary,status,issuetype,creator,assignee,parent&jql=' + encodeURIComponent(spQ))).json()).issues || [])) {
+    const f = i.fields; let rej = null, rejAt = null;
+    if (/тклон|reject/i.test(f.status.name)) {
+      const h = ((await (await fetch('/rest/api/2/issue/' + i.key + '?fields=summary&expand=changelog')).json()).changelog.histories || []);
+      const x = h.filter(x => x.items.some(it => it.field === 'status' && /тклон|reject/i.test(it.toString || ''))).pop();
+      if (x) { rej = nm(x.author); rejAt = d10(x.created); }
+    }
+    special.push({key: i.key, typeName: f.issuetype.name, subtask: !!f.issuetype.subtask, status: f.status.name, summary: f.summary,
+      parent: (f.parent || {}).key || null, creator: nm(f.creator), assignee: nm(f.assignee), rejectedBy: rej, rejectedAt: rejAt});
+  }
   const bs = await (await fetch('/rest/agile/1.0/board/23111/sprint?maxResults=100')).json();
   const sprints = (bs.values || []).map(x => ({id: x.id, name: x.name, state: (x.state || '').toUpperCase(), startDate: d10(x.startDate), endDate: d10(x.endDate), completeDate: d10(x.completeDate)}));
   const now = new Date().toISOString();
@@ -68,7 +82,7 @@ window.__FULL = null; window.__FERR = null;
   const st = all.filter(i => i.fields.issuetype.id === '10600' && EPIC_KEYS.includes(i.fields.customfield_10901));
   const tk = all.filter(i => ['3', '20600'].includes(i.fields.issuetype.id) && EPIC_KEYS.includes(i.fields.customfield_10901) && (i.fields.timetracking || {}).originalEstimateSeconds > 0);
   window.__FULL = {
-    full: JSON.stringify({collectedAt: now, jql: 'project=B2BAPP AND issuetype in (10500,10600,3,20600)', total: full.length, issues: full}),
+    full: JSON.stringify({collectedAt: now, jql: 'project=B2BAPP AND issuetype in (10500,10600,3,20600)', total: full.length, issues: full, special}),
     gd: JSON.stringify({_meta: {collectedAt: now, source: 'Jira B2BAPP REST', epics: ep.length, stories: st.length, tasks: tk.length}, sprints, issues: [...ep, ...st, ...tk].map(raw)}),
     n: [full.length, ep.length, st.length, tk.length, need.length, sprints.length]};
 } catch (e) { window.__FERR = String(e.stack || e); } })();

@@ -68,6 +68,10 @@ GLOSSARY = [
            "изменений; вакантить можно только не начатое и без списаний"),
     ("T14", "задача не в «Бэклоге», а спринт в Jira не указан — всё, что берём в работу (и закрываем), "
             "обязательно привязано к спринту: поставить спринт, в котором задача делается или была закрыта"),
+    ("J1", "в проекте не должно быть статуса «Отклонена»: ненужное — в вакантные (если работы не было), "
+           "начатое — довести или закрыть; находка тому, кто отклонил"),
+    ("J2", "в проекте не должно быть подзадач (Sub-task): работа оформляется задачей с префиксом роли "
+           "и Part-связью со стори; находка тому, кто создал подзадачу"),
     ("T11", "задача начата, но без даты начала"),
     ("T12", "задача закрыта без даты решения"),
     ("SC1", "в реестре MVP v.2 сценарий отмечен «Готово/Реализовано», а в Jira есть незакрытые задачи — "
@@ -302,6 +306,25 @@ def main():
             checks.append("T12"); acts.append("закрыта без даты решения — переоткрыть и закрыть заново")
         if checks:
             add(oid, k, scen, ", ".join(checks), "; ".join(acts))
+
+    # ── J1/J2: «Отклонена» и подзадачи в проекте запрещены (Виктор 13.11.2026) — на конкретного человека ──
+    active = {" ".join(n.split()[:2]) for n in team}
+    for x in full.get("special") or []:
+        checks, acts = [], []
+        if re.search(r"тклон|reject", x.get("status") or "", re.I):
+            checks.append("J1")
+            acts.append(f"статус «{x['status']}»" + (f" (отклонил(а) {x['rejectedBy']} {x['rejectedAt'][8:10]}.{x['rejectedAt'][5:7]})" if x.get("rejectedBy") and x.get("rejectedAt") else ""))
+        if x.get("subtask"):
+            checks.append("J2")
+            acts.append(f"подзадача «{x['typeName']}» задачи {x.get('parent') or '—'} (создал(а) {x.get('creator') or '—'}) — "
+                        "переоформить отдельной задачей с префиксом роли или перенести работу в родительскую задачу")
+        if not checks:
+            continue
+        cands = ([x.get("rejectedBy")] if "J1" in checks and not x.get("subtask") else []) + [x.get("creator"), x.get("assignee"), x.get("rejectedBy")]
+        who = next((c for c in cands if c and c in active), None) or FALLBACK
+        par = by_key.get(x.get("parent") or "")
+        ps = parent_story(par) if par else None
+        add(who, x["key"], sc.get(ps) or "—", ", ".join(checks), "; ".join(acts))
 
     # ── V1: неправильно завакантили (Виктор 13.11.2026) — находка тому, кто перевёл в вакантные ──
     for t in full["issues"]:
