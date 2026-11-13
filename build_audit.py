@@ -53,7 +53,7 @@ NO_DEV_STORIES = {"B2BAPP-924", "B2BAPP-1188"}
 DONE_REG = re.compile(r"^\s*(готово|реализовано)", re.I)
 GLOSSARY = [
     ("S4", "стори без привязки к эпику (Epic Link)"),
-    ("S5", "у стори нет метки сценария — определить и проставить"),
+    ("S5", "у стори нет метки сценария (OB1, PL9, NAI…) — метка обязательна, префикса в названии мало: проставить метку"),
     ("S6", "в стори только аналитик [BA], нет задач разработки"),
     ("T1", "у задачи нет префикса роли ([BE]/[FE]/[BA]…)"),
     ("T3", "тип задачи не совпадает с ролью в префиксе"),
@@ -69,9 +69,9 @@ GLOSSARY = [
     ("T14", "задача не в «Бэклоге», а спринт в Jira не указан — всё, что берём в работу (и закрываем), "
             "обязательно привязано к спринту: поставить спринт, в котором задача делается или была закрыта"),
     ("J1", "в проекте не должно быть статуса «Отклонена»: ненужное — в вакантные (если работы не было), "
-           "начатое — довести или закрыть; находка тому, кто отклонил"),
+           "начатое — довести или закрыть; находка ответственному аналитику сценария (кто отклонил — в описании)"),
     ("J2", "в проекте не должно быть подзадач (Sub-task): работа оформляется задачей с префиксом роли "
-           "и Part-связью со стори; находка тому, кто создал подзадачу"),
+           "и Part-связью со стори; находка ответственному аналитику сценария (кто создал — в описании)"),
     ("T11", "задача начата, но без даты начала"),
     ("T12", "задача закрыта без даты решения"),
     ("SC1", "в реестре MVP v.2 сценарий отмечен «Готово/Реализовано», а в Jira есть незакрытые задачи — "
@@ -265,9 +265,10 @@ def main():
         roles = {role_of(t["summary"]) for t in story_tasks.get(k, [])}
         if roles and roles <= {"BA"} and k not in NO_DEV_STORIES:
             checks.append("S6"); acts.append("только [BA] — добавить задачи разработки")
+        # Метка сценария обязательна (Виктор 13.11.2026): префикс «PL1.» в названии её не заменяет.
+        if s.get("epic") != EXEMPT_EPIC and not any(SC_LABEL_RE.match(lb) for lb in s.get("labels") or []):
+            checks.insert(0, "S5"); acts.insert(0, f"проставить метку {scen}" if scen else "определить сценарий и проставить метку")
         if checks:
-            if not scen and s.get("epic") != EXEMPT_EPIC:
-                checks.insert(0, "S5"); acts.insert(0, "нет метки сценария")
             add(oid, k, scen, ", ".join(checks), "; ".join(acts))
 
     # ── Задачи ──
@@ -308,7 +309,6 @@ def main():
             add(oid, k, scen, ", ".join(checks), "; ".join(acts))
 
     # ── J1/J2: «Отклонена» и подзадачи в проекте запрещены (Виктор 13.11.2026) — на конкретного человека ──
-    active = {" ".join(n.split()[:2]) for n in team}
     for x in full.get("special") or []:
         checks, acts = [], []
         if re.search(r"тклон|reject", x.get("status") or "", re.I):
@@ -320,11 +320,13 @@ def main():
                         "переоформить отдельной задачей с префиксом роли или перенести работу в родительскую задачу")
         if not checks:
             continue
-        cands = ([x.get("rejectedBy")] if "J1" in checks and not x.get("subtask") else []) + [x.get("creator"), x.get("assignee"), x.get("rejectedBy")]
-        who = next((c for c in cands if c and c in active), None) or FALLBACK
-        par = by_key.get(x.get("parent") or "")
-        ps = parent_story(par) if par else None
-        add(who, x["key"], sc.get(ps) or "—", ", ".join(checks), "; ".join(acts))
+        # Разбирает ответственный аналитик сценария стори (Виктор 13.11.2026), не автор:
+        # владелец сценария по реестру → аналитик-исполнитель задачи/стори → РП.
+        par = by_key.get(x.get("parent") or "") or by_key.get(x["key"]) or {}
+        ps = parent_story(par) if par.get("type") in (T_TASK, T_DEV) else (x["key"] if par.get("type") == T_STORY else None)
+        scen = sc.get(ps)
+        add(resp(scen, par.get("assignee"), (by_key.get(ps) or {}).get("assignee")), x["key"], scen or "—",
+            ", ".join(checks), "; ".join(acts))
 
     # ── V1: неправильно завакантили (Виктор 13.11.2026) — находка тому, кто перевёл в вакантные ──
     for t in full["issues"]:

@@ -164,17 +164,29 @@
 <!-- ===== 06 Дорожная карта по сценариям («План ручной» из data.json) ===== -->
 <div class="st-pane" id="t6"><div id="t6body"></div></div>
 
-<!-- ===== 07 Сценарий от Альфы (статично; наполнение — позже, Виктор 09.11.2026) ===== -->
-<div class="st-pane" id="t7">
-  <h2>Сценарий от Альфы</h2>
-  <div class="card"><h3><span class="dot"></span>1. Список сценариев и фактура</h3>
-    <p class="sub" style="margin:0">Раздел наполняется — информация будет добавлена позже.</p>
-  </div>
-</div>
+<!-- ===== 07 Сценарий от Альфы — data.alfaTrack (import_alfa_status.py из Confluence, Виктор 13.11.2026) ===== -->
+<div class="st-pane" id="t7"><div id="t7body"><h2>Сценарий от Альфы</h2><div class="empty">Загрузка...</div></div></div>
 </div></div></div>
 
 <script>
 const $=id=>document.getElementById(id);
+// Вкладка 07: статус сценариев от Альфы — раздел «Статус» на страницах сценариев в Confluence
+// (ведёт Клейменова). Данные — data.alfaTrack, собирает import_alfa_status.py.
+function renderAlfa(a){
+  const el=$('t7body'); if(!el) return;
+  const rows=(a&&a.scenarios)||[];
+  if(!rows.length){ el.innerHTML='<h2>Сценарий от Альфы</h2><div class="card"><p class="sub" style="margin:0">Статусов пока нет — выгрузите страницы сценариев (import_alfa_status.py).</p></div>'; return; }
+  const OPEN=/вопрос|огранич|риск|блок/i;
+  el.innerHTML=`<h2>Сценарий от Альфы</h2>
+    <p class="lead">Сценарии, которые мы прорабатываем с Альфа-Банком. Статус и следующие шаги ведёт аналитик трека (А. Клейменова) в разделе «Статус» на странице каждого сценария в Confluence; здесь — срез на ${fmtDate(a.collectedAt)}.</p>
+    <div class="g2c">${rows.map(r=>{
+      const nOpen=r.blocks.filter(b=>OPEN.test(b.title)).reduce((x,b)=>x+b.items.length,0);
+      return `<div class="card"><h3><span class="dot ${nOpen?'':'g'}"></span>${esc(r.name)}</h3>
+        <div class="sub" style="margin:-4px 0 8px">Статус на ${fmtDate(r.statusDate||r.updated)} · <a href="${esc(r.url)}" target="_blank" rel="noopener">страница в Confluence</a></div>
+        <p style="margin:0 0 8px">${esc(r.headline||'')}</p>
+        ${r.blocks.map(b=>`<div style="font-weight:700;font-size:12.5px;margin:10px 0 4px;color:${OPEN.test(b.title)?'var(--warn)':'var(--text)'}">${esc(b.title)}</div><ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.45">${b.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`).join('')}
+      </div>`;}).join('')}</div>`;
+}
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 const dmy=s=>fmtDate(s), dm=s=>fmtDate(s);   // дд.мм.гг везде (Виктор 26.10.2026)
 // Приглушённая заливка: цвет роли полупрозрачным фоном, текст — тот же цвет,
@@ -206,6 +218,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
   const crit=k.criticalEnd, ok=crit&&crit<=DEADLINE;
   const spBy={}; (g.sprints||[]).forEach(s=>spBy[s.n]=s);
   const cur=spBy[sp.currentSprint], prev=spBy[sp.lastClosedSprint];
+  renderAlfa(d.alfaTrack);
   $('chips').innerHTML=`<span class="st-chip">Старт разработки — <b>авг 2026</b></span><span class="st-chip">Дедлайн MVP — <b>10.12.26</b></span><span class="st-chip">Прогноз завершения — <b style="color:${ok?'var(--ok)':'var(--err)'}">${dmy(crit)}</b></span>${cur?`<span class="st-chip">Идёт <b>${esc(cur.name)}</b> (${dm(cur.start)}–${dm(cur.end)})</span>`:''}`;
   const critRes=(g.resources||[]).find(r=>r.id===(g.criticalPathExplained||{}).resource);
   const verdict=ok?`<div class="okbox">Статус по срокам: <b>к дедлайну MVP 10.12.26 успеваем</b> — критический путь до ${dmy(crit)}.</div>`
