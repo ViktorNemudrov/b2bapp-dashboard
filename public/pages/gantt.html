@@ -16,7 +16,7 @@
 .g2-mp-stripe+.g2-mp-stripe{border-top:1px solid rgba(13,27,42,.55)}
 .gantt2-hire-tag{position:absolute;top:4px;writing-mode:vertical-rl;transform:rotate(180deg);font-size:9px;font-weight:700;color:var(--blue);background:var(--card);border:1px solid var(--blue);border-radius:4px;padding:4px 0;white-space:nowrap;z-index:4;pointer-events:none}
 .gantt2-hire-note{position:sticky;left:4px;display:inline-block;font-size:9.5px;color:var(--blue);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:1px 6px;margin:2px 0 0 4px;z-index:4}
-.gantt2-toolbar-group{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mute)}
+.gantt2-toolbar-group{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:11px;color:var(--mute)}
 .gantt2-toolbar-group select{background:#1e2d3d;border:1px solid var(--line);color:var(--text);border-radius:5px;padding:3px 8px;font-size:11px;max-width:180px}
 .gantt2-toolbar-group button{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--mute);border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer}
 .gantt2-toolbar-group button.on{background:rgba(255,107,61,.15);border-color:var(--yel);color:var(--yel)}
@@ -24,6 +24,7 @@
 .gantt2-legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
 .gantt2-body{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
 .gantt2-tree{width:var(--g2-tree-w,340px);flex-shrink:0;border-right:1px solid var(--line)}
+@media(max-width:768px){.gantt2-tree{width:min(var(--g2-tree-w,340px),42vw)}}  /* телефон: таймлайн должен остаться видимым */
 .gantt2-body.g2-tree-collapsed .gantt2-tree,.gantt2-body.g2-tree-collapsed .gantt2-resizer{display:none}
 .gantt2-resizer{width:6px;flex-shrink:0;cursor:col-resize;background:transparent;position:relative}
 .gantt2-resizer::after{content:'';position:absolute;top:0;bottom:0;left:2px;width:2px;background:var(--line)}
