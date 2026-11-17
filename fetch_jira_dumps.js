@@ -1,7 +1,8 @@
 // Выгрузка Jira для дашборда — вставить в консоль (или javascript_tool) на залогиненной
 // вкладке https://btask.beeline.ru. Только чтение. Работает в фоне (дольше 45 с):
 // результат в window.__FULL, ошибка в window.__FERR; затем dl() скачивает два файла:
-//   jira_full_dump.json — весь проект (для build_audit.py): + rem (остаток), linkedBy
+//   jira_full_dump.json — весь проект (для build_audit.py): + rem (остаток), cf (есть ссылка на Confluence),
+//     epicHist (история смен эпика, если был ночной откат), linkedBy
 //     (кто последним менял привязку задачи без рабочей стори), vacatedBy (кто отправил
 //     задачу в вакантные — переименовал в «Вакантная» / перенёс в эпик B2BAPP-135); vacantBad —
 //     вакантная со списаниями или бывшая закрытая (+ vacatedAt, vacatedFrom, statusBeforeVacant);
@@ -9,7 +10,7 @@
 window.__FULL = null; window.__FERR = null;
 (async () => { try {
   const EPIC_KEYS = ['B2BAPP-134','B2BAPP-21','B2BAPP-491','B2BAPP-27','B2BAPP-22','B2BAPP-1242','B2BAPP-484','B2BAPP-465','B2BAPP-25','B2BAPP-1241'];
-  const F = 'summary,status,issuetype,customfield_10901,customfield_18100,customfield_10905,timetracking,labels,issuelinks,created,resolutiondate,updated,assignee';
+  const F = 'summary,status,issuetype,customfield_10901,customfield_18100,customfield_10905,timetracking,labels,issuelinks,created,resolutiondate,updated,assignee,description';
   let all = [], s = 0;
   while (true) {
     const j = await (await fetch('/rest/api/2/search?jql=' + encodeURIComponent('project=B2BAPP AND issuetype in (10500,10600,3,20600) ORDER BY key DESC') + '&maxResults=200&startAt=' + s + '&fields=' + F)).json();
@@ -28,6 +29,7 @@ window.__FULL = null; window.__FERR = null;
     key: i.key, type: f.issuetype.id, summary: f.summary, status: f.status.name, epic: f.customfield_10901 || null,
     start: f.customfield_18100 || null, resolved: d10(f.resolutiondate), created: d10(f.created),
     est: tt.originalEstimateSeconds || 0, spent: tt.timeSpentSeconds || 0, rem: tt.remainingEstimateSeconds ?? null,
+    cf: /bwiki\.beeline\.ru|confluence/i.test(f.description || ''),
     labels: f.labels || [], assignee: nm(f.assignee), sprints: parseSp(f.customfield_10905).map(({completeDate, ...r}) => r),
     links: (f.issuelinks || []).map(l => ({type: l.type.name, in: l.inwardIssue ? l.inwardIssue.key : null, out: l.outwardIssue ? l.outwardIssue.key : null,
       inType: l.inwardIssue ? l.inwardIssue.fields.issuetype.id : null, outType: l.outwardIssue ? l.outwardIssue.fields.issuetype.id : null}))}; });
@@ -40,6 +42,14 @@ window.__FULL = null; window.__FERR = null;
     if (lk) t.linkedBy = nm(lk.author);
     if (vc) t.vacatedBy = nm(vc.author);
   }
+  // Ссылка на аналитику в Confluence (проверка S10, Виктор 17.11.2026): в описании или во вкладке «Ссылки» —
+  // у незакрытых стори и задач [BA]
+  const cfNeed = full.filter(x => !x.cf && (x.type === '10600' || /^\s*(?:\d+[.:]\s*)?\[BA\]/i.test(x.summary))
+    && !['Завершена', 'Waiting for release', 'Ready for release', 'Отклонена'].includes(x.status));
+  for (let k = 0; k < cfNeed.length; k += 8) await Promise.all(cfNeed.slice(k, k + 8).map(async t => {
+    const r = await (await fetch('/rest/api/2/issue/' + t.key + '/remotelink')).json();
+    if ((r || []).some(x => /bwiki\.beeline\.ru|confluence/i.test(((x.object || {}).url || '') + ((x.application || {}).type || '')))) t.cf = true;
+  }));
   // Ночной откат Epic Link: учётка «Jira ServiceManager» возвращает эпик, на который списывали часы
   // (Виктор 17.11.2026) — история смен эпика у элементов со списаниями для блока «Для Тимура» в build_audit.py.
   const sp = full.filter(x => x.spent > 0);

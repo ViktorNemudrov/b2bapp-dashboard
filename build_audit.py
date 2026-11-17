@@ -48,6 +48,8 @@ SHORT = {"Клейменова Анна": "Аня", "Шевченко Конст
 # в остальных статусах проверка не нужна).
 MAX_TASK_H = 16
 SPLIT_STATUSES = {"бэклог", "backlog", "ready for dev"}
+# Не начата: для S7/S8 (порядок ролей в стори) работа в этих статусах ещё не идёт.
+NOT_STARTED = {"бэклог", "backlog", "ready for dev", "запланирована", "удержание"}
 # Стори, где разработка не требуется — S6 не проверяем (Виктор 13.11.2026).
 NO_DEV_STORIES = {"B2BAPP-924", "B2BAPP-1188"}
 DONE_REG = re.compile(r"^\s*(готово|реализовано)", re.I)
@@ -61,6 +63,16 @@ GLOSSARY = [
     ("T6", "у задачи нет оценки"),
     ("T7", f"оценка больше {MAX_TASK_H} ч (2 рабочих дня) — разбить на задачи меньше; только в статусах "
            "«Бэклог» и «Ready for DEV»"),
+    ("T15", "эпик задачи не совпадает с эпиком её стори (правило проекта: эпик задачи = эпик стори) — поставить эпик "
+            "стори; если по задаче есть списания, Jira ночью вернёт старый эпик — тогда задача появится в блоке «Для Тимура»"),
+    ("S7", "разработка ([BE]/[FE]) уже идёт, а аналитика ([BA]) стори не закрыта — закрыть аналитику "
+           "(или объяснить, почему разработка начата раньше)"),
+    ("S8", "фронт ([FE]) уже идёт, а дизайн ([DS]) стори не закрыт — закрыть дизайн или вернуть фронт в бэклог"),
+    ("S9", "похоже, стори зависит от задачи другой команды, а связи в Jira нет — поставить связь «is blocked by» "
+           "с указанной внешней задачей на стори или её задачу; если не зависит — сказать Виктору (уберём из проверки). "
+           "Список внешних зависимостей — external_deps.json"),
+    ("S10", "стори в работе (разработка, дизайн или тест уже идут), а ссылки на аналитику в Confluence нет — ни в описании "
+            "и «Ссылках» стори, ни у её задач [BA]: добавить страницу аналитики в «Ссылки» стори"),
     ("T13", "задача лежит в вакантной стори/эпике, но по ней работают (списано время или статус не «Бэклог») — "
             "привязать к рабочей стори и эпику"),
     ("V1", "в вакантные переведена задача/стори, по которой уже списано время или которая была закрыта "
@@ -162,6 +174,7 @@ def main():
     ap.add_argument("--data", default="public/data/data.json")
     ap.add_argument("--registry", default=None, help="выгрузка реестра MVP v.2 (cf/cf_registry_*.json), по умолчанию самая свежая")
     ap.add_argument("--out", default="public/data/audit.json")
+    ap.add_argument("--deps", default="external_deps.json", help="внешние зависимости для S9")
     a = ap.parse_args()
     reg_path = a.registry or max(glob.glob("cf/cf_registry_*.json"), key=os.path.getmtime)
     full = json.load(open(a.jira_full, encoding="utf-8"))
@@ -196,6 +209,11 @@ def main():
     for t in tasks:
         for p in parent_stories(t):      # одна задача на несколько стори — во всех
             story_tasks.setdefault(p, []).append(t)
+
+    deps = json.load(open(a.deps, encoding="utf-8"))["deps"] if os.path.exists(a.deps) else []
+    # ночной откат Epic Link уже в блоке «Для Тимура» — T15 их не дублирует
+    reverted = {i["key"] for i in full["issues"] if (i.get("epicHist") or [{}])[-1].get("sys")}
+    tag = lambda t: f"{t['key']} «{t['status']}»"
 
     owners = {}
 
@@ -265,11 +283,44 @@ def main():
         roles = {role_of(t["summary"]) for t in story_tasks.get(k, [])}
         if roles and roles <= {"BA"} and k not in NO_DEV_STORIES:
             checks.append("S6"); acts.append("только [BA] — добавить задачи разработки")
+        ts = story_tasks.get(k, [])
+        if (s.get("status") or "").strip().lower() not in CLOSED:
+            by_role = lambda rs: [t for t in ts if role_of(t["summary"]) in rs]
+            going = lambda rs: [t for t in by_role(rs) if (t.get("status") or "").strip().lower() not in NOT_STARTED]
+            open_ = lambda rs: [t for t in by_role(rs) if (t.get("status") or "").strip().lower() not in CLOSED]
+            dev, ba = going(("BE", "FE")), open_(("BA",))
+            if dev and ba:
+                checks.append("S7"); acts.append(f"разработка идёт ({', '.join(map(tag, dev[:3]))}), аналитика не закрыта: "
+                                                 f"{', '.join(map(tag, ba))}")
+            fe, dsn = going(("FE",)), open_(("DS",))
+            if fe and dsn:
+                checks.append("S8"); acts.append(f"фронт идёт ({', '.join(map(tag, fe[:3]))}), дизайн не закрыт: "
+                                                 f"{', '.join(map(tag, dsn))}")
+            # S10: стори в работе — ссылка на аналитику в Confluence (в описании / «Ссылках» стори или её задачи [BA]);
+            # поле cf пишет выгрузка с 17.11.2026, в старых выгрузках его нет — тогда не проверяем
+            if "cf" in s and going(("BE", "FE", "DS", "QA")) and not (s.get("cf") or any(t.get("cf") for t in by_role(("BA",)))):
+                checks.append("S10"); acts.append("нет ссылки на аналитику в Confluence — добавить страницу аналитики "
+                                                  "в «Ссылки» стори (или в описание)")
+            # S9: внешние зависимости (Виктор 17.11.2026) — назвать, с какой внешней задачей, по-нашему, нет связи,
+            # и на какую нашу задачу её лучше повесить
+            linked = {x for i in [s, *ts] for l in i.get("links") or [] for x in (l.get("in"), l.get("out")) if x}
+            for d in deps:
+                if k in d.get("notFor", []):
+                    continue
+                hit = scen in d.get("scenarios", []) or (d.get("match") and re.search(d["match"], s["summary"], re.I))
+                if not hit or linked & {d["key"], *d.get("aliases", [])}:
+                    continue
+                dev_open = [t for t in ts if role_of(t["summary"]) in ("BE", "FE") and (t.get("status") or "").strip().lower() not in CLOSED]
+                cand = [t for t in dev_open if d.get("taskMatch") and re.search(d["taskMatch"], t["summary"], re.I)] or dev_open
+                checks.append("S9")
+                acts.append(f"нет связи с {d['key']} — {d['title']} ({d['team']})"
+                            + (f"; поставить «is blocked by» {d['key']}, например на {cand[0]['key']} «{cand[0]['summary'][:60]}»" if cand
+                               else f"; поставить «is blocked by» {d['key']} на стори"))
         # Метка сценария обязательна (Виктор 13.11.2026): префикс «PL1.» в названии её не заменяет.
         if s.get("epic") != EXEMPT_EPIC and not any(SC_LABEL_RE.match(lb) for lb in s.get("labels") or []):
             checks.insert(0, "S5"); acts.insert(0, f"проставить метку {scen}" if scen else "определить сценарий и проставить метку")
         if checks:
-            add(oid, k, scen, ", ".join(checks), "; ".join(acts))
+            add(oid, k, scen, ", ".join(dict.fromkeys(checks)), "; ".join(acts))
 
     # ── Задачи ──
     for t in tasks:
@@ -294,6 +345,11 @@ def main():
                                               "привязать к рабочей стори и эпику")
         elif not p:
             checks.append("T4"); acts.append("привязать Part к стори")
+        else:
+            st_eps = {by_key[x]["epic"]: x for x in parent_stories(t) if by_key[x].get("epic")}
+            if st_eps and t.get("epic") not in st_eps and k not in reverted and not exempt:
+                e, x = next(iter(st_eps.items()))
+                checks.append("T15"); acts.append(f"эпик {t.get('epic') or '—'}, а у стори {x} — {e}: поставить {e}")
         if not t.get("est") and st.lower() not in CLOSED:
             checks.append("T6"); acts.append("проставить оценку")
         if t.get("est", 0) > MAX_TASK_H * 3600 and st.lower() in SPLIT_STATUSES:
