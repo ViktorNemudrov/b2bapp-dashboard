@@ -405,7 +405,12 @@ def main():
                     continue
                 seen.add(dkey)
                 j = jira.get(sid) or (jira.get("BE") if sid in ("BE1", "BE2") else None) or {}
-                lst = j.get("list") or []
+                # статусы — из свежей выгрузки Jira (data.json мог собираться раньше); этап, где всё
+                # закрыто (у Бека/Фронта — и в тестировании), уже не отстаёт
+                lst = [dict(x, s=(by_key.get(x["k"]) or {}).get("status") or x["s"]) for x in (j.get("list") or [])]
+                done = CLOSED | ({"ready for testing", "тестирование"} if sid in ("BE", "BE1", "BE2", "FE") else set())
+                if lst and all(x["s"].strip().lower() in done for x in lst):
+                    continue
                 open_t = [x for x in lst if x["s"].strip().lower() not in CLOSED]
                 rows = []
                 for x in open_t:
