@@ -40,6 +40,16 @@ window.__FULL = null; window.__FERR = null;
     if (lk) t.linkedBy = nm(lk.author);
     if (vc) t.vacatedBy = nm(vc.author);
   }
+  // Ночной откат Epic Link: учётка «Jira ServiceManager» возвращает эпик, на который списывали часы
+  // (Виктор 17.11.2026) — история смен эпика у элементов со списаниями для блока «Для Тимура» в build_audit.py.
+  const sp = full.filter(x => x.spent > 0);
+  for (let k = 0; k < sp.length; k += 8) await Promise.all(sp.slice(k, k + 8).map(async t => {
+    const h = ((await (await fetch('/rest/api/2/issue/' + t.key + '?fields=summary&expand=changelog')).json()).changelog.histories || []);
+    const ev = [];
+    for (const x of h) for (const i of x.items) if (i.field === 'Epic Link')
+      ev.push({at: x.created.slice(0, 16), by: nm(x.author), sys: /ServiceManager/i.test((x.author || {}).displayName || ''), from: i.fromString || null, to: i.toString || null});
+    if (ev.some(e => e.sys)) t.epicHist = ev;
+  }));
   // Вакантить нельзя задачу/стори со списаниями или уже закрытую (Виктор 13.11.2026): такие вакантные —
   // vacantBad + кто, когда, из какого названия и статуса перевёл (проверка V1 в build_audit.py).
   const badQ = 'project=B2BAPP AND summary~"Вакантная" AND (timespent > 0 OR status WAS IN ("Завершена","Waiting for release","Ready for release"))';

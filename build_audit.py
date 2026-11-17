@@ -436,6 +436,48 @@ def main():
         o["issues"].sort(key=lambda x: (x["check"], int(x["key"].split("-")[1])))
         o["unlabeled_stories"].sort(key=lambda k: int(k.split("-")[1]))
 
+    # ── Для Тимура (поддержка Jira, Виктор 17.11.2026): учётка «Jira ServiceManager» по ночам возвращает Epic Link,
+    # если по элементу есть списания (GSD-142836). Список — что вернуть руками, пока скрипт не поправили: последняя
+    # смена эпика — системный откат, а эпик не тот, что нужен. Нужный: у задачи — эпик её истории, иначе (история,
+    # задача без истории, истории в разных эпиках) — последний эпик, поставленный командой.
+    all_by = {i["key"]: i for i in full["issues"]}
+    dmy = lambda s: f"{s[8:10]}.{s[5:7]}.{s[2:4]}" if s else ""
+    timur = []
+    for i in full["issues"]:
+        h = i.get("epicHist") or []
+        if not h or not h[-1]["sys"]:
+            continue
+        team_ev = [e for e in h if not e["sys"]]
+        team_to = team_ev[-1]["to"] if team_ev else None
+        need, why, unsure = None, [], False
+        if i["type"] in (T_TASK, T_DEV):
+            st_eps = {}
+            for l in i.get("links") or []:
+                if l["type"] == "Part" and l.get("in") and l.get("inType") == T_STORY and (all_by.get(l["in"]) or {}).get("epic"):
+                    st_eps.setdefault(all_by[l["in"]]["epic"], []).append(l["in"])
+            if len(st_eps) == 1:
+                need = next(iter(st_eps))
+                why.append("эпик истории " + ", ".join(st_eps[need]))
+            elif st_eps:
+                if i.get("epic") in st_eps:   # уже в эпике одной из своих историй — допустимо
+                    continue
+                unsure = True
+                need = team_to if team_to in st_eps else None
+                why.append("истории в разных эпиках: " + "; ".join(f"{', '.join(v)} → {e}" for e, v in st_eps.items()))
+        if need is None and team_to and (all_by.get(team_to) or {}).get("type") == T_EPIC:
+            need = team_to
+            why.append(f"последний эпик от команды ({team_ev[-1]['by']}, {dmy(team_ev[-1]['at'])})")
+        if need is None:
+            unsure = True
+        if need == i.get("epic"):
+            continue
+        sys_ev = [e for e in h if e["sys"]]
+        timur.append({"key": i["key"], "kind": {T_STORY: "история", T_EPIC: "эпик"}.get(i["type"], "задача"),
+                      "status": i["status"], "summary": i.get("summary"), "now": i.get("epic"), "need": need,
+                      "why": "; ".join(why) or "нужный эпик не определить — уточнить у РП", "unsure": unsure,
+                      "reverts": len(sys_ev), "lastRevert": sys_ev[-1]["at"][:10], "spentH": round((i.get("spent") or 0) / 3600, 1)})
+    timur.sort(key=lambda x: int(x["key"].split("-")[1]))
+
     out = {
         "generated_at": today,
         "jira_collected_at": (full.get("collectedAt") or "")[:10],
@@ -451,11 +493,13 @@ def main():
         "deadline_note": "правки в Jira и Confluence — до конца пятницы (МСК): срез дашборда снимается вечером пятницы",
         "max_task_h": MAX_TASK_H,
         "p4_total": n_p4,
+        "timur": {"ticket": "GSD-142836", "items": timur},
     }
     json.dump(out, open(a.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"OK {a.out}: стори {len(stories)}, задач {len(tasks)}, эпиков {len(epics)}; "
           + "; ".join(f"{o['short']}: {len(o['issues'])} правок, P4 {len(o['p4'])}" for o in out["owners"])
           + f"; без метки {sum(len(o['unlabeled_stories']) for o in owners.values())}; P4 всего {n_p4}; "
+          + f"Тимуру {len(timur)}; "
           + f"вне MVP пропущено стори {excluded['stories']}, задач {excluded['tasks']} (реестр {out['registry']})")
 
 
