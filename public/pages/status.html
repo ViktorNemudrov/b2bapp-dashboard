@@ -12,7 +12,7 @@
 .st-tab .n{opacity:.6;font-size:11px;margin-right:6px}
 .st-tab.active{color:var(--text);border-bottom-color:var(--yel);font-weight:700}
 .st-pane{display:none}.st-pane.active{display:block}
-.bee-sec{font-size:13px;line-height:1.45}.bee-sec table{width:100%;margin-top:6px}.bee-sec td,.bee-sec th{vertical-align:top}.bee-sec p{margin:0 0 8px}.bee-sec code{font-size:12px}
+.bee-sec{font-size:13px;line-height:1.45}.bee-sec table{width:100%;margin-top:6px}.bee-sec td,.bee-sec th{vertical-align:top}.bee-sec p{margin:0 0 8px}.bee-sec code{font-size:12px}.bee-sec h4{margin:10px 0 4px;font-size:13px}.bee-lead{margin-top:12px;border-color:var(--yel)}.bee-sec pre.mermaid{background:none;margin:8px 0;text-align:center;overflow-x:auto}
 .st-pane h2{font-size:19px;margin:0 0 4px}
 .lead{color:var(--mute);margin:0 0 16px;font-size:13px;line-height:1.5}
 .g2c{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -85,7 +85,7 @@
 <div class="main">
 <header class="hdr">
   <div class="hdr-left"><a class="back-btn" href="../index.html">← Главная</a><span class="page-title">🧾 Статус для руководства</span></div>
-  <div class="hdr-right">B2BAPP | Данные на <span id="upd">—</span> <span id="freshness" class="freshness freshness-gray" style="margin-left:8px"></span><button class="pdf-btn" id="exportBtn" onclick="exportStandalone()" title="Скачать эту страницу одним HTML-файлом с текущими данными — как файл Леонида: открывается без сайта и пароля, можно переслать" style="margin-left:8px">⬇ Выгрузить HTML</button><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
+  <div class="hdr-right">Данные на <span id="upd">—</span> <span id="freshness" class="freshness"></span><button class="pdf-btn" id="exportBtn" onclick="exportStandalone()" title="Скачать эту страницу одним HTML-файлом с текущими данными — как файл Леонида: открывается без сайта и пароля, можно переслать" style="margin-left:8px">⬇ Выгрузить HTML</button><button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:8px">🌙</button></div>
 </header>
 <div class="content">
   <div class="st-chips" id="chips"></div>
@@ -197,14 +197,41 @@ function renderAlfa(a){
 function renderBeegpt(b){
   const el=$('t8body'); if(!el) return;
   if(!b||!(b.sections||[]).length){ el.innerHTML='<h2>Трек beeGPT</h2><div class="card"><p class="sub" style="margin:0">Данных пока нет — выгрузите хаб трека (import_beegpt_track.py).</p></div>'; return; }
-  const h=b.hub||{}, [first,...rest]=b.sections;
+  const h=b.hub||{}, [first,...rest]=b.sections, L=b.leader;
+  window.__beeDiagrams=[];
+  // Вторым блоком — текущий статус для руководства (подстраница «… — для руководства»), Виктор 18.11.2026
+  const leader=L?`<div class="card bee-sec bee-lead"><h3>Текущий статус для руководства</h3>
+      <div class="sub" style="margin:-4px 0 8px"><a href="${esc(L.url)}" target="_blank" rel="noopener">${esc(L.title)}</a> · v${esc(L.version)} · ${fmtDate(L.updated)}</div>
+      ${(L.sections||[]).map((s,i)=>(i?`<h4>${esc(s.title)}</h4>`:'')+s.html).join('')}</div>`:'';
   el.innerHTML=`<h2>Трек «Интеграция с beeGPT»</h2>
     <p class="lead">Поручение руководства — максимально переиспользовать наработки B2C (ИИ-ассистент beeGPT). Данные — <a href="${esc(h.url)}" target="_blank" rel="noopener">хаб трека в Confluence</a> (v${esc(h.version)}, ${fmtDate(h.updated)}${h.by?', '+esc(h.by):''}) и его подстраницы.</p>
     <div class="card bee-sec"><h3>${esc(first.title)}</h3>${first.html}</div>
-    <div class="g2c">${rest.map(s=>`<div class="card bee-sec"><h3>${esc(s.title)}</h3>${s.html}</div>`).join('')}</div>
+    ${leader}
+    <div class="g2c">${rest.map(s=>{ const dg=[]; const body=s.html.replace(/<pre class="mermaid">([\s\S]*?)<\/pre>/g,(_,c)=>{ dg.push(c); return ''; });
+      // схема из Confluence — ссылкой в заголовке, открывается окном (как «Дорожная карта трека»), Виктор 18.11.2026
+      const link=dg.map(c=>{ window.__beeDiagrams.push({title:s.title,code:c}); return `<a class="bee-dg-open vp-rm-open" data-i="${window.__beeDiagrams.length-1}" style="margin-left:auto;font-size:12.5px;font-weight:600" role="button" tabindex="0">🗺 Схема решения</a>`; }).join('');
+      return `<div class="card bee-sec"><h3 style="display:flex;align-items:center;gap:8px">${esc(s.title)}${link}</h3>${body}</div>`; }).join('')}</div>
     <h3 style="margin:18px 0 8px">Подстраницы трека</h3>
     <div class="g2c">${(b.pages||[]).map(p=>`<div class="card"><h3><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></h3>
       <div class="sub" style="margin:-4px 0 8px">v${esc(p.version)} · ${fmtDate(p.updated)}${p.by?' · '+esc(p.by):''}</div><p style="margin:0;font-size:13px">${esc(p.summary)}</p></div>`).join('')}</div>`;
+}
+// Схемы из Mermaid-макроса Confluence — рисуем в окне по ссылке (в скрытой вкладке mermaid мерит текст в 0)
+function openBeeDiagram(i){
+  const dg=(window.__beeDiagrams||[])[i]; if(!dg) return;
+  const ov=document.createElement('div'); ov.className='vp-rm-ov';
+  ov.innerHTML=`<div class="vp-rm-box" role="dialog" aria-label="Схема"><div class="vp-rm-hd"><b>🗺 ${esc(dg.title)} — схема решения</b><button class="vp-rm-x" title="Закрыть (Esc)">✕</button></div>`
+    +`<div style="overflow-x:auto;text-align:center"><pre class="mermaid" style="background:none;margin:8px 0">${dg.code.replace(/^(\s*flowchart\s+)LR/,'$1TD')}</pre></div>`
+    +`<p class="sub" style="margin:8px 0 0">Источник: хаб трека в Confluence.</p></div>`;
+  const onKey=e=>{ if(e.key==='Escape') close(); };
+  const close=()=>{ ov.remove(); document.removeEventListener('keydown',onKey); };
+  ov.addEventListener('click',e=>{ if(e.target===ov||e.target.closest('.vp-rm-x')) close(); });
+  document.addEventListener('keydown',onKey); document.body.appendChild(ov);
+  const nodes=[ov.querySelector('pre.mermaid')];
+  const run=()=>{ mermaid.initialize({startOnLoad:false,theme:document.body.classList.contains('light-theme')?'default':'dark',securityLevel:'strict'});
+    mermaid.run({nodes}).catch(e=>console.warn('mermaid',e)); };
+  if(window.mermaid) return run();
+  const sc=document.createElement('script'); sc.src='https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js';
+  sc.onload=run; sc.onerror=()=>{ nodes[0].textContent='Не удалось загрузить отрисовку схемы — откройте хаб трека в Confluence.'; }; document.head.appendChild(sc);
 }
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 const dmy=s=>fmtDate(s), dm=s=>fmtDate(s);   // дд.мм.гг везде (Виктор 26.10.2026)
@@ -316,7 +343,7 @@ fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSp
       <div class="kpi"><div class="l">Задач (сделано/всего)</div><div class="v">${m.tasksDone??'—'} / ${m.tasksTotal??'—'}</div></div>
       <div class="kpi"><div class="l">Прогноз завершения</div><div class="v ${ok?'ok':'red'}">${dmy(crit)}</div></div>
     </div>${verdict}${changesCard}
-    <div class="sp-car" id="spCar"></div>
+    <div class="sp-car" id="spCar" style="margin-top:14px"></div>
     <div class="card" style="margin-top:14px"><h3><span class="dot r"></span>Дополнительно${vp.title?` <span class="sub" style="font-weight:400">— ${esc(vp.title)}</span>`:''}${vp.roadmap?'<a class="vp-rm-open" style="margin-left:auto;font-size:12.5px;font-weight:600" role="button" tabindex="0">🗺 Дорожная карта трека</a>':''}</h3>
       ${vpItems.length?`<div class="g2c">${vpItems.map(vpCard).join('')}</div>
       <p class="sub" style="margin:10px 0 0">Статус на ${esc(vp.updated||'—')}${vp.detailUrl?` · вся подробная информация — <a href="${esc(vp.detailUrl)}" target="_blank" rel="noopener">B2BAPP-1262. Виртуальный помощник от Б2С (Confluence) →</a>`:''}</p>`:'<div class="empty">Нет данных vpTrack в data.json</div>'}
@@ -568,8 +595,10 @@ function openVpRoadmap(){
   ov.addEventListener('click',e=>{ if(e.target===ov||e.target.closest('.vp-rm-x')) close(); });
   document.addEventListener('keydown',onKey); document.body.appendChild(ov);
 }
-document.addEventListener('click',e=>{ if(e.target.closest('.vp-rm-open')){ e.preventDefault(); openVpRoadmap(); } });
-document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('vp-rm-open')) openVpRoadmap(); });
+document.addEventListener('click',e=>{ const dg=e.target.closest('.bee-dg-open'); if(dg){ e.preventDefault(); openBeeDiagram(+dg.dataset.i); return; }
+  if(e.target.closest('.vp-rm-open')){ e.preventDefault(); openVpRoadmap(); } });
+document.addEventListener('keydown',e=>{ if(e.key!=='Enter'||!e.target.classList) return;
+  if(e.target.classList.contains('bee-dg-open')) openBeeDiagram(+e.target.dataset.i); else if(e.target.classList.contains('vp-rm-open')) openVpRoadmap(); });
 
 // ── Выгрузка в один HTML (Виктор 27.10.2026): тот же формат, что файл Леонида —
 // все 7 вкладок с актуальными данными, без сайта. Берём исходник этой страницы,

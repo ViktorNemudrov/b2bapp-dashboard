@@ -21,6 +21,7 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
 .page-title{font-size:15px;font-weight:800;color:#fff}
 .hdr-right{font-size:11px;color:var(--mute)}
 .hdr-right span{color:var(--yel)}
+.hdr-right #upd{color:inherit}
 
 /* CONTENT */
 .content{padding:24px}
@@ -154,11 +155,8 @@ body.light-theme .sidebar-collapse-btn{background:#fff;border-color:#d0d8e8;colo
 body.light-theme .pdf-btn{background:rgba(68,114,196,.12);border-color:rgba(68,114,196,.35);color:#2c5fad}
 
 /* ── FRESHNESS INDICATOR (U7) ────────────────────────────────── */
-.freshness{font-size:10px;font-weight:600;padding:2px 9px;border-radius:var(--r-pill);white-space:nowrap}
-.freshness-ok{background:rgba(39,174,96,.18);color:#2ecc71}
-.freshness-warn{background:rgba(230,126,34,.18);color:var(--warn)}
-.freshness-err{background:rgba(231,76,60,.18);color:var(--err)}
-.freshness-gray{background:rgba(127,143,166,.15);color:var(--mute)}
+/* «Данные на дд.мм.гг чч:мм» — обычный текст, без цветной плашки (Виктор 18.11.2026) */
+.freshness,.hdr-right .freshness{font:inherit;color:inherit;background:none;padding:0;white-space:nowrap}
 
 /* ── SORTABLE TABLES (U13) ───────────────────────────────────── */
 th.sorted-asc::after{content:' ▲';font-size:9px}

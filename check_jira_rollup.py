@@ -43,13 +43,13 @@ def main():
         sys.exit(f"В дампе нет поля {START} («Дата начала») — добавьте его в fields выгрузки")
     story_keys = {s["key"] for s in by_type["story"]}
 
-    def parent_of(t):
+    def parents_of(t):   # задача бывает в нескольких стори — считаем во всех (Виктор 18.11.2026)
         parts = [l["inwardIssue"]["key"] for l in (t["fields"].get("issuelinks") or [])
                  if (l.get("type") or {}).get("name") == "Part" and l.get("inwardIssue")]
-        return next((k for k in parts if k in story_keys), None)
+        return [k for k in parts if k in story_keys]
 
     tasks = [{"key": t["key"], "status": t["fields"]["status"]["name"], "start": t["fields"].get(START),
-              "parent": parent_of(t), "epic": t["fields"].get("customfield_10901")} for t in by_type["task"]]
+              "parents": parents_of(t), "epic": t["fields"].get("customfield_10901")} for t in by_type["task"]]
     fixes, warn = [], []
 
     def need(key, kind, status, start, exp_status, exp_start, why):
@@ -64,7 +64,10 @@ def main():
     story_start = {}
     for s in by_type["story"]:
         f = s["fields"]
-        kids = [t for t in tasks if t["parent"] == s["key"]]
+        # даты и статус — по основной стори задачи (первая Part-связь), как было; «задач нет» — по всем связям,
+        # иначе стори с общими задачами (B2BAPP-803 в 71/72/119) ложно попадали в «без задач» (18.11.2026)
+        kids = [t for t in tasks if t["parents"][:1] == [s["key"]]]
+        any_kids = [t for t in tasks if s["key"] in t["parents"]]
         act = [t for t in kids if t["status"] != BACKLOG]
         no_date = [t["key"] for t in act if not t["start"]]
         if no_date:
@@ -75,13 +78,13 @@ def main():
             first = min((t for t in act if t["start"]), key=lambda t: t["start"], default=act[0])
             need(s["key"], "story", f["status"]["name"], f.get(START), STORY_TARGET, exp,
                  f"задач не в «Бэклог»: {len(act)} из {len(kids)}; самая ранняя — {first['key']} ({first['status']}, с {first['start']})")
-        elif f["status"]["name"] not in (BACKLOG,) and f["status"]["name"] not in DONE:
-            warn.append(f"{s['key']}: стори в «{f['status']['name']}», но {'задач нет' if not kids else 'все задачи в «Бэклог»'} — проверить")
+        elif f["status"]["name"] not in (BACKLOG,) and f["status"]["name"] not in DONE                 and not any(t["status"] != BACKLOG for t in any_kids):
+            warn.append(f"{s['key']}: стори в «{f['status']['name']}», но {'задач нет' if not any_kids else 'все задачи в «Бэклог»'} — проверить")
 
     for e in by_type["epic"]:
         f = e["fields"]
         sts = [s for s in by_type["story"] if s["fields"].get("customfield_10901") == e["key"]]
-        orph = [t for t in tasks if t["epic"] == e["key"] and not t["parent"] and t["status"] != BACKLOG]
+        orph = [t for t in tasks if t["epic"] == e["key"] and not t["parents"] and t["status"] != BACKLOG]
         starts = [story_start[s["key"]][0] for s in sts if story_start[s["key"]][0]] + [t["start"] for t in orph if t["start"]]
         active = any(story_start[s["key"]][1] for s in sts) or bool(orph)
         if active:

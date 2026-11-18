@@ -166,12 +166,11 @@ function parseDataDate(raw){
 }
 function renderFreshness(refreshedAt, fallback){
   const dt = parseDataDate(refreshedAt) || parseDataDate(fallback);
-  if(!dt) return '<span class="freshness freshness-gray">Нет данных об обновлении</span>';
-  const days = Math.floor((Date.now()-dt.getTime())/86400000);
-  const cls = days<=3 ? 'freshness-ok' : days<=7 ? 'freshness-warn' : 'freshness-err';
+  // без цветной плашки — просто дата и время (Виктор 18.11.2026)
+  if(!dt) return 'нет данных';
   const dd = String(dt.getDate()).padStart(2,'0'), mo = String(dt.getMonth()+1).padStart(2,'0');
   const hh = String(dt.getHours()).padStart(2,'0'), mi = String(dt.getMinutes()).padStart(2,'0');
-  return `<span class="freshness ${cls}" title="цвет — свежесть: зелёный до 3 дней, оранжевый до недели">${dd}.${mo}.${String(dt.getFullYear()).slice(2)} ${hh}:${mi}</span>`;
+  return `${dd}.${mo}.${String(dt.getFullYear()).slice(2)} ${hh}:${mi}`;
 }
 window.renderFreshness = renderFreshness;
 // Единый формат дат на сайте — дд.мм.гг (Виктор 26.10.2026). Принимает
