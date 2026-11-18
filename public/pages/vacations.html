@@ -1,23 +1,35 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>График отпусков — B2BAPP</title><link rel="stylesheet" href="../shared.css">
 <style>
-/* График отпусков команды (Виктор 06.11.2026): строки — люди, колонки — недели,
-   отпуск — фиолетовая полоса (тот же цвет, что штриховка на ганте), сегодня — голубая линия,
-   спринты — пунктир. Данные — vacations.json из lke.beeline.ru, собирает build_dashboard.py. */
-.vac-wrap{overflow-x:auto;background:var(--card);border-radius:12px;padding:12px}
-.vac-grid{position:relative;min-width:900px}
-.vac-row{display:flex;align-items:center;height:30px;border-bottom:1px solid var(--line)}
-.vac-name{width:210px;flex-shrink:0;font-size:12px;padding-right:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* График отпусков команды. Строки — люди, колонки — недели (Виктор 18.11.2026: «деление на недели и масштаб
+   как в ганте»), отпуск — фиолетовая полоса (тот же цвет, что штриховка на ганте), сегодня — голубая линия.
+   Ниже — «Ближайшие» (раскрыто), «Прошедшие» и «Все отпуска» с итогом дней по человеку.
+   Данные — vacations.json из lke.beeline.ru, собирает build_dashboard.py (data.vacations). */
+.vac-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px;font-size:12px;color:var(--mute)}
+.vac-tools button{background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:4px 10px;cursor:pointer;font-family:inherit;font-size:12px}
+.vac-tools button:hover{border-color:var(--yel)}
+.vac-wrap{overflow-x:auto;background:var(--card);border-radius:12px;position:relative}
+.vac-grid{position:relative}
+.vac-row{display:flex;height:30px;border-bottom:1px solid var(--line)}
+.vac-name{width:200px;flex-shrink:0;font-size:12px;padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  position:sticky;left:0;z-index:3;background:var(--card);display:flex;align-items:center;border-right:1px solid var(--line)}
 .vac-name small{color:var(--mute);margin-left:4px}
-.vac-track{position:relative;flex:1;height:100%}
-.vac-bar{position:absolute;top:7px;height:16px;border-radius:4px;background:#A569BD;opacity:.85}
-.vac-bar.future{opacity:1;box-shadow:0 0 0 1px #fff3 inset}
-.vac-head{display:flex;height:26px;font-size:10px;color:var(--mute)}
-.vac-head .vac-track div{position:absolute;top:6px;transform:translateX(2px)}
-.vac-line{position:absolute;top:0;bottom:0;width:0;border-left:1px dashed var(--line);pointer-events:none}
-.vac-today{position:absolute;top:0;bottom:0;width:2px;background:#00d4ff;pointer-events:none}
-.vac-sprint-lbl{position:absolute;top:-2px;font-size:9px;color:var(--mute)}
-.vac-list td{font-size:12px}
+.vac-track{position:relative;flex-shrink:0;height:100%}
+.vac-wk{position:absolute;top:0;bottom:0;border-left:1px solid var(--line);opacity:.55}
+.vac-wk.m{opacity:1}
+.vac-bar{position:absolute;top:6px;height:18px;border-radius:4px;background:#A569BD;opacity:.75;z-index:2;color:#fff;font-size:10px;line-height:18px;
+  text-align:center;overflow:hidden;white-space:nowrap}
+.vac-bar.future{opacity:1}
+.vac-hd{height:22px;font-size:10px;color:var(--mute)}
+.vac-hd .vac-track div{position:absolute;top:4px;padding-left:3px;white-space:nowrap}
+.vac-hd .mon{font-weight:700;color:var(--text)}
+.vac-today{position:absolute;top:0;bottom:0;width:2px;background:#00d4ff;pointer-events:none;z-index:4}
+.vac-sp{position:absolute;top:0;bottom:0;background:rgba(0,212,255,.06);pointer-events:none}
+details.vac-sec{margin-top:18px;background:var(--card);border-radius:12px;padding:10px 14px}
+details.vac-sec>summary{cursor:pointer;font-weight:700;font-size:14px}
+details.vac-sec .tbl{margin-top:10px}
+.vac-list td{font-size:12px;vertical-align:top}
+.vac-per{display:inline-block;margin:0 10px 2px 0;white-space:nowrap}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -29,49 +41,101 @@
 </header>
 <div class="content">
   <p class="lead" id="lead" style="color:var(--mute);font-size:12px;margin-bottom:12px"></p>
-  <div class="vac-wrap"><div class="vac-grid" id="grid"></div></div>
-  <div class="sec-title" style="margin-top:24px">Ближайшие отпуска</div>
-  <table class="tbl vac-list"><thead><tr><th>Кто</th><th>С</th><th>По</th><th>Дней</th><th>Что в работе на это время</th></tr></thead><tbody id="upcoming"></tbody></table>
+  <div class="vac-tools">
+    <span>Масштаб:</span><button id="zOut" title="Мельче">−</button><button id="zIn" title="Крупнее">+</button>
+    <button id="toToday">К сегодня</button><span id="zLbl"></span>
+    <span style="margin-left:auto">Колонка — неделя (пн–вс), номер недели и дата понедельника; подсветка — текущий спринт.</span>
+  </div>
+  <div class="vac-wrap" id="wrap"><div class="vac-grid" id="grid"></div></div>
+  <details class="vac-sec" id="secUp" open><summary>Ближайшие отпуска</summary>
+    <table class="tbl vac-list"><thead><tr><th>Кто</th><th>С</th><th>По</th><th>Дней</th><th>Что в работе на это время</th></tr></thead><tbody id="upcoming"></tbody></table></details>
+  <details class="vac-sec" id="secPast"><summary>Прошедшие отпуска</summary>
+    <table class="tbl vac-list"><thead><tr><th>Кто</th><th>Дней отгулял</th><th>Когда</th></tr></thead><tbody id="past"></tbody></table></details>
+  <details class="vac-sec" id="secAll"><summary>Все отпуска</summary>
+    <table class="tbl vac-list"><thead><tr><th>Кто</th><th>Прошло, дней</th><th>Впереди, дней</th><th>Всего, дней</th><th>Периоды</th></tr></thead><tbody id="all"></tbody></table></details>
 </div>
 </div></div>
 <script>
 const $=id=>document.getElementById(id);
-fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSprints(d);
-  mountFreshness('freshness', d.refreshedAt, d.updated); $('upd').textContent=fmtDate(d.updated);
-  const V=d.vacations||{}, people=V.people||[], gv=d.ganttV2||{};
-  if(!people.length){ $('grid').innerHTML=renderEmptyState('Нет данных об отпусках — пересоберите дашборд с vacations.json'); return; }
-  $('lead').innerHTML=`Источник: ${V.source||'lke.beeline.ru'}, собрано ${fmtDate(V.collectedAt)}. Отпуска учтены в расчёте ганта: в эти дни у человека ноль часов, задачи раскладываются в обход.`;
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const DAY=86400000, NAME_W=200;
+const ZOOMS=[3,5,8,12,18];   // пикселей на день: 3 — год на экране, 18 — видно каждый день недели
+let zi=2; try{ const z=+localStorage.getItem('vac-zoom'); if(z>=0&&z<ZOOMS.length) zi=z; }catch(_){}
+const days=(a,b)=>Math.round((new Date(b)-new Date(a))/DAY)+1;   // календарные дни, как в lke
+const MN=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+const isoWeek=d=>{ const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())); const n=t.getUTCDay()||7; t.setUTCDate(t.getUTCDate()+4-n);
+  const y=new Date(Date.UTC(t.getUTCFullYear(),0,1)); return Math.ceil(((t-y)/DAY+1)/7); };
+let D=null;
+
+function render(){
+  const V=D.vacations||{}, people=V.people||[], gv=D.ganttV2||{};
   const today=localISO(new Date());
-  const from=new Date('2026-01-01'), to=new Date('2027-03-31');
-  const span=(to-from)/86400000, pct=iso=>((new Date(iso)-from)/86400000/span*100);
-  const roleOf={}; (gv.resources||[]).forEach(r=>roleOf[(r.name||'').split(' ')[0]]=r.role);
-  // шапка: месяцы
-  const MN=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
-  let head='', lines='';
-  for(let m=new Date(from); m<=to; m.setMonth(m.getMonth()+1)){
-    const iso=localISO(m), x=pct(iso);
-    head+=`<div style="left:${x}%">${MN[m.getMonth()]}${m.getMonth()===0?" '"+String(m.getFullYear()).slice(2):''}</div>`;
-    lines+=`<div class="vac-line" style="left:calc(210px + (100% - 210px) * ${x/100})"></div>`;
+  const all=people.flatMap(p=>p.periods||[]).flat();
+  // диапазон: с понедельника января до конца самого позднего отпуска / +2 мес. от сегодня
+  const from=new Date('2026-01-05'), lastIso=[...all,today].sort().pop();
+  const to=new Date(lastIso); to.setMonth(to.getMonth()+2);
+  const px=ZOOMS[zi], W=Math.ceil((to-from)/DAY)*px, X=iso=>(new Date(iso)-from)/DAY*px;
+  $('zLbl').textContent=['год','полгода','квартал','2 месяца','месяц'][zi]+' на экране (примерно)';
+  try{ localStorage.setItem('vac-zoom',zi); }catch(_){}
+  // шапка: месяцы + недели
+  let mon='', wk='', grid='';
+  for(let d=new Date(from); d<to; d=new Date(d.getTime()+7*DAY)){
+    const x=X(localISO(d)), first=d.getDate()<=7;
+    if(first) mon+=`<div class="mon" style="left:${x}px">${MN[d.getMonth()]}${d.getMonth()===0?" '"+String(d.getFullYear()).slice(2):''}</div>`;
+    wk+=`<div style="left:${x}px" title="Неделя ${isoWeek(d)}: ${fmtDate(localISO(d))} – ${fmtDate(localISO(new Date(d.getTime()+6*DAY)))}">${px>=5?isoWeek(d):''}${px>=12?` · ${d.getDate()}.${String(d.getMonth()+1).padStart(2,'0')}`:''}</div>`;
+    grid+=`<div class="vac-wk${first?' m':''}" style="left:${x}px"></div>`;
   }
-  const sp=(gv.sprints||[]).filter(s=>s.start>='2026-08-01');
-  const spMarks=sp.map(s=>`<div class="vac-sprint-lbl" style="left:${pct(s.start)}%">${s.state==='active'?'<b style="color:#00d4ff">С'+s.n+'</b>':'С'+s.n}</div>`).join('');
+  const cur=(gv.sprints||[]).find(s=>s.start<=today&&today<=s.end);
+  const spBg=cur?`<div class="vac-sp" style="left:${X(cur.start)}px;width:${X(cur.end)-X(cur.start)}px" title="Спринт ${cur.n}: ${fmtDate(cur.start)} – ${fmtDate(cur.end)}"></div>`:'';
+  const roleOf={}; (gv.resources||[]).forEach(r=>roleOf[(r.name||'').split(' ')[0]]=r.role);
   const rows=people.map(p=>{
     const sn=p.name.split(' ')[0];
-    const bars=(p.periods||[]).map(([a,b])=>{ const l=pct(a), w=Math.max(.25,pct(b)-l+100/span); return `<div class="vac-bar${b>=today?' future':''}" style="left:${l}%;width:${w}%" title="${p.name}: ${fmtDate(a)} – ${fmtDate(b)}"></div>`; }).join('');
-    return `<div class="vac-row"><div class="vac-name">${p.name}${roleOf[sn]?`<small>${roleOf[sn]}</small>`:''}</div><div class="vac-track">${bars}</div></div>`;
+    const bars=(p.periods||[]).map(([a,b])=>{ const l=X(a), w=Math.max(px,X(b)-l+px), n=days(a,b);
+      return `<div class="vac-bar${b>=today?' future':''}" style="left:${l}px;width:${w}px" title="${esc(p.name)}: ${fmtDate(a)} – ${fmtDate(b)}, ${n} дн.">${w>=22?n:''}</div>`; }).join('');
+    return `<div class="vac-row"><div class="vac-name" title="${esc(p.name)}">${esc(p.name)}${roleOf[sn]?`<small>${esc(roleOf[sn])}</small>`:''}</div><div class="vac-track" style="width:${W}px">${grid}${spBg}${bars}</div></div>`;
   }).join('');
-  $('grid').innerHTML=`<div class="vac-head"><div class="vac-name"></div><div class="vac-track">${head}${spMarks}</div></div>${rows}${lines}<div class="vac-today" style="left:calc(210px + (100% - 210px) * ${pct(today)/100})" title="Сегодня"></div>`;
-  // ближайшие: отпуска, которые ещё не закончились, + задачи человека, пересекающиеся с отпуском
+  $('grid').style.width=(NAME_W+W)+'px';
+  $('grid').innerHTML=`<div class="vac-row vac-hd"><div class="vac-name"></div><div class="vac-track" style="width:${W}px">${mon}</div></div>
+    <div class="vac-row vac-hd"><div class="vac-name" style="color:var(--mute);font-size:10px">неделя${px>=12?' · пн':''}</div><div class="vac-track" style="width:${W}px">${wk}</div></div>
+    ${rows}<div class="vac-today" style="left:${NAME_W+X(today)}px" title="Сегодня, ${fmtDate(today)}"></div>`;
+  return {X,today};
+}
+function scrollToday(){ const {X,today}=render(); $('wrap').scrollLeft=Math.max(0,X(today)-$('wrap').clientWidth/3); }
+
+function lists(){
+  const V=D.vacations||{}, people=V.people||[], gv=D.ganttV2||{}, today=localISO(new Date());
   const items=(gv.items||[]).filter(i=>i.type==='task'&&i.category!=='done');
   const resBySn={}; (gv.resources||[]).forEach(r=>resBySn[(r.name||'').split(' ')[0]]=r.id);
+  // ближайшие: отпуска, которые ещё не закончились, + задачи человека, пересекающиеся с отпуском
   const up=[]; people.forEach(p=>(p.periods||[]).forEach(([a,b])=>{ if(b>=today) up.push({p,a,b}); }));
   up.sort((x,y)=>x.a<y.a?-1:1);
   $('upcoming').innerHTML=up.length?up.map(({p,a,b})=>{
     const rid=resBySn[p.name.split(' ')[0]];
     const ov=items.filter(t=>t.resource===rid&&t.start<=b&&t.end>=a);
-    const days=Math.round((new Date(b)-new Date(a))/86400000)+1;
-    return `<tr><td><b>${p.name}</b></td><td>${fmtDate(a)}</td><td>${fmtDate(b)}</td><td>${days}</td><td style="color:var(--mute)">${ov.length?ov.slice(0,4).map(t=>`<a href="https://btask.beeline.ru/browse/${t.key}" target="_blank" rel="noopener">${t.key}</a> ${(t.summary||'').slice(0,40)}`).join('<br>')+(ov.length>4?`<br>и ещё ${ov.length-4}`:''):'—'}</td></tr>`;
+    return `<tr><td><b>${esc(p.name)}</b>${a<=today?' <span class="st-badge st-wip">сейчас в отпуске</span>':''}</td><td>${fmtDate(a)}</td><td>${fmtDate(b)}</td><td>${days(a,b)}</td><td style="color:var(--mute)">${ov.length?ov.slice(0,4).map(t=>`<a href="https://btask.beeline.ru/browse/${t.key}" target="_blank" rel="noopener">${t.key}</a> ${esc((t.summary||'').slice(0,40))}`).join('<br>')+(ov.length>4?`<br>и ещё ${ov.length-4}`:''):'—'}</td></tr>`;
   }).join(''):'<tr><td colspan="5" style="color:var(--mute)">Запланированных отпусков нет</td></tr>';
+  // прошедшие: дни, отгулянные до сегодня (идущий отпуск — по вчерашний день)
+  const yest=localISO(new Date(Date.now()-DAY));
+  const per=people.map(p=>{
+    const ps=(p.periods||[]).slice().sort((x,y)=>x[0]<y[0]?-1:1);
+    const past=ps.filter(([a])=>a<=yest).map(([a,b])=>[a,b<=yest?b:yest]);
+    const fut=ps.filter(([,b])=>b>=today).map(([a,b])=>[a>=today?a:today,b]);
+    return {p,ps,past,fut,dPast:past.reduce((s,[a,b])=>s+days(a,b),0),dFut:fut.reduce((s,[a,b])=>s+days(a,b),0)};
+  });
+  const perTxt=arr=>arr.map(([a,b])=>`<span class="vac-per">${fmtDate(a)}${a!==b?' – '+fmtDate(b):''} (${days(a,b)})</span>`).join('');
+  $('past').innerHTML=per.slice().sort((x,y)=>y.dPast-x.dPast).map(r=>`<tr><td><b>${esc(r.p.name)}</b></td><td>${r.dPast||'—'}</td><td>${r.past.length?perTxt(r.past):'<span style="color:var(--mute)">не было</span>'}</td></tr>`).join('');
+  $('all').innerHTML=per.slice().sort((x,y)=>(y.dPast+y.dFut)-(x.dPast+x.dFut)).map(r=>`<tr><td><b>${esc(r.p.name)}</b></td><td>${r.dPast||'—'}</td><td>${r.dFut||'—'}</td><td><b>${r.dPast+r.dFut||'—'}</b></td><td>${r.ps.length?perTxt(r.ps):'<span style="color:var(--mute)">нет</span>'}</td></tr>`).join('');
+}
+
+fetch('../data/data.json?t='+Date.now()).then(r=>r.json()).then(d=>{ normalizeSprints(d); D=d;
+  mountFreshness('freshness', d.refreshedAt, d.updated); $('upd').textContent=fmtDate(d.updated);
+  const V=d.vacations||{};
+  if(!(V.people||[]).length){ $('grid').innerHTML=renderEmptyState('Нет данных об отпусках — пересоберите дашборд с vacations.json'); return; }
+  $('lead').innerHTML=`Источник: ${esc(V.source||'lke.beeline.ru')}, собрано ${fmtDate(V.collectedAt)}. Отпуска учтены в расчёте ганта: в эти дни у человека ноль часов, задачи раскладываются в обход. Дни — календарные, как в кабинете сотрудника.`;
+  scrollToday(); lists();
+  $('zIn').onclick=()=>{ if(zi<ZOOMS.length-1){ zi++; scrollToday(); } };
+  $('zOut').onclick=()=>{ if(zi>0){ zi--; scrollToday(); } };
+  $('toToday').onclick=scrollToday;
 }).catch(e=>{ $('grid').innerHTML=renderEmptyState('Ошибка загрузки данных: '+e.message); });
 </script>
 </body></html>

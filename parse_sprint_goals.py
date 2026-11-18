@@ -70,7 +70,35 @@ def main(src, dst):
                 goal, res = t.rsplit(" - ", 1)
                 goal, res = goal.strip(), res.strip()
             goals.append({"text": goal, "result": res, "status": st_col or status_of(res)})
-        intro = text(body.split("<ol")[0]) if "<ol" in body else text(body)
+        if not goals:
+            # С С6 (18.11.2026) цели — абзацами: «1. Цель» + строки «Амбассадор: …», «Задачи: …», «DoD: …», «Риск: …»;
+            # «Продуктовые» / «Технические / процессные» — группы. Строки — по <br/> и <p>.
+            lines = [text(x) for x in re.split(r"<br\s*/?>|</p>|<p[^>]*>", body)]
+            lines = [x for x in lines if x]
+            cur, group = None, ""
+            for ln in lines:
+                gm = re.match(r"^(\d+)\.\s+(.+)$", ln)
+                if gm:
+                    cur = {"text": gm.group(2).strip(), "result": "", "status": "open", "group": group, "details": []}
+                    goals.append(cur)
+                elif re.match(r"^(продуктов|техническ|процессн)", ln, re.I) and len(ln) < 40:
+                    group, cur = ln, None
+                elif cur is not None:
+                    cur["details"].append(ln)
+            for g in goals:
+                det = " ".join(g.pop("details"))
+                rm = RESULT_RE.search(g["text"])
+                if rm:
+                    g["text"], g["result"] = rm.group(1).strip(), rm.group(2).strip()
+                    g["status"] = status_of(g["result"])
+                for k in ("Амбассадор", "Задачи", "DoD", "Риск"):
+                    m2 = re.search(k + r"\s*:\s*(.*?)(?=(?:Амбассадор|Задачи|DoD|Риск)\s*:|$)", det, re.S)
+                    if m2:
+                        g[{"Амбассадор": "owner", "Задачи": "tasks", "DoD": "dod", "Риск": "risk"}[k]] = m2.group(1).strip(" ;")
+            intro_end = re.search(r"(?:<br\s*/?>|<p[^>]*>)\s*(?:<span[^>]*>)?\s*(?:Продуктов|1\.\s)", body)
+            intro = text(body[:intro_end.start()]) if intro_end else text(body)
+        else:
+            intro = text(body.split("<ol")[0]) if "<ol" in body else text(body)
         sprints.append({"n": n, "title": title, "intro": intro[:300], "goals": goals})
     out = {"source": {"pageId": page["id"], "title": page["title"], "version": page["version"], "when": page["when"]},
            "sprints": sorted(sprints, key=lambda s: s["n"])}

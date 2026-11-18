@@ -30,6 +30,7 @@ window.__FULL = null; window.__FERR = null;
     start: f.customfield_18100 || null, resolved: d10(f.resolutiondate), created: d10(f.created),
     est: tt.originalEstimateSeconds || 0, spent: tt.timeSpentSeconds || 0, rem: tt.remainingEstimateSeconds ?? null,
     cf: /bwiki\.beeline\.ru|confluence/i.test(f.description || ''),
+    cfUrls: [...new Set(((f.description || '').match(/https?:\/\/bwiki\.beeline\.ru[^\s|\]\[)"']+/g) || []))],
     labels: f.labels || [], assignee: nm(f.assignee), sprints: parseSp(f.customfield_10905).map(({completeDate, ...r}) => r),
     links: (f.issuelinks || []).map(l => ({type: l.type.name, in: l.inwardIssue ? l.inwardIssue.key : null, out: l.outwardIssue ? l.outwardIssue.key : null,
       inType: l.inwardIssue ? l.inwardIssue.fields.issuetype.id : null, outType: l.outwardIssue ? l.outwardIssue.fields.issuetype.id : null}))}; });
@@ -42,13 +43,15 @@ window.__FULL = null; window.__FERR = null;
     if (lk) t.linkedBy = nm(lk.author);
     if (vc) t.vacatedBy = nm(vc.author);
   }
-  // Ссылка на аналитику в Confluence (проверка S10, Виктор 17.11.2026): в описании или во вкладке «Ссылки» —
+  // Ссылка на аналитику в Confluence (проверки S10 и A1–A3, Виктор 17–18.11.2026): в описании или во вкладке «Ссылки» —
   // у незакрытых стори и задач [BA]
-  const cfNeed = full.filter(x => !x.cf && (x.type === '10600' || /^\s*(?:\d+[.:]\s*)?\[BA\]/i.test(x.summary))
+  const cfNeed = full.filter(x => (x.type === '10600' || /^\s*(?:\d+[.:]\s*)?\[BA\]/i.test(x.summary))
     && !['Завершена', 'Waiting for release', 'Ready for release', 'Отклонена'].includes(x.status));
   for (let k = 0; k < cfNeed.length; k += 8) await Promise.all(cfNeed.slice(k, k + 8).map(async t => {
     const r = await (await fetch('/rest/api/2/issue/' + t.key + '/remotelink')).json();
-    if ((r || []).some(x => /bwiki\.beeline\.ru|confluence/i.test(((x.object || {}).url || '') + ((x.application || {}).type || '')))) t.cf = true;
+    for (const x of (r || [])) if (/bwiki\.beeline\.ru|confluence/i.test(((x.object || {}).url || '') + ((x.application || {}).type || ''))) {
+      t.cf = true; if ((x.object || {}).url) t.cfUrls.push(x.object.url);
+    }
   }));
   // Ночной откат Epic Link: учётка «Jira ServiceManager» возвращает эпик, на который списывали часы
   // (Виктор 17.11.2026) — история смен эпика у элементов со списаниями для блока «Для Тимура» в build_audit.py.

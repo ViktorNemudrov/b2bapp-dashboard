@@ -73,6 +73,9 @@ GLOSSARY = [
            "Список внешних зависимостей — external_deps.json"),
     ("S10", "стори в работе (разработка, дизайн или тест уже идут), а ссылки на аналитику в Confluence нет — ни в описании "
             "и «Ссылках» стори, ни у её задач [BA]: добавить страницу аналитики в «Ссылки» стори"),
+    ("A1", "аналитика стори в Confluence не по шаблону («Шаблон аналитики» — 13 разделов с подразделами, все обязательны; "
+           "страницы BC-/BI- — «Шаблон Use Case»): нет раздела, раздел под другим номером или пустой. Нет данных по разделу — "
+           "оставить его и написать «Не применимо»; дополнительные разделы можно, но сверх обязательных"),
     ("T13", "задача лежит в вакантной стори/эпике, но по ней работают (списано время или статус не «Бэклог») — "
             "привязать к рабочей стори и эпику"),
     ("V1", "в вакантные переведена задача/стори, по которой уже списано время или которая была закрыта "
@@ -141,6 +144,102 @@ def load_reg_status(path):
     return m
 
 
+# ── A1: аналитика в Confluence по шаблону (Виктор 18.11.2026) ──
+# Шаблоны: «Шаблон аналитики» 1880429609 (13 разделов + подразделы, все обязательны; нет данных —
+# раздел остаётся с «Не применимо»), «Шаблон Use Case» 1863053585 (страница с разделом «UC-0»).
+ANALYTICS_TITLE_RE = re.compile(r"^\s*(Аналитика\s*:|(PL|OB|MD|RB|PK|NAI|IB|YD|SH)\d*[.\s])", re.I)
+ANALYTICS_TITLE_RE2 = re.compile(r"^\s*BC-\d", re.I)   # BC-NN.N написаны по шаблону аналитики; BI-NN — паспорта доменов, не проверяем
+SKIP_TITLE_RE = re.compile(r"неактуал|постановка на дизайн|для дизайна", re.I)
+H_RE = re.compile(r"<h([1-6])[^>]*>(.*?)</h\1>", re.S)
+NUM_RE = re.compile(r"^\s*((?:UC-)?\d+(?:\.\d+)*)\.?\s*")
+
+
+def head_num(t):
+    m = NUM_RE.match(t)
+    return m.group(1) if m else ""
+
+
+SYN = {"бэкенд": "backend", "бекенд": "backend", "бэк": "backend", "бек": "backend", "фронтенд": "frontend",
+       "фронт": "frontend", "приемки": "приемки", "приёмки": "приемки", "иб": "безопасность"}
+
+
+def head_words(t):
+    t = NUM_RE.sub("", t).lower().replace("ё", "е")
+    t = re.sub(r"—\s*обязательно", " ", t)
+    return {SYN.get(w, w) for w in re.findall(r"[a-zа-я0-9]+", t) if len(w) > 2 or w in ("ui", "ux", "иб", "api")}
+
+
+def template_heads(storage, skip_h1=True):
+    out = []
+    for lvl, h in H_RE.findall(storage):
+        t = re.sub(r"<[^>]+>", "", h).replace("&nbsp;", " ").strip()
+        if skip_h1 and lvl == "1" or not t:
+            continue
+        out.append({"lvl": int(lvl), "text": t, "num": head_num(t), "words": head_words(t)})
+    return out
+
+
+def check_page(tmpl, page):
+    """Сравнить заголовки страницы с шаблоном: нет раздела / не тот номер / пустой.
+    Сначала разделы верхнего уровня шаблона — по всей странице, потом подразделы — только
+    внутри найденного раздела. Заголовок страницы идёт не больше чем в один раздел шаблона."""
+    heads = [dict(h, num=head_num(h["text"]), words=head_words(h["text"])) for h in page.get("headings") or []]
+    for j, h in enumerate(heads):
+        h["kids"] = j + 1 < len(heads) and heads[j + 1]["lvl"] > h["lvl"]
+        end = next((k for k in range(j + 1, len(heads)) if heads[k]["lvl"] <= h["lvl"]), len(heads))
+        h["desc"] = range(j + 1, end)
+    top_lvl = min((t["lvl"] for t in tmpl), default=2)
+
+    def score(t, h, need):
+        if not t["words"] or not h["words"]:
+            return 0
+        cover = len(t["words"] & h["words"]) / len(t["words"])
+        if cover < need and not (t["num"] and h["num"] == t["num"] and cover > 0):
+            return 0
+        return cover + 0.2 * len(t["words"] & h["words"]) / len(h["words"]) + (0.3 if t["num"] and h["num"] == t["num"] else 0)
+
+    match, used = {}, set()
+    tops = [i for i, t in enumerate(tmpl) if t["lvl"] == top_lvl]
+    top_h = min((h["lvl"] for h in heads), default=1)
+    # верхний раздел шаблона — к верхнему заголовку страницы («Backend» из критериев приёмки — не раздел 5)
+    pairs = sorted(((score(tmpl[i], h, 0.6) and score(tmpl[i], h, 0.6) + (0.25 if h["lvl"] == top_h else 0), i, j)
+                    for i in tops for j, h in enumerate(heads)), reverse=True)
+    for sc, i, j in pairs:
+        if sc and i not in match and j not in used:
+            match[i] = j
+            used.add(j)
+    parent = None
+    for i, t in enumerate(tmpl):
+        if t["lvl"] == top_lvl:
+            parent = i
+            continue
+        pool = list(heads[match[parent]]["desc"]) if parent in match else range(len(heads))
+        cands = sorted(((score(t, heads[j], 0.5 if parent in match else 0.6), j) for j in pool if j not in used), reverse=True)
+        if cands and cands[0][0]:
+            match[i] = cands[0][1]
+            used.add(cands[0][1])
+    missing, renum, empty = [], [], []
+    for i, t in enumerate(tmpl):
+        if i not in match:
+            missing.append(t["text"])
+            continue
+        h = heads[match[i]]
+        if t["num"] and h["num"] != t["num"]:
+            renum.append(f"«{h['text']}» → «{t['text']}»")
+        has_sub = i + 1 < len(tmpl) and tmpl[i + 1]["lvl"] > t["lvl"]
+        if not has_sub and not h["kids"] and h.get("len", 0) < 8:
+            empty.append(t["text"])
+    return missing, renum, empty
+
+
+def page_key(u):
+    m = re.search(r"pageId=(\d+)", u) or re.search(r"/pages/(\d+)", u)
+    if m:
+        return m.group(1)
+    m = re.search(r"/x/([\w-]+)", u)
+    return "x:" + m.group(1) if m else u
+
+
 def scenario_of(story):
     for lb in story.get("labels") or []:
         if SC_LABEL_RE.match(lb):
@@ -175,6 +274,8 @@ def main():
     ap.add_argument("--registry", default=None, help="выгрузка реестра MVP v.2 (cf/cf_registry_*.json), по умолчанию самая свежая")
     ap.add_argument("--out", default="public/data/audit.json")
     ap.add_argument("--deps", default="external_deps.json", help="внешние зависимости для S9")
+    ap.add_argument("--analytics", default=None, help="страницы аналитики (cf/cf_analytics_*.json), по умолчанию самая свежая")
+    ap.add_argument("--cf-all", default=None, help="выгрузка Confluence с шаблонами (cf/cf_all_*.json), по умолчанию самая свежая")
     a = ap.parse_args()
     reg_path = a.registry or max(glob.glob("cf/cf_registry_*.json"), key=os.path.getmtime)
     full = json.load(open(a.jira_full, encoding="utf-8"))
@@ -222,7 +323,7 @@ def main():
         if name not in owners:
             owners[name] = {"id": f"o{len(owners) + 1}", "name": name, "short": SHORT.get(name, name.split()[-1]),
                             "fallback": name == FALLBACK, "scenarios": [], "issues": [], "p4": [], "unlabeled_stories": [],
-                            "scenario_checks": []}
+                            "scenario_checks": [], "analytics": []}
         return owners[name]
 
     for code, name in own.items():
@@ -487,6 +588,56 @@ def main():
                     "closed": len(lst) - len(open_t), "total": len(lst), "action": action})
                 n_p4 += 1
 
+    # ── A1: аналитика стори в Confluence не по шаблону ──
+    an_path = a.analytics or max(glob.glob("cf/cf_analytics_*.json") or [""], key=lambda x: os.path.getmtime(x) if x else 0)
+    cf_path = a.cf_all or max(glob.glob("cf/cf_all_*.json") or [""], key=lambda x: os.path.getmtime(x) if x else 0)
+    n_a1 = 0
+    tmpl_src = {}
+    if an_path and cf_path:
+        pages_raw = json.load(open(an_path, encoding="utf-8"))
+        tpl = json.load(open(cf_path, encoding="utf-8")).get("templates") or {}
+        tmpl = {k: template_heads(v["storage"]) for k, v in tpl.items()}
+        tmpl_src = {k: {"id": v["id"], "title": v["title"], "version": v["version"]} for k, v in tpl.items()}
+        pages = {}
+        for u, v in pages_raw.items():
+            if v.get("id"):
+                pages[page_key(u)] = v
+                pages[str(v["id"])] = v
+        seen = set()
+        for st in stories:
+            k = st["key"]
+            if k in SERVICE_STORIES or out_of_mvp(st) or (st.get("status") or "").strip().lower() in CLOSED:
+                continue
+            srcs = [st] + [t for t in story_tasks.get(k, []) if role_of(t["summary"]) == "BA"]
+            for x in srcs:
+                for u in x.get("cfUrls") or []:
+                    pg = pages.get(page_key(u))
+                    if not pg or pg.get("space") != "B2BAPP" or SKIP_TITLE_RE.search(pg["title"]):
+                        continue
+                    if not (ANALYTICS_TITLE_RE.match(pg["title"]) or ANALYTICS_TITLE_RE2.match(pg["title"])):
+                        continue
+                    # шаблон Use Case — если на странице есть «UC-0» (так он начинается), иначе шаблон аналитики
+                    kind = "uc" if any(re.match(r"\s*UC-0", h["text"]) for h in pg.get("headings") or []) else "analytics"
+                    if not kind or kind not in tmpl:
+                        continue
+                    scen = sc.get(k)
+                    oid = resp(scen, st.get("assignee"), pg.get("by"))
+                    if (oid, pg["id"]) in seen:
+                        for it in owner(oid)["analytics"]:
+                            if it["id"] == pg["id"] and k not in it["stories"]:
+                                it["stories"].append(k)
+                        continue
+                    seen.add((oid, pg["id"]))
+                    missing, renum, empty = check_page(tmpl[kind], pg)
+                    if not (missing or renum or empty):
+                        continue
+                    owner(oid)["analytics"].append({
+                        "id": pg["id"], "title": pg["title"], "url": f"https://bwiki.beeline.ru/pages/viewpage.action?pageId={pg['id']}",
+                        "version": pg.get("version"), "updated": (pg.get("when") or "")[:10], "by": pg.get("by"),
+                        "template": kind, "stories": [k], "scenario": scen or "—",
+                        "missing": missing, "renumbered": renum, "empty": empty})
+                    n_a1 += 1
+
     for o in owners.values():
         o["scenarios"].sort(key=lambda c: (re.sub(r"\d+", "", c), int(re.sub(r"\D", "", c) or 0)))
         o["issues"].sort(key=lambda x: (x["check"], int(x["key"].split("-")[1])))
@@ -550,12 +701,14 @@ def main():
         "max_task_h": MAX_TASK_H,
         "p4_total": n_p4,
         "timur": {"ticket": "GSD-142836", "items": timur},
+        "templates": tmpl_src,
+        "a1_total": n_a1,
     }
     json.dump(out, open(a.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"OK {a.out}: стори {len(stories)}, задач {len(tasks)}, эпиков {len(epics)}; "
           + "; ".join(f"{o['short']}: {len(o['issues'])} правок, P4 {len(o['p4'])}" for o in out["owners"])
           + f"; без метки {sum(len(o['unlabeled_stories']) for o in owners.values())}; P4 всего {n_p4}; "
-          + f"Тимуру {len(timur)}; "
+          + f"Тимуру {len(timur)}; A1 (аналитика не по шаблону) {n_a1}; "
           + f"вне MVP пропущено стори {excluded['stories']}, задач {excluded['tasks']} (реестр {out['registry']})")
 
 

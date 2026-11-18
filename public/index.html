@@ -314,6 +314,10 @@ body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
 .p-dev{font-size:10px;font-weight:700;margin-left:4px}
 .p-dev.behind{color:var(--err)} .p-dev.ahead{color:var(--ok)} .p-dev.ontrack{color:var(--mute)}
 .p-bar{background:#1e2d3d;border-radius:3px;height:5px;overflow:hidden}
+.ep-st{margin-top:6px;font-size:11px}.ep-st summary{cursor:pointer;color:var(--mute)}
+.ep-st-row{display:flex;align-items:center;gap:8px;padding:2px 0}.ep-st-n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ep-st-bar{width:90px;height:5px;background:#1e2d3d;border-radius:3px;overflow:hidden;flex:none}.ep-st-bar span{display:block;height:100%}
+body.light-theme .ep-st-bar{background:#e0e6f0}.ep-st-p{width:56px;text-align:right;flex:none;color:var(--mute)}
 .p-fill{height:100%;border-radius:3px;transition:width .8s ease}
 .st-legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
 
@@ -862,21 +866,35 @@ function renderEpicProgress(data){
   // Задачи эпика по группам статусов — та же палитра, что на ганте и в статусе (shared-nav.js).
   const byEpic={}; (data.ganttV2?.items||[]).forEach(it=>{ if(it.type!=='task'||!it.epic) return;
     const g=statusGroup(it.status,it.category); (byEpic[it.epic]=byEpic[it.epic]||{})[g]=(byEpic[it.epic][g]||0)+1; });
+  // Порядок сегментов здесь (Виктор 18.11.2026): готово → бэклог → в работе → в тесте → остальное
+  const EP_ORDER=['done','backlog','wip','test','ready','hold'];
+  const esc=x=>String(x??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  // % выполнения стори = часы закрытых задач от оценки всех её задач (задачи на несколько стори считаются в каждой)
+  const its=data.ganttV2?.items||[], stByEpic={}, stTasks={};
+  its.forEach(it=>{ if(it.type==='task'&&it.parent) (stTasks[it.parent]=stTasks[it.parent]||[]).push(it); });
+  its.forEach(it=>{ if(it.type==='story'&&it.epic) (stByEpic[it.epic]=stByEpic[it.epic]||[]).push(it); });
+  const storyPct=st=>{ const ts=stTasks[st.key]||[], tot=ts.reduce((a,t)=>a+(t.estimateH||0),0);
+    if(!tot) return st.category==='done'?100:null;
+    return Math.round(ts.filter(t=>statusGroup(t.status,t.category)==='done').reduce((a,t)=>a+(t.estimateH||0),0)/tot*100); };
+  const storyList=key=>{ const ss=(stByEpic[key]||[]).map(st=>({st,p:storyPct(st)})).sort((a,b)=>(b.p??-1)-(a.p??-1));
+    if(!ss.length) return '';
+    return `<details class="ep-st"><summary>% выполнения по стори (${ss.length})</summary>${ss.map(({st,p})=>`<div class="ep-st-row"><span class="ep-st-n">${jiraLink(st.key)} ${esc((st.summary||'').slice(0,70))}</span><span class="ep-st-bar"><span style="width:${p||0}%;background:${STATUS_GROUPS.done.color}"></span></span><span class="ep-st-p">${p==null?'нет задач':p+'%'}</span></div>`).join('')}</details>`; };
   const rows=items.map(e=>{
     const hPct=e.hoursTotal?Math.round((e.hoursSpent||0)/e.hoursTotal*100):0;
     const sPct=e.storiesTotal?Math.round((e.storiesDone||0)/e.storiesTotal*100):0;
     const cnt=byEpic[e.epicKey]||{}, nT=Object.values(cnt).reduce((a,b)=>a+b,0);
-    const segs=STATUS_ORDER.filter(g=>cnt[g]).map(g=>`<div class="p-fill" title="${STATUS_GROUPS[g].label}: ${cnt[g]}" style="width:${cnt[g]/nT*100}%;background:${STATUS_GROUPS[g].color};border-radius:0"></div>`).join('');
+    const segs=EP_ORDER.filter(g=>cnt[g]).map(g=>`<div class="p-fill" title="${STATUS_GROUPS[g].label}: ${cnt[g]}" style="width:${cnt[g]/nT*100}%;background:${STATUS_GROUPS[g].color};border-radius:0"></div>`).join('');
     return `<div class="p-item">
       <div class="p-row"><span class="p-name">${e.epicKey?jiraLink(e.epicKey)+' ':''}${e.epicName||''}</span><span class="p-nums">${e.hoursSpent||0}ч / ${e.hoursTotal||0}ч (${hPct}%)</span></div>
       <div class="p-bar"><div class="p-fill" style="width:${hPct}%;background:rgba(143,163,191,.75)"></div></div>
-      ${nT?`<div class="p-row" style="margin-top:3px"><span class="p-name" style="color:var(--mute);font-size:10px">по задачам</span><span class="p-nums">${cnt.done||0} готово · ${cnt.test||0} в тесте · ${cnt.wip||0} в работе · ${nT} всего</span></div>
+      ${nT?`<div class="p-row" style="margin-top:3px"><span class="p-name" style="color:var(--mute);font-size:10px">по задачам</span><span class="p-nums">${cnt.done||0} готово · ${cnt.backlog||0} бэклог · ${cnt.wip||0} в работе · ${cnt.test||0} в тесте · ${nT} всего</span></div>
       <div class="p-bar" style="display:flex">${segs}</div>`:''}
       <div class="p-row" style="margin-top:3px"><span class="p-name" style="color:var(--mute);font-size:10px">по стори</span><span class="p-nums">${e.storiesDone||0} / ${e.storiesTotal||0} стори</span></div>
       <div class="p-bar"><div class="p-fill" style="width:${sPct}%;background:${STATUS_GROUPS.done.color}"></div></div>
+      ${storyList(e.epicKey)}
     </div>`;
   }).join('');
-  $('progressEpics').innerHTML=`<h3>Готовность эпиков</h3><div class="st-legend" style="display:flex;flex-wrap:wrap;gap:10px;font-size:10px;color:var(--mute);margin:-4px 0 10px"><span>серая шкала — списано часов от оценки.</span><span>Полоса «по задачам» (стрелки — как задача движется):</span>${statusLegendHtml(true)}</div>${rows}`;
+  $('progressEpics').innerHTML=`<h3>Готовность эпиков</h3><div class="st-legend" style="display:flex;flex-wrap:wrap;gap:10px;font-size:10px;color:var(--mute);margin:-4px 0 10px"><span>серая шкала — списано часов от оценки.</span><span>Полоса «по задачам»:</span>${EP_ORDER.map(g=>`<span><span class="sw" style="background:${STATUS_GROUPS[g].color}"></span>${STATUS_GROUPS[g].label}</span>`).join('')}<span>% стори — часы закрытых задач от оценки стори.</span></div>${rows}`;
 }
 
 // ── RISK MATRIX (§3.7: умное размещение маркеров + попап) ────────

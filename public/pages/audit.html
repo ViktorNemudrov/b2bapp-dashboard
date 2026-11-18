@@ -18,13 +18,18 @@
 .au-keys a{white-space:nowrap}
 .au-gl td:first-child{font-weight:700;white-space:nowrap}
 details.au-det summary{cursor:pointer;font-weight:600;font-size:13px;margin:6px 0}
-.au-toc{position:sticky;top:52px;z-index:5;background:var(--dark);border-bottom:1px solid var(--line);padding:8px 0;margin:0 0 14px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;font-size:12.5px}
-.au-toc b{margin-right:2px}
-.au-toc .au-t{display:inline-flex;gap:6px;align-items:baseline}
-.au-toc .au-t a.m{font-weight:700}
-.au-toc .au-t a.s{font-size:11.5px;color:var(--mute)}
-.au-sec,.au-sec h3{scroll-margin-top:100px}
-.main{overflow-x:clip}  /* hidden делает .main контейнером прокрутки — sticky-оглавление не липнет */
+.au-tabs{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:4px 0 16px}
+.au-tab{padding:9px 13px;cursor:pointer;color:var(--mute);font-size:13px;border-bottom:2px solid transparent;white-space:nowrap;background:none;border-top:0;border-left:0;border-right:0;font-family:inherit}
+.au-tab .n{display:inline-block;min-width:18px;padding:0 5px;margin-left:6px;border-radius:9px;background:var(--line);color:var(--text);font-size:11px;text-align:center}
+.au-tab.active{color:var(--text);border-bottom-color:var(--yel);font-weight:700}
+.au-pane{display:none}.au-pane.active{display:block}
+.au-nav{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;margin:0 0 10px}
+.au-nav a{color:var(--mute)}
+.au-sec h3{scroll-margin-top:70px}
+.au-a1{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 10px}
+.au-a1 h4{margin:0 0 4px;font-size:13.5px}
+.au-a1 ul{margin:4px 0 6px;padding-left:18px;font-size:12.5px;line-height:1.5}
+.au-a1 .lbl{font-weight:700;font-size:12px;margin-top:6px}
 .au-up{float:right;font-size:12px;font-weight:400}
 </style></head><body>
 <div class="layout">
@@ -74,7 +79,7 @@ function timurText(t){
 function timurBlock(t){
   if(!t) return '';
   const it=t.items||[];
-  const head=`<div class="au-sec" id="timur"><h2>Для Тимура — вернуть Epic Link<a class="au-up" href="#toc">↑ оглавление</a></h2>
+  const head=`<div class="au-sec" id="timur"><h2>Для Тимура — вернуть Epic Link</h2>
     <p class="au-sub">Jira по ночам (учётка «Jira ServiceManager») возвращает эпик у элементов со списаниями — заявка ${jk(t.ticket)}. Пока скрипт не поправили, такие элементы отправляем Тимуру списком. Нужный эпик: у задачи — эпик её истории; у истории, у задачи без истории или в историях с разными эпиками — последний эпик, поставленный командой. ⚠ — проверить перед отправкой. Исправленные из списка уходят сами при следующем обновлении.</p>`;
   if(!it.length) return head+'<p class="au-sub">Откатов, которые надо исправлять, нет.</p></div>';
   return head+`<table class="tbl"><thead><tr><th>Ключ</th><th>Статус</th><th>Сейчас</th><th>Нужно</th><th>Почему</th><th>Откатов</th></tr></thead><tbody>${
@@ -82,35 +87,59 @@ function timurBlock(t){
     <p class="au-sub" style="margin-top:10px"><b>Текст для Тимура</b> <button class="pdf-btn" id="timurCopy" type="button">Скопировать</button></p>
     <pre id="timurTxt" style="white-space:pre-wrap;font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px;overflow-x:auto">${esc(timurText(t))}</pre></div>`;
 }
+// A1: аналитика стори в Confluence не по шаблону — что именно не так, по разделам (Виктор 18.11.2026)
+function a1Block(o,a){
+  const it=o.analytics||[];
+  if(!it.length) return '<p class="au-sub">Страницы аналитики сценариев соответствуют шаблону (или ссылок на них в стори нет — см. S10).</p>';
+  const T=a.templates||{}, tl=k=>T[k]?`<a href="https://bwiki.beeline.ru/pages/viewpage.action?pageId=${T[k].id}" target="_blank" rel="noopener">«${esc(T[k].title)}»</a>`:'шаблоном';
+  const li=arr=>`<ul>${arr.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+  return it.map(x=>`<div class="au-a1"><h4><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a></h4>
+    <div class="au-sp">Сценарий ${esc(x.scenario)} · стори ${x.stories.map(jk).join(', ')} · v${esc(x.version)}, ${fmtDate(x.updated)}${x.by?', '+esc(x.by):''} · сверено с ${tl(x.template)}</div>
+    ${x.missing.length?`<div class="lbl">Нет разделов (${x.missing.length}) — добавить с этим номером и названием; нечего писать — «Не применимо»:</div>${li(x.missing)}`:''}
+    ${x.renumbered.length?`<div class="lbl">Раздел есть, но номер или название не как в шаблоне (сейчас → по шаблону):</div>${li(x.renumbered)}`:''}
+    ${x.empty.length?`<div class="lbl">Пустые разделы — заполнить или написать «Не применимо»:</div>${li(x.empty)}`:''}
+  </div>`).join('');
+}
+// Страница разбита на вкладки (Виктор 18.11.2026: «как Статус для руководства»): у каждого ответственного свой блок.
 AUTH_READY.then(()=>{
 fetch('../data/audit.json?t='+Date.now()).then(r=>{ if(!r.ok) throw new Error('nodata'); return r.json(); }).then(a=>{
   document.getElementById('upd').textContent=fmtDate(a.generated_at);
   if(!a.owners||!a.owners.length){ document.getElementById('root').innerHTML='<div class="empty">Данные аудита ещё не сгенерированы.</div>'; return; }
   const sc=a.scope||{}, mp=a.manual_plan||{};
-  const chips=a.owners.map(o=>`<a class="au-chip" href="#${o.id}" style="color:inherit;text-decoration:none"><b>${o.issues.length}</b>правок · <b>${o.p4.length}</b>этапов P4${o.unlabeled_stories.length?` · <b>${o.unlabeled_stories.length}</b>стори без метки`:''}<div class="au-sp">${esc(o.name)}</div></a>`).join('');
-  // Оглавление (Виктор 12.11.2026) — закреплено сверху: к человеку и сразу к его разделу.
-  const sub=(o,id,t,n)=>n?`<a class="s" href="#${o.id}-${id}">${t} ${n}</a>`:'';
-  const toc=`<nav class="au-toc" id="toc"><b>Оглавление:</b>${a.owners.map(o=>`<span class="au-t"><a class="m" href="#${o.id}">${esc(o.short)}</a>${sub(o,'fmt','оформление',o.issues.length)}${sub(o,'sc','сценарии',(o.scenario_checks||[]).length)}${sub(o,'p4','P4',o.p4.length)}${sub(o,'unl','без метки',o.unlabeled_stories.length)}</span>`).join('')}${a.timur?`<span class="au-t"><a class="m" href="#timur">Для Тимура</a>${(a.timur.items||[]).length?`<a class="s" href="#timur">${a.timur.items.length}</a>`:''}</span>`:''}<span class="au-t"><a class="m" href="#gloss">Глоссарий</a></span></nav>`;
+  const total=o=>o.issues.length+(o.scenario_checks||[]).length+o.p4.length+(o.analytics||[]).length+o.unlabeled_stories.length;
+  const tabs=[...a.owners.map(o=>({id:o.id,label:o.short,n:total(o)})),
+    ...(a.timur?[{id:'timur',label:'Для Тимура',n:(a.timur.items||[]).length}]:[]),{id:'gloss',label:'Глоссарий',n:null}];
   const own=a.owners.filter(o=>o.scenarios&&o.scenarios.length).map(o=>`${esc(o.name)} — ${o.scenarios.map(esc).join(', ')}`).join('; ');
-  document.getElementById('root').innerHTML=`
-    <p class="au-lead">Что поправить в Jira, чтобы гант и этапы сценариев показывали реальную картину — по ответственным за сценарий (колонка «Владелец» реестра MVP v.2; задача относится к ответственному за сценарий своей стори, а если сценарий за РП или его нет — к аналитику-исполнителю задачи). <b>${esc(a.deadline_note||'')}</b>. Охват — только MVP: ${sc.stories} стори, ${sc.tasks} задач${sc.excluded_tasks!=null?` (вне MVP не проверяем: пропущено ${sc.excluded_stories} стори и ${sc.excluded_tasks} задач — метки «вне_MVP», SH и эпики вне 10 MVP-эпиков)`:''}, данные Jira на ${fmtDate(a.jira_collected_at||a.generated_at)}, текущий — Спринт ${a.current_sprint}. «Отстаёт от плана» (P4) — те же этапы, что заштрихованы на виде <a href="gantt.html?view=stages">«Этапы по сценариям»</a> (${a.p4_total}): спринт этапа по «Плану ручному»${mp.version?` (v${esc(mp.version)})`:''} прошёл, а в Jira он не закрыт — его задачи нужно закрыть либо запланировать в будущий спринт.</p>
-    ${toc}<div class="au-chips">${chips}</div>
-    ${a.owners.map(o=>`<div class="au-sec" id="${o.id}"><h2>Исправить — ${esc(o.short)}<a class="au-up" href="#toc">↑ оглавление</a></h2>
-      <p class="au-sub">${esc(o.name)}: ${o.issues.length} правок оформления, ${o.p4.length} отстающих этапов${o.unlabeled_stories.length?`, ${o.unlabeled_stories.length} стори без метки сценария`:''}.${o.scenarios&&o.scenarios.length?` Сценарии: ${o.scenarios.map(esc).join(', ')}.`:''}${o.fallback?' Сюда же — задачи без сценария и стори вне реестра.':''}</p>
+  const nav=(o,items)=>`<nav class="au-nav">${items.filter(x=>x[2]).map(([id,t,n])=>`<a href="#${o.id}-${id}">${t} ${n}</a>`).join('')}</nav>`;
+  const pane=o=>`<div class="au-pane au-sec" id="${o.id}"><h2>Исправить — ${esc(o.name)}</h2>
+      <p class="au-sub">${o.issues.length} правок оформления, ${o.p4.length} отстающих этапов, ${(o.analytics||[]).length} страниц аналитики не по шаблону${o.unlabeled_stories.length?`, ${o.unlabeled_stories.length} стори без метки сценария`:''}.${o.scenarios&&o.scenarios.length?` Сценарии: ${o.scenarios.map(esc).join(', ')}.`:''}${o.fallback?' Сюда же — задачи без сценария и стори вне реестра.':''}</p>
+      ${nav(o,[['fmt','Оформление',o.issues.length],['sc','Сценарии',(o.scenario_checks||[]).length],['p4','Отстаёт от плана',o.p4.length],['a1','Аналитика по шаблону',(o.analytics||[]).length],['unl','Без метки',o.unlabeled_stories.length]])}
       <h3 id="${o.id}-fmt">Оформление</h3>${issuesBlock(o)}
       ${scBlock(o)}
       <h3 id="${o.id}-p4">Отстаёт от плана (P4)</h3>${p4Block(o)}
+      <h3 id="${o.id}-a1">Аналитика в Confluence по шаблону (A1)</h3>${a1Block(o,a)}
       ${o.unlabeled_stories.length?`<h3 id="${o.id}-unl">Стори без метки сценария — определить сценарий и проставить метку</h3><p class="au-keys">${o.unlabeled_stories.map(jk).join(', ')}</p>`:''}
-    </div>`).join('')}
-    ${timurBlock(a.timur)}
-    <details class="au-det au-sec" id="gloss"><summary>Глоссарий проверок и как это посчитано</summary>
+    </div>`;
+  document.getElementById('root').innerHTML=`
+    <p class="au-lead">Что поправить в Jira и Confluence, чтобы гант и этапы сценариев показывали реальную картину — по ответственным за сценарий (колонка «Владелец» реестра MVP v.2; задача относится к ответственному за сценарий своей стори, а если сценарий за РП или его нет — к аналитику-исполнителю задачи). <b>${esc(a.deadline_note||'')}</b>. Охват — только MVP: ${sc.stories} стори, ${sc.tasks} задач${sc.excluded_tasks!=null?` (вне MVP не проверяем: ${sc.excluded_stories} стори и ${sc.excluded_tasks} задач)`:''}, данные Jira на ${fmtDate(a.jira_collected_at||a.generated_at)}, текущий — Спринт ${a.current_sprint}. «Отстаёт от плана» (P4) — те же этапы, что заштрихованы на виде <a href="gantt.html?view=stages">«Этапы по сценариям»</a> (${a.p4_total})${mp.version?`, «План ручной» v${esc(mp.version)}`:''}. Расшифровка кодов проверок — во вкладке «Глоссарий».</p>
+    <div class="au-tabs" id="tabs" role="tablist">${tabs.map(t=>`<button class="au-tab" data-t="${t.id}">${esc(t.label)}${t.n!=null?`<span class="n">${t.n}</span>`:''}</button>`).join('')}</div>
+    ${a.owners.map(pane).join('')}
+    ${a.timur?timurBlock(a.timur).replace('class="au-sec" id="timur"','class="au-pane au-sec" id="timur"'):''}
+    <div class="au-pane au-sec" id="gloss"><h2>Глоссарий проверок и как это посчитано</h2>
       <table class="tbl au-gl"><thead><tr><th>Код</th><th>Что значит</th></tr></thead><tbody>${(a.glossary||[]).map(g=>`<tr><td>${esc(g.code)}</td><td>${esc(g.text)}</td></tr>`).join('')}</tbody></table>
-      <p class="au-sub" style="margin-top:10px">Ответственный — колонка «Владелец» реестра MVP v.2 (${esc(a.registry||'')}): ${own}. Если сценарий за РП или без сценария — находка уходит аналитику-исполнителю задачи, иначе аналитику, который последним менял её привязку, иначе исполнителю стори; кого не нашли — на разбор РП. Стори без метки сценария — вопрос исполнителю стори. Вне MVP (метка «вне_MVP» — дерево эпика B2BAPP-23, сценарий SH — договоры/счета/платежи, эпики вне 10 MVP-эпиков) не проверяем. T7 — задачи с оценкой больше ${a.max_task_h||16} ч, ещё не взятые в работу («Бэклог», «Ready for DEV», «Запланирована», «Удержание»); начатые, в тестировании и закрытые не дробим (синхрон с аналитиками 12.11.2026). Сценарий зелёный на «Статусе для руководства», когда все его стори закрыты (Waiting for release / Завершена). Не флагуем: «Основание» (только при создании через ассистента), перерасход, списание при «Бэклоге», «Waiting for release» в текущем спринте, задачи эпика B2BAPP-1 без префикса. Бек 1 и Бек 2 в плане — одна проверка по всем задачам [BE]; «вся разработка в тесте» = этап пройден. P4 считается по задачам MVP-эпиков с оценкой (как на ганте).</p>
-    </details>`;
+      <p class="au-sub" style="margin-top:10px">Ответственный — колонка «Владелец» реестра MVP v.2 (${esc(a.registry||'')}): ${own}. Если сценарий за РП или без сценария — находка уходит аналитику-исполнителю задачи, иначе аналитику, который последним менял её привязку, иначе исполнителю стори; кого не нашли — на разбор РП. Вне MVP (метка «вне_MVP», сценарий SH, эпики вне 10 MVP-эпиков) не проверяем. T7 — задачи с оценкой больше ${a.max_task_h||16} ч в «Бэклоге» и «Ready for DEV». A1 сверяет заголовки страниц аналитики, на которые ссылаются стори и их задачи [BA], с шаблонами в Confluence${a.templates&&a.templates.analytics?` («${esc(a.templates.analytics.title)}» v${a.templates.analytics.version}${a.templates.uc?`, «${esc(a.templates.uc.title)}» v${a.templates.uc.version}`:''})`:''}: проверяются страницы «Аналитика: …», с кодом сценария в названии и BC-NN; паспорта доменов (BI-NN), постановки на дизайн и неактуальные — нет. Не флагуем: «Основание», перерасход, «Waiting for release» в текущем спринте, задачи эпика B2BAPP-1 без префикса.</p>
+    </div>`;
   const cb=document.getElementById('timurCopy');
   if(cb) cb.onclick=()=>navigator.clipboard.writeText(timurText(a.timur)).then(()=>{ cb.textContent='Скопировано'; setTimeout(()=>cb.textContent='Скопировать',1500); });
-  // ссылка с якорем (#o4) — прокрутить после отрисовки: при загрузке раздела ещё нет
-  if(location.hash){ const t=document.getElementById(location.hash.slice(1)); if(t) t.scrollIntoView(); }
+  const show=id=>{ document.querySelectorAll('.au-tab').forEach(x=>x.classList.toggle('active',x.dataset.t===id));
+    document.querySelectorAll('.au-pane').forEach(x=>x.classList.toggle('active',x.id===id));
+    try{ localStorage.setItem('au-tab',id); }catch(_){} };
+  document.getElementById('tabs').addEventListener('click',e=>{ const t=e.target.closest('.au-tab'); if(t) show(t.dataset.t); });
+  // ссылка с якорем (#o2, #o2-p4, #timur) — открыть нужную вкладку и прокрутить
+  const h=location.hash.slice(1), hEl=h?document.getElementById(h):null, paneId=hEl?(hEl.closest('.au-pane')||{}).id:null;
+  let saved=null; try{ saved=localStorage.getItem('au-tab'); }catch(_){}
+  show(paneId||(saved&&document.getElementById(saved)?saved:tabs[0].id));
+  if(hEl&&!hEl.classList.contains('au-pane')) hEl.scrollIntoView();
 }).catch(e=>{ document.getElementById('root').innerHTML='<div class="empty">Данные аудита ещё не сгенерированы.</div>'; });
 });
 </script></div><!-- /main --></div><!-- /layout -->
