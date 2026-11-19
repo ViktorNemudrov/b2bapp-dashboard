@@ -21,6 +21,8 @@ const NAV = [
   {group:'Сервис', items:[
     {label:'Аудит задач', icon:'🧹', href:'/pages/audit.html'},
     {label:'Что нового', icon:'🆕', href:'/pages/changelog.html'},
+    // выгрузка главной (весь дашборд) — PDF или HTML; была кнопкой в шапке главной (Виктор 19.11.2026)
+    {label:'Выгрузить дашборд', icon:'⬇️', exportMenu:[['pdf','В PDF (печать)'],['html','В HTML (один файл)']]},
   ]},
 ];
 window.NAV = NAV;
@@ -47,6 +49,8 @@ function renderSidebar(){
   const groupsHtml = NAV.map(g=>`
     <div class="nav-section">${g.group}</div>
     ${g.items.map(it=>{
+      if(it.exportMenu) return `<div class="nav-dd"><button type="button" class="nav-link nav-dd-btn" aria-expanded="false"><span class="nav-icon">${it.icon}</span><span class="nav-label">${it.label}</span><span class="nav-dd-chev">▾</span></button>
+        <div class="nav-dd-menu" hidden>${it.exportMenu.map(([k,t])=>`<button type="button" class="nav-sub" data-export="${k}">${t}</button>`).join('')}</div></div>`;
       const itPath = it.href.split('#')[0];
       const active = itPath===cur;
       return `<a class="nav-link${active?' active':''}" href="${it.href}"><span class="nav-icon">${it.icon}</span><span class="nav-label">${it.label}</span>${it.wip?'<span class="nav-wip" title="Раздел в разработке">в разработке</span>':''}</a>`;
@@ -64,6 +68,27 @@ function renderSidebar(){
     <div class="sidebar-nav">${groupsHtml}</div>
   `;
   mount.replaceWith(nav);
+  // «Выгрузить дашборд»: на главной — сразу, с других страниц — переход на главную с ?export=
+  const dd = nav.querySelector('.nav-dd');
+  if(dd){
+    // стили здесь, а не в shared.css: главная его не подключает
+    const st = document.createElement('style');
+    st.textContent = '.nav-dd-btn{width:100%;background:none;border-top:0;border-right:0;border-bottom:0;font-family:inherit;text-align:left}'
+      + '.nav-dd-chev{margin-left:auto;font-size:10px}.nav-dd-menu{padding:2px 0 4px}'
+      + '.nav-sub{display:block;width:100%;background:none;border:0;border-left:2px solid transparent;padding:6px 16px 6px 42px;font-family:inherit;font-size:11px;color:var(--mute);text-align:left;cursor:pointer}'
+      + '.nav-sub:hover{color:var(--text);background:rgba(255,255,255,.03);border-left-color:rgba(255,107,61,.4)}'
+      + 'body.light-theme .nav-sub{color:#556080}body.light-theme .nav-sub:hover{color:#1a2940}';
+    document.head.appendChild(st);
+    const btn = dd.querySelector('.nav-dd-btn'), menu = dd.querySelector('.nav-dd-menu');
+    btn.onclick = ()=>{ menu.hidden = !menu.hidden; btn.setAttribute('aria-expanded', String(!menu.hidden)); };
+    menu.onclick = e=>{
+      const k = e.target.closest('[data-export]')?.dataset.export;
+      if(!k) return;
+      menu.hidden = true; btn.setAttribute('aria-expanded','false');
+      if(cur==='/index.html' && typeof window.exportDashboard==='function') window.exportDashboard(k);
+      else location.href = '/index.html?export='+k;
+    };
+  }
 
   let burger = document.getElementById('sidebarBurger');
   if(!burger){

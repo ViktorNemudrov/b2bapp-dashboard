@@ -200,7 +200,7 @@ body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
 
 /* ── HERO ── */
 .hero{padding:24px 24px 16px;background:linear-gradient(180deg,#162235 0%,transparent 100%);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch;width:100%}
-/* три равные колонки, как «Ключевые метрики» (Виктор 06.11.2026) */
+/* три равные колонки, как «Объем в Jira» (Виктор 06.11.2026) */
 .hero>*{min-width:0}
 /* левая колонка (технологии + демо-стенды) — по центру, как соседние (Виктор 06.11.2026) */
 .hero .hero-left{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -224,13 +224,13 @@ body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
 
 /* ── COUNTDOWN ── */
 .countdown{background:var(--card);border:1px solid rgba(255,255,255,.06);box-shadow:var(--shadow-card);border-radius:var(--r-lg);padding:14px 18px;min-width:180px;max-width:260px;flex:1;text-align:center}
-.cd-label{font-size:9px;color:var(--mute);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.cd-label{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
 .cd-units{display:flex;gap:8px;justify-content:center;align-items:flex-end}
 .cd-unit{text-align:center}
 .cd-n{font-size:28px;font-weight:800;color:var(--yel);line-height:1;font-variant-numeric:tabular-nums}
 .cd-u{font-size:8px;color:var(--mute);margin-top:1px;text-transform:uppercase}
 .cd-sep{font-size:20px;color:var(--line);padding-bottom:4px}
-.cd-date{font-size:9px;color:var(--mute);margin-top:8px}
+.cd-date{font-size:12px;color:#a9b8cc;margin-top:8px}
 
 /* ── EXECUTIVE SUMMARY (п.15) ── */
 .exec-card{background:var(--card);border-radius:var(--r-lg);border:1px solid rgba(255,255,255,.06);box-shadow:var(--shadow-card);padding:18px 20px;border-left:4px solid var(--yel)}
@@ -251,7 +251,10 @@ body.light-theme{scrollbar-color:#c0cce0 #e8ecf5}
 .fc-delta.ok{background:rgba(39,174,96,.2);color:#2ecc71}
 .fc-delta.warn{background:rgba(230,126,34,.2);color:var(--warn)}
 .fc-delta.err{background:rgba(231,76,60,.2);color:var(--err)}
-.fc-note{font-size:10px;color:var(--mute);margin-top:6px}
+.fc-note{font-size:12px;color:#a9b8cc;margin-top:6px}
+/* вывод прогноза («НЕ успеваем: критпуть до …») — крупнее и ярче на тёмной теме (Виктор 19.11.2026) */
+.fc-concl{margin-top:8px;font-size:15px;line-height:1.45;color:var(--text)}
+body.light-theme .fc-concl{color:#1a2940}
 
 /* ── BURNDOWN (п.16) ── */
 .burndown-wrap{background:var(--card);border-radius:var(--r-lg);border:1px solid rgba(255,255,255,.06);box-shadow:var(--shadow-card);padding:16px 20px}
@@ -599,7 +602,6 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
       <div class="upd-label">
         <span id="updTime" style="font-size:11px;color:var(--mute)">загрузка...</span>
       </div>
-      <button class="pdf-btn" onclick="exportPDF()" title="Экспорт в PDF">⬇ PDF</button>
       <button class="pdf-btn" onclick="toggleTheme()" id="themeBtn" title="Переключить тему" style="margin-left:0">🌙</button>
     </div>
   </header>
@@ -652,7 +654,7 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
         </a>
         <a class="demo-tile" href="https://b2b-ai-app.vercel.app/" target="_blank" rel="noopener">
           <div class="demo-tile-icon" style="background:linear-gradient(135deg,#63BA3C,#8fd66a)">💬</div>
-          <div class="demo-tile-label">B2B AI App</div>
+          <div class="demo-tile-label">B2B AI App новый дизайн</div>
         </a>
       </div>
     </div>
@@ -681,7 +683,7 @@ body.auth-locked>*:not(.auth-gate-overlay){display:none!important}
   <!-- KPI -->
   <div class="section" id="s-kpi">
     <div class="sec-title acc-hdr" onclick="toggleAcc(this)">
-      <span>📊 Ключевые метрики</span><span class="acc-chevron">▼</span>
+      <span>📊 Объем в Jira</span><span class="acc-chevron">▼</span>
     </div>
     <div class="acc-body" style="max-height:999px">
       <div class="kpi-row" id="kpiRow">
@@ -853,8 +855,8 @@ function renderForecast(data){
   }
   const endDate=fmtDate(cp.endDate);
   // Параллельные треки (архитектура, оргзадачи, DevOps) срок MVP не двигают — показываем отдельно.
-  const par=cp.parallelEnd?`<div class="fc-note" style="margin-top:6px;font-size:11px;color:var(--mute)">Срок задают аналитика, дизайн, бэк, фронт и QA. Параллельные треки (архитектура, ИБ-документы, DevOps) — до ${fmtDate(cp.parallelEnd)}</div>`:'';
-  $('fcConclusion').innerHTML=`<div class="fc-date" style="color:var(--yel)">${endDate}</div><div class="fc-note" style="margin-top:8px;font-size:12px">${cp.conclusion}</div>${par}`;
+  const par=cp.parallelEnd?`<div class="fc-note" style="margin-top:6px;font-size:13px">Срок задают аналитика, дизайн, бэк, фронт и QA. Параллельные треки (архитектура, ИБ-документы, DevOps) — до ${fmtDate(cp.parallelEnd)}</div>`:'';
+  $('fcConclusion').innerHTML=`<div class="fc-date" style="color:var(--yel)">${endDate}</div><div class="fc-concl">${cp.conclusion}</div>${par}`;
 }
 
 // ── PROGRESS + DEVIATION (п.20) ───────────────────────────────
@@ -1002,6 +1004,30 @@ function exportPDF(){
   });
   window.print();
 }
+// Выгрузка в один HTML (Виктор 19.11.2026), как «Выгрузить HTML» у «Статуса для руководства»: исходник главной +
+// shared-nav.js (без меню и пароля) + data.json внутри файла; открывается без сайта, ссылки ведут на сайт.
+async function exportHTML(){
+  try{
+    const txt=u=>fetch(u+'?t='+Date.now()).then(r=>{ if(!r.ok) throw new Error(u+': '+r.status); return r.text(); });
+    const [src,nav,data]=await Promise.all([txt('/index.html'),txt('/shared-nav.js'),txt('/data/data.json')]);
+    const safe=t=>t.replace(/<\/(script)/gi,'<\\/$1');
+    const cut=(t,re,b)=>{ if(!re.test(t)) throw new Error('не найден фрагмент: '+re.source.slice(0,40)); return t.replace(re,()=>b); };
+    let h=src;
+    h=cut(h,/<div id="sidebar-root"><\/div>\s*<script src="shared-nav\.js"><\/script>\s*<script>renderSidebar\(\);<\/script>/,
+          '<script>'+safe(nav.replace('window.AUTH_READY = checkAuth();','window.AUTH_READY = Promise.resolve();'))+'<\/script>');
+    h=cut(h,/<head>/,'<head><base href="https://b2bapp-dashboard.vercel.app/" target="_blank">');
+    h=cut(h,/fetch\('\.\/data\/data\.json\?t='\+Date\.now\(\)\)/,'Promise.resolve({json:()=>window.__DATA__})');
+    h=cut(h,/<script>\s*\n/,'<script>window.__DATA__='+safe(data)+';<\/script>\n<style>.main{width:100%}#sidebarBurger{display:none!important}<\/style>\n<script>\n');
+    h=h.replace('<!DOCTYPE html>',`<!DOCTYPE html>\n<!-- Выгружено с b2bapp-dashboard.vercel.app ${fmtDateTime(new Date().toISOString())} -->`);
+    const d=JSON.parse(data), a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([h],{type:'text/html'}));
+    a.download=`Dashboard_B2BAPP_${(d.updated||localISO(new Date())).slice(0,10).split('-').reverse().join('.')}.html`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+  }catch(e){ alert('Не удалось выгрузить: '+e.message); }
+}
+// меню «Выгрузить дашборд» в разделе «Сервис» (shared-nav.js); с других страниц приходят на /index.html?export=pdf|html
+window.exportDashboard=k=>k==='html'?exportHTML():exportPDF();
 
 // ── GLOSSARY TOOLTIPS (п.10) ─────────────────────────────────
 let glsTip=null;
@@ -1300,6 +1326,8 @@ AUTH_READY.then(()=>{
   loadData().then(data=>{
     if(data)init(data);
     else $('updTime').textContent='Ошибка загрузки данных';
+    const ex=new URLSearchParams(location.search).get('export');
+    if(data&&ex){ history.replaceState(null,'',location.pathname); setTimeout(()=>window.exportDashboard(ex),600); }
   });
 });
 </script>

@@ -107,8 +107,9 @@ fetch('../data/audit.json?t='+Date.now()).then(r=>{ if(!r.ok) throw new Error('n
   if(!a.owners||!a.owners.length){ document.getElementById('root').innerHTML='<div class="empty">Данные аудита ещё не сгенерированы.</div>'; return; }
   const sc=a.scope||{}, mp=a.manual_plan||{};
   const total=o=>o.issues.length+(o.scenario_checks||[]).length+o.p4.length+(o.analytics||[]).length+o.unlabeled_stories.length;
-  const tabs=[...a.owners.map(o=>({id:o.id,label:o.short,n:total(o)})),
-    ...(a.timur?[{id:'timur',label:'Для Тимура',n:(a.timur.items||[]).length}]:[]),{id:'gloss',label:'Глоссарий',n:null}];
+  // Глоссарий — первой вкладкой (Виктор 19.11.2026)
+  const tabs=[{id:'gloss',label:'Глоссарий',n:null},...a.owners.map(o=>({id:o.id,label:o.short,n:total(o)})),
+    ...(a.timur?[{id:'timur',label:'Для Тимура',n:(a.timur.items||[]).length}]:[])];
   const own=a.owners.filter(o=>o.scenarios&&o.scenarios.length).map(o=>`${esc(o.name)} — ${o.scenarios.map(esc).join(', ')}`).join('; ');
   const nav=(o,items)=>`<nav class="au-nav">${items.filter(x=>x[2]).map(([id,t,n])=>`<a href="#${o.id}-${id}">${t} ${n}</a>`).join('')}</nav>`;
   const pane=o=>`<div class="au-pane au-sec" id="${o.id}"><h2>Исправить — ${esc(o.name)}</h2>
