@@ -105,15 +105,20 @@ GLOSSARY = [
            "аналитику. По «Описанию» и «Теме» Jira генерирует бизнес-описание для итогового акта (кнопка «Сгенерировать»)"),
     ("F1", "Итоговые акты ВК-ИТ (Jira Framework 2): задача/стори закрыта («Завершена»), по ней списано время, а поля "
            "бизнес-описания пустые — заполнить «Действие» и «Бизнес-описание» (по-русски, существительными: «Разработка…», "
-           "не «Разработать…», от 50 символов, без фамилий и встреч, аббревиатуры расшифровать). Если задача не про "
-           "создание функциональности (найм, организационное) — отметить «Не добавлять описание бизнес-ценности». Проверяем "
-           "закрытые с начала прошлого квартала: по ним собираются акты (письмо «Итоговый акт Q3» от 18.11.2026)"),
+           "не «Разработать…», от 50 символов, без фамилий и встреч, аббревиатуры расшифровать). Обязательно у ВСЕХ "
+           "закрытых задач со списаниями: галочка «Не добавлять описание бизнес-ценности» не освобождает — финансы всё "
+           "равно выставляют такие задачи в акт (Виктор 21.11.2026; письмо «Итоговый акт Q3» от 18.11.2026)"),
     ("F2", "бизнес-описание не проходит требования к актам: короче 50 символов, начинается с глагола («Создать…» вместо "
            "«Создание…»), написано латиницей, с фамилиями или отсылками к встречам/запросам — переписать"),
     ("F3", "задача со списаниями в CAPEX-эпике, не закрыта, а в названии — признак операционной работы («управление "
            "проектом», «проработка архитектуры», «обработка инцидентов», «командные встречи»…): с 18.11.2026 Jira помечает "
            "такие задачи и удаляет новые списания. Переименовать по сути (что разрабатываем) или закрыть и продолжить в "
            "задаче под OPEX-эпиком (страница JF «Аудит. Валидация корректности выбора вида работ»)"),
+    ("V2", "метки и вакантные: у вакантной остались метки (сценарий, приоритет, «вне_MVP») — снять, иначе при "
+           "переиспользовании задача уйдёт в чужой сценарий или выпадет из MVP; или метка «вне_MVP» у элемента, чей "
+           "сценарий стоит в «Плане ручном» с этапами, — снять метку или убрать сценарий из плана. Находки — РП"),
+    ("ВНЕ MVP", "элементы с меткой «вне_MVP», сценарием SH или в эпиках вне 10 MVP-эпиков проверяются теми же "
+                "проверками, но все находки — РП с пометкой «вне MVP» (Виктор 21.11.2026)"),
     ("F4", "Jira уже пометила задачу (поле «Checks»: некорректная классификация CAPEX/OPEX) — списания в неё блокируются: "
            "закрыть и завести новую задачу под эпиком с правильным видом работ"),
 ]
@@ -417,18 +422,21 @@ def main():
                 return c
         return o or FALLBACK
 
-    def add(oname, key, scen, check, action):
+    def add(oname, key, scen, check, action, outside=False):
         it = {"key": key, "scenario": scen or "—", "check": check, "action": action}
-        owner(oname)["issues"].append(it)
+        if outside:   # вне MVP — все находки РП с пометкой (Виктор 21.11.2026)
+            it["outside_mvp"] = True
+            it["action"] = "вне MVP: " + action
+        owner(FALLBACK if outside else oname)["issues"].append(it)
 
     # ── Стори ──
     for s in stories:
         k = s["key"]
         if k in SERVICE_STORIES:
             continue
-        if out_of_mvp(s):
+        oos = out_of_mvp(s)   # вне MVP — проверяем так же, находки РП (Виктор 21.11.2026)
+        if oos:
             excluded["stories"] += 1
-            continue
         scen = sc[k]
         kid_assignees = sorted((t.get("assignee") for t in story_tasks.get(k, []) if t.get("assignee")),
                                key=lambda a: -sum(1 for t in story_tasks.get(k, []) if t.get("assignee") == a))
@@ -438,7 +446,7 @@ def main():
             checks.append("S4"); acts.append("привязать к эпику (Epic Link)")
         if not scen and s.get("epic") != EXEMPT_EPIC:
             # вопрос — исполнителю стори, не РП (Виктор 12.11.2026)
-            owner(oid)["unlabeled_stories"].append(k)
+            owner(FALLBACK if oos else oid)["unlabeled_stories"].append(k)
         roles = {role_of(t["summary"]) for t in story_tasks.get(k, [])}
         if roles and roles <= {"BA"} and k not in NO_DEV_STORIES:
             checks.append("S6"); acts.append("только [BA] — добавить задачи разработки")
@@ -493,15 +501,15 @@ def main():
         if s.get("epic") != EXEMPT_EPIC and not any(SC_LABEL_RE.match(lb) for lb in s.get("labels") or []):
             checks.insert(0, "S5"); acts.insert(0, f"проставить метку {scen}" if scen else "определить сценарий и проставить метку")
         if checks:
-            add(oid, k, scen, ", ".join(dict.fromkeys(checks)), "; ".join(acts))
+            add(oid, k, scen, ", ".join(dict.fromkeys(checks)), "; ".join(acts), oos)
 
     # ── Задачи ──
     for t in tasks:
         k, st = t["key"], (t.get("status") or "").strip()
         p = parent_story(t)
-        if out_of_mvp(t, by_key.get(p)):
+        oos = out_of_mvp(t, by_key.get(p))
+        if oos:
             excluded["tasks"] += 1
-            continue
         scen = sc.get(p) if p else None
         oid = resp(scen, t.get("assignee"), t.get("vacatedBy"), t.get("linkedBy"), (by_key.get(p) or {}).get("assignee"))
         exempt = t.get("epic") == EXEMPT_EPIC or (p and by_key[p].get("epic") == EXEMPT_EPIC)
@@ -539,18 +547,18 @@ def main():
             checks.append("D1"); acts.append(f"пустое «Описание» (статус «{st}»"
                                              + (f", исполнитель {t['assignee']}" if t.get("assignee") else "") + ") — заполнить")
         if checks:
-            add(oid, k, scen, ", ".join(checks), "; ".join(acts))
+            add(oid, k, scen, ", ".join(checks), "; ".join(acts), oos)
 
     # ── S12 для эпиков: эпик в «Бэклоге», а стори/задачи начаты → «В работе» и дата начала (на РП) ──
     for e in epics:
-        if (e.get("status") or "").strip().lower() not in ("бэклог", "backlog") or out_of_mvp(e):
+        if (e.get("status") or "").strip().lower() not in ("бэклог", "backlog"):
             continue
         kids = [x for x in iss if x.get("epic") == e["key"] and x["type"] in (T_STORY, T_TASK, T_DEV)
                 and (x.get("status") or "").strip().lower() not in ("бэклог", "backlog")]
         if kids:
             first = min((x for x in kids if x.get("start")), key=lambda x: x["start"], default=None)
             add(FALLBACK, e["key"], "—", "S12", f"эпик в «Бэклоге», а работа идёт ({', '.join(map(tag, kids[:3]))}): "
-                f"перевести в «В работе»" + (f", «Дата начала» {fmt_d(first['start'])}" if first else ""))
+                f"перевести в «В работе»" + (f", «Дата начала» {fmt_d(first['start'])}" if first else ""), bool(out_of_mvp(e)))
 
     # ── F1–F4: финансовые поля для итоговых актов ВК-ИТ (Виктор 21.11.2026) — по всему проекту, и вне MVP тоже ──
     fin_from = prev_quarter_start(date.today()).isoformat()
@@ -565,10 +573,13 @@ def main():
         oid = resp(scen, t.get("assignee"), t.get("vacatedBy"), t.get("linkedBy"), (by_key.get(p) or {}).get("assignee"))
         found = []
         spent_h = round((t.get("spent") or 0) / 3600, 1)
-        if st.lower() == FIN_DONE and t.get("spent") and (t.get("resolved") or "") >= fin_from and not t.get("noBiz"):
+        # Виктор 21.11.2026: галочка «Не добавлять описание бизнес-ценности» административно не работает — финансы
+        # всё равно выставляют такие задачи в акт; бизнес-описание обязательно у ВСЕХ закрытых задач со списаниями.
+        if st.lower() == FIN_DONE and t.get("spent"):
             if not t.get("biz"):
-                found.append(("F1", f"закрыта {fmt_d(t.get('resolved'))}, списано {spent_h} ч, бизнес-описания нет — "
-                                    "заполнить «Действие» и «Бизнес-описание» или отметить «Не добавлять описание бизнес-ценности»"))
+                found.append(("F1", f"закрыта {fmt_d(t.get('resolved'))}, списано {spent_h} ч, бизнес-описания нет"
+                                    + (" (стоит галочка «Не добавлять описание» — она не освобождает)" if t.get("noBiz") else "")
+                                    + " — заполнить «Действие» и «Бизнес-описание»"))
             elif not t.get("bizAction"):
                 found.append(("F1", "бизнес-описание есть, а «Действие» не выбрано — выбрать из справочника"))
         if t.get("biz"):
@@ -582,11 +593,32 @@ def main():
                                 "списания: переименовать по сути работы или закрыть и продолжить под OPEX-эпиком"))
         if t.get("jfChecks"):
             found.append(("F4", f"Jira пометила: {', '.join(t['jfChecks'])} — закрыть и завести новую задачу под правильным эпиком"))
+        oos = bool(out_of_mvp(t, by_key.get(p) if p else None))
         for code, act in found:
             n_fin += 1
-            owner(oid)["finance"].append({"key": t["key"], "scenario": scen or "—", "check": code, "action": act,
-                                          "assignee": t.get("assignee"), "summary": (t.get("summary") or "")[:90],
-                                          "outside_mvp": bool(out_of_mvp(t, by_key.get(p) if p else None))})
+            owner(FALLBACK if oos else oid)["finance"].append({
+                "key": t["key"], "scenario": scen or "—", "check": code, "action": ("вне MVP: " if oos else "") + act,
+                "assignee": t.get("assignee"), "summary": (t.get("summary") or "")[:90], "outside_mvp": oos})
+
+    # ── V2: метки и вакантные (Виктор 21.11.2026) — РП ──
+    # V2a: у вакантной остались метки (сценарий, приоритет, «вне_MVP»…) — при переиспользовании задача утащит их с собой.
+    # V2b: метка «вне_MVP», а сценарий элемента стоит в «Плане ручном» с этапами или стори уже в работе — противоречие.
+    plan_codes = {r["code"] for r in (gv.get("manualPlan") or {}).get("rows", []) if r.get("cells")}
+    for i in full["issues"]:
+        if "акантн" in (i.get("summary") or "") and i.get("labels"):
+            add(FALLBACK, i["key"], "—", "V2", f"вакантная с метками {', '.join(i['labels'])} — снять все метки: при "
+                "переиспользовании задача уйдёт в чужой сценарий" + (" и выпадет из MVP" if OUT_LABEL in i["labels"] else ""))
+    for i in iss:
+        lb = i.get("labels") or []
+        if OUT_LABEL not in lb:
+            continue
+        codes = [x for x in lb if x.upper() in plan_codes]
+        if i["type"] == T_STORY:
+            codes = codes or ([sc[i["key"]]] if sc.get(i["key"]) in plan_codes else [])
+        going = (i.get("status") or "").strip().lower() not in ("бэклог", "backlog") and i["type"] == T_STORY
+        if codes:
+            add(FALLBACK, i["key"], codes[0], "V2", f"метка «вне_MVP», а сценарий {codes[0]} стоит в «Плане ручном» с этапами"
+                + (f", стори в «{i['status']}»" if going else "") + " — снять метку или убрать сценарий из плана", True)
 
     # ── J1/J2: «Отклонена» и подзадачи в проекте запрещены (Виктор 13.11.2026) — на конкретного человека ──
     for x in full.get("special") or []:
