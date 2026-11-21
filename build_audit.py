@@ -98,7 +98,63 @@ GLOSSARY = [
     ("SC3", "стори сценария закрыты, а задачи — нет: закрыть задачи или вернуть стори в работу"),
     ("P4", "этап сценария отстаёт от «Плана ручного»: последний спринт этапа прошёл, а в Jira он не закрыт — "
            "задачи надо закрыть или запланировать в будущий спринт (заштрихован на «Этапах по сценариям»)"),
+    ("S12", "стори (или эпик) в «Бэклоге», а её задачи уже в работе или закрыты — перевести стори в «Разработку» "
+            "(эпик — в «В работе») и поставить «Дату начала» = самая ранняя дата начала начатых задач (правило 11.10.2026); "
+            "то же, если дата начала стори пустая или позже, чем у задач"),
+    ("D1", "у задачи, взятой в работу или закрытой, пустое поле «Описание» — написать, что делаем и зачем, ссылку на "
+           "аналитику. По «Описанию» и «Теме» Jira генерирует бизнес-описание для итогового акта (кнопка «Сгенерировать»)"),
+    ("F1", "Итоговые акты ВК-ИТ (Jira Framework 2): задача/стори закрыта («Завершена»), по ней списано время, а поля "
+           "бизнес-описания пустые — заполнить «Действие» и «Бизнес-описание» (по-русски, существительными: «Разработка…», "
+           "не «Разработать…», от 50 символов, без фамилий и встреч, аббревиатуры расшифровать). Если задача не про "
+           "создание функциональности (найм, организационное) — отметить «Не добавлять описание бизнес-ценности». Проверяем "
+           "закрытые с начала прошлого квартала: по ним собираются акты (письмо «Итоговый акт Q3» от 18.11.2026)"),
+    ("F2", "бизнес-описание не проходит требования к актам: короче 50 символов, начинается с глагола («Создать…» вместо "
+           "«Создание…»), написано латиницей, с фамилиями или отсылками к встречам/запросам — переписать"),
+    ("F3", "задача со списаниями в CAPEX-эпике, не закрыта, а в названии — признак операционной работы («управление "
+           "проектом», «проработка архитектуры», «обработка инцидентов», «командные встречи»…): с 18.11.2026 Jira помечает "
+           "такие задачи и удаляет новые списания. Переименовать по сути (что разрабатываем) или закрыть и продолжить в "
+           "задаче под OPEX-эпиком (страница JF «Аудит. Валидация корректности выбора вида работ»)"),
+    ("F4", "Jira уже пометила задачу (поле «Checks»: некорректная классификация CAPEX/OPEX) — списания в неё блокируются: "
+           "закрыть и завести новую задачу под эпиком с правильным видом работ"),
 ]
+# Финансовые поля (F1–F4, Виктор 21.11.2026): письмо «Итоговый акт Q3» (Финансы ВК ИТ, 18.11.2026), страницы
+# BRIT «Итоговые акты», JF «Данные для квартальных актов», JF «Аудит. Валидация корректности выбора вида работ».
+# Проверяются все задачи проекта (и вне MVP — акт по всей системе), кроме вакантных.
+FIN_DONE = "завершена"
+OPEX_KW = ("управление проектом", "управление командой", "решение инцидентов", "обработка инцидентов", "командные встречи",
+           "организационные задачи", "задачи администрирования", "управление развитием", "проработка архитектуры",
+           "управление продуктом", "тестирование продуктов", "разработка документации")
+BIZ_MIN = 50
+BIZ_INF_RE = re.compile(r"^\W*([А-Яа-яЁё]+(?:ть|ться|ти))\b")
+BIZ_EVENT_RE = re.compile(r"проведены встречи|встреч[аи] с командами|регулярных встреч|по запросу|архитектурн\w+ комитет", re.I)
+
+
+def biz_problems(text, surnames):
+    """Нарушения требований к бизнес-описанию (страница JF «Данные для квартальных актов»)."""
+    t = (text or "").strip()
+    out = []
+    if len(t) < BIZ_MIN:
+        out.append(f"короче {BIZ_MIN} символов ({len(t)})")
+    m = BIZ_INF_RE.match(t)
+    if m:
+        out.append(f"начинается с глагола «{m.group(1)}» — нужно существительное")
+    if len(re.findall(r"[A-Za-z]", t)) > len(re.findall(r"[А-Яа-яЁё]", t)):
+        out.append("латиницей — нужно по-русски")
+    fam = [s for s in surnames if re.search(r"\b" + re.escape(s), t, re.I)]
+    if fam:
+        out.append("фамилии: " + ", ".join(fam))
+    if BIZ_EVENT_RE.search(t):
+        out.append("отсылка к встречам/запросам")
+    return out
+
+
+def fmt_d(s):
+    return f"{s[8:10]}.{s[5:7]}.{s[2:4]}" if s and len(s) >= 10 else "пусто"
+
+
+def prev_quarter_start(d):
+    q0 = date(d.year, 3 * ((d.month - 1) // 3) + 1, 1)
+    return date(q0.year - 1, 10, 1) if q0.month == 1 else date(q0.year, q0.month - 3, 1)
 
 
 def person(cell, team):
@@ -325,7 +381,7 @@ def main():
         if name not in owners:
             owners[name] = {"id": f"o{len(owners) + 1}", "name": name, "short": SHORT.get(name, name.split()[-1]),
                             "fallback": name == FALLBACK, "scenarios": [], "issues": [], "p4": [], "unlabeled_stories": [],
-                            "scenario_checks": [], "analytics": []}
+                            "scenario_checks": [], "analytics": [], "finance": []}
         return owners[name]
 
     for code, name in own.items():
@@ -421,6 +477,18 @@ def main():
                 acts.append(f"нет связи с {d['key']} — {d['title']} ({d['team']})"
                             + (f"; поставить «is blocked by» {d['key']}, например на {cand[0]['key']} «{cand[0]['summary'][:60]}»" if cand
                                else f"; поставить «is blocked by» {d['key']} на стори"))
+        # S12: стори в «Бэклоге», а задачи начаты; дата начала стори = самая ранняя у начатых задач (правило 11.10.2026,
+        # Виктор 21.11.2026 — в аудит, а не только правкой check_jira_rollup)
+        started = [t for t in ts if (t.get("status") or "").strip().lower() not in ("бэклог", "backlog")]
+        if started:
+            first = min((t for t in started if t.get("start")), key=lambda t: t["start"], default=None)
+            fix = []
+            if (s.get("status") or "").strip().lower() in ("бэклог", "backlog"):
+                fix.append("перевести в «Разработку»")
+            if first and (not s.get("start") or s["start"] > first["start"]):
+                fix.append(f"«Дата начала» {fmt_d(s.get('start'))} → {fmt_d(first['start'])} (по {first['key']})")
+            if fix:
+                checks.append("S12"); acts.append(f"задачи уже начаты ({', '.join(map(tag, started[:3]))}): " + ", ".join(fix))
         # Метка сценария обязательна (Виктор 13.11.2026): префикс «PL1.» в названии её не заменяет.
         if s.get("epic") != EXEMPT_EPIC and not any(SC_LABEL_RE.match(lb) for lb in s.get("labels") or []):
             checks.insert(0, "S5"); acts.insert(0, f"проставить метку {scen}" if scen else "определить сценарий и проставить метку")
@@ -466,8 +534,59 @@ def main():
             checks.append("T11"); acts.append("проставить «Дату начала»")
         if st.lower() == "завершена" and not t.get("resolved"):
             checks.append("T12"); acts.append("закрыта без даты решения — переоткрыть и закрыть заново")
+        # D1 (Виктор 21.11.2026): у взятой в работу/закрытой задачи должно быть «Описание»; поле descLen пишет выгрузка с 21.11
+        if "descLen" in t and not t["descLen"] and st.lower() not in ("бэклог", "backlog", "отклонена"):
+            checks.append("D1"); acts.append(f"пустое «Описание» (статус «{st}»"
+                                             + (f", исполнитель {t['assignee']}" if t.get("assignee") else "") + ") — заполнить")
         if checks:
             add(oid, k, scen, ", ".join(checks), "; ".join(acts))
+
+    # ── S12 для эпиков: эпик в «Бэклоге», а стори/задачи начаты → «В работе» и дата начала (на РП) ──
+    for e in epics:
+        if (e.get("status") or "").strip().lower() not in ("бэклог", "backlog") or out_of_mvp(e):
+            continue
+        kids = [x for x in iss if x.get("epic") == e["key"] and x["type"] in (T_STORY, T_TASK, T_DEV)
+                and (x.get("status") or "").strip().lower() not in ("бэклог", "backlog")]
+        if kids:
+            first = min((x for x in kids if x.get("start")), key=lambda x: x["start"], default=None)
+            add(FALLBACK, e["key"], "—", "S12", f"эпик в «Бэклоге», а работа идёт ({', '.join(map(tag, kids[:3]))}): "
+                f"перевести в «В работе»" + (f", «Дата начала» {fmt_d(first['start'])}" if first else ""))
+
+    # ── F1–F4: финансовые поля для итоговых актов ВК-ИТ (Виктор 21.11.2026) — по всему проекту, и вне MVP тоже ──
+    fin_from = prev_quarter_start(date.today()).isoformat()
+    surnames = sorted({n.split()[0] for n in team} | {(i.get("assignee") or "").split()[0] for i in iss if i.get("assignee")} - {""})
+    n_fin = 0
+    for t in iss:
+        if t["type"] not in (T_STORY, T_TASK, T_DEV) or "biz" not in t or t["key"] in SERVICE_STORIES:
+            continue
+        st = (t.get("status") or "").strip()
+        p = parent_story(t) if t["type"] != T_STORY else t["key"]
+        scen = sc.get(p) if p else None
+        oid = resp(scen, t.get("assignee"), t.get("vacatedBy"), t.get("linkedBy"), (by_key.get(p) or {}).get("assignee"))
+        found = []
+        spent_h = round((t.get("spent") or 0) / 3600, 1)
+        if st.lower() == FIN_DONE and t.get("spent") and (t.get("resolved") or "") >= fin_from and not t.get("noBiz"):
+            if not t.get("biz"):
+                found.append(("F1", f"закрыта {fmt_d(t.get('resolved'))}, списано {spent_h} ч, бизнес-описания нет — "
+                                    "заполнить «Действие» и «Бизнес-описание» или отметить «Не добавлять описание бизнес-ценности»"))
+            elif not t.get("bizAction"):
+                found.append(("F1", "бизнес-описание есть, а «Действие» не выбрано — выбрать из справочника"))
+        if t.get("biz"):
+            pr = biz_problems(t["biz"], surnames)
+            if pr:
+                found.append(("F2", "; ".join(pr) + f" — сейчас: «{t['biz'][:90]}{'…' if len(t['biz']) > 90 else ''}»"))
+        low = (t.get("summary") or "").lower()
+        kw = [k for k in OPEX_KW if k in low]
+        if kw and t.get("spent") and st.lower() != FIN_DONE and "OPEX" not in (t.get("typeOfWork") or ""):
+            found.append(("F3", f"в названии «{kw[0]}», списано {spent_h} ч, статус «{st}» — Jira может заблокировать "
+                                "списания: переименовать по сути работы или закрыть и продолжить под OPEX-эпиком"))
+        if t.get("jfChecks"):
+            found.append(("F4", f"Jira пометила: {', '.join(t['jfChecks'])} — закрыть и завести новую задачу под правильным эпиком"))
+        for code, act in found:
+            n_fin += 1
+            owner(oid)["finance"].append({"key": t["key"], "scenario": scen or "—", "check": code, "action": act,
+                                          "assignee": t.get("assignee"), "summary": (t.get("summary") or "")[:90],
+                                          "outside_mvp": bool(out_of_mvp(t, by_key.get(p) if p else None))})
 
     # ── J1/J2: «Отклонена» и подзадачи в проекте запрещены (Виктор 13.11.2026) — на конкретного человека ──
     for x in full.get("special") or []:
@@ -707,12 +826,14 @@ def main():
         "timur": {"ticket": "GSD-142836", "items": timur},
         "templates": tmpl_src,
         "a1_total": n_a1,
+        "finance_from": fin_from,
+        "finance_total": n_fin,
     }
     json.dump(out, open(a.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"OK {a.out}: стори {len(stories)}, задач {len(tasks)}, эпиков {len(epics)}; "
           + "; ".join(f"{o['short']}: {len(o['issues'])} правок, P4 {len(o['p4'])}" for o in out["owners"])
           + f"; без метки {sum(len(o['unlabeled_stories']) for o in owners.values())}; P4 всего {n_p4}; "
-          + f"Тимуру {len(timur)}; A1 (аналитика не по шаблону) {n_a1}; "
+          + f"Тимуру {len(timur)}; A1 (аналитика не по шаблону) {n_a1}; итоговые акты F1–F4 {n_fin} (закрытые с {fin_from}); "
           + f"вне MVP пропущено стори {excluded['stories']}, задач {excluded['tasks']} (реестр {out['registry']})")
 
 

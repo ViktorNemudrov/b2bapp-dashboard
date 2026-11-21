@@ -57,6 +57,13 @@ function issuesBlock(o){
     rest.map(i=>`<tr><td>${jk(i.key)}${i.outside_mvp?' <span class="au-sp" title="эпик вне 10 согласованных MVP-эпиков">вне MVP</span>':''}</td><td>${esc(i.scenario)}</td><td><span class="badge badge-blue">${esc(i.check)}</span></td><td>${esc(i.action)}</td></tr>`).join('')}</tbody></table>`;
   return h;
 }
+// Итоговые акты ВК-ИТ (F1–F4, Виктор 21.11.2026): финансовые поля Jira Framework 2 — по всему проекту, и вне MVP
+function finBlock(o,a){
+  const f=o.finance||[];
+  if(!f.length) return '<p class="au-sub">Замечаний по полям для итоговых актов нет.</p>';
+  return `<table class="tbl"><thead><tr><th>Ключ</th><th>Исполнитель</th><th>Проверка</th><th>Что сделать</th></tr></thead><tbody>${
+    f.map(i=>`<tr><td>${jk(i.key)}${i.outside_mvp?' <span class="au-sp">вне MVP</span>':''}<div class="au-sp">${esc(i.summary||'')}</div></td><td>${esc(i.assignee||'—')}</td><td><span class="badge badge-blue">${esc(i.check)}</span></td><td>${esc(i.action)}</td></tr>`).join('')}</tbody></table>`;
+}
 function scBlock(o){
   const c=o.scenario_checks||[];
   if(!c.length) return '';
@@ -106,15 +113,16 @@ fetch('../data/audit.json?t='+Date.now()).then(r=>{ if(!r.ok) throw new Error('n
   document.getElementById('upd').textContent=fmtDate(a.generated_at);
   if(!a.owners||!a.owners.length){ document.getElementById('root').innerHTML='<div class="empty">Данные аудита ещё не сгенерированы.</div>'; return; }
   const sc=a.scope||{}, mp=a.manual_plan||{};
-  const total=o=>o.issues.length+(o.scenario_checks||[]).length+o.p4.length+(o.analytics||[]).length+o.unlabeled_stories.length;
+  const total=o=>o.issues.length+(o.scenario_checks||[]).length+o.p4.length+(o.analytics||[]).length+o.unlabeled_stories.length+(o.finance||[]).length;
   // Глоссарий — первой вкладкой (Виктор 19.11.2026)
   const tabs=[{id:'gloss',label:'Глоссарий',n:null},...a.owners.map(o=>({id:o.id,label:o.short,n:total(o)})),
     ...(a.timur?[{id:'timur',label:'Для Тимура',n:(a.timur.items||[]).length}]:[])];
   const own=a.owners.filter(o=>o.scenarios&&o.scenarios.length).map(o=>`${esc(o.name)} — ${o.scenarios.map(esc).join(', ')}`).join('; ');
   const nav=(o,items)=>`<nav class="au-nav">${items.filter(x=>x[2]).map(([id,t,n])=>`<a href="#${o.id}-${id}">${t} ${n}</a>`).join('')}</nav>`;
   const pane=o=>`<div class="au-pane au-sec" id="${o.id}"><h2>Исправить — ${esc(o.name)}</h2>
-      <p class="au-sub">${o.issues.length} правок оформления, ${o.p4.length} отстающих этапов, ${(o.analytics||[]).length} страниц аналитики не по шаблону${o.unlabeled_stories.length?`, ${o.unlabeled_stories.length} стори без метки сценария`:''}.${o.scenarios&&o.scenarios.length?` Сценарии: ${o.scenarios.map(esc).join(', ')}.`:''}${o.fallback?' Сюда же — задачи без сценария и стори вне реестра.':''}</p>
-      ${nav(o,[['fmt','Оформление',o.issues.length],['sc','Сценарии',(o.scenario_checks||[]).length],['p4','Отстаёт от плана',o.p4.length],['a1','Аналитика по шаблону',(o.analytics||[]).length],['unl','Без метки',o.unlabeled_stories.length]])}
+      <p class="au-sub">${o.issues.length} правок оформления, ${(o.finance||[]).length} замечаний для итоговых актов, ${o.p4.length} отстающих этапов, ${(o.analytics||[]).length} страниц аналитики не по шаблону${o.unlabeled_stories.length?`, ${o.unlabeled_stories.length} стори без метки сценария`:''}.${o.scenarios&&o.scenarios.length?` Сценарии: ${o.scenarios.map(esc).join(', ')}.`:''}${o.fallback?' Сюда же — задачи без сценария и стори вне реестра.':''}</p>
+      ${nav(o,[['fin','Итоговые акты',(o.finance||[]).length],['fmt','Оформление',o.issues.length],['sc','Сценарии',(o.scenario_checks||[]).length],['p4','Отстаёт от плана',o.p4.length],['a1','Аналитика по шаблону',(o.analytics||[]).length],['unl','Без метки',o.unlabeled_stories.length]])}
+      ${(o.finance||[]).length?`<h3 id="${o.id}-fin">Итоговые акты: поля для актов ВК-ИТ (F1–F4)</h3><p class="au-sub">Закрытые с ${fmtDate(a.finance_from)} задачи со списаниями — по ним финансы собирают квартальные акты автоматически из «Бизнес-описания»; проверка по всему проекту, и вне MVP тоже.</p>${finBlock(o,a)}`:''}
       <h3 id="${o.id}-fmt">Оформление</h3>${issuesBlock(o)}
       ${scBlock(o)}
       <h3 id="${o.id}-p4">Отстаёт от плана (P4)</h3>${p4Block(o)}

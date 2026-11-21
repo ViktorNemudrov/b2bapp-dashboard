@@ -10,7 +10,14 @@
 window.__FULL = null; window.__FERR = null;
 (async () => { try {
   const EPIC_KEYS = ['B2BAPP-134','B2BAPP-21','B2BAPP-491','B2BAPP-27','B2BAPP-22','B2BAPP-1242','B2BAPP-484','B2BAPP-465','B2BAPP-25','B2BAPP-1241'];
-  const F = 'summary,status,issuetype,customfield_10901,customfield_18100,customfield_10905,timetracking,labels,issuelinks,created,resolutiondate,updated,assignee,description';
+  // + финансовые поля Jira Framework 2 для итоговых актов (Виктор 21.11.2026): 22107 «Бизнес-описание»,
+  // 17300 «Действие», 44500 «Объект», 48100 «Опционально» (= «Не добавлять описание бизнес-ценности»),
+  // 59405 «Checks» (служебная отметка аудита CAPEX/OPEX), 17301 «Script» (TypeOfWork), 32528 «Вид работ» (у эпика)
+  const F = 'summary,status,issuetype,customfield_10901,customfield_18100,customfield_10905,timetracking,labels,issuelinks,created,resolutiondate,updated,assignee,description'
+    + ',customfield_22107,customfield_17300,customfield_44500,customfield_48100,customfield_59405,customfield_17301,customfield_32528';
+  const optv = v => v == null ? null : Array.isArray(v) ? v.map(x => (x && x.value) || String(x)) : (v.value || String(v));
+  const tow = (f) => { const v = f.customfield_17301; if (!v) return null;
+    try { return (typeof v === 'string' ? JSON.parse(v) : v).TypeOfWork || null; } catch (e) { const m = String(v).match(/"TypeOfWork"\s*:\s*"([^"]+)"/); return m ? m[1] : null; } };
   let all = [], s = 0;
   while (true) {
     const j = await (await fetch('/rest/api/2/search?jql=' + encodeURIComponent('project=B2BAPP AND issuetype in (10500,10600,3,20600) ORDER BY key DESC') + '&maxResults=200&startAt=' + s + '&fields=' + F)).json();
@@ -31,6 +38,10 @@ window.__FULL = null; window.__FERR = null;
     est: tt.originalEstimateSeconds || 0, spent: tt.timeSpentSeconds || 0, rem: tt.remainingEstimateSeconds ?? null,
     cf: /bwiki\.beeline\.ru|confluence/i.test(f.description || ''),
     cfUrls: [...new Set(((f.description || '').match(/https?:\/\/bwiki\.beeline\.ru[^\s|\]\[)"']+/g) || []))],
+    descLen: (f.description || '').trim().length,
+    biz: (f.customfield_22107 || '').trim() || null, bizAction: optv(f.customfield_17300), bizObject: optv(f.customfield_44500),
+    noBiz: (optv(f.customfield_48100) || []).some(x => /не добавлять/i.test(x)), jfChecks: optv(f.customfield_59405) || [],
+    typeOfWork: optv(f.customfield_32528) || tow(f),
     labels: f.labels || [], assignee: nm(f.assignee), sprints: parseSp(f.customfield_10905).map(({completeDate, ...r}) => r),
     links: (f.issuelinks || []).map(l => ({type: l.type.name, in: l.inwardIssue ? l.inwardIssue.key : null, out: l.outwardIssue ? l.outwardIssue.key : null,
       inType: l.inwardIssue ? l.inwardIssue.fields.issuetype.id : null, outType: l.outwardIssue ? l.outwardIssue.fields.issuetype.id : null}))}; });
