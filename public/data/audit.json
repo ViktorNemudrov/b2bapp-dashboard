@@ -1,12 +1,12 @@
 {
- "generated_at": "2026-11-21",
- "jira_collected_at": "2026-11-21",
+ "generated_at": "2026-11-23",
+ "jira_collected_at": "2026-11-23",
  "current_sprint": 6,
  "scope": {
   "stories": 74,
-  "tasks": 366,
+  "tasks": 365,
   "epics": 16,
-  "excluded_stories": 19,
+  "excluded_stories": 18,
   "excluded_tasks": 56
  },
  "sprint_calendar": {
@@ -161,7 +161,7 @@
   },
   {
    "code": "ВНЕ MVP",
-   "text": "элементы с меткой «вне_MVP», сценарием SH или в эпиках вне 10 MVP-эпиков проверяются теми же проверками, но все находки — РП с пометкой «вне MVP» (Виктор 21.11.2026)"
+   "text": "элементы с меткой «вне_MVP», сценарием SH или в эпиках вне 10 MVP-эпиков проверяются теми же проверками, находки с пометкой «вне MVP» — у РП, кроме: сценарий SH — у Шевченко; стори ведёт аналитик — у него (Виктор 23.11.2026)"
   },
   {
    "code": "F4",
@@ -423,7 +423,7 @@
      "key": "B2BAPP-1128",
      "scenario": "PL1",
      "check": "S7, S10",
-     "action": "разработка идёт (B2BAPP-1266 «Разработка», B2BAPP-1229 «Waiting for release», B2BAPP-278 «Ready for testing»), аналитика не закрыта: B2BAPP-1212 «Бэклог», B2BAPP-376 «Бэклог», B2BAPP-212 «Удержание»; нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)"
+     "action": "разработка идёт (B2BAPP-1266 «Завершена», B2BAPP-1229 «Waiting for release», B2BAPP-278 «Ready for testing»), аналитика не закрыта: B2BAPP-1212 «Бэклог», B2BAPP-376 «Бэклог», B2BAPP-212 «Удержание»; нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)"
     },
     {
      "key": "B2BAPP-561",
@@ -672,7 +672,7 @@
       },
       {
        "key": "B2BAPP-238",
-       "status": "Бэклог",
+       "status": "Разработка",
        "summary": "[FE] Скопировать текст из ответа ассистента",
        "sprint": "в Спринте 6 (текущий)"
       },
@@ -1032,6 +1032,15 @@
    ],
    "finance": [
     {
+     "key": "B2BAPP-1266",
+     "scenario": "PL1",
+     "check": "F1",
+     "action": "закрыта 23.11.26, списано 6.0 ч, бизнес-описания нет (стоит галочка «Не добавлять описание» — она не освобождает) — заполнить «Действие» и «Бизнес-описание»",
+     "assignee": "Самойло Андрей",
+     "summary": "[FE] Переход на AG-UI: нативный рендер виджетов (CopilotKit)",
+     "outside_mvp": false
+    },
+    {
      "key": "B2BAPP-703",
      "scenario": "PK1",
      "check": "F1",
@@ -1047,6 +1056,15 @@
      "action": "закрыта 26.06.26, списано 40.0 ч, бизнес-описания нет (стоит галочка «Не добавлять описание» — она не освобождает) — заполнить «Действие» и «Бизнес-описание»",
      "assignee": "Клейменова Анна",
      "summary": "[BA] Сбор требований к мобильному приложению",
+     "outside_mvp": false
+    },
+    {
+     "key": "B2BAPP-57",
+     "scenario": "PL1",
+     "check": "F1",
+     "action": "закрыта 23.11.26, списано 3.0 ч, бизнес-описания нет (стоит галочка «Не добавлять описание» — она не освобождает) — заполнить «Действие» и «Бизнес-описание»",
+     "assignee": "Самойло Андрей",
+     "summary": "[FE] Создать прототип на web-сокетах",
      "outside_mvp": false
     },
     {
@@ -1098,10 +1116,59 @@
      "action": "пустое «Описание» (статус «Завершена», исполнитель Самойло Андрей) — заполнить"
     },
     {
+     "key": "B2BAPP-31",
+     "scenario": "SH",
+     "check": "S10",
+     "action": "вне MVP: нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-33",
+     "scenario": "SH",
+     "check": "S10",
+     "action": "вне MVP: нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-79",
+     "scenario": "SH",
+     "check": "S10",
+     "action": "вне MVP: нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-80",
+     "scenario": "SH",
+     "check": "S10",
+     "action": "вне MVP: нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-144",
+     "scenario": "SH",
+     "check": "S10",
+     "action": "вне MVP: нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-815",
+     "scenario": "SH",
+     "check": "S10",
+     "action": "вне MVP: нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
+     "outside_mvp": true
+    },
+    {
      "key": "B2BAPP-567",
      "scenario": "OB10",
      "check": "S12",
      "action": "задачи уже начаты (B2BAPP-1170 «Завершена», B2BAPP-492 «Завершена», B2BAPP-415 «Ready for DEV»): «Дата начала» 24.09.26 → 22.09.26 (по B2BAPP-1170)"
+    },
+    {
+     "key": "B2BAPP-1185",
+     "scenario": "SH",
+     "check": "S12",
+     "action": "вне MVP: задачи уже начаты (B2BAPP-46 «Завершена»): «Дата начала» 30.10.26 → 09.06.26 (по B2BAPP-46)",
+     "outside_mvp": true
     },
     {
      "key": "B2BAPP-119",
@@ -1138,6 +1205,13 @@
      "scenario": "PL9",
      "check": "S5, S9",
      "action": "проставить метку PL9; нет связи с PFC-1256 — IdP: единая идентификация (вход, Альфа-ID / Сбер-ID / ЕСИА, backchannel logout) (IdP); поставить «is blocked by» PFC-1256 на стори"
+    },
+    {
+     "key": "B2BAPP-90",
+     "scenario": "SH",
+     "check": "S6",
+     "action": "вне MVP: только [BA] — добавить задачи разработки",
+     "outside_mvp": true
     },
     {
      "key": "B2BAPP-63",
@@ -1266,6 +1340,13 @@
      "action": "статус «Завершена», а спринта нет — привязать к спринту (закрыта 13.11)"
     },
     {
+     "key": "B2BAPP-528",
+     "scenario": "SH",
+     "check": "T14",
+     "action": "вне MVP: статус «Завершена», а спринта нет — привязать к спринту (закрыта 21.09)",
+     "outside_mvp": true
+    },
+    {
      "key": "B2BAPP-1150",
      "scenario": "OB7",
      "check": "T14",
@@ -1342,6 +1423,13 @@
      "scenario": "PL16",
      "check": "T15",
      "action": "эпик B2BAPP-21, а у стори B2BAPP-546 — B2BAPP-1242: поставить B2BAPP-1242"
+    },
+    {
+     "key": "B2BAPP-1026",
+     "scenario": "SH",
+     "check": "T15",
+     "action": "вне MVP: эпик —, а у стори B2BAPP-144 — B2BAPP-23: поставить B2BAPP-23",
+     "outside_mvp": true
     },
     {
      "key": "B2BAPP-1181",
@@ -1458,12 +1546,6 @@
      "action": "проставить оценку; статус «Ready for DEV», а спринта нет — привязать к спринту"
     },
     {
-     "key": "B2BAPP-1366",
-     "scenario": "MD1",
-     "check": "T6, T14",
-     "action": "проставить оценку; статус «Анализ», а спринта нет — привязать к спринту"
-    },
-    {
      "key": "B2BAPP-237",
      "scenario": "OB4",
      "check": "T7",
@@ -1474,6 +1556,20 @@
      "scenario": "OB10",
      "check": "T7",
      "action": "оценка 24 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-490",
+     "scenario": "SH",
+     "check": "T7",
+     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
+    },
+    {
+     "key": "B2BAPP-814",
+     "scenario": "SH",
+     "check": "T7",
+     "action": "вне MVP: оценка 128 ч > 16 ч — разбить на задачи до 2 дней",
+     "outside_mvp": true
     },
     {
      "key": "B2BAPP-1259",
@@ -1510,6 +1606,13 @@
      "scenario": "OB3",
      "check": "T7",
      "action": "оценка 18 ч > 16 ч — разбить на задачи до 2 дней"
+    },
+    {
+     "key": "B2BAPP-255",
+     "scenario": "SH",
+     "check": "T7, T14",
+     "action": "вне MVP: оценка 27 ч > 16 ч — разбить на задачи до 2 дней; статус «Ready for DEV», а спринта нет — привязать к спринту",
+     "outside_mvp": true
     },
     {
      "key": "B2BAPP-1321",
@@ -2493,105 +2596,10 @@
    ],
    "issues": [
     {
-     "key": "B2BAPP-810",
-     "scenario": "SH",
-     "check": "D1",
-     "action": "вне MVP: пустое «Описание» (статус «Завершена», исполнитель Немудров Виктор) — заполнить",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-1206",
-     "scenario": "IB",
-     "check": "D1",
-     "action": "пустое «Описание» (статус «Завершена», исполнитель Егоров Иван) — заполнить"
-    },
-    {
-     "key": "B2BAPP-1395",
-     "scenario": "—",
-     "check": "J1",
-     "action": "статус «Отклонена» (отклонил(а) Попов Сергей 19.11)"
-    },
-    {
-     "key": "B2BAPP-33",
-     "scenario": "SH",
-     "check": "S10",
-     "action": "вне MVP: нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-79",
-     "scenario": "SH",
-     "check": "S10",
-     "action": "вне MVP: нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-80",
-     "scenario": "SH",
-     "check": "S10",
-     "action": "вне MVP: нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-144",
-     "scenario": "SH",
-     "check": "S10",
-     "action": "вне MVP: нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-815",
-     "scenario": "SH",
-     "check": "S10",
-     "action": "вне MVP: нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-1185",
-     "scenario": "SH",
-     "check": "S12",
-     "action": "вне MVP: задачи уже начаты (B2BAPP-46 «Завершена»): «Дата начала» 30.10.26 → 09.06.26 (по B2BAPP-46)",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-31",
-     "scenario": "—",
-     "check": "S5, S10",
-     "action": "вне MVP: определить сценарий и проставить метку; нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-151",
-     "scenario": "—",
-     "check": "S5, S6",
-     "action": "вне MVP: определить сценарий и проставить метку; только [BA] — добавить задачи разработки",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-90",
-     "scenario": "SH",
-     "check": "S6",
-     "action": "вне MVP: только [BA] — добавить задачи разработки",
-     "outside_mvp": true
-    },
-    {
      "key": "B2BAPP-1288",
      "scenario": "IB",
-     "check": "S7, S10",
-     "action": "разработка идёт (B2BAPP-1377 «Waiting for release»), аналитика не закрыта: B2BAPP-1081 «Бэклог»; нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)"
-    },
-    {
-     "key": "B2BAPP-1395",
-     "scenario": "—",
-     "check": "T1, T4",
-     "action": "добавить префикс роли; привязать Part к стори"
-    },
-    {
-     "key": "B2BAPP-528",
-     "scenario": "—",
-     "check": "T14",
-     "action": "вне MVP: статус «Завершена», а спринта нет — привязать к спринту (закрыта 21.09)",
-     "outside_mvp": true
+     "check": "S10",
+     "action": "нет ссылки на аналитику в Confluence — добавить страницу аналитики в «Ссылки» стори (или в описание)"
     },
     {
      "key": "B2BAPP-1389",
@@ -2600,269 +2608,16 @@
      "action": "статус «В работе», а спринта нет — привязать к спринту"
     },
     {
-     "key": "B2BAPP-1026",
-     "scenario": "SH",
-     "check": "T15, T7",
-     "action": "вне MVP: эпик —, а у стори B2BAPP-144 — B2BAPP-23: поставить B2BAPP-23; оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
+     "key": "B2BAPP-1081",
+     "scenario": "IB",
+     "check": "T3",
+     "action": "тип [FE] → Development"
     },
     {
      "key": "B2BAPP-1247",
      "scenario": "—",
      "check": "T3",
      "action": "тип [FE] → Development"
-    },
-    {
-     "key": "B2BAPP-332",
-     "scenario": "OB8",
-     "check": "T6",
-     "action": "вне MVP: проставить оценку",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-335",
-     "scenario": "OB8",
-     "check": "T6",
-     "action": "вне MVP: проставить оценку",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-345",
-     "scenario": "OB8",
-     "check": "T6",
-     "action": "вне MVP: проставить оценку",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-177",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 56 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-183",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 22 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-188",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-256",
-     "scenario": "—",
-     "check": "T7",
-     "action": "вне MVP: оценка 52 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-257",
-     "scenario": "—",
-     "check": "T7",
-     "action": "вне MVP: оценка 24 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-258",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 27 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-259",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 42 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-340",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-341",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-342",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 19 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-343",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 32 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-364",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 22 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-371",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 42 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-405",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-414",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-490",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-573",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-738",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-790",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 40 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-813",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-814",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 128 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-963",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-964",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-965",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-1072",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-1073",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-1133",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-1145",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-1146",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-1147",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-1148",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 31 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-1239",
-     "scenario": "SH",
-     "check": "T7",
-     "action": "вне MVP: оценка 21 ч > 16 ч — разбить на задачи до 2 дней",
-     "outside_mvp": true
-    },
-    {
-     "key": "B2BAPP-255",
-     "scenario": "SH",
-     "check": "T7, T14",
-     "action": "вне MVP: оценка 27 ч > 16 ч — разбить на задачи до 2 дней; статус «Ready for DEV», а спринта нет — привязать к спринту",
-     "outside_mvp": true
     }
    ],
    "p4": [
@@ -2886,10 +2641,7 @@
      "action": "задачи запланированы в спринт — перенести этап в «Плане ручном» на этот спринт"
     }
    ],
-   "unlabeled_stories": [
-    "B2BAPP-31",
-    "B2BAPP-151"
-   ],
+   "unlabeled_stories": [],
    "scenario_checks": [
     {
      "scenario": "PL12",
@@ -2940,7 +2692,7 @@
     "key": "B2BAPP-31",
     "kind": "история",
     "status": "Разработка",
-    "summary": "9. Как пользователь, я хочу, чтобы AI предоставлял только проверенные данные из реальных систем и честно сообщал при их отсутствии, чтобы полностью доверять получаемой информации",
+    "summary": "SH. Как пользователь, я хочу видеть список договоров своей организации и карточку договора в чате с AI-ассистентом, чтобы быстро находить нужный договор и его условия",
     "now": "B2BAPP-23",
     "need": "B2BAPP-27",
     "why": "последний эпик от команды (Немудров Виктор, 25.07.26)",
@@ -3108,5 +2860,5 @@
  },
  "a1_total": 9,
  "finance_from": "2026-07-01",
- "finance_total": 15
+ "finance_total": 17
 }

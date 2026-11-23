@@ -35,6 +35,8 @@ SC_PREFIX_RE = re.compile(r"^\s*((?:MD|OB|RB|PL|PK|NAI|B2C|YD|IB|SH)\d*)\s*[.:]"
 # эпика B2BAPP-23 — метка «вне_MVP»; такие задачи и задачи эпиков вне 10 MVP-эпиков
 # аудит не проверяет совсем.
 OUT_LABEL, OUT_SCENARIO = "вне_MVP", "SH"
+# Ответственные за сценарии вне реестра MVP (Виктор 23.11.2026: «всё, что SH, — аналитик Шевченко»)
+OUT_OWNERS = {"SH": "Шевченко Константин"}
 VACANT_EPIC = "B2BAPP-135"
 STAGE_NAME = {"AN": "Аналитика", "DS": "Дизайн", "BE": "Бек", "BE1": "Бек", "BE2": "Бек", "FE": "Фронт", "QA": "QA"}
 STAGE_ROLES = {"AN": "[BA]/[ARC]", "DS": "[DS]", "BE": "[BE]", "BE1": "[BE]", "BE2": "[BE]", "FE": "[FE]", "QA": "[FE]/[BE]/[QA]"}
@@ -118,7 +120,7 @@ GLOSSARY = [
            "переиспользовании задача уйдёт в чужой сценарий или выпадет из MVP; или метка «вне_MVP» у элемента, чей "
            "сценарий стоит в «Плане ручном» с этапами, — снять метку или убрать сценарий из плана. Находки — РП"),
     ("ВНЕ MVP", "элементы с меткой «вне_MVP», сценарием SH или в эпиках вне 10 MVP-эпиков проверяются теми же "
-                "проверками, но все находки — РП с пометкой «вне MVP» (Виктор 21.11.2026)"),
+                "проверками, находки с пометкой «вне MVP» — у РП, кроме: сценарий SH — у Шевченко; стори ведёт аналитик — у него (Виктор 23.11.2026)"),
     ("F4", "Jira уже пометила задачу (поле «Checks»: некорректная классификация CAPEX/OPEX) — списания в неё блокируются: "
            "закрыть и завести новую задачу под эпиком с правильным видом работ"),
 ]
@@ -422,12 +424,20 @@ def main():
                 return c
         return o or FALLBACK
 
-    def add(oname, key, scen, check, action, outside=False):
+    def out_owner(scen, story_assignee=None):
+        """Вне MVP — РП (Виктор 21.11.2026), кроме (Виктор 23.11.2026): сценарий SH целиком — Шевченко;
+        стори ведёт аналитик (исполнитель стори) — всё по ней к нему."""
+        if scen in OUT_OWNERS:
+            return OUT_OWNERS[scen]
+        c = " ".join((story_assignee or "").split()[:2])
+        return c if c in analysts else FALLBACK
+
+    def add(oname, key, scen, check, action, outside=False, story_assignee=None):
         it = {"key": key, "scenario": scen or "—", "check": check, "action": action}
-        if outside:   # вне MVP — все находки РП с пометкой (Виктор 21.11.2026)
+        if outside:   # вне MVP — с пометкой, ответственный по out_owner()
             it["outside_mvp"] = True
             it["action"] = "вне MVP: " + action
-        owner(FALLBACK if outside else oname)["issues"].append(it)
+        owner(out_owner(scen, story_assignee) if outside else oname)["issues"].append(it)
 
     # ── Стори ──
     for s in stories:
@@ -446,7 +456,7 @@ def main():
             checks.append("S4"); acts.append("привязать к эпику (Epic Link)")
         if not scen and s.get("epic") != EXEMPT_EPIC:
             # вопрос — исполнителю стори, не РП (Виктор 12.11.2026)
-            owner(FALLBACK if oos else oid)["unlabeled_stories"].append(k)
+            owner(out_owner(scen, s.get("assignee")) if oos else oid)["unlabeled_stories"].append(k)
         roles = {role_of(t["summary"]) for t in story_tasks.get(k, [])}
         if roles and roles <= {"BA"} and k not in NO_DEV_STORIES:
             checks.append("S6"); acts.append("только [BA] — добавить задачи разработки")
@@ -501,7 +511,7 @@ def main():
         if s.get("epic") != EXEMPT_EPIC and not any(SC_LABEL_RE.match(lb) for lb in s.get("labels") or []):
             checks.insert(0, "S5"); acts.insert(0, f"проставить метку {scen}" if scen else "определить сценарий и проставить метку")
         if checks:
-            add(oid, k, scen, ", ".join(dict.fromkeys(checks)), "; ".join(acts), oos)
+            add(oid, k, scen, ", ".join(dict.fromkeys(checks)), "; ".join(acts), oos, s.get("assignee"))
 
     # ── Задачи ──
     for t in tasks:
@@ -547,7 +557,7 @@ def main():
             checks.append("D1"); acts.append(f"пустое «Описание» (статус «{st}»"
                                              + (f", исполнитель {t['assignee']}" if t.get("assignee") else "") + ") — заполнить")
         if checks:
-            add(oid, k, scen, ", ".join(checks), "; ".join(acts), oos)
+            add(oid, k, scen, ", ".join(checks), "; ".join(acts), oos, (by_key.get(p) or {}).get("assignee"))
 
     # ── S12 для эпиков: эпик в «Бэклоге», а стори/задачи начаты → «В работе» и дата начала (на РП) ──
     for e in epics:
@@ -596,7 +606,7 @@ def main():
         oos = bool(out_of_mvp(t, by_key.get(p) if p else None))
         for code, act in found:
             n_fin += 1
-            owner(FALLBACK if oos else oid)["finance"].append({
+            owner(out_owner(scen, (by_key.get(p) or {}).get("assignee")) if oos else oid)["finance"].append({
                 "key": t["key"], "scenario": scen or "—", "check": code, "action": ("вне MVP: " if oos else "") + act,
                 "assignee": t.get("assignee"), "summary": (t.get("summary") or "")[:90], "outside_mvp": oos})
 

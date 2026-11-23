@@ -31,6 +31,16 @@ details.au-det summary{cursor:pointer;font-weight:600;font-size:13px;margin:6px 
 .au-a1 ul{margin:4px 0 6px;padding-left:18px;font-size:12.5px;line-height:1.5}
 .au-a1 .lbl{font-weight:700;font-size:12px;margin-top:6px}
 .au-up{float:right;font-size:12px;font-weight:400}
+/* фильтры по столбцам и отметка строки (Виктор 23.11.2026) */
+.au-flt th{padding-top:4px;padding-bottom:6px;font-weight:400}
+.au-flt select,.au-flt input{width:100%;max-width:220px;font:inherit;font-size:12px;padding:3px 4px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text)}
+.au-fbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--mute);margin:0 0 6px}
+.au-fbar button{font:inherit;font-size:12px;padding:2px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);cursor:pointer}
+tr[data-k]{cursor:pointer}
+tr.au-seen>td{background:rgba(127,127,127,.08)}
+tr.au-seen>td:first-child{box-shadow:inset 3px 0 0 var(--mute)}
+tr.au-cur>td{background:rgba(255,196,0,.18)!important}
+tr.au-cur>td:first-child{box-shadow:inset 4px 0 0 var(--yel)}
 </style></head><body>
 <div class="layout">
 <div id="sidebar-root"></div>
@@ -49,20 +59,16 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 const jk=k=>`<a href="https://btask.beeline.ru/browse/${encodeURIComponent(k)}" target="_blank" rel="noopener">${esc(k)}</a>`;
 function issuesBlock(o){
   if(!o.issues.length) return '<p class="au-sub">Правок оформления нет.</p>';
-  // Чистые «без оценки» при большом числе — абзацем ключей, как в документе Cowork; остальное — таблицей.
-  const t6=o.issues.filter(i=>i.check==='T6'), rest=t6.length>8?o.issues.filter(i=>i.check!=='T6'):o.issues;
-  let h='';
-  if(t6.length>8) h+=`<p class="au-keys"><b>Без оценки (T6) — проставить оценку, ${t6.length}:</b> ${t6.map(i=>`${jk(i.key)} <span class="au-sp">(${esc(i.scenario)})</span>`).join(', ')}</p>`;
-  if(rest.length) h+=`<table class="tbl"><thead><tr><th>Ключ</th><th>Сценарий</th><th>Проверка</th><th>Что поправить</th></tr></thead><tbody>${
-    rest.map(i=>`<tr><td>${jk(i.key)}${i.outside_mvp?' <span class="au-sp" title="эпик вне 10 согласованных MVP-эпиков">вне MVP</span>':''}</td><td>${esc(i.scenario)}</td><td><span class="badge badge-blue">${esc(i.check)}</span></td><td>${esc(i.action)}</td></tr>`).join('')}</tbody></table>`;
-  return h;
+  // Все находки — одной таблицей с фильтрами по столбцам (Виктор 23.11.2026)
+  return `<table class="tbl au-ft"><thead><tr><th data-f="txt">Ключ</th><th data-f="sel">Сценарий</th><th data-f="codes">Проверка</th><th data-f="sel">MVP</th><th data-f="txt">Что поправить</th></tr></thead><tbody>${
+    o.issues.map(i=>`<tr data-k="${esc(i.key)}"><td>${jk(i.key)}</td><td>${esc(i.scenario)}</td><td><span class="badge badge-blue">${esc(i.check)}</span></td><td class="au-sp">${i.outside_mvp?'вне MVP':'MVP'}</td><td>${esc(i.action)}</td></tr>`).join('')}</tbody></table>`;
 }
 // Итоговые акты ВК-ИТ (F1–F4, Виктор 21.11.2026): финансовые поля Jira Framework 2 — по всему проекту, и вне MVP
 function finBlock(o,a){
   const f=o.finance||[];
   if(!f.length) return '<p class="au-sub">Замечаний по полям для итоговых актов нет.</p>';
-  return `<table class="tbl"><thead><tr><th>Ключ</th><th>Исполнитель</th><th>Проверка</th><th>Что сделать</th></tr></thead><tbody>${
-    f.map(i=>`<tr><td>${jk(i.key)}${i.outside_mvp?' <span class="au-sp">вне MVP</span>':''}<div class="au-sp">${esc(i.summary||'')}</div></td><td>${esc(i.assignee||'—')}</td><td><span class="badge badge-blue">${esc(i.check)}</span></td><td>${esc(i.action)}</td></tr>`).join('')}</tbody></table>`;
+  return `<table class="tbl au-ft"><thead><tr><th data-f="txt">Ключ</th><th data-f="sel">Исполнитель</th><th data-f="codes">Проверка</th><th data-f="txt">Что сделать</th></tr></thead><tbody>${
+    f.map(i=>`<tr data-k="${esc(i.key)}"><td>${jk(i.key)}${i.outside_mvp?' <span class="au-sp">вне MVP</span>':''}<div class="au-sp">${esc(i.summary||'')}</div></td><td>${esc(i.assignee||'—')}</td><td><span class="badge badge-blue">${esc(i.check)}</span></td><td>${esc(i.action)}</td></tr>`).join('')}</tbody></table>`;
 }
 function scBlock(o){
   const c=o.scenario_checks||[];
@@ -73,7 +79,7 @@ function scBlock(o){
 function p4Block(o){
   if(!o.p4.length) return '<p class="au-sub">Отстающих этапов нет.</p>';
   return `<table class="tbl"><thead><tr><th>Сценарий</th><th>Этап</th><th>План</th><th>Что в Jira (незакрытые)</th><th>Что сделать</th></tr></thead><tbody>${
-    o.p4.map(p=>`<tr><td><b style="color:var(--yel)">${esc(p.scenario)}</b><div class="au-sp">${esc(p.name||'')}</div></td><td>${esc(p.stage)}</td>
+    o.p4.map(p=>`<tr data-k="p4:${esc(p.scenario)}:${esc(p.stage)}"><td><b style="color:var(--yel)">${esc(p.scenario)}</b><div class="au-sp">${esc(p.name||'')}</div></td><td>${esc(p.stage)}</td>
       <td style="white-space:nowrap">${esc(p.plan)}<div class="au-sp">закончился ${fmtDate(p.planEnd)}</div></td>
       <td>${p.kind==='нет'?'<span class="au-sp no">задач роли нет</span>':`<div class="au-jira">${p.jira.map(x=>`<div>${jk(x.key)} ${statusBadge(x.status)} <span class="au-sp${x.sprint?'':' no'}">${x.sprint?esc(x.sprint):'нет в текущем/будущем спринте'}</span></div>`).join('')}</div>${p.closed?`<div class="au-sp">закрыто ${p.closed} из ${p.total}</div>`:''}`}</td>
       <td>${esc(p.action)}</td></tr>`).join('')}</tbody></table>`;
@@ -107,6 +113,49 @@ function a1Block(o,a){
     ${x.empty.length?`<div class="lbl">Пустые разделы — заполнить или написать «Не применимо»:</div>${li(x.empty)}`:''}
   </div>`).join('');
 }
+// Фильтры по столбцам (Виктор 23.11.2026): у таблиц .au-ft под шапкой — строка фильтров.
+// data-f: sel — выпадающий список значений; codes — по отдельным кодам проверок («S5, S10» → S5 и S10); txt — поиск по тексту.
+function initFilters(){
+  document.querySelectorAll('table.au-ft').forEach(tb=>{
+    const ths=[...tb.tHead.rows[0].cells], rows=[...tb.tBodies[0].rows], cell=(r,i)=>(r.cells[i].textContent||'').trim();
+    const vals=(r,i,f)=>f==='codes'?cell(r,i).split(/\s*,\s*/).filter(Boolean):[cell(r,i)];
+    const fr=document.createElement('tr'); fr.className='au-flt';
+    ths.forEach((th,i)=>{ const f=th.dataset.f, c=document.createElement('th'); fr.appendChild(c); if(!f) return;
+      if(f==='txt'){ c.innerHTML='<input type="search" placeholder="поиск…">'; return; }
+      const cnt={}; rows.forEach(r=>vals(r,i,f).forEach(v=>cnt[v]=(cnt[v]||0)+1));
+      const ks=Object.keys(cnt).sort((a,b)=>a.localeCompare(b,'ru',{numeric:true}));
+      c.innerHTML=`<select><option value="">все (${rows.length})</option>${ks.map(v=>`<option value="${esc(v)}">${esc(v)} — ${cnt[v]}</option>`).join('')}</select>`; });
+    tb.tHead.appendChild(fr);
+    const bar=document.createElement('div'); bar.className='au-fbar'; bar.innerHTML='<span class="au-fn"></span><button type="button">Сбросить фильтры</button>';
+    tb.parentNode.insertBefore(bar,tb);
+    const ctl=[...fr.cells].map(c=>c.querySelector('select,input'));
+    const apply=()=>{ let n=0; rows.forEach(r=>{ const ok=ctl.every((el,i)=>{ if(!el||!el.value) return true;
+        return el.tagName==='INPUT'?cell(r,i).toLowerCase().includes(el.value.toLowerCase()):vals(r,i,ths[i].dataset.f).includes(el.value); });
+        r.style.display=ok?'':'none'; if(ok) n++; });
+      bar.querySelector('.au-fn').textContent=n===rows.length?`Строк: ${n}`:`Показано ${n} из ${rows.length}`;
+      bar.querySelector('button').style.visibility=n===rows.length?'hidden':'visible'; };
+    ctl.forEach(el=>el&&el.addEventListener(el.tagName==='INPUT'?'input':'change',apply));
+    bar.querySelector('button').onclick=()=>{ ctl.forEach(el=>el&&(el.value='')); apply(); };
+    apply();
+  });
+}
+// Отметка строки (Виктор 23.11.2026): щёлкнул по строке (или по ссылке в ней) — строка подсвечена жёлтым как «текущая»,
+// прошлые — серой полосой «уже смотрел». Хранится в браузере (localStorage), переживает переход в Jira и обновление страницы.
+function initMarks(){
+  const K='au-marks'; let m={cur:null,seen:[]};
+  try{ m=Object.assign(m,JSON.parse(localStorage.getItem(K)||'{}')); }catch(_){}
+  const id=tr=>(tr.closest('.au-pane')||{}).id+'|'+tr.dataset.k;
+  const paint=()=>document.querySelectorAll('tr[data-k]').forEach(tr=>{ const i=id(tr);
+    tr.classList.toggle('au-cur',i===m.cur); tr.classList.toggle('au-seen',i!==m.cur&&m.seen.includes(i)); });
+  document.getElementById('root').addEventListener('click',e=>{ const tr=e.target.closest('tr[data-k]'); if(!tr) return;
+    if(e.target.closest('select,input,button')) return;
+    const i=id(tr); m.seen=[...m.seen.filter(x=>x!==i),i].slice(-500); m.cur=i;
+    try{ localStorage.setItem(K,JSON.stringify(m)); }catch(_){} paint(); });
+  document.querySelectorAll('.au-pane>.au-sub:first-of-type').forEach(p=>{
+    const b=document.createElement('button'); b.type='button'; b.className='pdf-btn'; b.style.marginLeft='8px'; b.textContent='Снять отметки строк';
+    b.onclick=()=>{ m={cur:null,seen:[]}; try{ localStorage.removeItem(K); }catch(_){} paint(); }; p.appendChild(b); });
+  paint();
+}
 // Страница разбита на вкладки (Виктор 18.11.2026: «как Статус для руководства»): у каждого ответственного свой блок.
 AUTH_READY.then(()=>{
 fetch('../data/audit.json?t='+Date.now()).then(r=>{ if(!r.ok) throw new Error('nodata'); return r.json(); }).then(a=>{
@@ -130,14 +179,15 @@ fetch('../data/audit.json?t='+Date.now()).then(r=>{ if(!r.ok) throw new Error('n
       ${o.unlabeled_stories.length?`<h3 id="${o.id}-unl">Стори без метки сценария — определить сценарий и проставить метку</h3><p class="au-keys">${o.unlabeled_stories.map(jk).join(', ')}</p>`:''}
     </div>`;
   document.getElementById('root').innerHTML=`
-    <p class="au-lead">Что поправить в Jira и Confluence, чтобы гант и этапы сценариев показывали реальную картину — по ответственным за сценарий (колонка «Владелец» реестра MVP v.2; задача относится к ответственному за сценарий своей стори, а если сценарий за РП или его нет — к аналитику-исполнителю задачи). <b>${esc(a.deadline_note||'')}</b>. Охват — только MVP: ${sc.stories} стори, ${sc.tasks} задач${sc.excluded_tasks!=null?` (вне MVP — ${sc.excluded_stories} стори и ${sc.excluded_tasks} задач — проверяются так же, все находки у РП с пометкой «вне MVP»)`:''}, данные Jira на ${fmtDate(a.jira_collected_at||a.generated_at)}, текущий — Спринт ${a.current_sprint}. «Отстаёт от плана» (P4) — те же этапы, что заштрихованы на виде <a href="gantt.html?view=stages">«Этапы по сценариям»</a> (${a.p4_total})${mp.version?`, «План ручной» v${esc(mp.version)}`:''}. Расшифровка кодов проверок — во вкладке «Глоссарий».</p>
+    <p class="au-lead">Что поправить в Jira и Confluence, чтобы гант и этапы сценариев показывали реальную картину — по ответственным за сценарий (колонка «Владелец» реестра MVP v.2; задача относится к ответственному за сценарий своей стори, а если сценарий за РП или его нет — к аналитику-исполнителю задачи). <b>${esc(a.deadline_note||'')}</b>. Охват — только MVP: ${sc.stories} стори, ${sc.tasks} задач${sc.excluded_tasks!=null?` (вне MVP — ${sc.excluded_stories} стори и ${sc.excluded_tasks} задач — проверяются так же, с пометкой «вне MVP»: SH — у Шевченко, стори аналитика — у него, остальное — у РП)`:''}, данные Jira на ${fmtDate(a.jira_collected_at||a.generated_at)}, текущий — Спринт ${a.current_sprint}. «Отстаёт от плана» (P4) — те же этапы, что заштрихованы на виде <a href="gantt.html?view=stages">«Этапы по сценариям»</a> (${a.p4_total})${mp.version?`, «План ручной» v${esc(mp.version)}`:''}. Расшифровка кодов проверок — во вкладке «Глоссарий».</p>
     <div class="au-tabs" id="tabs" role="tablist">${tabs.map(t=>`<button class="au-tab" data-t="${t.id}">${esc(t.label)}${t.n!=null?`<span class="n">${t.n}</span>`:''}</button>`).join('')}</div>
     ${a.owners.map(pane).join('')}
     ${a.timur?timurBlock(a.timur).replace('class="au-sec" id="timur"','class="au-pane au-sec" id="timur"'):''}
     <div class="au-pane au-sec" id="gloss"><h2>Глоссарий проверок и как это посчитано</h2>
       <table class="tbl au-gl"><thead><tr><th>Код</th><th>Что значит</th></tr></thead><tbody>${(a.glossary||[]).map(g=>`<tr><td>${esc(g.code)}</td><td>${esc(g.text)}</td></tr>`).join('')}</tbody></table>
-      <p class="au-sub" style="margin-top:10px">Ответственный — колонка «Владелец» реестра MVP v.2 (${esc(a.registry||'')}): ${own}. Если сценарий за РП или без сценария — находка уходит аналитику-исполнителю задачи, иначе аналитику, который последним менял её привязку, иначе исполнителю стори; кого не нашли — на разбор РП. Вне MVP (метка «вне_MVP», сценарий SH, эпики вне 10 MVP-эпиков) — те же проверки, находки у РП с пометкой «вне MVP». T7 — задачи с оценкой больше ${a.max_task_h||16} ч в «Бэклоге» и «Ready for DEV». A1 сверяет заголовки страниц аналитики, на которые ссылаются стори и их задачи [BA], с шаблонами в Confluence${a.templates&&a.templates.analytics?` («${esc(a.templates.analytics.title)}» v${a.templates.analytics.version}${a.templates.uc?`, «${esc(a.templates.uc.title)}» v${a.templates.uc.version}`:''})`:''}: проверяются страницы «Аналитика: …», с кодом сценария в названии и BC-NN; паспорта доменов (BI-NN), постановки на дизайн и неактуальные — нет. Не флагуем: «Основание», перерасход, «Waiting for release» в текущем спринте, задачи эпика B2BAPP-1 без префикса.</p>
+      <p class="au-sub" style="margin-top:10px">Ответственный — колонка «Владелец» реестра MVP v.2 (${esc(a.registry||'')}): ${own}. Если сценарий за РП или без сценария — находка уходит аналитику-исполнителю задачи, иначе аналитику, который последним менял её привязку, иначе исполнителю стори; кого не нашли — на разбор РП. Вне MVP (метка «вне_MVP», сценарий SH, эпики вне 10 MVP-эпиков) — те же проверки, с пометкой «вне MVP»: сценарий SH — у Шевченко, стори ведёт аналитик — у него, остальное — у РП. T7 — задачи с оценкой больше ${a.max_task_h||16} ч в «Бэклоге» и «Ready for DEV». A1 сверяет заголовки страниц аналитики, на которые ссылаются стори и их задачи [BA], с шаблонами в Confluence${a.templates&&a.templates.analytics?` («${esc(a.templates.analytics.title)}» v${a.templates.analytics.version}${a.templates.uc?`, «${esc(a.templates.uc.title)}» v${a.templates.uc.version}`:''})`:''}: проверяются страницы «Аналитика: …», с кодом сценария в названии и BC-NN; паспорта доменов (BI-NN), постановки на дизайн и неактуальные — нет. Не флагуем: «Основание», перерасход, «Waiting for release» в текущем спринте, задачи эпика B2BAPP-1 без префикса.</p>
     </div>`;
+  initFilters(); initMarks();
   const cb=document.getElementById('timurCopy');
   if(cb) cb.onclick=()=>navigator.clipboard.writeText(timurText(a.timur)).then(()=>{ cb.textContent='Скопировано'; setTimeout(()=>cb.textContent='Скопировать',1500); });
   const show=id=>{ document.querySelectorAll('.au-tab').forEach(x=>x.classList.toggle('active',x.dataset.t===id));
